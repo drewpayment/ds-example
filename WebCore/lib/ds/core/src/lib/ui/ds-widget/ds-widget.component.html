@@ -1,0 +1,10 @@
+<div class="ds-card card-height-fix-sm {{ skeleton }}" [class.action]="this.hover">
+    <ng-container *ngIf="loaded">
+        <div class="ds-card-header">
+            <ng-content select="ds-widget-header, [ds-widget-header], [dsWidgetHeader]"></ng-content>
+        </div>
+        <div class="card-body" [class.py-0]="mode === 'statisticNobody'">
+            <ng-content select="ds-widget-content, [ds-widget-content], [dsWidgetContent]"></ng-content>
+        </div>
+    </ng-container>
+</div>

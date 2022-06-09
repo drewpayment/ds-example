@@ -1,0 +1,339 @@
+<ds-card class="mt-3">
+    <ds-card-header>
+        <ds-card-header-title>
+            Create Account
+        </ds-card-header-title>
+        <ds-card-title-right-content>
+            <div class="text-muted">Jobs powered by <a target="_blank" href="https://dominionsystems.com"
+                class="underline">Dominion</a></div>
+        </ds-card-title-right-content>
+    </ds-card-header>
+    <ds-card-content>
+        <ng-container *ngIf="!noSave">
+            <ng-template #stepOne>
+                <div [formGroup]="form1">
+                    <div class="row align-items-baseline">
+                        <div class="col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label for="UserName">Username <span class="form-help-text"> Must be unique among users.</span></label>
+                                <input id="txtUserName" formControlName="userName" class="form-control"
+                                    MaxLength="15"
+                                    [class.is-invalid]="getUserNameControlError(form1)"
+                                    
+                                    (blur)="chkUsername()" cdkFocusInitial />
+                                <input id="txtUsernameUnique" class="form-control" type="hidden"
+                                    formControlName="userNameUnique" class="form-control"/>    
+                                <div class="invalid-feedback" *ngIf="form1.controls.userName.errors?.required">
+                                    Please enter a username.
+                                </div>
+                                <div class="invalid-feedback" *ngIf="form1.controls.userName.errors?.pattern">
+                                    Username must contain 4-15 characters; underscores and periods are acceptable.
+                                </div>
+                                <div class="invalid-feedback" *ngIf="form1.controls.userNameUnique.errors?.required">
+                                    Username already exists.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label for="Email">Email</label>
+                                <input id="txtEmail" type="email" MaxLength="254" formControlName="email"
+                                    class="form-control"
+                                    [class.is-invalid]="getFormControlError(form1, 'email', ['required','pattern'])" />
+                                <div class="invalid-feedback" *ngIf="form1.controls.email.errors?.required">
+                                    Please enter an email.
+                                </div>
+                                <div class="invalid-feedback" *ngIf="form1.controls.email.errors?.pattern">
+                                    Please enter a valid email.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row align-items-baseline">
+                        <div class="col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label for="Password">Password <span class="form-help-text">{{passwordHelpTxt}}</span></label>
+                                <input id="txtPassword" class="form-control" MaxLength="50" type="password"
+                                    formControlName="password"
+                                    [class.is-invalid]="getFormControlError(form1, 'password', ['required','pattern'])" />
+                                <div class="invalid-feedback" *ngIf="form1.controls.password.errors?.required">
+                                    Please enter a password.
+                                </div>
+                                <div class="invalid-feedback" *ngIf="form1.controls.password.errors?.pattern">
+                                    {{passwordErrTxt}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label for="PasswordConfirm">Confirm Password  <span class="form-help-text" >Please re-enter the password you created.</span></label>
+                                <div class="form-group">
+                                    <input id="txtPasswordConfirm" class="form-control" MaxLength="50" type="password"
+                                        formControlName="passwordConfirm"
+                                        [class.is-invalid]="getFormControlError(form1, 'passwordConfirm', ['required','notMatched'])">
+                                    <div class="invalid-feedback"
+                                        *ngIf="form1.controls.passwordConfirm.errors?.required">
+                                        Confirm password is required.
+                                    </div>
+                                    <div class="invalid-feedback"
+                                        *ngIf="form1.controls.passwordConfirm.errors?.notMatched">
+                                        Password does not match.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="float-right">
+                                <button type="button" (click)="save()"
+                                    class="btn btn-primary float-right">{{selected.nextLabel}}</button>
+                            </div>
+                            <div class="float-left">
+                                <button type="button" (click)="cancel()" class="btn btn-cancel">{{selected.prevLabel}}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+            <ng-template #stepTwo>
+                <div [formGroup]="form2">
+                    <div class="row align-items-baseline">
+                        <div class="col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label for="firstName">First Name</label>
+                                <input cdkFocusInitial id="txtFirstName" class="form-control" maxlength="50"
+                                    formControlName="firstName"
+                                    [class.is-invalid]="getFormControlError(form2, 'firstName', ['required'])" />
+                                <div class="invalid-feedback" *ngIf="form2.controls.firstName.errors?.required">
+                                    Please enter a first name.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-md-2">
+                            <div class="form-group">
+                                <label for="MI">MI <span class="form-help-text">Optional</span></label>
+                                <input class="form-control" maxlength="1" formControlName="mi"
+                                    [class.is-invalid]="getFormControlError(form2, 'mi', ['pattern'])" />
+                                <div class="invalid-feedback" *ngIf="form2.controls.mi.errors?.pattern">
+                                    Please enter a character.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group">
+                                <label for="lastName">Last Name</label>
+                                <input ID="txtLastName" class="form-control" MaxLength="50"
+                                    formControlName="lastName"
+                                    [class.is-invalid]="getFormControlError(form2, 'lastName', ['required'])" />
+                                <div class="invalid-feedback" *ngIf="form2.controls.lastName.errors?.required">
+                                    Please enter a last name.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row align-items-baseline">
+                        <div class="col-sm-4 col-md-4">
+                            <div class="form-group">
+                                <label for="PrimaryPhone">Primary Phone</label>
+                                <input id="txtPrimaryPhone" class="form-control" maxlength="15" type="text"
+                                    mask="000-000-0000" formControlName="primaryPhone"
+                                    [class.is-invalid]="getFormControlError(form2, 'primaryPhone', ['required','pattern'])" />
+                                <div class="invalid-feedback" *ngIf="form2.controls.primaryPhone.errors?.required">
+                                    Please enter a phone number.
+                                </div>
+                                <div class="invalid-feedback" *ngIf="form2.controls.primaryPhone.errors?.pattern">
+                                    Please enter a valid phone number.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-md-3">
+                            <div class="form-group">
+                                <label>Secondary Phone <span class="form-help-text">Optional</span></label>
+                                <input formControlName="secondaryPhone" type="text" mask="000-000-0000"
+                                    class="form-control" maxlength="15" 
+                                    [class.is-invalid]="getFormControlError(form2, 'secondaryPhone', ['pattern'])" />
+                                <div class="invalid-feedback" *ngIf="form2.controls.secondaryPhone.errors?.pattern">
+                                    Please enter a valid phone number.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-md-3">
+                            <div class="form-group">
+                                <label>Work Phone <span class="form-help-text"> Optional</span></label>
+                                <input formControlName="workPhone" type="text" mask="000-000-0000"
+                                    class="form-control" maxlength="15"
+                                    [class.is-invalid]="getFormControlError(form2, 'workPhone', ['pattern'])" />
+                                <div class="invalid-feedback" *ngIf="form2.controls.workPhone.errors?.pattern">
+                                    Please enter a valid phone number.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2 col-md-2">
+                            <div class="form-group">
+                                <label>Ext.</label>
+                                <input ID="txtExtension" formControlName="workExtension" class="form-control"
+                                    MaxLength="15" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="textNotificationEnabled"
+                                        formControlName="isTextEnabled" />
+                                    <label class="custom-control-label" for="textNotificationEnabled">Receive text
+                                        alerts to my primary number
+                                        <span class="form-help-text">Standard message and data rates apply.</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="float-right">
+                            <button type="button" (click)="save()"
+                                class="btn btn-primary float-right">{{selected.nextLabel}}</button>
+                        </div>
+                        <div class="float-left">
+                            <button type="button" (click)="cancel()" class="btn btn-cancel">{{selected.prevLabel}}</button>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+            <ng-template #stepThree>
+                <div [formGroup]="form3">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <span class="form-help-text">This step is optional</span>
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="country">Country</label>
+                                <select id="ddlCountry" formControlName="country" class="form-control custom-select"
+                                    (change)="loadStatesByCountryId()">
+                                    <option *ngFor="let c of countries" [value]="c.countryId">
+                                        <ng-container>{{ c.name }}</ng-container>
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label for="address1">Address</label>
+                                <input formControlName="address1" class="form-control" MaxLength="50" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <input formControlName="address2" type="text" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row align-items-baseline">
+                        <div class="col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label for="city">City</label>
+                                <input id="txtCity" formControlName="city" class="form-control" MaxLength="50" />
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="form-control-label">State/Province</label>
+                                <select id="ddlState" formControlName="state" class="custom-select">
+                                    <option *ngFor="let s of states" [value]="s.stateId">
+                                        <ng-container>{{ s.name }}</ng-container>
+                                    </option>
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label for="zip">Zip/Postal Code</label>
+                                <input id="txtZip" formControlName="zip" class="form-control" 
+                                [class.is-invalid]="getFormControlError(form3, 'zip', ['pattern'])" />
+                                <div class="invalid-feedback" *ngIf="form3.controls.zip.errors?.pattern">
+                                    Please enter a valid zip code.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="float-right">
+                                <button type="button" (click)="save()"
+                                    class="btn btn-primary float-right">{{selected.nextLabel}}</button>
+                            </div>
+                            <div class="float-left">
+                                <button type="button" (click)="cancel()" class="btn btn-cancel">{{selected.prevLabel}}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+
+            <ng-container *ngIf="(isHandset$ | async), else desktop">
+                <mat-vertical-stepper (selectionChange)="loadStep($event)" [linear]="true" #stepper>
+                    <mat-step [stepControl]="form1">
+                        <ng-template matStepLabel>Account Information</ng-template>
+                        <ng-container *ngTemplateOutlet="stepOne"></ng-container>
+                    </mat-step>
+                    <mat-step [stepControl]="form2">
+                        <ng-template matStepLabel>Contact Information</ng-template>
+                        <ng-container *ngTemplateOutlet="stepTwo"></ng-container>
+                    </mat-step>
+                    <mat-step [stepControl]="form3">
+                        <ng-template matStepLabel>Address</ng-template>
+                        <ng-container *ngTemplateOutlet="stepThree"></ng-container>
+                    </mat-step>
+                </mat-vertical-stepper>
+            </ng-container>
+            
+            <ng-template #desktop>
+                <mat-horizontal-stepper (selectionChange)="loadStep($event)" [linear]="true" #stepper [disableRipple]="true">
+                    <mat-step [stepControl]="form1">
+                        <ng-template matStepLabel>Account Information</ng-template>
+                        <ng-container *ngTemplateOutlet="stepOne"></ng-container>
+                    </mat-step>
+                    <mat-step [stepControl]="form2">
+                        <ng-template matStepLabel>Contact Information</ng-template>
+                        <ng-container *ngTemplateOutlet="stepTwo"></ng-container>
+                    </mat-step>
+                    <mat-step [stepControl]="form3">
+                        <ng-template matStepLabel>Address</ng-template>
+                        <ng-container *ngTemplateOutlet="stepThree"></ng-container>
+                    </mat-step>
+                </mat-horizontal-stepper>
+            </ng-template>
+            
+        </ng-container>
+    </ds-card-content>
+</ds-card>
+
+<div class="card" *ngIf="noSave">
+    <div class="card-body d-flex align-items-stretch">
+        <div class="d-flex align-items-center justify-content-center w-100">
+            <div class="pr-2">
+                <i class="material-icons md-48 text-warning">warning</i>
+            </div>
+            <div>
+                <div class="font-xl">Invalid client code</div>
+                <div class="text-muted font-italic font-sm mb-1">
+                    Please return to the company's job posting and try again.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

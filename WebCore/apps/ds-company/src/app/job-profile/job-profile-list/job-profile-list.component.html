@@ -1,0 +1,100 @@
+<ds-card mode="nobody" border="top">
+    <ds-card-header>
+        <ds-card-header-title>
+            Job Profiles
+        </ds-card-header-title>
+        <ds-card-subtitle>
+            <div class="instruction-text">
+                Information saved to a Job Profile will auto-populate default values in other areas of Dominion such as Employee Classifications, Payroll, Benefits & EEOC Information.
+            </div>
+        </ds-card-subtitle>
+    </ds-card-header>
+</ds-card>
+<ds-card>
+  <ds-card-header [formGroup]="form" *ngIf="form">
+    <ds-card-inline-content>
+      <div class="row align-items-center justify-content-sm-start form-group">
+        <div class="col-auto search-container">
+            <label class="instruction-text font-xs">Search  {{ (jobProfiles | filterJobProfiles : {excludeInactiveJobProfiles: !includeInactiveJobProfiles, searchText: searchJobProfiles}).length }}  of  {{ jobProfiles.length }}  Job Profiles</label>
+            <div class="input-group">
+                <input type="search" formControlName="searchJobProfiles" class="form-control" />
+                <div class="input-group-append">
+                    <button class="search" type="button">
+                        <mat-icon>search</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-auto">
+            <div class="custom-control custom-checkbox inline-sm-control">
+              <input type="checkbox" class="custom-control-input" id="includeInactiveJobProfiles"
+                formControlName="includeInactiveJobProfiles">
+              <label class="custom-control-label" for="includeInactiveJobProfiles">Include Inactive</label>
+            </div>
+        </div>
+      </div>
+    </ds-card-inline-content>
+    <!-- <ds-card-title-right-content>
+      <button [matMenuTriggerFor]="menu" class="btn btn-outline-primary dropdown-toggle">
+        Options
+      </button>
+      <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="popupJobProfileTitleDialog()">Option 01</button>
+          <button mat-menu-item (click)="popupJobProfileTitleDialog()">Option 02</button>
+          <button mat-menu-item (click)="popupJobProfileTitleDialog()">Option 03</button>
+      </mat-menu>
+    </ds-card-title-right-content> -->
+    <ds-card-title-action>
+      <button *ngIf="isApplicantAdmin" class="btn btn-primary" (click)="popupJobProfileTitleDialog()"><mat-icon>add</mat-icon> Profile</button>
+    </ds-card-title-action>
+  </ds-card-header>
+    <ds-card-content>
+        <ng-container *ngIf="!isLoading; else loading">
+            <div *ngIf="jobProfiles && jobProfiles.length" class="overflow-list">
+                <div class="row">
+                    <div class="col-6 col-md-4 col-lg-4" *ngFor="let jobProfile of jobProfiles | filterJobProfiles : {excludeInactiveJobProfiles: !includeInactiveJobProfiles, searchText: searchJobProfiles}; trackBy: trackJobProfile">
+                        <ds-card hover="true" mode="widget-nobody" y-align="center" [color]="jobProfile.isActive ? 'info' : 'archive'" (click)="editJobProfile(jobProfile)">
+                            <div ds-card-icon>assignment_ind</div>
+                            <ds-card-header y-align="center">
+                              <ds-card-widget-title>
+                                <div matTooltip=" {{ jobProfile.description }} " class="text-truncate">
+                                   {{ jobProfile.description }} 
+                                </div>
+                              </ds-card-widget-title>
+                              <ds-card-inline-content>
+                                <span class="badge badge-pill badge-disabled d-inline-block" *ngIf="!jobProfile.isActive">Inactive</span>
+                              </ds-card-inline-content>
+                              <ds-card-title-action *ngIf="isApplicantAdmin">
+                                  <div class="hover-show">
+                                    <button [matMenuTriggerFor]="menu" class="btn btn-icon" type="button"
+                                        (click)="$event.stopPropagation();">
+                                        <mat-icon>more_vert</mat-icon>
+                                    </button>
+                                    <mat-menu #menu="matMenu">
+                                        <button type="button" (click)="editJobProfile(jobProfile)" mat-menu-item>Edit</button>
+                                        <button type="button" (click)="copyJobProfile(jobProfile.jobProfileId)" mat-menu-item>Copy</button>
+                                        <!-- <div>
+                                          <button type="button" 
+                                            mat-menu-item 
+                                            (click)="updateJobProfileStatus(jobProfile);">
+                                            Set as {{jobProfile.isActive ? 'Inactive' : 'Active'}}
+                                          </button>
+                                        </div> -->
+                                    </mat-menu>
+                                  </div> 
+                              </ds-card-title-action>
+                            </ds-card-header>
+                        </ds-card>                       
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="jobProfiles == null || !jobProfiles.length">
+                <div class="empty-state">There are no Job Profiles to display. Click the "+ Profile" button to add one.</div>
+            </div>
+        </ng-container>
+        <ng-template #loading>
+            <ds-loading-message>
+            </ds-loading-message>
+        </ng-template>
+    </ds-card-content>
+</ds-card>

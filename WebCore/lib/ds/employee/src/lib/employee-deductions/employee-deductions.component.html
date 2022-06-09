@@ -1,0 +1,117 @@
+
+<ds-card mode="nobody" border="top" color="secondary" vAlign="top">
+    <ds-card-header>
+        <ds-card-header-title>
+            Deductions  
+        </ds-card-header-title>
+        <ds-card-bread-crumb>
+          <nav id="showBreadcrumbs" aria-label="breadcrumb" *ngIf="baseUrl != null">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a [href]="breadcrumb">
+                        Employee List
+                    </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Deductions</li>
+            </ol>
+        </nav>
+        </ds-card-bread-crumb>
+        <ds-card-title-right-content>
+          <div class="d-flex flex-wrap align-items-baseline">
+            <div class="d-none">
+                <button id="btnReload" type="button" class="btn btn-outline-primary" (click)="refreshClientDeductionInfo()">Reload</button>
+            </div>
+            <div class="custom-control custom-checkbox mr-2 mb-4 mb-sm-0">
+                <input type="checkbox" class="custom-control-input" id="showInactiveCheckbox" [ngModel]="showInactive" (change)="changeActiveSessionStorage()" [disabled]="!userHasReadAccess">
+                <label class="custom-control-label" for="showInactiveCheckbox">Show Inactive</label>
+            </div>
+            <div class="reminder-date">
+              <div class="custom-control custom-checkbox mr-2">
+                  <input type="checkbox" class="custom-control-input" id="reminderDateCheckbox" (click)="reminderCheckboxClicked($event.srcElement.checked)" [disabled]="!userHasAmountWriteAccess || isOwnDDAndIsSupervisor">
+                  <label class="custom-control-label" for="reminderDateCheckbox">Reminder Date</label>
+                  <a class="ds-tooltip ml-2" title="tip:https://dominionsystems.helpdocsonline.com/ID3644">
+                    <i class="tooltip-icon material-icons">help</i>
+                  </a>
+              </div>
+              
+              <form [formGroup]="reminderForm" class="mr-0">
+                  <div class="input-group">
+                      <input class="form-control" [matDatepicker]="deductionHeaderReminderDatePicker"
+                      [disabled]="disableReminderCalendar || disableReminderCalendar == undefined || disableReminderCalendar == null"
+                      [formControl]="reminderForm.controls['reminderDate']"
+                      dsFormControlValidator
+                      [min]="minDate"
+                      [ngClass]="{'is-invalid': this.reminderForm.controls['reminderDate'].value.valueOf() < this.minDate.valueOf() && this.reminderChecked}"
+                      />
+                      <div class="input-group-append">
+                          <mat-datepicker-toggle matSuffix [for]="deductionHeaderReminderDatePicker" class="input-group-text date">
+                              <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                          </mat-datepicker-toggle>
+                          <mat-datepicker #deductionHeaderReminderDatePicker [startAt]="minDate"></mat-datepicker>
+                      </div>
+                      <div *ngIf="this.reminderForm.controls['reminderDate'].value.valueOf() < this.minDate.valueOf() && this.reminderChecked" class="invalid-feedback">
+                          Date can not be a past date.
+                      </div>
+                  </div>
+              </form>
+            </div>
+          </div>
+        </ds-card-title-right-content>
+    </ds-card-header>
+</ds-card>
+
+
+<ds-deductions *ngIf="userHasReadAccess && isOwnDDAndIsSupervisor == false"
+    (refreshDeductions)="refreshData()"
+    (refreshClientDeductionInfo)="refreshClientDeductionInfo()"
+    [userInfo]="userInfo"
+    [clientInformation]="clientDeductionInformation"
+    [showInactive]="showInactive"
+    [deductions]="{trackBy: deductionsList.length, list: deductionsList}"
+    [loading]="loadingData"
+    [reminderDate]="reminderForm.controls['reminderDate'].value"
+    [reminderChecked]="reminderChecked"
+    [invalidReminderDate]="this.reminderForm.controls['reminderDate'].value.valueOf() < this.minDate.valueOf() && this.reminderChecked"
+    [deductionsThatAllowDDsList]="this.deductionsThatAllowDDsList"
+    [userHasAccountWriteAccess]="this.userHasAccountWriteAccess"
+    [userHasAmountWriteAccess]="this.userHasAmountWriteAccess">
+</ds-deductions>
+
+<ds-direct-deposit *ngIf="userHasReadAccess || isOwnDDAndIsSupervisor"
+    (refreshDeductions)="refreshData()"
+    [userInfo]="userInfo"
+    [clientInformation]="clientDeductionInformation"
+    [showInactive]="showInactive"
+    [directDeposits]="{trackBy: directDepositsList.length, list: directDepositsList}"
+    [loading]="loadingData"
+    [reminderDate]="reminderForm.controls['reminderDate'].value"
+    [reminderChecked]="reminderChecked"
+    [invalidReminderDate]="this.reminderForm.controls['reminderDate'].value.valueOf() < this.minDate.valueOf() && this.reminderChecked"
+    [userHasAccountWriteAccess]="this.userHasAccountWriteAccess"
+    [userHasAmountWriteAccess]="this.userHasAmountWriteAccess"
+    [isOwnDDAndIsSupervisor]="this.isOwnDDAndIsSupervisor">
+</ds-direct-deposit>
+
+<ds-earnings *ngIf="userHasReadAccess && hideEarnings == false && isOwnDDAndIsSupervisor == false"
+    (refreshDeductions)="refreshData()"
+    [userInfo]="userInfo"
+    [clientInformation]="clientDeductionInformation"
+    [showInactive]="showInactive"
+    [earnings]="{trackBy: earningsList.length, list: earningsList}"
+    [loading]="loadingData"
+    [reminderDate]="reminderForm.controls['reminderDate'].value"
+    [reminderChecked]="reminderChecked"
+    [invalidReminderDate]="this.reminderForm.controls['reminderDate'].value.valueOf() < this.minDate.valueOf() && this.reminderChecked"
+    [userHasAccountWriteAccess]="this.userHasAccountWriteAccess"
+    [userHasAmountWriteAccess]="this.userHasAmountWriteAccess">
+</ds-earnings>
+
+<ds-card *ngIf="userHasReadAccess == false && isOwnDDAndIsSupervisor == false" mode="noheader">
+    <ds-card-content>
+        <div class="empty-state-cycle warning">
+            <i class="material-icons">warning</i>
+            <div class="title">Employee Deductions are not displayed for your user profile</div>
+            <p>Please contact your company admin if you believe this is an error.</p>
+        </div>
+    </ds-card-content>
+</ds-card>

@@ -1,0 +1,62 @@
+﻿<div class="d-print-none">
+    <div class="modal-header">
+        <h2> Print Schedule</h2>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="cancel()"><i class="material-icons" aria-hidden="false">clear</i></button>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-12">
+                <p class="info-dialog-text">For best quality, please configure your browser to print background colors and images.</p>
+                <div>
+                    <div class="form-group">
+                        <div class="custom-control custom-checkbox">
+                            <input ID="jobTitles" class="custom-control-input" type="checkbox" ng-model="settings.includeJobTitles" />
+                            <label class="custom-control-label" for="jobTitles">Job titles</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="custom-control custom-checkbox">
+                            <input ID="includeBenefits" class="custom-control-input" type="checkbox" ng-model="settings.includeBenefits" />
+                            <label class="custom-control-label" for="includeBenefits">Vacations and holidays</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="custom-control custom-checkbox">
+                            <input ID="subgroups" class="custom-control-input" type="checkbox" ng-model="settings.includeSubgroups" />
+                            <label class="custom-control-label" for="subgroups">Subgroup names</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="custom-control custom-checkbox">
+                            <input ID="openShifts" class="custom-control-input" type="checkbox" ng-model="settings.includeOpenShifts" />
+                            <label class="custom-control-label" for="openShifts">Open shifts</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="custom-control custom-checkbox">
+                            <input ID="otherGroups" class="custom-control-input" type="checkbox" ng-model="settings.includeOtherShifts" />
+                            <label class="custom-control-label" for="otherGroups">Shifts from other groups</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="custom-control custom-checkbox">
+                            <input ID="totalHours" class="custom-control-input" type="checkbox" ng-model="settings.includeHours" />
+                            <label class="custom-control-label" for="totalHours">Total hours</label>
+                        </div>
+                    </div>
+                    <div class="form-group" ng-if="settings.rateAccess.canViewRates && settings.budgetAccess.canViewBudgeting" >
+                        <div class="custom-control custom-checkbox">
+                            <input ID="totalEmpCost" class="custom-control-input" type="checkbox" />
+                            <label class="custom-control-label" for="<%= totalEmpCost.ClientId %>">Total employee costs</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer flex-row-reverse">
+        <button class="btn btn-save" ng-click="print()">Print</button>
+        <button class="btn btn-cancel" ng-click="cancel()">Cancel</button>
+    </div>
+</div>

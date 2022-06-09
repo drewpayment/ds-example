@@ -1,0 +1,109 @@
+<ds-card border="top" mode="nobody">
+    <ds-card-header>
+        <ds-card-header-title>
+            Organization
+        </ds-card-header-title>
+        <ds-card-title-action>
+          <button type="button" class="btn btn-primary" (click)="addOrganization()">
+            <i class="material-icons">add</i> Organization
+          </button>
+        </ds-card-title-action>
+    </ds-card-header>
+    <ds-card-content [formGroup]="form1">
+        <ng-container *ngIf="!isLoading && !isEmpty; else noData">
+            <div class="row ">
+                <div class="col-md-6 col-lg-4">
+                    <div class="form-group">
+                        <label class="form-control-label">
+                            Organization
+                        </label>
+                        <select id="ddlOrg" formControlName="organization" class="form-control custom-select"
+                            (change)="getOrganizationClients()">
+                            <option value="">--Select an Organization--</option>
+                            <option *ngFor="let o of organizations" [value]="o.clientOrganizationId">
+                                <ng-container>{{ o.clientOrganizationName }}</ng-container>
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        <ng-container *ngIf="!!organization">
+            <hr>
+            <div class="row justify-content-between">
+                <div class="col-md-6 col-lg-4">
+                    <div class="form-group">
+                        <label class="form-control-label">Organization Name</label>
+                        <input id="txtOrgName" maxlength="25" formControlName="organizationName"
+                            class="form-control" 
+                            [ngClass]="{'is-invalid':  (form1.controls.organizationName.errors?.required ||
+                                                                            (formError && form1.controls.organizationName.errors?.duplicate) ) }" />
+                        <div class="invalid-feedback">
+                            <span *ngIf="form1.controls.organizationName.errors?.required">Please enter a
+                                name.</span>
+                            <span *ngIf="form1.controls.organizationName.errors?.duplicate">Please enter a different
+                                organization
+                                name.</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 d-flex justify-content-end">
+                    <div class="form-group">
+                        <button type="button" class="btn btn-outline-primary" (click)="addClients()">
+                            <i class="material-icons">add</i> Client Code
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="row pb-2">
+                <div class="col-12">
+                    <div class="empty-state" [class.d-none]="organizationClients && organizationClients.length > 0">
+                        There are no client codes assigned to this organization. You can begin assigning them by clicking the <a
+                            href="javascript:;" (click)="addClients()">Add Client Code</a> button.
+                    </div>
+                    <div class="form-group" *ngIf="organizationClients && organizationClients.length > 0">
+                        <div class="overflow-list">
+                            <div class="row row-cards">
+                                <div class="col-sm-6 col-md-4 col-xl-3"
+                                    *ngFor="let organizationClient of organizationClients">
+                                    <ds-card mode="widget-nobody" color="info" class="hoverable">
+                                        <div ds-card-icon>domain</div>
+                                        <ds-card-header>
+                                            <ds-card-widget-title>
+                                                {{organizationClient.clientCode}}
+                                            </ds-card-widget-title>
+                                            <ds-card-subtitle class="mt-0">
+                                                <div class="text-muted font-italic text-truncate" title="{{organizationClient.clientName}}">{{organizationClient.clientName}}</div>
+                                            </ds-card-subtitle>
+                                            <button type="button" class="mr-0 btn btn-icon nested-cog hover-show" [matMenuTriggerFor]="rowMenu">
+                                                <i class="material-icons">more_vert</i>
+                                            </button>
+                                            <mat-menu #rowMenu="matMenu">
+                                                <button mat-menu-item type="button" (click)="deleteClients(organizationClient.clientId, organizationClient.clientCode)">
+                                                    Delete
+                                                </button>
+                                            </mat-menu>
+                                        </ds-card-header>
+                                    </ds-card>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+        </ng-container>
+        <ng-template #noData>
+            <ds-loading-message *ngIf="isLoading">
+            </ds-loading-message>
+            <div class="empty-state" *ngIf="!isLoading && isEmpty">
+                No organizations found.
+            </div>
+        </ng-template>
+    </ds-card-content>
+</ds-card>
+<ds-card *ngIf="!isLoading && !!organization">
+    <ds-card-footer>
+        <button type="button" class="btn btn-primary" (click)="save()">Save</button>
+        <button type="button" class="btn btn-delete" (click)="deleteOrganization()">Delete</button>        
+    </ds-card-footer>
+</ds-card>

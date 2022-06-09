@@ -1,0 +1,26 @@
+<ds-dashboard-widget [cardType]="cardType" [loaded]="loaded" skeleton="pie-graph-skeleton">
+    <ds-dashboard-widget-content [infoData]="infoData">
+        <ds-dashboard-widget-bottom-content>
+            <div class="chart">
+                <canvas
+                    baseChart
+                    [data]="pieChartData"
+                    [labels]="pieChartLabels"
+                    [chartType]="pieChartType"
+                    [options]="pieChartOptions"
+                    [colors]="pieChartColors"
+                    (chartClick)="changeBreakdown($event)"
+                >
+                </canvas>
+            </div>
+            <div class="empty-state" *ngIf="!nonEscrowClient">
+                Click on a section of the graph to view a breakdown on the right.
+            </div>
+            <div class="empty-state" *ngIf="nonEscrowClient">
+                Click on a section of the graph to view a breakdown on the right.
+                <br/>
+                Non-Escrow clients will have Federal and any accelerated tax liabilities included in your bank deposit.
+            </div>
+        </ds-dashboard-widget-bottom-content>
+    </ds-dashboard-widget-content>
+</ds-dashboard-widget>

@@ -1,0 +1,48 @@
+
+<div id="main-sidebar">
+    <ul id="profile-side-menu" #sideMenu>
+        <ng-container *ngIf="showPerformanceMenu">
+            <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" *ngIf="hasPerformance">
+                <a [routerLink]="['/performance']">Overview</a>
+            </li>
+            <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" *ngIf="hasPerformance">
+                <a [routerLink]="['/performance/reviews']">Reviews</a>
+            </li>
+            <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" *ngIf="hasGoalTracking">
+                <a [routerLink]="['/performance/goals']">Goals</a>
+            </li>
+            <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" *ngIf="hasGoalTracking">
+                <a [routerLink]="['/performance/company-goals']">Company Goals</a>
+            </li>
+        </ng-container>
+        <ng-container *ngIf="!showPerformanceMenu">
+            <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                <a [routerLink]="['/profile']">Profile</a>
+            </li>
+
+            <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                <a [routerLink]="['/pay']">Paycheck Settings</a>
+            </li>
+
+            <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                <a [routerLink]="['/timeoff']">Time Off</a>
+            </li>
+
+            <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                <a [routerLink]="['/account']">Account Settings</a>
+            </li>
+
+            <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                <a [routerLink]="['/resources']">Resources</a>
+            </li>
+
+            <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                <a [routerLink]="['/consents']">Electronic Consents</a>
+            </li>
+
+            <li>
+                <a href="legacy/contactnotificationpreferences.aspx" target="_self">Notifications</a>
+            </li>
+        </ng-container>
+    </ul>
+</div>

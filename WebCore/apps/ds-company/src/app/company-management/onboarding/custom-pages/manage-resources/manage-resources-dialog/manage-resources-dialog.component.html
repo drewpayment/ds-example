@@ -1,0 +1,74 @@
+<mat-dialog-header>
+    <h2 class="dialog-title">
+        Select {{routeText}}s
+    </h2> 
+    <button type="button" class="close" (click)="clear()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</mat-dialog-header>
+<mat-dialog-content [formGroup]="form" *ngIf="form">
+    <div class="row">
+        <div class="search-container form-group col">
+            <div class="input-group">
+                <input type="search" formControlName="searchResources" class="form-control" />
+                <div class="input-group-append">
+                <button class="search" type="button">
+                    <i class="material-icons">search</i>
+                </button>
+            </div>
+            </div>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-outline-primary" 
+                (click)="popupResourceDialog()"
+                [disabled]="disabled">
+                <i class="material-icons">add</i> {{routeText}}
+            </button>
+        </div>
+    </div>
+    <div class="overflow-auto overflow-list" style="max-height: 300px;" *ngIf="resources.length > 0 && pageType == 1">
+        <div class="list-bordered border-top-0">
+            <div class="body">
+                <div class="item hoverable clickable" *ngFor="let resource of resources | filterResource : {type: 1, searchText: searchResources}" (click)="selectResource(resource)">
+                    <div class="ds-item w-100 p-3 text-truncate" [ngClass]="{'chip-primary': resource.isSelectedResource, 'chip-white': !resource.isSelectedResource}" matTooltip="{{resource.resourceName}}">
+                        <div class="item-label text-truncate">{{resource.resourceName}}</div>
+                        <div class="item-label white-space-normal word-break-break-all">{{ resource.source ? resource.source.split('\\').pop() : ""}}</div>
+                    </div>
+                </div>
+            </div>
+          </div>
+    </div>
+    <div class="overflow-list" *ngIf="resources.length > 0 && pageType == 2">
+        <div class="list-bordered border-top-0">
+            <div class="body">
+                <div class="item hoverable clickable" *ngFor="let resource of resources | filterResource : {type: 2, searchText: searchResources}" (click)="selectResource(resource)">
+                    <div class="ds-item w-100 p-3 text-truncate" [ngClass]="{'chip-primary': resource.isSelectedResource, 'chip-white': !resource.isSelectedResource}" matTooltip="{{resource.resourceName}}">
+                        <div class="item-label text-truncate">{{resource.resourceName}}</div>
+                        <div class="item-label white-space-normal word-break-break-all">{{ resource.source ? resource.source.split('\\').pop() : ""}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="overflow-list" *ngIf="resources.length > 0 && pageType == 4">
+        <div class="list-bordered border-top-0">
+            <div class="body">
+                <div class="item hoverable clickable" *ngFor="let resource of resources | filterResource : {type: 4, searchText: searchResources}" (click)="selectResource(resource)">
+                    <div class="ds-item w-100 p-3 text-truncate" [ngClass]="{'chip-primary': resource.isSelectedResource, 'chip-white': !resource.isSelectedResource}" matTooltip="{{resource.resourceName}}">
+                        <div class="item-label text-truncate">{{resource.resourceName}}</div>
+                        <div class="item-label white-space-normal word-break-break-all">{{ resource.source ? resource.source.split('\\').pop() : ""}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="empty-state" *ngIf="resources.length==0">
+        There are no resources found.
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button type="button" class="btn btn-save"
+        (click)="save()" >Save</button>
+    <button type="button" class="btn btn-cancel" 
+        (click)="clear()" >Cancel</button>
+</mat-dialog-actions>

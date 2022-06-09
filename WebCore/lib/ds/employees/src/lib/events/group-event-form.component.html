@@ -1,0 +1,16 @@
+
+<ng-container *ngIf="!isLoading; else loadingScreen">
+
+</ng-container>
+  
+  
+
+<ng-template #loadingScreen>
+<ds-loading-message></ds-loading-message>
+</ng-template>
+
+<ng-template #emptyState>
+<div class="empty-state">
+  There are currently no events to display.
+</div>
+</ng-template>

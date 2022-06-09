@@ -1,0 +1,74 @@
+<mat-dialog-header>
+    <h2 class="dialog-title">
+        Employment Classes
+    </h2>
+    <button type="button" class="close" (click)="clear()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</mat-dialog-header>
+<mat-dialog-content>
+    <ng-container dsTrackFormChanges [formGroup]="form1">
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-control-label">Class</label>
+                    <select class="form-control custom-select" (change)="activeClassChanged($event)" formControlName="classId">
+                        <option value="">-- Add Employment Class --</option>
+                        <option *ngFor="let cls of allClasses; let i = index;" [value]="cls.clientEmploymentClassId">
+                            {{ cls.description + (cls.isEnabled ? '' : ' &mdash; inactive') }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label for="classDesc" class="form-control-label">Description</label>
+                    <input type="text" id="classDesc" formControlName="className" maxlength="30" class="form-control" 
+                    dsFormControlValidator [dsFormControlSubmitted]="formSubmitted" />
+                    <div class="invalid-feedback">
+                        <span  *ngIf="form1.controls.className.errors?.required">Please enter a class name.</span>
+                        <span  *ngIf="form1.controls.className.errors?.duplicate">Please enter a different name.</span>
+                        <span  *ngIf="form1.controls.className.errors?.pattern">Please enter Letters/Numbers/Spaces.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="classDesc" class="form-control-label">Code</label>
+                    <input type="text" id="code" formControlName="classCode" maxlength="10" class="form-control" 
+                    dsFormControlValidator [dsFormControlSubmitted]="formSubmitted" />
+                    <div class="invalid-feedback" >
+                        <span *ngIf="form1.controls.classCode.errors?.required">Please enter a class code.</span>
+                        <span *ngIf="form1.controls.classCode.errors?.duplicate">Please enter a different class code.</span>
+                        <span *ngIf="form1.controls.classCode.errors?.pattern">Please enter Letters/Numbers/Spaces.</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-control-label">&nbsp;</label>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="chkActive" formControlName="isActive"  >
+                        <label class="custom-control-label" for="chkActive">Active</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button type="button"  class="btn btn-save" (click)="save()">Save</button>
+    <button type="button" class="btn btn-cancel" (click)="clear()">Cancel</button>
+</mat-dialog-actions>
+
+<ng-template #loadingScreen>
+    <ds-card>
+      <ds-card-content >
+        <ds-loading-message></ds-loading-message>
+      </ds-card-content>
+    </ds-card>
+  </ng-template>

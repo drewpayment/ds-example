@@ -1,0 +1,82 @@
+﻿<div>
+    
+    <div class="modal-content {{coverageType.cssClass}}">
+      
+        <div class="modal-body">
+            <button type="button" class="close"  ng-click="close()" aria-hidden="true">&times;</button>
+
+            <div ng-repeat="plan in plans">
+            
+                <h1>
+                    <span class="icon-stack">
+                        <i class="icon-circle icon-stack-base"></i>
+                        <i class="icon-ok icon-light"></i>
+                    </span> {{plan.planName}}
+                </h1>
+
+                <div class="ml-xs">
+
+                    <p ng-show="plan.startDate && plan.endDate">Active {{plan.startDate | date:'MM/dd/yyyy'}} - {{plan.endDate | date:'MM/dd/yyyy'}} </p>
+                    <p ng-bind-html="plan.planDescription"></p>
+                    <hr/>
+
+                    <div ng-repeat="selection in plan.selections">
+
+                        <h2>
+                            <strong>
+                                {{ selection.selectedOption.name }} <!--{{ selection.selectedBenefitAmount ? " &mdash; " + (selection.selectedBenefitAmount.getFriendlyName(selection.selectedOption)) : "" }}-->
+                            </strong>
+
+
+                            <span class="pull-right">{{selection.cost | currency}} per Pay</span>
+                        </h2>
+                        <h4 ng-if="selection.selectedBenefitAmount">
+                            {{selection.selectedBenefitAmount.getFriendlyName(selection.selectedOption)}}
+                        </h4>
+
+                        <div ng-show="plan.isPcpRequired" class="mb-md">
+                            <div>Employee's Primary Care Physician</div>
+                            <ul class="icons-ul" ng-if="plan.employeePcp">
+                                <li><i class="icon-li icon-stethoscope"></i>{{plan.employeePcp.firstName}} {{plan.employeePcp.lastName}} </li>
+                            </ul>
+                            <em ng-if="!plan.employeePcp"> No primary care physician on file. </em>
+                        </div>
+                        <div ng-if="selection.selectedOption.maxNoOfDependents">
+                            <p>Dependents covered</p>
+                            <span ng-if="!selection.employeeDependents || !selection.employeeDependents.length"> None</span>
+                            <ul class="icons-ul">
+                                <li ng-repeat="dep in selection.employeeDependents">
+                                    <i class="icon-li icon-user"></i> {{dep.firstName}} {{dep.lastName}} ({{dep.birthDate | date:'MM/dd/yyyy'}})
+                                    &nbsp;
+                                    <span ng-show="plan.isPcpRequired">
+                                        &mdash;
+                                        <span ng-show="dep.hasPcp"> &nbsp;<i class="icon-stethoscope"></i> {{dep.primaryCarePhysician.firstName}} {{dep.primaryCarePhysician.lastName}} </span>
+                                        <em ng-show="!dep.hasPcp">  &nbsp; No primary care physician on file. </em>
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+
+                    <hr />
+
+                    <h2>Plan Resources</h2>
+                    <span ng-if="!plan.resourceList || !plan.resourceList.length">None</span>
+                    <ul class="icons-ul">
+                        <li ng-repeat="doc in plan.resourceList">
+                            <a target="_blank" ng-href="{{doc.url}}" ng-click="validateResource(doc, $event)"><i class="icon-li icon-file-alt"></i> {{doc.name}} <i class="icon-angle-right"></i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="pull-right">
+            
+                <a class="btn btn-clear-white" ng-if="isFromEnrollment" ng-click="editCoverage(coverageType)">
+                    <i class="icon-pencil"></i>Edit
+                </a>  <a ng-click="close()" aria-hidden="true" class="btn btn-clear-white">Close</a>
+            </div>
+        </div>
+    </div></div>

@@ -1,0 +1,29 @@
+<ng-container *ngIf="infoData">
+    <div class="d-flex flex-column justify-content-start align-content-center h-100">
+        <div class="flex-wrap align-items-baseline justify-content-center pb-2" [ngClass]="{ 'd-flex': oneLine, 'text-center': !oneLine, 'border-bottom': infoData.showBottom, 'flex-1-1-100' : flexGrow}">
+            <div class="d-flex justify-content-center align-items-baseline">
+                <i class="material-icons md-48 align-self-center pr-3 text-{{ infoData.color }} ">{{ infoData.icon }}</i>
+                <div class="font-5xl font-weight-bold pr-2">{{ infoData.value }} </div>
+            </div>
+            <div class="text-uppercase font-2xl pr-1"> 
+                <label class="white-space-pre-line">{{ infoData.title }}</label>
+                <ng-container *ngIf="infoData.tooltip" >
+                    <a class="ds-tooltip" title=""  (click)="infoData.hovered=!infoData.hovered" (mouseenter)="infoData.hovered = true" (mouseleave)="infoData.hovered = false">
+                        <i class="tooltip-icon material-icons pt-1">help</i>
+                    </a>
+                    <div class="d-flex justify-content-center">
+                        <div class="helpiq2-tip" [class.d-none]="!infoData.hovered" >
+                            <div class="helpiq2_tooltip" [innerHTML]="infoData.tooltip">
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+            
+        </div>
+        <div class="text-center pt-4" *ngIf="infoData.showBottom">
+            <ng-content select="ds-dashboard-widget-bottom-content"></ng-content>
+        </div>
+    </div>
+</ng-container>
+<ng-content></ng-content>

@@ -1,0 +1,10 @@
+<div class="text-center">
+    <button type='button' class='btn btn-outline-primary white-space-nowrap' (click)="updateEmployeeExitInterviewRequest()" >
+        Request Exit Interview
+    </button>
+
+    <div *ngIf="exitInterviewRequestStatus" class='font-xs instruction-text mt-1'>
+        {{exitInterviewRequestStatus}}
+    </div>
+
+</div>

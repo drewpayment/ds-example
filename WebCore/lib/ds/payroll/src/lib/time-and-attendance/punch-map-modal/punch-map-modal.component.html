@@ -1,0 +1,90 @@
+<div mat-dialog-header>
+    <h2 class="dialog-title">
+        Punch Details: <b>{{employeeName}}</b>
+    </h2>
+    <button type="button" class="close" (click)="onNoClick()">
+        <mat-icon>clear</mat-icon>
+    </button>
+    <div class="dialog-subtitle">
+        <div class="instruction-text">
+            Geofence punches display in the map below. Use the checkboxes to hide or show punches. GPS Punches have a margin of error unique to the device used.
+        </div>
+    </div>
+</div>
+<div mat-mat-dialog-content fxFlexFill *ngIf="formInit|async as init">
+    <div class="card card-table">
+        <div class="table-responsive">
+            <table mat-table [dataSource]="dataSource$" class="grid">
+                <ng-container matColumnDef="checkbox">
+                    <mat-header-cell *matHeaderCellDef class="mat-td-checkbox-width">
+                        <div class="custom-control custom-checkbox">
+                            <input id="checkAll" class="custom-control-input" type="checkbox"
+                                (click)="checkAll()" [(ngModel)]="isChecked" />
+                            <label class="custom-control-label" for="checkAll">
+                                <span>
+                                </span>
+                            </label>
+                        </div>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element; let idx = index">
+                        <div class="custom-control custom-checkbox">
+                            <input [id]="'checkBox_'+element.clockEmployeePunchId" class="custom-control-input"
+                                type="checkbox" [checked]="element.isChecked" [(ngModel)]="element.isChecked"
+                                [disabled]="element.isSelectable !== true"
+                                (click)="checkClicked(element.clockEmployeePunchId)" />
+                            <label class="custom-control-label" [for]="'checkBox_'+element.clockEmployeePunchId">
+                                <span>
+                                </span>
+                            </label>
+                        </div>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="day" sticky>
+                    <th mat-header-cell *matHeaderCellDef class="mat-column-name">Day </th>
+                    <td mat-cell *matCellDef="let element" class="mat-column-name"> {{element.rawPunch | date: 'EEEE'}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="date" sticky>
+                    <th mat-header-cell *matHeaderCellDef>Date </th>
+                    <td mat-cell *matCellDef="let element"> {{element.rawPunch | date: 'M/dd/yyyy'}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="time" sticky>
+                    <th mat-header-cell *matHeaderCellDef class="w-15">Time </th>
+                    <td mat-cell *matCellDef="let element" class="w-15"> {{element.rawPunch | date: 'h:mm a'}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="status" sticky>
+                    <th mat-header-cell *matHeaderCellDef>Status </th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-icon [ngClass]="element.errorType | hasExceptionColor">{{element.errorType | isException}}
+                        </mat-icon>
+                        <!-- <mat-icon class="text-warning">not_listed_location</mat-icon> -->
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="detail" sticky>
+                    <th mat-header-cell *matHeaderCellDef class="w-100">Details </th>
+                    <td mat-cell *matCellDef="let element" class="w-100"> {{element.errorType | hasExceptionDetail : element.clockName}}
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hoverable"></tr>
+            </table>
+        </div>
+        <mat-paginator [length]="pagLength" [pageSizeOptions]="[5]" (page)="paginatorClicked()"></mat-paginator>
+    </div>
+    <ds-geofence-map #geofenceMap
+        [markerListInput]="markerList"
+        [circleListInput]="circleList"
+        [locationInput]="location"
+        [controlSettingsInput]="mapControlSettings"
+        [isPunchMap]="true" >
+    </ds-geofence-map>
+</div>
+<ng-container *ngIf="isLoading">
+    <ds-loading-message></ds-loading-message>
+</ng-container>

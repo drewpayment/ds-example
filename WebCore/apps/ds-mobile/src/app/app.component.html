@@ -1,0 +1,77 @@
+<!--The content below is only a placeholder and can be replaced.-->
+
+<ng-container *ngIf="shouldRun; else doNotRun">
+    <div class="mobile-container">
+        <mat-toolbar class="mobile-toolbar">
+              <button mat-button (click)="snav.toggle()" class="btn-menu">
+                  <mat-icon class="mr-2">{{ snav.opened ? 'clear' : 'menu' }}</mat-icon>
+                  <span>Menu</span>
+              </button>
+              <div class="mobile-app-name">
+                <h5 class="text-truncate">{{ user && user.lastClientName ? user.lastClientName : 'Dominion Mobile' }}</h5>
+              </div>
+              <button mat-button class="btn-sign-out" (click)="logout()">
+                  Sign Out
+              </button>
+        </mat-toolbar>
+
+        <mat-sidenav-container class="mobile-sidenav-container" autosize>
+            <mat-sidenav #snav mode="over" fixedInViewport="true" fixedTopGap="56" class="mobile-nav">
+                <div class="flex-nav-column">
+                    <mat-nav-list role="navigation">
+                        <a mat-list-item [routerLink]="['punch-card']" (click)="snav.toggle()" routerLinkActive="mobile-nav-active">
+                            <mat-icon>schedule</mat-icon>
+                            Punch
+                        </a>
+                        <a mat-list-item [routerLink]="['schedule']" (click)="snav.toggle()" routerLinkActive="mobile-nav-active">
+                            <mat-icon>date_range</mat-icon>
+                            Schedule
+                        </a>
+                        <a mat-list-item [routerLink]="['paycheck']" (click)="snav.toggle()" routerLinkActive="mobile-nav-active">
+                            <mat-icon>monetization_on</mat-icon>
+                            Paycheck
+                        </a>
+                        <a mat-list-item [routerLink]="['time-off']" (click)="snav.toggle()" routerLinkActive="mobile-nav-active">
+                            <mat-icon>airplanemode_active</mat-icon>
+                            Request Time Off
+                        </a>
+                        <a mat-list-item [routerLink]="['profile']" (click)="snav.toggle()" routerLinkActive="mobile-nav-active">
+                            <mat-icon>account_circle</mat-icon>
+                            Profile
+                        </a>
+                        <button mat-list-item (click)="openNPSSurvey()">
+                        <!-- <a mat-list-item [href]=""> -->
+                            <mat-icon>forum</mat-icon>
+                            Give Feedback
+                        </button>
+                        <a mat-list-item [href]="getDesktopUrl()">
+                            <mat-icon class="flip">reply</mat-icon>
+                            Go to Desktop
+                        </a>
+                    </mat-nav-list>
+                    <div class="logo-container">
+                        <a href="https://dominionsystems.com" class="logo">
+                          <img [src]="getAssetsPath('WebCore/dist/ds-mobile/assets/logo.png')" alt="Dominion Systems logo" />
+                        </a>
+                    </div>
+                </div>
+
+            </mat-sidenav>
+            <mat-sidenav-content class="container">
+
+                <router-outlet></router-outlet>
+
+            </mat-sidenav-content>
+        </mat-sidenav-container>
+    </div>
+</ng-container>
+
+<ng-template #doNotRun>
+    <div class="desktop-message">
+        <div class="empty-state-cycle warning">
+            <mat-icon>warning</mat-icon>
+            <div class="title">You can only view this page from a mobile device.</div>
+            <a mat-button autofocus [href]="getDesktopUrl()">Go to desktop</a>
+        </div>
+    </div>
+</ng-template>

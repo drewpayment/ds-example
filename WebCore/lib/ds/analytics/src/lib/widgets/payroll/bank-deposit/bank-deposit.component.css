@@ -1,0 +1,7 @@
+@media screen and (max-width: 1770px) {
+    /* Hack to prevent chart from becoming unusable between 1200px (large breakpoint) and 1400px */
+    .col-xl-6 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}

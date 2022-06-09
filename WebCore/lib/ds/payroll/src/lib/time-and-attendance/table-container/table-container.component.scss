@@ -1,0 +1,84 @@
+@import '../../../../../../../Styles/scss/bootstrap-variables';
+
+.exception {
+    color: $red;
+    line-height: 16px;
+    white-space: normal !important;
+}
+
+.approved {
+    color: $green;
+    white-space: normal !important;
+}
+
+.btn-punch {
+  font-size: 0.75rem;
+  line-height: inherit;
+  min-width: 30px;
+  padding: 0 .25rem;
+}
+
+// Pagination Overrides
+.pagination {
+  margin: 1rem;
+  align-items: baseline;
+  justify-content: center;
+}
+
+.pagination-repeat-wrapper {
+  display: flex;
+  position: relative;
+  overflow-x: auto;
+
+  .page-container {
+    display: flex;
+    min-width: 0;
+    margin-bottom: 5px;
+  }
+}
+
+.page-item:not(:last-child) {
+  margin-right: 0.5rem;
+}
+
+.page-link {
+  margin-left: 0;
+
+  &.active {
+    color: $white;
+    background-color: $teal;
+  }
+
+  &:focus,
+  &:active {
+    outline: none;
+    box-shadow: none;
+  }
+
+  &:disabled {
+    color: $light-disabled;
+    background-color: inherit;
+    border-color: transparent;
+  }
+}
+
+.nav-icon {
+  button {
+    padding: 0.27rem;
+  }
+}
+
+// Columns sizes
+.col-info {
+  min-width: 140px;
+}
+.notes {
+  width: 120px;
+}
+.exceptions {
+  width: 200px;
+}
+
+.cost-center-mismatch {
+    font-size: 0.75rem;
+}

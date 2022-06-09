@@ -1,0 +1,84 @@
+<markdown ngPreserveWhitespaces>
+  # Calendar
+
+  ## Layouts
+</markdown>
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleCalendar = !toggleCalendar">
+      <i class="material-icons">code</i>
+      View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleCalendar">
+  <div class="ui">
+      <ds-calendar></ds-calendar>
+  </div>
+  <div>
+      <markdown src="app\ds-components\calendar\calendar\calendar.component.html"></markdown>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+  ### Vertial Layout
+</markdown>
+
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleVerticalCalendar = !toggleVerticalCalendar">
+      <i class="material-icons">code</i>
+      View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleVerticalCalendar">
+  <div class="ui">
+      <ds-calendar-vertical></ds-calendar-vertical>
+  </div>
+  <div>
+      <markdown src="app\ds-components\calendar\calendar-vertical\calendar-vertical.component.html"></markdown>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+  ## Chip
+
+  Chips will take 100% of the width of the parent.
+
+  Colors in clude:
+  * Green
+  * Dark blue
+  * Blue
+  * Disabled
+</markdown>
+
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleCalendarChip = !toggleCalendarChip">
+      <i class="material-icons">code</i>
+      View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleCalendarChip">
+  <div class="ui">
+      <ds-calendar-chip></ds-calendar-chip>
+  </div>
+  <div>
+      <markdown src="app\ds-components\calendar\calendar-chip\calendar-chip.component.html"></markdown>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+  ## Chip icons
+</markdown>
+  
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleCalendarChipIcon = !toggleCalendarChipIcon">
+      <i class="material-icons">code</i>
+      View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleCalendarChipIcon">
+  <div class="ui">
+      <ds-calendar-chip-icon></ds-calendar-chip-icon>
+  </div>
+  <div>
+      <markdown src="app\ds-components\calendar\calendar-chip\calendar-chip-icon.component.html"></markdown>
+  </div>
+</div>

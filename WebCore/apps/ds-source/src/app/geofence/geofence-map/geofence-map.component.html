@@ -1,0 +1,70 @@
+<div class="overflow-list">
+    <div class="map-container col-12">
+        <agm-map [mapTypeId]="'roadmap'" [controlSize]="20" [styles]="styles"
+            [streetViewControl]=false [usePanning]=true
+            [zoom]=15 [latitude]=42.9634 [longitude]=-85.6681
+            (mapReady)="mapReady($event)" #map>
+
+            <button type="button" id="toggleDrawingMode"
+            class="{{!isInDrawingMode ? 'btn btn-icon-primary' : 'btn btn-icon-danger'}}"
+            matTooltip="{{!isInDrawingMode ? 'Draw a new geofence' : 'Cancel'}}"
+            matTooltipPosition="above" (click)="toggleMapDrawingMode()">
+            <mat-icon>{{!isInDrawingMode ? "architecture" : "close"}}</mat-icon></button>
+
+            <input type="text" id="addressSearch" class="control form-control"
+            placeholder="Add a new geofence by address" (keydown.enter)="$event.preventDefault()">
+
+            <button 
+                *ngIf="!isPunchMap"
+                type="button" 
+                id="showAllMapObjects" 
+                class="btn btn-icon-primary"
+                matTooltip="Reset map to show all geofences" 
+                matTooltipPosition="above"
+                (click)="showAllMapObjects()">
+                <mat-icon>public</mat-icon>
+            </button>
+            <button 
+                *ngIf="isPunchMap"
+                type="button" 
+                id="showAllMapObjects" 
+                class="btn btn-icon-primary"
+                matTooltip="Reset map to show all punches" 
+                matTooltipPosition="above"
+                (click)="showAllMapObjects()">
+                <mat-icon>public</mat-icon>
+            </button>
+
+            <mat-button-toggle-group id="toggleMapType" #group="matButtonToggleGroup" value="map">
+                <mat-button-toggle value="map" (change)="toggleMapType($event.value)">
+                    Map
+                </mat-button-toggle>
+                <mat-button-toggle value="hybrid" (change)="toggleMapType($event.value)">
+                    Satellite
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+
+            <div id="infowindowForm" class='col-md-6 infowindow-form'>
+                <ng-container *ngIf="selectedObjectRelatedId">
+                    <ds-card mode="noheader">
+                        <ds-card-content>
+
+                            <ng-content></ng-content>
+
+                            <div class="row justify-content-between flex-row-reverse">
+                                <div class="col-auto">
+                                    <button type="button" class="btn btn-save"
+                                        (click)="clearSelectedCircles()">Close</button>
+                                </div>
+                                <div class="col-auto">
+                                    <button type="button" class="btn btn-cancel"
+                                        (click)="deleteSelectedCircle()">Remove</button>
+                                </div>
+                            </div>
+                        </ds-card-content>
+                    </ds-card>
+                </ng-container>
+            </div>
+        </agm-map>
+    </div>
+</div>

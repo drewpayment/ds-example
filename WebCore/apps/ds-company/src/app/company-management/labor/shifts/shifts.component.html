@@ -1,0 +1,273 @@
+<form [formGroup]="form" *ngIf="loaded" dsTrackFormChanges [submitted]="isSubmitted">
+    <ds-card border="top">
+        <ds-card-header>
+        <ds-card-header-title>
+            Shifts
+        </ds-card-header-title>
+        </ds-card-header>
+        <ds-card-content>
+            <div class="row">
+                <div class="col-2xl-8">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="form-control-label">Shift</label>
+                                <select class="form-control custom-select" 
+                                    formControlName="clientShiftId"
+                                    (change)="changeShift()" >
+                                    <option [value]="0" >-- Add Shift --</option>
+                                    <option *ngFor="let s of shifts" [ngValue]="s.clientShiftId">{{s.description}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="form-control-label">Name</label>
+                                <input type="text" 
+                                    class="form-control" 
+                                    formControlName="description"
+                                    maxlength="50"
+                                    dsFormControlValidator 
+                                    [dsFormControlSubmitted]="isSubmitted" />
+                                <div class="invalid-feedback">                            
+                                    Please enter a name.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row align-items-baseline">
+                        <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="form-control-label">Computation Method</label>
+                            <select class="form-control custom-select"
+                                formControlName="additionalAmountTypeId"
+                                dsFormControlValidator 
+                                [dsFormControlSubmitted]="isSubmitted" 
+                                (change)="computationMethodChanged($event.target.value)">
+                                <option [value]="1">% of Rate</option>
+                                <option [value]="2">Flat Rate</option>
+                                <option [value]="3">% of Pay</option>
+                            </select>
+                            <div class="invalid-feedback">                            
+                                Please select a computation method.
+                            </div>
+                        </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label class="form-control-label">Amount</label>
+                                <input type="text" 
+                                    class="form-control" 
+                                    formControlName="additionalAmount"
+                                    dsFormControlValidator 
+                                    [dsFormControlSubmitted]="isSubmitted" />
+                                    <div class="invalid-feedback">                            
+                                        <ng-container *ngIf="additionalAmount.hasError('required')">Please enter an amount.</ng-container>
+                                        <ng-container *ngIf="additionalAmount.hasError('pattern')">Please use numbers and decimals only.</ng-container> 
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Amount By Earning 
+                                    <span class="form-help-text">Optional</span>
+                                </label>
+                                <div class="input-group">
+                                    <input type="text" 
+                                    class="form-control" 
+                                    dsFormControlValidator 
+                                    [dsFormControlSubmitted]="isSubmitted"
+                                    formControlName="additionalPremiumAmount"/>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text percent">%</span>
+                                    </div>
+                                    <div class="invalid-feedback">                            
+                                      <ng-container *ngIf="additionalPremiumAmount.hasError('pattern')">Please use numbers and decimals only.</ng-container> 
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="form-control-label">
+                                Destination
+                                <span class="form-help-text">Optional</span>
+                            </label>
+                            <select class="form-control custom-select" formControlName="destination" [class.is-invalid]="!destination.valid">
+                                <option [value]="0" id="addIntoRate">Add Into Rate</option>
+                                <option *ngFor="let e of earnings" [ngValue]="e.clientEarningId">{{e.description}}</option>
+                            </select>
+                            <div class="invalid-feedback">                            
+                                Please select an active destination.
+                            </div>
+                        </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Limit
+                                    <span class="form-help-text">Optional</span>
+                                </label>
+                                <input type="text" 
+                                  class="form-control" 
+                                  dsFormControlValidator 
+                                  [dsFormControlSubmitted]="isSubmitted"
+                                  formControlName="limit"/>
+                                <div class="invalid-feedback">                            
+                                  <ng-container *ngIf="limit.hasError('pattern')">Please use numbers only.</ng-container> 
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row align-items-baseline">
+                        <div class="col-6 col-sm-3">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Start Time
+                                    <span class="form-help-text">Optional</span>
+                                </label>
+                                <div class="input-with-button-group">
+                                    <input type="text" class="form-control" 
+                                      formControlName="startTime" 
+                                      (focusout)="formatTimeOffFocus(this.form.value.startTime, 'start')"
+                                      dsFormControlValidator 
+                                      [dsFormControlSubmitted]="isSubmitted" />
+                                    
+                                    <div class="btn-group btn-toggle-group">
+                                        <button type="button" class="btn btn-legacy-toggle" 
+                                            [class.active]="this.form.value.startTimePeriod == 'AM'" 
+                                            [class.is-invalid]="this.form.value.startTime && startTimePeriodIsInvalid && isSubmitted" 
+                                            (click)="startTimePeriod('AM')"> AM </button>
+                                        <button type="button" class="btn btn-legacy-toggle" 
+                                            [class.active]="this.form.value.startTimePeriod == 'PM'" 
+                                            [class.is-invalid]="this.form.value.startTime && startTimePeriodIsInvalid && isSubmitted"
+                                            (click)="startTimePeriod('PM')"> PM </button>
+                                    </div>
+                                    <div class="invalid-feedback">                            
+                                      <ng-container *ngIf="startTime.hasError('pattern')">Please use numbers only.</ng-container> 
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div class="col-6 col-sm-3" *ngIf="this.hasAutoShiftByHrsWorkedOption">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Tolerance
+                                    <span class="form-help-text">Optional</span>
+                                </label>
+                                <div class="w-auto">
+                                    <input type="number" class="form-control minutebox mr-2 d-inline-block" 
+                                        formControlName="shiftStartTolerance"
+                                        pattern="^\d*(\.\d+)?$" />
+                                    <span class="pt-2">Hours</span>
+                                    <div class="invalid-feedback">Please use numbers and decimals only.</div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div class="col-6 col-sm-3">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                  End Time
+                                  <span class="form-help-text">Optional</span>
+                                </label>
+                                <div class="input-with-button-group">
+                                    <input type="text" class="form-control" 
+                                      formControlName="stopTime" 
+                                      (focusout)="formatTimeOffFocus( this.form.value.stopTime, 'end' )" 
+                                      dsFormControlValidator 
+                                      [dsFormControlSubmitted]="isSubmitted"
+                                    />
+                                    <div class="btn-group btn-toggle-group">
+                                        <button type="button" class="btn btn-legacy-toggle" 
+                                            [class.active]="this.form.value.stopTimePeriod == 'AM'" 
+                                            [class.is-invalid]="this.form.value.stopTime && stopTimePeriodIsInvalid && isSubmitted"
+                                            (click)="stopTimePeriod('AM')"> AM </button>
+                                        <button type="button" class="btn btn-legacy-toggle" 
+                                            [class.active]="this.form.value.stopTimePeriod == 'PM'" 
+                                            [class.is-invalid]="this.form.value.stopTime && stopTimePeriodIsInvalid && isSubmitted"
+                                            (click)="stopTimePeriod('PM')"> PM </button>
+                                    </div>
+                                    <div class="invalid-feedback">                            
+                                      <ng-container *ngIf="stopTime.hasError('pattern')">Please use numbers only.</ng-container> 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-sm-3" *ngIf="this.hasAutoShiftByHrsWorkedOption">
+                            <div class="form-group">
+                                <label class="form-control-label">
+                                    Tolerance
+                                    <span class="form-help-text">Optional</span>
+                                </label>
+                                <div class="w-auto">
+                                    <input type="number" class="form-control minutebox mr-2 d-inline-block" 
+                                        formControlName="shiftEndTolerance" 
+                                        pattern="^\d*(\.\d+)?$"/>
+                                    <span class="pt-2">Hours</span>
+                                    <div class="invalid-feedback">Please use numbers and decimals only.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-control-label">Days Effective</label>
+                                <div class="day-selector primary mb-4">
+                                    <div>
+                                        <input type="checkbox" id="sun" formControlName="isSunday" />
+                                        <label for="sun">Sun</label>
+                                    </div>
+                                    <div>
+                                        <input type="checkbox" id="mon" formControlName="isMonday" />
+                                        <label for="mon">Mon</label>
+                                    </div>
+                                    <div>
+                                        <input type="checkbox" id="tue" formControlName="isTuesday" />
+                                        <label for="tue">Tue</label>
+                                    </div>
+                                    <div>
+                                        <input type="checkbox" id="wed" formControlName="isWednesday" />
+                                        <label for="wed">Wed</label>
+                                    </div>
+                                    <div>
+                                        <input type="checkbox" id="thu" formControlName="isThursday" />
+                                        <label for="thu">Thu</label>
+                                    </div>
+                                    <div>
+                                        <input type="checkbox" id="fri" formControlName="isFriday" />
+                                        <label for="fri">Fri</label>
+                                    </div>
+                                    <div>
+                                        <input type="checkbox" id="sat" formControlName="isSaturday" />
+                                        <label for="sat">Sat</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ds-card-content>
+        <ds-card-footer>
+        <button class="btn btn-save" [disabled]="isSaving" (click)="save()">Save</button>
+        <button class="btn btn-delete" *ngIf="showDelete" (click)="deleteShift()">Delete</button>
+        </ds-card-footer>
+    </ds-card>
+</form>
+
+<ng-container *ngIf="!loaded">
+  <ds-card border="top">
+    <ds-card-header>
+      <ds-card-header-title> Shifts </ds-card-header-title>
+    </ds-card-header>
+    <ds-card-content>
+      <ds-loading-message></ds-loading-message>
+    </ds-card-content>
+  </ds-card>
+</ng-container>

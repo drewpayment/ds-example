@@ -1,0 +1,50 @@
+<ng-template #loading>
+    <ds-loading-message></ds-loading-message>
+</ng-template>
+
+<div mat-dialog-header>
+    <h2 class="dialog-title">
+        {{this.clientName}}
+    </h2>
+    <button type="button" class="close" (click)="cancel()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</div>
+<div mat-dialog-content>
+    <ng-container *ngIf="!isLoading; else loading">
+        <form [formGroup]="form" dsTrackFormChanges>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="form-control-label">Annual Notes</label>
+                        <textarea 
+                            class="form-control"
+                            formControlName="annualNotes"
+                            dsFormControlValidator
+                            [dsFormControlSubmitted]="isSubmitted">
+                        </textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="form-control-label">Miscellaneous Notes</label>
+                        <textarea 
+                            class="form-control"
+                            formControlName="miscNotes"
+                            dsFormControlValidator
+                            [dsFormControlSubmitted]="isSubmitted">
+                        </textarea>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </ng-container>
+</div>
+<div mat-dialog-actions class="ds-dialog-footer">
+    <ng-container *ngIf="!isLoading">
+        <button type="button" class="btn btn-save" (click)="save()">Save</button>
+        <button type="button" class="btn btn-cancel" (click)="cancel()">Cancel</button>
+    </ng-container>
+</div>

@@ -1,0 +1,66 @@
+<div class="ds-bulleted-list form-group-xl">
+  <label>Title</label>
+
+  <!-- List View -->
+  <ul class="ds-ul">
+      <li class="ds-li">
+
+          <!-- View -->
+          <div class="ds-item" >
+              <div class="item-label">Label</div>
+              <button type="button" mat-button [matMenuTriggerFor]="menu" class="btn btn-icon" disabled>
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item>Item 1</button>
+                <button mat-menu-item>Item 2</button>
+              </mat-menu>
+          </div>
+
+          <!-- Edit -->
+          <div class="li-edit-item editable-input">
+              <textarea rows="2" class="form-control input-sm"></textarea>
+              <div class="input-group-append">
+                  <button type="button" class="btn btn-primary">
+                      <i class="material-icons">done</i>
+                  </button>
+              </div>
+              <div class="input-group-append">
+                  <button type="button" class="btn btn-outline-primary">
+                      <i class="material-icons">clear</i>
+                  </button>
+              </div>
+          </div>
+
+      </li>
+  </ul>
+
+  <!-- Add item button -->
+  <div class="add-li">
+      <i class="material-icons add">add</i> 
+      <span>Title</span>
+      <i class="material-icons mt-1">keyboard_arrow_down</i>
+  </div>
+
+  <!-- Add item input -->
+  <div class="editable-input" >
+      <div class="flex-1 autocomplete-suggestions">
+          <textarea rows="2" name="JobResponsibility" id="JobResponsibility" class="form-control"></textarea>
+          <ul class="autocomplete-suggestions-dropdown">
+              <li>Option 1</li>
+              <li>Option 2</li>
+              <li>Option 3</li>
+          </ul>
+      </div>
+      <div class="input-group-append">
+          <button type="button" class="btn btn-primary">
+              <i class="material-icons">done</i>
+          </button>
+      </div>
+      <div class="input-group-append">
+          <button type="button" class="btn btn-outline-primary">
+              <i class="material-icons">clear</i>
+          </button>
+      </div>
+  </div>
+</div>

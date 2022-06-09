@@ -1,0 +1,120 @@
+<mat-drawer-container hasBackdrop="true" [@changeDrawerHeightOnOpen]="opened">
+    <mat-drawer-content>
+        <ds-card mode="widget-nobody" color="info" (click)="drawer.toggle(); opened = !opened">
+            <div ds-card-icon>person</div>
+            <ds-card-header>
+                <ds-card-widget-title>Card Header</ds-card-widget-title>
+                <ds-card-subtitle>
+                    <div class="card-data">
+                        <div class="item">
+                            <label>Due:</label> ##/##/####
+                        </div>
+                        <div class="item">
+                            <label>Evaluation Period:</label> ##/##/#### - ##/##/####
+                        </div>
+                    </div>
+                </ds-card-subtitle>
+            </ds-card-header>
+        </ds-card>
+        <ds-card mode="widget-nobody" color="info" (click)="drawer.toggle(); opened = !opened">
+            <div ds-card-icon>person</div>
+            <ds-card-header>
+                <ds-card-widget-title>Card Header</ds-card-widget-title>
+                <ds-card-subtitle>
+                    <div class="card-data">
+                        <div class="item">
+                            <label>Due:</label> ##/##/####
+                        </div>
+                        <div class="item">
+                            <label>Evaluation Period:</label> ##/##/#### - ##/##/####
+                        </div>
+                    </div>
+                </ds-card-subtitle>
+            </ds-card-header>
+        </ds-card><ds-card mode="widget-nobody" color="info" (click)="drawer.toggle(); opened = !opened">
+            <div ds-card-icon>person</div>
+            <ds-card-header>
+                <ds-card-widget-title>Card Header</ds-card-widget-title>
+                <ds-card-subtitle>
+                    <div class="card-data">
+                        <div class="item">
+                            <label>Due:</label> ##/##/####
+                        </div>
+                        <div class="item">
+                            <label>Evaluation Period:</label> ##/##/#### - ##/##/####
+                        </div>
+                    </div>
+                </ds-card-subtitle>
+            </ds-card-header>
+        </ds-card><ds-card mode="widget-nobody" color="info" (click)="drawer.toggle(); opened = !opened">
+            <div ds-card-icon>person</div>
+            <ds-card-header>
+                <ds-card-widget-title>Card Header</ds-card-widget-title>
+                <ds-card-subtitle>
+                    <div class="card-data">
+                        <div class="item">
+                            <label>Due:</label> ##/##/####
+                        </div>
+                        <div class="item">
+                            <label>Evaluation Period:</label> ##/##/#### - ##/##/####
+                        </div>
+                    </div>
+                </ds-card-subtitle>
+            </ds-card-header>
+        </ds-card><ds-card mode="widget-nobody" color="info" (click)="drawer.toggle(); opened = !opened">
+            <div ds-card-icon>person</div>
+            <ds-card-header>
+                <ds-card-widget-title>Card HeaderCard HeaderCard HeaderCard HeaderCard HeaderCard HeaderCard Header</ds-card-widget-title>
+                <ds-card-subtitle>
+                    <div class="card-data">
+                        <div class="item">
+                            <label>Due:</label> ##/##/####
+                        </div>
+                        <div class="item">
+                            <label>Evaluation Period:</label> ##/##/#### - ##/##/####
+                        </div>
+                    </div>
+                </ds-card-subtitle>
+            </ds-card-header>
+        </ds-card><ds-card mode="widget-nobody" color="info" (click)="drawer.toggle(); opened = !opened">
+            <div ds-card-icon>person</div>
+            <ds-card-header>
+                <ds-card-widget-title>Card Header</ds-card-widget-title>
+                <ds-card-subtitle>
+                    <div class="card-data">
+                        <div class="item">
+                            <label>Due:</label> ##/##/####
+                        </div>
+                        <div class="item">
+                            <label>Evaluation Period:</label> ##/##/#### - ##/##/####
+                        </div>
+                    </div>
+                </ds-card-subtitle>
+            </ds-card-header>
+        </ds-card>
+    </mat-drawer-content>
+    <mat-drawer 
+        #drawer 
+        [mode]="over"
+        position="end">
+        <div>
+            <div class="drawer-header">
+                <button class="btn btn-icon" (click)="drawer.toggle()">
+                    <mat-icon>chevron_right</mat-icon>
+                </button>
+                <h2>Card Header</h2>
+                <div class="custom-control custom-checkbox mx-4">
+                    <input type="checkbox" class="custom-control-input" id="customCheck1a">
+                    <label class="custom-control-label" for="customCheck1a">Checkbox</label>
+                </div>
+            </div>
+            <div class="drawer-content">
+                Content
+            </div>
+            <div class="drawer-footer">
+                <button class="btn btn-cancel">Cancel</button>
+                <button class="btn btn-save">Save</button>
+            </div>
+        </div>
+    </mat-drawer>
+</mat-drawer-container>

@@ -1,0 +1,235 @@
+<h2 id="width">Width</h2>
+<h3 id="percentage-based">Percentage-based</h3>
+<p>Set a percentage-based width from 1 to 100.</p>
+<div class="button-bar">
+    <button class="btn btn-icon" ng-click="toggleWidthPercentage = !toggleWidthPercentage">
+        <i class="material-icons">code</i>
+        View Code
+    </button>
+</div>
+<div class="example-block" ng-class="{'open': toggleWidthPercentage}">
+    <div class="ui mb-4">
+        <div class="form-group">
+            <label>w-97 | This will take 97% of it's parent's width</label>
+            <input class="form-control w-97" />
+        </div>
+    </div>
+
+<pre><code class="hljs html">&lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-group"</span>&gt;
+    &lt;label&gt;w<span class="hljs-number">-97</span> | <span class="hljs-type">This</span> will take <span class="hljs-number">97</span>% of it<span class="hljs-symbol">'s</span> parent<span class="hljs-symbol">'s</span> width&lt;/label&gt;
+    &lt;input <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-control w-97"</span> /&gt;
+&lt;/div&gt;</code></pre>
+</div>
+
+<h3 id="pixel-based">Pixel-based</h3>
+<div class="button-bar">
+    <button class="btn btn-icon" ng-click="toggleWidthPixel = !toggleWidthPixel">
+        <i class="material-icons">code</i>
+        View Code
+    </button>
+</div>
+<div class="example-block" ng-class="{'open': toggleWidthPixel}">
+    <div class="ui mb-4">
+        <div class="form-group">
+            <label>w-100px | This will take exactly 100px</label>
+            <input class="form-control w-100px" />
+        </div>
+    </div>
+
+<pre><code class="hljs html"> <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"form-group"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">label</span>&gt;</span>w-100px | This will take exactly 100px<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"form-control w-100px"</span> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></code></pre>
+</div>
+
+<h4 id="other-pixel-width-options">Other pixel width options</h4>
+<p>.w-80px</p>
+<h2 id="common-patterns">Common Patterns</h2>
+<h3 id="data-item">Data Item</h3>
+<div class="button-bar">
+    <button class="btn btn-icon" ng-click="toggleDataItem = !toggleDataItem">
+        <i class="material-icons">code</i>
+        View Code
+    </button>
+</div>
+<div class="example-block" ng-class="{'open': toggleDataItem}">
+    <div class="ui mb-4">
+        <div class="card-data bordered">
+            <div class="item">
+                10/26/2018
+            </div>
+            <div class="item">
+                12:00 PM
+            </div>
+        </div>
+    </div>
+
+<pre><code class="hljs html">&lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"card-data bordered"</span>&gt;
+            &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"item"</span>&gt;
+                <span class="hljs-number">10</span>/<span class="hljs-number">26</span>/<span class="hljs-number">2018</span>
+            &lt;/<span class="hljs-keyword">div</span>&gt;
+            &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"item"</span>&gt;
+                <span class="hljs-number">12</span>:<span class="hljs-number">00</span> PM
+            &lt;/<span class="hljs-keyword">div</span>&gt;
+        &lt;/<span class="hljs-keyword">div</span>&gt;</code></pre>
+</div>
+
+
+<h3 id="muted-label-content">Muted Label Content</h3>
+<div class="button-bar">
+    <button class="btn btn-icon" ng-click="toggleMutedLabel = !toggleMutedLabel">
+        <i class="material-icons">code</i>
+        View Code
+    </button>
+</div>
+<div class="example-block" ng-class="{'open': toggleMutedLabel}">
+    <div class="ui mb-4">
+        <div class="card-data">
+            <div class="item">
+                <label>DATE:</label> 10/26/2018
+            </div>
+            <div class="item">
+                <label>TIME:</label> 12:00 PM
+            </div>
+        </div>
+        <br/>
+        <div class="card-data bordered">
+            <div class="item">
+                <label>DATE:</label> 10/26/2018
+            </div>
+            <div class="item">
+                <label>TIME:</label> 12:00 PM
+            </div>
+        </div>
+        <br/>
+        <div class="card-data block">
+            <div class="item">
+                <label>DATE:</label> 10/26/2018
+            </div>
+            <div class="item">
+                <label>TIME:</label> 12:00 PM
+            </div>
+        </div>
+    </div>
+
+<pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"card-data"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"item"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">label</span>&gt;</span>DATE:<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span> 10/26/2018
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"item"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">label</span>&gt;</span>TIME:<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span> 12:00 PM
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">br</span>/&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"card-data bordered"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"item"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">label</span>&gt;</span>DATE:<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span> 10/26/2018
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"item"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">label</span>&gt;</span>TIME:<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span> 12:00 PM
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"card-data block"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"item"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">label</span>&gt;</span>DATE:<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span> 10/26/2018
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"item"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">label</span>&gt;</span>TIME:<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span> 12:00 PM
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></code></pre>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>.card-data</code></td>
+<td>Aligns content side by side</td>
+</tr>
+<tr>
+<td><code>.bordered</code></td>
+<td>Adds a light gray seperator between <code>.item</code> children when used with <code>.card-data</code></td>
+</tr>
+<tr>
+<td><code>.centered</code></td>
+<td>Aligns content to the center</td>
+</tr>
+<tr>
+<td><code>.item</code></td>
+<td>Content seperator, Use within <code>.card-data</code></td>
+</tr>
+<tr>
+<td><code>label</code></td>
+<td>spaces label from content, adds text-muted, use within <code>.card-data</code></td>
+</tr>
+<tr>
+<td><code>.block</code></td>
+<td>Shows <code>.item</code> on individual lines</td>
+</tr>
+</tbody></table>
+<h3 id="time">Time</h3>
+<p>_ToDo: Clean up alignment with required fields</p>
+<div class="button-bar">
+    <button class="btn btn-icon" ng-click="toggleTime = !toggleTime">
+        <i class="material-icons">code</i>
+        View Code
+    </button>
+</div>
+<div class="example-block" ng-class="{'open': toggleTime}">
+    <div class="ui mb-4">
+       <div class="row inline-form-group">
+            <div class="col-sm">
+                <div class="form-group">
+                    <label class="form-control-label">Start Time</label>
+                    <input type="text" class="form-control" 
+                        dsMomentTimeInput 
+                        name="timeStart"
+                        required
+                        dsFormControlValidator />
+                </div>
+            </div>
+            <div class="col-sm-auto inline-form-text">to</div>
+            <div class="col-sm">
+                <div class="form-group">
+                    <label class="form-control-label">End Time</label>
+                    <input type="text" class="form-control" 
+                        dsMomentTimeInput 
+                        name="timeEnd"
+                        required
+                        dsFormControlValidator />
+                </div>
+            </div>
+       </div>
+    </div>
+
+<pre><code class="hljs html">&lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"row"</span>&gt;
+    &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"col-sm"</span>&gt;
+        &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"form-group"</span>&gt;
+            &lt;label <span class="hljs-built_in">class</span>=<span class="hljs-string">"form-control-label"</span>&gt;Start Time&lt;/label&gt;
+            &lt;input type=<span class="hljs-string">"text"</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"form-control"</span> 
+                dsMomentTimeInput 
+                <span class="hljs-built_in">name</span>=<span class="hljs-string">"timeStart"</span>
+                required
+                dsFormControlValidator /&gt;
+        &lt;/<span class="hljs-keyword">div</span>&gt;
+    &lt;/<span class="hljs-keyword">div</span>&gt;
+    &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"col-sm-auto px-0 align-self-center"</span>&gt;<span class="hljs-keyword">to</span>&lt;/<span class="hljs-keyword">div</span>&gt;
+    &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"col-sm"</span>&gt;
+        &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"form-group"</span>&gt;
+            &lt;label <span class="hljs-built_in">class</span>=<span class="hljs-string">"form-control-label"</span>&gt;End Time&lt;/label&gt;
+            &lt;input type=<span class="hljs-string">"text"</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"form-control"</span> 
+                dsMomentTimeInput 
+                <span class="hljs-built_in">name</span>=<span class="hljs-string">"timeEnd"</span>
+                required
+                dsFormControlValidator /&gt;
+        &lt;/<span class="hljs-keyword">div</span>&gt;
+    &lt;/<span class="hljs-keyword">div</span>&gt;
+&lt;/<span class="hljs-keyword">div</span>&gt;</code></pre>
+</div>
+
+<p>Lunch/Break
+Start TIme, Stop Time </p>

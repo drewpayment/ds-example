@@ -1,0 +1,38 @@
+.mat-column-invoiceNumber {
+    vertical-align: center;
+    width: 100px;
+}
+.mat-column-invoiceDate {
+    width: 100px;
+}
+.mat-column-paymentDate {
+    vertical-align: top;
+    width: 150px;
+}
+.mat-column-invoiceAmount {
+    vertical-align: center;
+    width: 100px
+}
+.mat-column-prevPaidAmount {
+    vertical-align: center;
+    width: 100px;
+}
+
+.mat-column-paymentAmount {
+    vertical-align: center;
+    width: 150px;
+}
+.mat-column-paymentType {
+    vertical-align: top;
+    width: 100px;
+}
+.mat-column-memo {
+    vertical-align: top;
+    width: 130px;
+}
+
+.table {
+    td {
+        vertical-align: top;
+    }
+}

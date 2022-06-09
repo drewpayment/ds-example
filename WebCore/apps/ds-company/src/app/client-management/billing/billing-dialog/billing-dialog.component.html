@@ -1,0 +1,244 @@
+<mat-dialog-header>
+  <h2 class="dialog-title">{{data.billingItem ? 'Edit' : 'Add' }} Billing Item</h2>
+  <button type="button" class="close" (click)="cancel()">
+    <i class="material-icons">clear</i>
+  </button>
+</mat-dialog-header>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <ng-container *ngIf="!isLoading">
+
+      <ng-container *ngIf="billingType == 0">
+        <ng-container *ngTemplateOutlet="billingItem; context: { $implicit: form }"></ng-container>
+      </ng-container>
+      <ng-container *ngIf="billingType == 1">
+        <ng-container *ngTemplateOutlet="oneTimeBillingItem; context: { $implicit: form }"></ng-container>
+      </ng-container>
+
+    </ng-container>
+
+    <ng-container *ngIf="isLoading">
+      <ds-loading-message></ds-loading-message>
+    </ng-container>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions *ngIf="!isLoading">
+  <button type="submit" class="btn btn-save" [disabled]="isSaving" [ngClass]="{'disabled' : ((form.invalid && formSubmitted) || isSaving)}" CausesValidation="True" (click)="save()">Save</button>
+  <button type="button" class="btn btn-cancel" (click)="cancel()">Cancel</button>
+</mat-dialog-actions>
+
+<ng-template #billingItem>
+  <ng-container [formGroup]="form">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-control-label">Name</label>
+          <select class="custom-select form-control" formControlName="billingItem" dsFormControlValidator cdkFocusInitial>
+            <option value=""></option>
+            <option *ngFor="let bi of billingItemDescription" [ngValue]="bi.billingItemDescriptionId">{{ bi.description }}</option>
+          </select>
+          <div class="invalid-feedback">
+            Please select a name.
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-control-label">Price Chart</label>
+          <select class="custom-select form-control" formControlName="priceChart" dsFormControlValidator>
+            <option value=""></option>
+            <option *ngFor="let bp of billingPriceChart" [ngValue]="bp.billingPriceChartId">{{ bp.description }}</option>
+          </select>
+          <div class="invalid-feedback">
+            Please select a price chart.
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-control-label">Frequency</label>
+          <select class="custom-select form-control" formControlName="frequency" dsFormControlValidator>
+            <option value=""></option>
+            <option *ngFor="let freq of billingFreqHelper" [ngValue]="freq.id">{{ freq.description }}</option>
+          </select>
+          <div class="invalid-feedback">
+            Please select a frequency.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-control-label">Line</label>
+          <input type="number" class="form-control" formControlName="line" step="1" required dsFormControlValidator/>
+          <div class="invalid-feedback">
+            Please enter a valid line number.
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-control-label">Flat</label>
+          <div class="input-group">                                                              
+            <div class="input-group-prepend">
+                <span class="input-group-text currency">$</span>
+            </div>                                                              
+            <input type="number" class="form-control" formControlName="flat" required dsFormControlValidator/>
+            <div class="invalid-feedback">
+              Please enter a valid flat number.
+            </div>   
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-control-label">Per Qty</label>
+          <div class="input-group">                                                              
+            <div class="input-group-prepend">
+                <span class="input-group-text currency">$</span>
+            </div>                                                              
+            <input type="number" class="form-control" formControlName="perQty" required dsFormControlValidator/>
+            <div class="invalid-feedback">
+              Please enter a valid per quantity number.
+            </div>    
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-4">
+        <div class="form-group">
+          <label class="form-control-label">What to Count</label>
+          <select class="custom-select form-control" formControlName="whatToCount">
+            <option [ngValue]="null">None</option>
+            <option *ngFor="let wtc of billingWTCList" [ngValue]="wtc.id">{{ wtc.description }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="form-group">
+          <label class="form-control-label">Start Date</label>
+          <div class="input-group">
+            <input matInput [matDatepicker]="startDatepicker" class="form-control" class="form-control"
+                formControlName="startDate"
+                [ngClass]="{'is-invalid': (formSubmitted || form.get('startDate').touched) && form.get('startDate').errors}"
+                />
+            <div class="input-group-append">
+                <mat-datepicker-toggle matSuffix [for]="startDatepicker" class="input-group-text date">
+                </mat-datepicker-toggle>
+                <mat-datepicker #startDatepicker></mat-datepicker>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="form-group">
+          <div class="custom-control custom-checkbox inline-control">
+            <input type="checkbox" class="custom-control-input" formControlName="chkIgnoreDiscount" id="chkIgnoreDiscount">
+            <label class="custom-control-label" for="chkIgnoreDiscount">Ignore Discount</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #oneTimeBillingItem>
+  <ng-container [formGroup]="form">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-control-label">Billing Item</label>
+          <select class="custom-select form-control" formControlName="billingItem" cdkFocusInitial>
+            <option *ngFor="let bi of billingItemDescription" [ngValue]="bi.billingItemDescriptionId">{{ bi.description }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-control-label">Year</label>
+          <select class="custom-select form-control" formControlName="year">
+            <option [ngValue]="null">None</option>
+            <option *ngFor="let y of years" [ngValue]="+y">{{ y }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-control-label">Name</label>
+          <input type="text" class="form-control" formControlName="name" dsFormControlValidator maxlength="50"/>
+          <div class="invalid-feedback">
+            Please enter a name.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-control-label">Flat</label>
+          <div class="input-group">                                                              
+            <div class="input-group-prepend">
+                <span class="input-group-text currency">$</span>
+            </div>
+            <input type="number" class="form-control" formControlName="flat" required dsFormControlValidator/>
+            <div class="invalid-feedback">
+              Please enter a valid flat number.
+            </div> 
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-control-label">Per Qty</label>
+          <div class="input-group">                                                              
+            <div class="input-group-prepend">
+                <span class="input-group-text currency">$</span>
+            </div>
+            <input type="number" class="form-control" formControlName="perQty" required dsFormControlValidator/>
+            <div class="invalid-feedback">
+              Please enter a valid per quantity number.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label class="form-control-label">What to Count</label>
+          <select class="custom-select form-control" formControlName="whatToCount">
+            <option [ngValue]="null">None</option>
+            <option *ngFor="let wtc of billingWTCList" [ngValue]="wtc.id">{{ wtc.description }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <div class="form-group">
+          <label class="form-control-label">Payroll Applied</label>
+          <select class="custom-select form-control" formControlName="payrollApplied">
+            <option *ngFor="let bp of billingPeriodHelper" [ngValue]="bp.id">{{ bp.description }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="form-group">
+          <div class="custom-control custom-checkbox inline-control">
+            <input type="checkbox" class="custom-control-input" formControlName="chkIgnoreDiscount" id="chkIgnoreDiscount2">
+            <label class="custom-control-label" for="chkIgnoreDiscount2">Ignore Discount</label>
+          </div>
+        </div>
+      </div>
+      <div class="col-12" *ngIf="user.userTypeId == 1"> <!-- Case AR-98: Only visible if One Time billing and User is SA -->
+        <div class="form-group">
+          <label class="form-control-label">Notes</label>
+          <input class="form-control" formControlName="note"/>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>

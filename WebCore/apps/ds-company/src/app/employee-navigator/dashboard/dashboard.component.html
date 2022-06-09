@@ -1,0 +1,147 @@
+
+
+<ds-card mode="nobody" border="top">
+    <ds-card-header>
+        <ds-card-header-title>Employee Navigator</ds-card-header-title>
+        <ds-card-title-action>
+            <button type="button" class="btn btn-primary dropdown-toggle" [matMenuTriggerFor]="menu">
+                Reports
+            </button>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item>Demographics</button>
+                <button mat-menu-item>Deductions</button>
+            </mat-menu>
+        </ds-card-title-action>
+    </ds-card-header>
+</ds-card>
+
+<div class="row">
+    <div class="col-md-6">
+        <ds-card hover="true" color="danger" mode="object" x-align="center">
+            <div ds-card-header>
+                <ds-card-subtitle>
+                    <div class="split-content">
+                        <div class="top">
+                            <div class="object-card-avatar d-flex justify-content-center">
+                                <mat-icon class="avatar text-danger">warning</mat-icon><div class="display-4 mx-4">3</div>
+                            </div>
+                            <div class="h1 text-center mb-4">
+                                UNRESOLVED FAILED SYNCS
+                            </div>
+                        </div>
+                    </div>
+                </ds-card-subtitle>
+            </div>
+        </ds-card>
+    </div>
+    <div class="col-md-6">
+        <ds-card hover="true" color="warning" mode="object" x-align="center">
+            <div ds-card-header>
+                <ds-card-subtitle>
+                    <div class="split-content">
+                        <div class="top">
+                            <div class="object-card-avatar d-flex justify-content-center">
+                                <mat-icon class="avatar text-warning">person_add</mat-icon><div class="display-4 mx-4">4</div>
+                            </div>
+                            <div class="h1 text-center mb-4">
+                                PENDING NEW EMPLOYEES
+                            </div>
+                        </div>
+                    </div>
+                </ds-card-subtitle>
+            </div>
+        </ds-card>
+    </div>
+
+    <div class="col-md-12">
+        <ds-card>
+            <ds-card-header>
+                <ds-card-header-title>Sync Log</ds-card-header-title>
+                <ds-card-subtitle>
+                    <!-- TABLE FILTERS -->
+                    <div [formGroup]="tableFilters" class="d-flex justify-content-around">
+                        <div class="form-group">
+                            <label class="form-control-label">Display Synced From</label>
+                            <div class="input-group">
+                                <input type="input" formControlName="from" [matDatepicker]="from" class="form-control" />
+                                <div class="input-group-append">
+                                    <mat-datepicker-toggle [for]="from"></mat-datepicker-toggle>
+                                    <mat-datepicker #from></mat-datepicker>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">To</label>
+                            <input type="input" formControlName="to" [matDatepicker]="to" class="form-control" />
+                            <mat-datepicker-toggle [for]="to"></mat-datepicker-toggle>
+                            <mat-datepicker #to></mat-datepicker>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-control-label">Synced From</label>
+                            <select class="form-control custom-select">
+                                <option>All</option>
+                                <option value="en">Employee Navigator</option>
+                                <option value="ds">Dominion</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <Label class="form-control-label">Status</Label>
+                            <select class="form-control custom-select">
+                                <option value="0">All</option>
+                                <option value="1">Synced</option>
+                                <option value="2">Failed</option>
+                            </select>
+                        </div>
+                    </div>
+                </ds-card-subtitle>
+            </ds-card-header>
+            <ds-card-content>
+                <mat-table [dataSource]="tableData">
+                    <ng-container matColumnDef="date">
+                        <mat-header-cell *matHeaderCellDef>Date</mat-header-cell>
+                        <mat-cell *matCellDef="let row">
+                            <span *ngIf="row.hasRetriedSync; else noRetry" [matTooltip]="'Retried at: ' + (row.modified|date:'short')">
+                                {{ row.createdAt | date:'shortDate' }}
+                            </span>
+                            <ng-template #noRetry>
+                                <span *ngIf="row.syncStatus == 2; else noRetryOrFailure" [matTooltip]="'Please click retry to resync.'">
+                                    {{ row.createdAt | date:'shortDate' }}
+                                    <button type="button" mat-icon-button (click)="sendForRetry(row)">
+                                        <mat-icon inline="true" [@rotate]="{ value: animationWithState, params: { duration: 700, degrees: 720 } }">loop</mat-icon>
+                                    </button>
+                                </span>
+                                <ng-template #noRetryOrFailure>
+                                    {{ row.createdAt | date:'shortDate' }}
+                                </ng-template>
+                            </ng-template>
+                        </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="time">
+                        <mat-header-cell *matHeaderCellDef>Time</mat-header-cell>
+                        <mat-cell *matCellDef="let row">{{ row.createdAt | date:'hh:mm:ss a' }}</mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="from">
+                        <mat-header-cell *matHeaderCellDef>Synced From</mat-header-cell>
+                        <mat-cell *matCellDef="let row">{{ row.syncDirection == 0 ? 'Dominion' : 'Employee Navigator' }}</mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="status">
+                        <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+                        <mat-cell *matCellDef="let row">
+                            {{ row.syncStatus == 0 ? 'Pending' : row.syncStatus == 1 ? 'Success' : 'Failed' }}
+                        </mat-cell>
+                    </ng-container>
+
+                    <mat-header-row *matHeaderRowDef="tableColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: tableColumns"></mat-row>
+                </mat-table>
+            </ds-card-content>
+        </ds-card>
+    </div>
+</div>
+

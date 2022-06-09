@@ -1,0 +1,17 @@
+<ds-dashboard-widget [hover]="true" [cardType]="cardType" [loaded]="loaded" (click)="openDialog();" skeleton="info-card-skeleton">
+    <ds-dashboard-widget-header></ds-dashboard-widget-header>
+    <ds-dashboard-widget-content [infoData]="infoData">
+        <ds-dashboard-widget-bottom-content class="content-left">
+            <p class="mb-0">{{employeeCount}} Employees Included: </p>
+            <div class="card-data">
+              <div class="item" *ngFor="let eI of employeeImage">
+                <ds-avatar
+                  resource="{{eI.image.extraLarge.url}}"
+                  size="24"
+                  name="{{eI.employee.fullName}}"
+                  ></ds-avatar>
+              </div>
+            </div>
+        </ds-dashboard-widget-bottom-content>
+    </ds-dashboard-widget-content>
+</ds-dashboard-widget>

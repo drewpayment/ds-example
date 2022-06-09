@@ -1,0 +1,15 @@
+<form [formGroup]="clientSelectorFormGroup">
+    <input #filterInput matInput [matAutocomplete]="filterAutoComplete" [formControl]="client" class="form-control"
+        [placeholder]="selected.filter" (blur)="focusOffAutocomplete()" (focus)="focusOnAutocomplete()"
+        [class.is-invalid]="isInvalid"
+        [required]="required">
+    <mat-autocomplete #filterAutoComplete="matAutocomplete" [displayWith]="displayFn"
+        (optionSelected)="filterInput.blur()" autoActiveFirstOption>
+        <mat-option *ngFor="let option of filteredOptions$ | async" [value]="option">
+            {{option.filter}}
+        </mat-option>
+    </mat-autocomplete>
+    <div class="invalid-feedback">
+        Please select a client.
+    </div>
+</form>

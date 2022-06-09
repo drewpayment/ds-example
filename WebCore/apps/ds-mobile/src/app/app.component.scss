@@ -1,0 +1,115 @@
+@import '../styles/ds-mobile-material/ds-mobile-variables';
+
+.mobile-container {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.mobile-sidenav-container {
+    flex: 1 0 auto;
+    margin-top: 56px;
+}
+
+// Toolbar
+.mobile-toolbar {
+    position: fixed;
+    z-index: 2;
+    background: #FFF;
+    box-shadow: $toolbar-shadow;
+}
+
+// display: flex;
+// flex-direction: row;
+// align-items: center;
+// justify-content: space-between;
+//flex-basis: 100%;
+
+.btn-menu {
+  flex: 0 0 auto;
+}
+
+.mobile-app-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: center;
+} 
+
+.btn-sign-out {
+  flex: 0 0 auto;
+}
+
+.mobile-app-name h5 {
+    font-size: 16px;
+    font-weight: 600;
+} 
+
+.btn-menu {
+    padding: 0 5px 0 0;
+}
+
+.btn-sign-out {
+    padding: 0 0 0 5px;
+}
+
+// Side Nav
+mat-sidenav {
+    width: 80%;
+}
+
+// Navigation
+.mobile-nav {
+    background: #393e44;
+    box-shadow: $box-shadow;
+
+    .flex-nav-column {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+    }
+
+    .mat-list-base .mat-list-item {
+        color: #FFF;
+        font-size: 16px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+    }
+
+    .mat-icon {
+        color: #7a8086;
+        margin-right: 10px;
+    }
+
+    /*
+    * Angular Router adds class 'mobile-nav-active' based on the angular router's active route 
+    * and this styling sets that "active" mat-list-item's style
+    */
+    .mat-nav-list .mat-list-item.mobile-nav-active {
+        background: $teal;
+        .mat-icon {
+            color: #FFF;
+        }
+    }
+
+    button {
+        background: none;
+        border: none;
+    }
+}
+
+.logo {
+    display: block;
+    width: 180px;
+    height: 80px;
+    margin: 0 auto 20% auto;
+
+    img {
+      width: 180px;
+    }
+}

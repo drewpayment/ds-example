@@ -1,0 +1,112 @@
+<div mat-dialog-header>
+    <h2 class="dialog-title">
+        {{competency.competencyId != null ? 'Edit Competency' : 'Add Competency'}}
+    </h2>
+    <button type="button" class="close" (click)="onNoClick()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</div>
+<div mat-dialog-content>
+    <form [formGroup]="form">
+        <div class="form-group">
+            <label>Name</label>
+            <input 
+                [class.is-invalid]="form.get('name').invalid && (form.get('name').touched || formSubmitted)"
+                class="form-control"
+                formControlName="name"
+                required
+                cdkFocusInitial
+            />
+            <div class="invalid-feedback">Please enter a name.</div>
+        </div>
+        <div class="form-group">
+            <label>Description</label>
+            <textarea
+                [class.is-invalid]="form.get('description').invalid && (form.get('description').touched || formSubmitted)"
+                class="form-control"
+                formControlName="description"
+                maxLength="2400"
+                rows="5"
+                required
+            ></textarea>
+            <mat-hint class="float-right">{{form.value.description.length}} / 2400 characters</mat-hint>
+            <div class="invalid-feedback">Please enter a description.</div>
+        </div>
+        <div class="form-group" formGroupName="competencyGroup">
+            <label class="form-control-label">
+                Group <span class="text-muted font-italic">Optional</span>
+            </label>
+            <div class="input-group">
+                <input matInput
+                    class="form-control"
+                    [matAutocomplete]="autoComplete"
+                    formControlName="name"
+                />
+                <div class="input-group-append">
+                    <span class="input-group-text backspace" *ngIf="form.get('competencyGroup').value.name">  
+                      <button type="button" class="btn btn-icon" 
+                        (click)="removeCompetencyGroup(form.get('competencyGroup').value.competencyGroupId)">
+                        <i class="material-icons">
+                          backspace
+                        </i>
+                      </button>
+                    </span>
+                </div>
+            </div>
+            <mat-autocomplete #autoComplete="matAutocomplete" (optionSelected)="addGroupFromAutocomplete($event)">
+                <mat-option
+                    *ngFor="let tag of competencyGroups"
+                    [value]="tag"
+                >
+                    {{tag.name}}
+                </mat-option>
+            </mat-autocomplete>
+        </div>
+        <div class="form-group">
+            <div class="custom-control custom-checkbox">
+                <input 
+                    id="is-core-competency"
+                    class="custom-control-input"
+                    type="checkbox"
+                    formControlName="isCore"
+                />
+                <label class="custom-control-label" for="is-core-competency">
+                    Core Competency <span class="form-help-text">Applies to all employees</span>
+                </label>
+            </div>
+        </div>
+        <!-- <div class="form-group-mat-slider">
+            <label class="mat-slider-label">
+                Difficulty Level <span class="form-help-text">Optional</span>
+            </label>
+            <mat-slider
+                class="w-100"
+                color="primary"
+                min="0"
+                max="5"
+                thumbLabel="true"
+                tickInterval="1"
+                step="1"
+                fontControlName="difficultyLevel"
+                [value]="competency.difficultyLevel"
+                (change)="updateDifficultyLevel($event)"
+            >
+            </mat-slider>
+            <mat-hint class="d-flex form-help-text">
+                <span style="flex: 0 1 100px">Not Applied</span>
+                <span style="flex: 1 0 auto">Least</span>
+                <span>Most</span>
+            </mat-hint>
+        </div> -->
+    </form>
+</div>
+<div mat-dialog-actions>
+    <button 
+        class="btn btn-primary"
+        (click)="saveCompetency()"
+    >Save</button>
+    <button type="button"
+        class="btn btn-cancel"
+        (click)="onNoClick()"
+    >Cancel</button>
+</div>

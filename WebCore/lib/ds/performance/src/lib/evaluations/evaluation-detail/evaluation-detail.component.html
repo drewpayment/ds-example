@@ -1,0 +1,1810 @@
+<ng-container *ngIf="handlers$ | async"></ng-container>
+<ng-template #goalTasksTemplate let-tasks>
+    <div *ngIf="tasks && tasks.length > 0" class="list-bordered my-thick">
+        <div class="header">Task List</div>
+        <div class="body">
+            <div class="item hoverable" *ngFor="let t of tasks; let i=index" >
+                <div class="d-flex flex-1-1-auto">
+                <div class="custom-control custom-checkbox">
+                    <input [id]="'item_'+i" 
+                    type="checkbox" 
+                    class="custom-control-input" 
+                    disabled="disabled"
+                    [checked]="t.completionStatus == 3"
+                    />
+                    <label class="custom-control-label" [for]="'item_'+i"></label>
+                </div>
+                <div class="ds-item">
+                    <div class="ds-item-label" [innerText]="t.description"></div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+<div id="EvalDiv" *ngIf="!isLoading">
+    <ng-container *ngIf="!evaluationDetail.isApprovalProcess || (evaluationDetail.isApprovalProcess && (approvalProcessWithoutHistory || isAPFirstVisit || isAPFinalized || isAPReopened))">
+        <ds-card *ngIf="evaluationDetail" collapse="true" expanded="true" mode="nobody">
+            <div ds-card-header>
+                <ds-card-sub-header-title>
+                    Contents
+                </ds-card-sub-header-title>
+                <ds-card-inline-content>
+                    <div class="card-data bordered">
+                        <ng-container *ngIf="hasCompetencies">
+                            <div *ngFor="let groupStatus of competencyGroupStatus" class="item">
+                                <a href="#competencies-section" class="btn btn-link-secondary p-0">
+                                    {{ groupStatus.numberCompleted }} of {{ groupStatus.totalCompetencies }} {{ groupStatus.groupName }}
+                                </a>
+                            </div>
+                        </ng-container>
+                        <div *ngIf="hasGoals" class="item">
+                            <a href="#goals-section" class="btn btn-link-secondary p-0">
+                                {{ goalsComplete }} of {{ goalsLength }} Goals
+                            </a>
+                        </div>
+                        <div *ngIf="hasFeedback" class="item">
+                            <a href="#feedback-section" class="btn btn-link-secondary p-0">
+                                Feedback{{ requiredFeedbackCount ? ": " + requiredFeedbackCount + " Required" : ""}}
+                            </a>
+                        </div>
+                    </div>
+                </ds-card-inline-content>
+                <ds-card-title-right-content class="align-self-start">
+                    <div [style.minWidth]="'300px'">
+                        <ds-progress [color]="percentComplete === 100 ? 'success': 'info'"
+                                    label="{{ percentComplete | number:'1.0-0' }}% Complete"
+                                    [value]="percentComplete"
+                                    class="mt-1"></ds-progress>
+                    </div>
+                </ds-card-title-right-content>
+                <ds-card-title-action *ngIf="!isReadOnly">
+                    <button type="button" class="btn btn-outline-primary" (click)="syncContent()" *ngIf="false">
+                        <mat-icon>sync</mat-icon> Sync Content
+                    </button>
+                </ds-card-title-action>
+                <ds-card-subtitle>
+                    <span *ngIf="lastModified" class="instruction-text">
+                        Last Saved {{ lastModified | date: 'MM/dd/yyyy' }} at {{ lastModified | date: 'h:mm a'}}
+                    </span>
+                </ds-card-subtitle>
+            </div>
+            <div ds-card-content>
+                <hr class="mt-0 mb-3" />
+                <div class="row">
+                    <div *ngIf="hasInstructions" class="col-md-6 border-right">
+                        <h3>Instructions</h3>
+                        {{ review.instructions }}
+                    </div>
+                    <div [class.col-12]="!hasInstructions" [class.col-md-6]="hasInstructions">
+                        <h3>Rating Definitions</h3>
+                        <div class="mb-1" *ngFor="let r of ratings; let i = index;">
+                            <div class="d-flex align-items-start">
+                                <div class="star-rating sm pr-2">
+                                    <ng-container *ngFor="let star of ratings; let j = index;">
+                                        <input id="rating_{{i}}_{{j}}"
+                                               type="radio"
+                                               class="star-radio"
+                                               name="rating-{{i}}-{{j}}"
+                                               [value]="star.rating"
+                                               [ngModel]="r.rating"
+                                               disabled />
+                                        <label class="star" for="rating_{{i}}_{{j}}">
+                                            <mat-icon class="filled">star</mat-icon>
+                                            <mat-icon class="outline-view">star</mat-icon>
+                                            <mat-icon class="outline">star_border</mat-icon>
+                                        </label>
+                                    </ng-container>
+                                </div>
+                                <div>
+                                    <div class="star-label">{{ r.label }}</div>
+                                </div>
+                            </div>
+                            <div class="star-description">{{ r.description }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ds-card>
+        <ds-card *ngIf="evaluationDetail">
+            <div ds-card-content>
+                <div class="overflow-list mt-5">
+                    <div *ngIf="hasCompetencies">
+                        <div *ngFor="let groupName of competencyGroups; let ind = index;">
+                            <h4 #competenciesSection name="competencies-section">{{groupName}}</h4>
+                            <ds-card *ngFor="let item of filterItemsOfType(groupName); let compIx = index;"
+                                    [class.clickable]="!isReadOnly"
+                                    [class.hoverable]="!isReadOnly"
+                                    mode="widget-nobody"
+                                    [color]="item.color(isSubmitted)"
+                                    [collapse]="!isReadOnly"
+                                    (click)="!isReadOnly && selectCompetencyEvaluation(item)"
+                                    [expanded]="item.isActive"
+                                    [hover]="!isReadOnly"
+                                    #compCard>
+                                <div ds-card-icon>{{item.competency.isCore ? 'supervisor_account' : 'assignment_ind'}}</div>
+                                <ds-card-header>
+                                    <ds-card-section-title class="bold pr-6 ">
+                                        {{ item.competency.name }}
+                                    </ds-card-section-title>
+                                    <ds-card-inline-content>
+                                        <span *ngIf="!item.hasContent && !item.isActive" class="font-italic" [ngClass]="isSubmitted ? 'text-danger' : 'text-muted'">Click to add ratings and comments</span>
+                                        <ng-container *ngIf="item.hasContent || item.isActive">
+                                            <div (click)="item.isActive && $event.stopPropagation()" [class.star-select]="item.isActive" class="star-rating sm">
+                                                <ng-container *ngFor="let r of ratings; let i = index;">
+                                                    <input id="comp-{{ind}}_{{compIx}}_{{i}}"
+                                                        type="radio"
+                                                        class="star-radio"
+                                                        name="comp-ratings_{{ind}}_{{compIx}}"
+                                                        [value]="r.rating"
+                                                        [(ngModel)]="item.ratingValue"
+                                                        [disabled]="!item.isActive"
+                                                        (ngModelChange)="saveCompetencyEvaluation(item, compIx)" />
+                                                    <label class="star" for="comp-{{ind}}_{{compIx}}_{{i}}" (mouseover)="item.hoverRating = r" (mouseout)="item.hoverRating = null">
+                                                        <mat-icon class="filled">star</mat-icon>
+                                                        <mat-icon class=" outline-view">star</mat-icon>
+                                                        <mat-icon class="outline">star_border</mat-icon>
+                                                    </label>
+                                                </ng-container>
+                                            </div>
+
+                                            <span class="instruction-text rating-label-width">{{ item.hoverRating && item.isActive ? item.hoverRating.label : (item.selectedRating ? item.selectedRating.label : "") }}</span>
+                                            <button type="button"
+                                                    [ngClass]="[item.ratingValue && item.isActive? 'opacity-100' : 'opacity-0' ]"
+                                                    *ngIf="item.isActive"
+                                                    (click)="$event.stopPropagation(); item.ratingValue = null; saveCompetencyEvaluation(item, compIx)"
+                                                    class="btn btn-link-secondary py-0 transition-opacity">
+                                                Remove Rating
+                                            </button>
+                                        </ng-container>
+                                        <span *ngIf="!item.hasContent && item.isActive && isSubmitted" class="font-italic text-danger">Please add a rating.</span>
+                                    </ds-card-inline-content>
+                                    <ds-card-title-right-content>
+                                        <span [ngClass]="[item.isActive ? 'opacity-100' : 'opacity-0' ]" *ngIf="item.isActive" class="font-sm instruction-text save-width transition-opacity">{{ item.isLoading ? 'Saving...' : (item.hasChanges ? 'Pending...' : 'Saved') }}</span>
+                                    </ds-card-title-right-content>
+                                    <ds-card-title-action *ngIf="!item.isActive && !item.hasContent && !isReadOnly">
+                                        <button mat-icon-button
+                                                (click)="$event.stopPropagation(); removeCompetencyEvaluation(item.competency)"
+                                                *ngIf="false"
+                                                type="button"
+                                                class="btn btn-icon sm hover-show"
+                                                matTooltip="Remove from evaluation">
+                                            <mat-icon>clear</mat-icon>
+                                        </button>
+                                    </ds-card-title-action>
+                                    <ds-card-subtitle *ngIf="!item.isActive && item.competency.comment">
+                                        <hr class="mt-4 mb-2" />
+                                        <label class="d-block">Comments</label>
+                                        <div class="text-muted" 
+											[innerHtml]=" item.competency.comment.description | formatComment ">
+                                        </div>
+                                    </ds-card-subtitle>
+                                    <ds-card-subtitle *ngIf="(item.isWithoutComment || (isSubmitted && !item.isComplete)) && !item.isActive">
+                                        <hr class="mt-4 mb-2" />
+                                        <label class="d-block">Comments </label>
+                                        <span class="font-italic text-danger">Please enter comments in order to submit the evaluation.</span>
+                                    </ds-card-subtitle>
+                                </ds-card-header>
+                                <ds-card-content (click)="$event.stopPropagation()" >
+                                    <ng-container *ngIf="!isReadOnly">
+                                        <hr class="mt-0 mb-3" />
+                                        <div class="text-muted">
+                                            {{ item.competency.description }}
+                                        </div>
+                                        <hr class="mt-3" />
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label>Comments</label>
+                                                    <textarea #compComment rows="5" class="form-control" [attr.class]="item.isWithoutComment || (isSubmitted && !item.isComplete) ? 'form-control is-invalid' : 'form-control'"  [(ngModel)]="item.comments" (blur)="saveCompetencyEvaluation(item, compIx)"></textarea>
+                                                    <div class="invalid-feedback">
+                                                        A comment is required based on the rating.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </ng-container>
+                                </ds-card-content>
+                            </ds-card>
+                        </div>
+                    </div>
+                    <div *ngIf="hasGoals">
+                        <div class="d-flex justify-content-between mb-4 align-items-start">
+                            <div>
+                                <h4 class="mb-0" #goalsSection name="goal-section">Goals</h4>
+                                <div *ngIf="this.evaluationDetail.allowGoalWeightAssignment && !isReadOnly" class="instruction-text">
+                                    Please add weights for each of the goals listed below. This is a required step.
+                                </div>
+                            </div>
+                            <div *ngIf="this.evaluationDetail.allowGoalWeightAssignment && !isReadOnly">
+                                <button type="button" class="btn btn-primary" (click)="addGoalWeights()">
+                                    Weight Goals
+                                </button>
+                            </div>
+                        </div>
+
+                        <ds-card *ngFor="let item of goalItems; let goalIx = index;"
+                                [class.clickable]="!isReadOnly"
+                                [class.hoverable]="!isReadOnly"
+                                mode="widget-nobody"
+                                [color]="item.color(isSubmitted)"
+                                [collapse]="!isReadOnly"
+                                (click)="!isReadOnly && selectGoalEvaluation(item)"
+                                [expanded]="item.isActive"
+                                [hover]="!isReadOnly"
+                                #goalCard>
+                            <div ds-card-icon>track_changes</div>
+                            <ds-card-header>
+                                <ds-card-section-title class="bold pr-6">
+                                    <span class="bold pr-6">{{ item.goal.title }}</span>
+                                </ds-card-section-title>
+                                <ds-card-inline-content>
+                                    <span *ngIf="!item.hasContent && !item.isActive" class="font-italic" [ngClass]="isSubmitted ? 'text-danger' : 'text-muted'">Click to add ratings and comments</span>
+                                    <ng-container *ngIf="item.hasContent || item.isActive">
+                                        <div (click)="item.isActive && $event.stopPropagation()" [class.star-select]="item.isActive" class="star-rating sm">
+                                            <ng-container *ngFor="let r of ratings; let i = index;">
+                                                <input id="goal-{{goalIx}}_{{i}}"
+                                                    type="radio"
+                                                    class="star-radio"
+                                                    name="goal-ratings-{{goalIx}}"
+                                                    [value]="r.rating"
+                                                    [(ngModel)]="item.ratingValue"
+                                                    [disabled]="!item.isActive"
+                                                    (ngModelChange)="saveGoalEvaluation(item, goalIx)" />
+                                                <label class="star" for="goal-{{goalIx}}_{{i}}" (mouseover)="item.hoverRating = r" (mouseout)="item.hoverRating = null">
+                                                    <mat-icon class="filled">star</mat-icon>
+                                                    <mat-icon class="outline-view">star</mat-icon>
+                                                    <mat-icon class="outline">star_border</mat-icon>
+                                                </label>
+                                            </ng-container>
+                                        </div>
+                                        <span class="instruction-text rating-label-width">{{ item.hoverRating && item.isActive ? item.hoverRating.label : (item.selectedRating ? item.selectedRating.label : "") }}</span>
+                                        <button type="button"
+                                                [ngClass]="[item.ratingValue && item.isActive? 'opacity-100' : 'opacity-0' ]"
+                                                *ngIf="item.isActive"
+                                                (click)="$event.stopPropagation(); item.ratingValue = null; saveGoalEvaluation(item, false)"
+                                                class="btn btn-link-secondary py-0 transition-opacity">
+                                            Remove Rating
+                                        </button>
+                                    </ng-container>
+
+                                    <span *ngIf="!item.hasContent && item.isActive && isSubmitted" class="font-italic text-danger">Please select a rating.</span>
+                                </ds-card-inline-content>
+                                <ds-card-title-right-content class="align-self-center">
+                                    <span *ngIf="item.isActive" class="font-sm instruction-text save-width transition-opacity">{{ item.isLoading ? 'Saving...' : (item.hasChanges ? 'Pending...' : 'Saved') }}</span>
+                                    <div *ngIf="item.goal.oneTimeEarningName" class="badge badge-pill badge-success">{{item.goal.oneTimeEarningName}}</div>
+                                </ds-card-title-right-content>
+                                <ds-card-title-action *ngIf="!item.isActive && !item.hasContent && !isReadOnly">
+                                    <button (click)="$event.stopPropagation(); removeGoalEvaluation(item.goal)" *ngIf="false" mat-icon-button type="button" class="btn btn-icon sm hover-show"
+                                            matTooltip="Remove from evaluation">
+                                        <mat-icon>clear</mat-icon>
+                                    </button>
+                                </ds-card-title-action>
+                                <ds-card-subtitle *ngIf="!item.isActive && item.goal.comment">
+                                    <hr class="mt-4 mb-2" />
+                                    <label class="d-block">Comments</label>
+                                    <div class="text-muted" 
+										[innerHtml]="item.goal.comment.description | formatComment ">
+                                    </div>
+                                </ds-card-subtitle>
+                                <ds-card-subtitle *ngIf="(item.isWithoutComment || (isSubmitted && !item.isComplete)) && !item.isActive">
+                                    <hr class="mt-4 mb-2" />
+                                    <label class="d-block">Comments </label>
+                                    <span class="font-italic text-danger">Please enter comments in order to submit the evaluation.</span>
+                                </ds-card-subtitle>
+                            </ds-card-header>
+                            <ds-card-content (click)="$event.stopPropagation()">
+                                <ng-container *ngIf="!isReadOnly">
+                                    <hr class="mt-0 mb-3" />
+                                    <div class="row">
+                                        <div class="col-sm-8">
+                                            <div class="card-data bordered">
+                                                <div class="item" *ngIf="item.goal.startDate">
+                                                    <label>START:</label>
+                                                    {{ item.goal.startDate | date: 'MM/dd/yyyy' }}
+                                                </div>
+                                                <div class="item" *ngIf="item.goal.dueDate">
+                                                    <label>DUE:</label>
+                                                    {{ item.goal.dueDate | date: 'MM/dd/yyyy' }}
+                                                </div>
+                                                <div class="item">
+                                                    <label>SUBMITTED:</label>
+                                                    {{ item.goal.completionDate ? (item.goal.completionDate | date: 'MM/dd/yyyy') : 'Not Complete' }}
+                                                </div>
+                                                <div class="item">
+                                                    <label>WEIGHT:</label>
+                                                    {{ item.goal.weight ? (item.goal.weight) : 'Not Weighted' }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4 align-self-center">
+                                            <div [style.minWidth]="'300px'">
+                                                <ds-progress [color]="item.goal.progress === 100 ? 'success': 'info'"
+                                                            [label]="item.goal.progress + '% Complete'"
+                                                            [value]="item.goal.progress"></ds-progress>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-muted" *ngIf="item.goal.description"
+                                        [innerHtml]=" item.goal.description | formatComment "></div>
+                                    <ng-container *ngTemplateOutlet="goalTasksTemplate; context: { $implicit: item.goal.tasks }"></ng-container>
+                                    <hr *ngIf="!item.goal.tasks || item.goal.tasks.length == 0"  class="mt-3" />
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label>Comment</label>
+                                                <textarea #goalComment rows="5" class="form-control" [attr.class]="item.isWithoutComment || (isSubmitted && !item.isComplete) ? 'form-control is-invalid' : 'form-control'" [(ngModel)]="item.comments" (blur)="saveGoalEvaluation(item, goalIx)"></textarea>
+                                                <div class="invalid-feedback">
+                                                    A comment is required based on the rating.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                            </ds-card-content>
+                        </ds-card>
+                    </div>
+                    <div *ngIf="hasFeedback">
+                        <h4 #feedbackSection name="feedback-section">Feedback</h4>
+                        <ng-container *ngFor="let response of evaluationDetail.feedbackResponses; let idx = index;">
+                            <ds-card 
+                                mode="widget-nobody" 
+                                [hover]="!isReadOnly"
+                                (click)="!isReadOnly && selectResponseEvaluation(response)"
+                                (blur)="response.touched = true"
+                                [color]="(isSubmitted && response.isRequired && !response.value) || (response.touched && response.isRequired && !response.value) ? 'danger' : (isFeedbackActive ? 'info' : (response.value ? 'success' : 'info-special'))" 
+                                [class.clickable]="!isReadOnly" 
+                                [class.hoverable]="!isReadOnly">
+                                <div ds-card-icon>360</div>
+                                <ds-card-header>
+                                    <ds-card-section-title class="bold">
+                                        {{ response.feedbackBody }}
+                                    </ds-card-section-title>                        
+                                    <ds-card-title-right-content>
+                                        <span *ngIf="response.isActive" class="font-sm text-muted font-italic save-width">
+                                            {{ response.isLoading ? 'Saving...' : (response.oldVal != response.value ? 'Pending...' : 'Saved') }}
+                                        </span>
+                                    </ds-card-title-right-content> 
+                                    <ds-card-title-action>
+                                        <button *ngIf="!response.isActive; else feedbackCancel" 
+                                            class="btn btn-icon" 
+                                            [class.hover-show]="!isReadOnly" 
+                                            [class.d-none]="isReadOnly">
+                                            <i class="material-icons">mode_edit</i>
+                                        </button>
+                                        <ng-template #feedbackCancel>
+                                            <button class="btn btn-icon pr-0">
+                                                <i class="material-icons">close</i>
+                                            </button>
+                                        </ng-template>
+                                    </ds-card-title-action>
+                                    <ds-card-subtitle *ngIf="!response.isVisibleToEmployee">
+                                        <span class="instruction-text ml-1">Supervisor's response is hidden from employee</span>
+                                    </ds-card-subtitle>
+                                    <ds-card-subtitle *ngIf="!response.isActive && (!isSupervisorEvaluationViewedByEmployee || response.isVisibleToEmployee)">
+                                        <hr class="mt-4 mb-2" />
+                                        <label class="d-block">Comments</label>
+                                        <div class="text-muted" *ngIf="response.value || (!isSubmitted && !response.value)"
+                                            [innerHTML]="response.responseText()">
+                                        </div>
+                                        <div class="font-italic text-danger" *ngIf="response.isRequired && isSubmitted && !response.value">
+                                            Please enter comments in order to submit the evaluation.
+                                        </div>
+                                    </ds-card-subtitle>
+                                </ds-card-header>
+                                <ds-card-content>
+                                    <ng-container *ngIf="response.isActive && !isReadOnly; else readOnlyFeedback">
+                                        <form #feedbackForm="ngForm" (click)="$event.stopPropagation()">
+                                                <label>{{ response.feedbackBody }}</label>
+                                                <span *ngIf="!response.isRequired" class="ml-1 instruction-text">Optional</span>
+                                                <div class="row" [ngSwitch]="response.fieldType">
+                                                    <div class="col-12" *ngSwitchCase="FieldType.Text">
+                                                        <div class="form-group">
+                                                            <textarea rows="5" class="form-control"
+                                                                [(ngModel)]="response.value"
+                                                                [required]="response.isRequired"
+                                                                name="feedbackText_{{idx}}"
+                                                                (ngModelChange)="isFeedbackPending = true"
+                                                                dsFormControlValidator
+                                                                [dsFormControlSubmitted]="isSubmitted"
+                                                                (blur)="response.touched = true;saveFeedbackResponse(response)"
+                                                                >
+                                                            </textarea>
+                                                            <div class="invalid-feedback">
+                                                                Please enter a response.
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6 col-xl-4" *ngSwitchCase="FieldType.List">
+                                                        <div class="form-group">
+                                                            <select class="custom-select" 
+                                                                [compareWith]="feedbackListItemCompare"
+                                                                [(ngModel)]="response.value"
+                                                                [required]="response.isRequired"
+                                                                name="feedbackItem_{{idx}}"
+                                                                dsFormControlValidator
+                                                                [dsFormControlSubmitted]="isSubmitted"
+                                                                (ngModelChange)="isFeedbackPending = true"
+                                                                (blur)="response.touched = true;saveFeedbackResponse(response)">
+                                                                <option [value]=""></option>
+                                                                <option *ngFor="let item of response.feedbackItems" [ngValue]="item">{{item.itemText}}</option>
+                                                            </select>                                            
+		                                                    <div class="invalid-feedback">
+		                                                        Please select an option.
+		                                                    </div>
+		                                                </div>
+		                                            </div>
+                                                    <div class="col-md-6 col-xl-4" *ngSwitchCase="FieldType.Date">
+                                                        <div class="form-group">
+                                                            <div class="input-group">
+                                                                <input matInput
+                                                                    class="form-control"
+                                                                    [matDatepicker]="feedbackDatePicker"
+                                                                    [(ngModel)]="response.value"
+                                                                    [required]="response.isRequired"
+                                                                    (ngModelChange)="isFeedbackPending = true"
+                                                                    (dateChange)="response.touched = true;saveFeedbackResponse(response)"
+                                                                    name="feedbackDate_{{idx}}"
+                                                                    dsFormControlValidator
+                                                                [dsFormControlSubmitted]="isSubmitted" />
+                                                                <div class="input-group-append">
+                                                                    <mat-datepicker-toggle matSuffix [for]="feedbackDatePicker" class="input-group-text date">
+                                                                        <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                                                                    </mat-datepicker-toggle>
+                                                                    <mat-datepicker #feedbackDatePicker></mat-datepicker>
+                                                                </div>
+                                                                <div class="invalid-feedback">
+                                                                    Please enter a date.
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12" *ngSwitchCase="FieldType.Boolean">
+                                                        <div class="form-group" [class.is-invalid]="feedbackRadio.invalid && (feedbackRadio.touched || isSubmitted)">
+                                                            <div class="custom-control custom-radio custom-control-inline custom-control-bg primary">
+                                                                <input type="radio" id="feedback-{{idx}}-yes" name="feedback_{{idx}}_bool" class="custom-control-input" 
+                                                                    [(ngModel)]="response.value"
+                                                                    (ngModelChange)="saveFeedbackResponse(response)"
+                                                                    [required]="response.isRequired"
+                                                                    [value]="true" 
+                                                                    #feedbackRadio="ngModel"/>
+                                                                <label class="custom-control-label" for="feedback-{{idx}}-yes">Yes</label>
+                                                                <div class="custom-bg"></div>
+                                                            </div>
+                                                            <div class="custom-control custom-radio custom-control-inline custom-control-bg primary">
+                                                                <input type="radio" id="feedback-{{idx}}-no" name="feedback_{{idx}}_bool" class="custom-control-input"
+                                                                    [(ngModel)]="response.value"
+                                                                    (ngModelChange)="response.touched = true;saveFeedbackResponse(response)"
+                                                                    [required]="response.isRequired"
+                                                                    [value]="false" 
+                                                                    #feedbackRadio="ngModel"/>
+                                                                <label class="custom-control-label" for="feedback-{{idx}}-no">No</label>
+                                                                <div class="custom-bg"></div>
+                                                            </div>
+                                                            <button type="button" 
+                                                                *ngIf="response.value !== null" 
+                                                                (click)="response.touched = true;response.value = null; saveFeedbackResponse(response)" 
+                                                                class="btn btn-radio-clear">
+                                                                Clear
+                                                            </button>
+                                                            <div class="invalid-feedback">
+                                                                Please select an option.
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                        </form>
+                                        <ng-template #readOnlyFeedback>
+                                            <div>
+                                                <label class="bold">{{ response.feedbackBody }}</label>   
+                                                <span *ngIf="!response.isRequired" class="ml-1 instruction-text">Optional</span>
+                                                <span *ngIf="!response.isRequired && !response.isVisibleToEmployee" class="instruction-text">;</span>
+                                                <p *ngIf="response.isVisibleToEmployee || !isSupervisorEvaluationViewedByEmployee" class="mt-0 mb-3" [class.text-muted]="!response.hasResponse()" [class.italic]="!response.hasResponse()"
+                                                    [innerHTML]="response.responseText()">
+                                                </p>
+                                            </div>
+                                        </ng-template>
+                                    </ng-container>
+                                    
+                                </ds-card-content>
+                            </ds-card>
+                        </ng-container>
+                        
+                    </div>
+                </div>
+            </div>
+            <ds-card-footer [class.d-block]="isReadOnly && !isEvalComplete">              
+                <ng-container *ngIf="!isReadOnly; else signatureInfo;">
+                    <button type="button" *ngIf="!evaluationDetail.hasSummaryData; else goToSummary" class="btn btn-primary" (click)="submitEvaluation(true)">Submit</button>
+                    <ng-template #goToSummary>
+                        <button type="button" class="btn btn-primary" #submit (click)="currSubmitState.handler(false)">{{currSubmitState.text}}</button>
+                    </ng-template>
+                </ng-container>                
+                <ng-template #signatureInfo>
+                    <div>
+                        <span class="instruction-text" *ngIf="isEvalComplete">
+                            Evaluation Submitted: {{ evaluationDetail.completedDate | date:'MM/dd/yyyy hh:mm a' }}
+                            by {{ evaluationDetail.evaluatedByContact.firstName }} {{ evaluationDetail.evaluatedByContact.lastName }}
+                        </span>
+                    </div>
+                </ng-template>
+                <button type="button" class="btn btn-outline-primary" (click)="returnLink()">Return to Review List</button>
+            </ds-card-footer>
+        </ds-card>
+    </ng-container>
+    <ng-container *ngIf="evaluationDetail.isApprovalProcess && !approvalProcessWithoutHistory && !isAPFirstVisit && !isAPFinalized && !isAPReopened">
+        <ng-container *ngIf="!isOriginalEvaluator; else approvalProcessRejected">
+            <ng-container *ngTemplateOutlet="approvalProcess;"></ng-container>
+        </ng-container>
+    </ng-container>
+    
+</div>
+
+<ng-template #approvalProcess>
+  <ds-card mode="nobody">
+    <ds-card-header>
+      <ds-card-sub-header-title>
+        Contents
+      </ds-card-sub-header-title>
+      <ds-card-inline-content>
+        <div class="card-data bordered">
+          <ng-container *ngIf="hasCompetencies">
+            <div *ngFor="let groupStatus of competencyGroupStatus; let i = index" class="item">
+              <button type="button" (click)="goToCompetencyGroupSection(i)" class="btn btn-link-secondary p-0">
+                {{ groupStatus.totalCompetencies }} {{ groupStatus.groupName }}
+              </button>
+            </div>
+          </ng-container>
+          <div *ngIf="hasGoals" class="item">
+            <button type="button" (click)="apgSection.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' })" class="btn btn-link-secondary p-0">
+              {{ goalsLength }} Goals
+            </button>
+          </div>
+          <div *ngIf="hasFeedback" class="item">
+            <button type="button" (click)="apfSection.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' })" class="btn btn-link-secondary p-0">
+              Feedback{{ requiredFeedbackCount ? ": " + requiredFeedbackCount + " Required" : ""}}
+            </button>
+          </div>
+          <div *ngIf="lastModified">
+            <span class="instruction-text">
+              Last Saved {{ lastModified | date: 'MM/dd/yyyy' }} at {{ lastModified | date: 'h:mm a'}}
+            </span>
+          </div>
+        </div>
+      </ds-card-inline-content>
+      <ds-card-title-right-content class="align-self-start" *ngIf="!isOriginalEvaluator">
+        <button type="button" class="btn btn-primary" [disabled]="disableApproveAll" (click)="approveAll()">Approve All</button>
+      </ds-card-title-right-content>
+      <ds-card-subtitle>
+        <p class="instruction-text mb-4">
+          Please review the ratings and comments below. If there are no changes that need to be made, click the "Approve
+          All" button. 
+          If you need to make a direct edit, select the item and edit as needed. To leave a note for the supervisor,
+          use the "+ Note" 
+          option. You have the option to approve an item (even if you have made a direct edit) or send it back to the
+          supervisor using 
+          the "Needs Revisions" status. When changing the status to "Needs Revisions," it is recommended to leave a note. 
+          You will need to approve each item individually if the "Approve All" button is not used. 
+        </p>
+      </ds-card-subtitle>
+    </ds-card-header>
+    <div ds-card-content>
+        <hr class="mt-0 mb-3" />
+        <div class="row">
+            <div *ngIf="hasInstructions" class="col-md-6 border-right">
+                <h3>Instructions</h3>
+                {{ review.instructions }}
+            </div>
+            <div [class.col-12]="!hasInstructions" [class.col-md-6]="hasInstructions">
+                <h3>Rating Definitions</h3>
+                <div class="mb-1" *ngFor="let r of ratings; let i = index;">
+                    <div class="d-flex align-items-start">
+                        <div class="star-rating sm pr-2">
+                            <ng-container *ngFor="let star of ratings; let j = index;">
+                                <input id="rating_{{i}}_{{j}}"
+                                       type="radio"
+                                       class="star-radio"
+                                       name="rating-{{i}}-{{j}}"
+                                       [value]="star.rating"
+                                       [ngModel]="r.rating"
+                                       disabled />
+                                <label class="star" for="rating_{{i}}_{{j}}">
+                                    <mat-icon class="filled">star</mat-icon>
+                                    <mat-icon class="outline-view">star</mat-icon>
+                                    <mat-icon class="outline">star_border</mat-icon>
+                                </label>
+                            </ng-container>
+                        </div>
+                        <div>
+                            <div class="star-label">{{ r.label }}</div>
+                        </div>
+                    </div>
+                    <div class="star-description">{{ r.description }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </ds-card>
+  <ds-card>
+    <ds-card-content>
+      <div class="overflow-list mt-5">
+        <div *ngIf="hasCompetencies">
+            <div *ngFor="let groupName of competencyGroups; let ind = index;">
+                <h4 [id]="'competencyGroup_' + ind">{{groupName}}</h4>
+                <ds-card 
+                    *ngFor="let item of filterItemsOfType(groupName); let compIx = index;" 
+                    [class.clickable]="true"
+                    [class.hoverable]="true" 
+                    mode="widget-nobody" 
+                    [color]="item.approvalColor()" 
+                    [collapse]="true" 
+                    (click)="selectCompetencyEvaluation(item)"  
+                    [expanded]="item.isActive" 
+                    [hover]="true" 
+                    #compCard>
+                    <div ds-card-icon>{{item.competency.isCore ? 'supervisor_account' : 'assignment_ind'}}</div>
+                    <ds-card-header>
+                        <ds-card-section-title class="bold pr-6 ">
+                            {{ item.competency.name }}
+                        </ds-card-section-title>
+                        <ds-card-inline-content>
+                            <ng-container *ngIf="item.hasContent || item.isActive">
+                                <div (click)="item.isActive && $event.stopPropagation()" [class.star-select]="item.isActive" class="star-rating sm">
+                                    <ng-container *ngFor="let r of ratings; let i = index;">
+                                        <input id="comp-{{ind}}_{{compIx}}_{{i}}"
+                                            type="radio"
+                                            class="star-radio"
+                                            name="comp-ratings-{{compIx}}"
+                                            [value]="r.rating"
+                                            [(ngModel)]="item.ratingValue"
+                                            [disabled]="!item.isActive"
+                                            (ngModelChange)="saveCompetencyEvaluation(item, compIx)" />
+                                        <label class="star" for="comp-{{ind}}_{{compIx}}_{{i}}" (mouseover)="item.hoverRating = r" (mouseout)="item.hoverRating = null">
+                                            <mat-icon class="filled">star</mat-icon>
+                                            <mat-icon class="outline-view">star</mat-icon>
+                                            <mat-icon class="outline">star_border</mat-icon>
+                                        </label>
+                                    </ng-container>
+                                </div>
+                                <span class="instruction-text rating-label-width" >{{ item.hoverRating && item.isActive ? item.hoverRating.label : (item.selectedRating ? item.selectedRating.label : "") }}</span>
+                            </ng-container>
+                        </ds-card-inline-content>
+                        <ds-card-title-right-content>
+                            <span [ngClass]="[item.isActive ? 'opacity-100' : 'opacity-0' ]" 
+                                *ngIf="item.isActive" 
+                                class="font-sm instruction-text transition-opacity save-width">
+                                {{ item.isLoading ? 'Saving...' : (item.hasChanges ? 'Pending...' : 'Saved') }}
+                            </span>
+                        </ds-card-title-right-content>
+                        <ds-card-title-action>
+                            <button [matMenuTriggerFor]="menu" type="button" class="btn dropdown-toggle" [ngClass]="item.approvalBtnClass()" [disabled]="isOriginalEvaluator || item.isWithoutComment" (click)="$event.stopPropagation()">{{item.approvalBtnLabel()}}</button>
+                            <mat-menu #menu="matMenu">
+                                <button mat-menu-item (click)="updateApprovalStatus(item, 0, 2)">Needs Revisions</button>
+                                <button mat-menu-item (click)="updateApprovalStatus(item, 1, 2)">Approved</button>
+                            </mat-menu>
+                            <button mat-icon-button
+                                    (click)="$event.stopPropagation(); removeCompetencyEvaluation(item.competency)"
+                                    *ngIf="false"
+                                    type="button"
+                                    class="btn btn-icon sm hover-show"
+                                    matTooltip="Remove from evaluation">
+                                <mat-icon>clear</mat-icon>
+                            </button>
+                        </ds-card-title-action>
+                        <ds-card-subtitle *ngIf="!item.isActive">
+                            <hr class="mt-4 mb-2" />
+                            <label class="d-block">Comments</label>
+                            <div class="text-muted" *ngIf="item.competency.comment" 
+								[innerHtml]="item.competency.comment.description | formatComment ">
+                            </div>
+                            <div class="text-muted" *ngIf="!item.competency.comment">
+                                No Comment
+                            </div>
+                        </ds-card-subtitle>
+                    </ds-card-header>
+                    <ds-card-content (click)="$event.stopPropagation()" >
+                        <ng-container *ngIf="!isReadOnly || item.isWithoutComment || (isSubmitted && !item.isComplete)">
+                            <hr class="mt-0 mb-3"/>
+                            <div class="text-muted">
+                                {{ item.competency.description }}
+                            </div> 
+                            <hr class="mt-3"/>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label>Final Comment</label>
+                                        <textarea #compComment rows="5" class="form-control" [(ngModel)]="item.comments" (blur)="saveCompetencyEvaluation(item, compIx)" 
+                                        [attr.class]="item.isWithoutComment || (isSubmitted && !item.isComplete) ? 'form-control is-invalid' : 'form-control'"  ></textarea>
+                                        <div class="invalid-feedback">
+                                            A comment is required based on the rating.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <ng-container *ngTemplateOutlet="activityFeed; context: { item: item, type: '2' }"></ng-container>
+                        </ng-container>
+                    </ds-card-content>
+                </ds-card>
+            </div>
+        </div>
+        <div *ngIf="hasGoals">
+            <div class="d-flex justify-content-between mb-4 align-items-start">
+                <div>
+                    <h4 class="mb-0" #apgSection id="apg-section">Goals</h4>
+                    <div *ngIf="this.evaluationDetail.allowGoalWeightAssignment && !isReadOnly" class="instruction-text">
+                        Please verify goal weights. To edit a goal weight, select the "Edit Goal Weights" button.
+                    </div>
+                </div>
+                <div *ngIf="this.evaluationDetail.allowGoalWeightAssignment && !isReadOnly">
+                    <button type="button" class="btn btn-primary" (click)="addGoalWeights(true)">
+                        Edit Goal Weights
+                    </button>
+                </div>
+            </div>
+            <ds-card *ngFor="let item of goalItems; let goalIx = index;"
+                    [class.clickable]="true"
+                    [class.hoverable]="true"
+                    mode="widget-nobody"
+                    [color]="item.approvalColor()"
+                    [collapse]="true"
+                    (click)="selectGoalEvaluation(item)"
+                    [expanded]="item.isActive"
+                    [hover]="true"
+                    #goalCard>
+                <div ds-card-icon>track_changes</div>
+                <ds-card-header>
+                    <ds-card-section-title class="bold pr-6">
+                        {{ item.goal.title }}
+                    </ds-card-section-title>
+                    <ds-card-inline-content>
+                        <span *ngIf="!item.hasContent && !item.isActive" class="font-italic" [ngClass]="isSubmitted ? 'text-danger' : 'text-muted'">Click to add ratings and comments</span>
+                        <ng-container *ngIf="item.hasContent || item.isActive">
+                            <div (click)="item.isActive && $event.stopPropagation()" [class.star-select]="item.isActive" class="star-rating sm">
+                                <ng-container *ngFor="let r of ratings; let i = index;">
+                                    <input id="goal-{{goalIx}}_{{i}}"
+                                        type="radio"
+                                        class="star-radio"
+                                        name="goal-ratings-{{goalIx}}"
+                                        [value]="r.rating"
+                                        [(ngModel)]="item.ratingValue"
+                                        [disabled]="!item.isActive"
+                                        (ngModelChange)="saveGoalEvaluation(item, goalIx)" />
+                                    <label class="star" for="goal-{{goalIx}}_{{i}}" (mouseover)="item.hoverRating = r" (mouseout)="item.hoverRating = null">
+                                        <mat-icon class="filled">star</mat-icon>
+                                        <mat-icon class="outline-view">star</mat-icon>
+                                        <mat-icon class="outline">star_border</mat-icon>
+                                    </label>
+                                </ng-container>
+                            </div>
+                            <span class="instruction-text rating-label-width" >{{ item.hoverRating && item.isActive ? item.hoverRating.label : (item.selectedRating ? item.selectedRating.label : "") }}</span>
+                        </ng-container>
+                    </ds-card-inline-content>
+                    <ds-card-title-right-content class="align-self-center">
+                        <span *ngIf="item.isActive" class="font-sm instruction-text save-width transition-opacity">{{ item.isLoading ? 'Saving...' : (item.hasChanges ? 'Pending...' : 'Saved') }}</span>
+                        <div *ngIf="item.goal.oneTimeEarningName" class="badge badge-pill badge-success m2-2">{{item.goal.oneTimeEarningName}}</div>
+                        <button [matMenuTriggerFor]="menu" type="button" class="btn dropdown-toggle" [ngClass]="item.approvalBtnClass()" [disabled]="isOriginalEvaluator || item.isWithoutComment" (click)="$event.stopPropagation()"> {{item.approvalBtnLabel()}}</button>
+                        <mat-menu #menu="matMenu">
+                            <button mat-menu-item (click)="updateApprovalStatus(item, 0, 0)">Needs Revisions</button>
+                            <button mat-menu-item (click)="updateApprovalStatus(item, 1, 0)">Approved</button>
+                        </mat-menu>
+                    </ds-card-title-right-content>
+                    <ds-card-title-action *ngIf="!item.isActive && !item.hasContent && !isReadOnly">
+                        <button (click)="$event.stopPropagation(); removeGoalEvaluation(item.goal)" *ngIf="false" mat-icon-button type="button" class="btn btn-icon sm hover-show"
+                                matTooltip="Remove from evaluation">
+                            <mat-icon>clear</mat-icon>
+                        </button>
+                    </ds-card-title-action>
+                    <ds-card-subtitle *ngIf="!item.isActive && item.goal.comment">
+                        <hr class="mt-4 mb-2" />
+                        <label class="d-block">Comments</label>
+                        <div class="text-muted" 
+							[innerHtml]="item.goal.comment.description | formatComment ">
+                        </div>
+                    </ds-card-subtitle>
+                    <ds-card-subtitle *ngIf="(item.isWithoutComment || (isSubmitted && !item.isComplete)) && !item.isActive">
+                        <hr class="mt-4 mb-2" />
+                        <label class="d-block">Comments </label>
+                        <span class="font-italic text-danger">Please enter comments in order to submit the evaluation.</span>
+                    </ds-card-subtitle>
+                </ds-card-header>
+                <ds-card-content (click)="$event.stopPropagation()">
+                    <ng-container>
+                        <hr class="mt-0 mb-3" />
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <div class="card-data bordered">
+                                    <div class="item" *ngIf="item.goal.startDate">
+                                        <label>START:</label>
+                                        {{ item.goal.startDate | date: 'MM/dd/yyyy' }}
+                                    </div>
+                                    <div class="item" *ngIf="item.goal.dueDate">
+                                        <label>DUE:</label>
+                                        {{ item.goal.dueDate | date: 'MM/dd/yyyy' }}
+                                    </div>
+                                    <div class="item">
+                                        <label>SUBMITTED:</label>
+                                        {{ item.goal.completionDate ? (item.goal.completionDate | date: 'MM/dd/yyyy') : 'Not Complete' }}
+                                    </div>
+                                    <div class="item">
+                                        <label>WEIGHT:</label>
+                                        {{ item.goal.weight ? (item.goal.weight) : 'Not Weighted' }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4 align-self-center">
+                                <div [style.minWidth]="'300px'">
+                                    <ds-progress [color]="item.goal.progress === 100 ? 'success': 'info'"
+                                                [label]="item.goal.progress + '% Complete'"
+                                                [value]="item.goal.progress"></ds-progress>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-muted" *ngIf="item.goal.description"
+                            [innerHtml]=" item.goal.description | formatComment "></div>
+                        <ng-container *ngTemplateOutlet="goalTasksTemplate; context: { $implicit: item.goal.tasks }"></ng-container>
+                        <hr *ngIf="!item.goal.tasks || item.goal.tasks.length == 0"  class="mt-3" />
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label>Comment</label>
+                                    <textarea #goalComment rows="5" class="form-control" [attr.class]="item.isWithoutComment || (isSubmitted && !item.isComplete) ? 'form-control is-invalid' : 'form-control'" [(ngModel)]="item.comments" (blur)="saveGoalEvaluation(item, goalIx)"></textarea>
+                                    <div class="invalid-feedback">
+                                        A comment is required based on the rating.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <ng-container *ngTemplateOutlet="activityFeed; context: { item: item, type: '0' }"></ng-container>
+                    </ng-container>
+                </ds-card-content>
+            </ds-card>
+        </div>
+        <div *ngIf="hasFeedback">
+          <h4 #apfSection id="apf-section">Feedback</h4>
+          <ng-container *ngFor="let response of evaluationDetail.feedbackResponses; let idx = index;">
+            <ds-card mode="widget-nobody" (click)="selectResponseEvaluation(response)"
+              [hover]="true" [color]="approvalColor(response)" [class.clickable]="true" [class.hoverable]="true" [collapse]="true" [expanded]="response.isActive">
+              <div ds-card-icon>360</div>
+              <ds-card-header>
+                <ds-card-section-title class="bold">
+                  {{ response.feedbackBody }}
+                </ds-card-section-title>
+                <ds-card-title-right-content>
+                  <span *ngIf="response.isActive" class="font-sm text-muted font-italic save-width">
+                    {{ response.isLoading ? 'Saving...' : (response.oldVal != response.value ? 'Pending...' : 'Saved') }}
+                  </span>
+                  <button [matMenuTriggerFor]="menu" type="button" class="btn dropdown-toggle" [ngClass]="approvalBtnClass(response)" (click)="$event.stopPropagation()"> {{approveStatusLabel(response)}}</button>
+                  <mat-menu #menu="matMenu">
+                      <button mat-menu-item (click)="updateApprovalStatus(response, 0, 1)">Needs Revisions</button>
+                      <button mat-menu-item (click)="updateApprovalStatus(response, 1, 1)">Approved</button>
+                  </mat-menu>
+                </ds-card-title-right-content>
+                <ds-card-subtitle>
+                  <hr class="mt-4 mb-2" />
+                  <label class="d-block">Comments</label>
+                  <div class="text-muted"
+                    [innerHTML]="response.responseText()">
+                  </div>
+                </ds-card-subtitle>
+              </ds-card-header>
+              <ds-card-content (click)="$event.stopPropagation()">
+                <ng-container >
+                    <label>{{ response.feedbackBody }}</label>
+                    <span *ngIf="!response.isRequired" class="ml-1 instruction-text">Optional</span>
+                    <div class="row" [ngSwitch]="response.fieldType">
+                      <div class="col-12" *ngSwitchCase="FieldType.Text">
+                        <div class="form-group">
+                          <textarea rows="5" class="form-control" [(ngModel)]="response.value"
+                            [required]="response.isRequired" name="feedbackText_{{idx}}"
+                            (ngModelChange)="isFeedbackPending = true" dsFormControlValidator
+                            [dsFormControlSubmitted]="isSubmitted" (blur)="saveFeedbackResponse(response)">
+                          </textarea>
+                          <div class="invalid-feedback">
+                            Please enter a response.
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-6 col-xl-4" *ngSwitchCase="FieldType.List">
+                        <div class="form-group">
+                          <select class="custom-select" [compareWith]="feedbackListItemCompare"
+                            [(ngModel)]="response.value" [required]="response.isRequired" name="feedbackItem_{{idx}}"
+                            dsFormControlValidator [dsFormControlSubmitted]="isSubmitted"
+                            (ngModelChange)="isFeedbackPending = true" (blur)="saveFeedbackResponse(response)">
+                            <option [value]=""></option>
+                            <option *ngFor="let item of response.feedbackItems" [ngValue]="item">{{item.itemText}}
+                            </option>
+                          </select>
+                          <div class="invalid-feedback">
+                            Please select an option.
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-6 col-xl-4" *ngSwitchCase="FieldType.Date">
+                        <div class="form-group">
+                          <div class="input-group">
+                            <input matInput class="form-control" [matDatepicker]="feedbackDatePicker"
+                              [(ngModel)]="response.value" [required]="response.isRequired"
+                              (ngModelChange)="isFeedbackPending = true" (dateChange)="saveFeedbackResponse(response)"
+                              name="feedbackDate_{{idx}}" dsFormControlValidator
+                              [dsFormControlSubmitted]="isSubmitted" />
+                            <div class="input-group-append">
+                              <mat-datepicker-toggle matSuffix [for]="feedbackDatePicker" class="input-group-text date">
+                                <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                              </mat-datepicker-toggle>
+                              <mat-datepicker #feedbackDatePicker></mat-datepicker>
+                            </div>
+                            <div class="invalid-feedback">
+                              Please enter a date.
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-12" *ngSwitchCase="FieldType.Boolean">
+                        <div class="form-group"
+                          [class.is-invalid]="feedbackRadio.invalid && (feedbackRadio.touched || isSubmitted)">
+                          <div class="custom-control custom-radio custom-control-inline custom-control-bg primary">
+                            <input type="radio" id="feedback-{{idx}}-yes" name="feedback_{{idx}}_bool"
+                              class="custom-control-input" [(ngModel)]="response.value"
+                              (ngModelChange)="saveFeedbackResponse(response)" [required]="response.isRequired"
+                              [value]="true" #feedbackRadio="ngModel" />
+                            <label class="custom-control-label" for="feedback-{{idx}}-yes">Yes</label>
+                            <div class="custom-bg"></div>
+                          </div>
+                          <div class="custom-control custom-radio custom-control-inline custom-control-bg primary">
+                            <input type="radio" id="feedback-{{idx}}-no" name="feedback_{{idx}}_bool"
+                              class="custom-control-input" [(ngModel)]="response.value"
+                              (ngModelChange)="saveFeedbackResponse(response)" [required]="response.isRequired"
+                              [value]="false" #feedbackRadio="ngModel" />
+                            <label class="custom-control-label" for="feedback-{{idx}}-no">No</label>
+                            <div class="custom-bg"></div>
+                          </div>
+                          <button type="button" *ngIf="response.value !== null"
+                            (click)="response.value = null; saveFeedbackResponse(response)" class="btn btn-radio-clear">
+                            Clear
+                          </button>
+                          <div class="invalid-feedback">
+                            Please select an option.
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <ng-container *ngTemplateOutlet="activityFeed; context: { item: response, type: '1' }"></ng-container>
+                </ng-container>
+              </ds-card-content>
+            </ds-card>
+          </ng-container>
+        </div>
+      </div>
+    </ds-card-content>
+    <ds-card-footer>      
+      <div>
+            <button type="button" *ngIf="!evaluationDetail.hasSummaryData; else goToSummary" class="btn btn-primary" (click)="submitEvaluation(true)" [disabled]="disableSubmit">Continue</button>
+            <ng-template #goToSummary>
+                <button type="button" class="btn btn-primary" (click)="currSubmitState.handler(false)" [disabled]="disableSubmit">Continue</button>
+            </ng-template>
+      </div>
+      <button type="button" class="btn btn-outline-primary" (click)="returnLink()">Return to Review List</button>
+    </ds-card-footer>
+  </ds-card>
+</ng-template>
+
+<ng-template #approvalProcessRejected>
+    <ds-card mode="nobody">
+        <ds-card-header>
+            <ds-card-sub-header-title>Contents</ds-card-sub-header-title>
+            <ds-card-inline-content>
+                <div class="card-data bordered">
+                    <div *ngIf="rejectedItems" class="item">
+                        <button type="button" (click)="carSection.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' })" class="btn btn-link-secondary p-0">
+                            Change and Resubmit {{rejectedItems}}
+                        </button>
+                    </div>
+                    <div *ngIf="approvedWithEditsItems" class="item">
+                        <button type="button" (click)="aweSection.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' })" class="btn btn-link-secondary p-0">
+                            Approved With Edits {{approvedWithEditsItems}}
+                        </button>
+                    </div>
+                    <div *ngIf="approvedItems" class="item">
+                        <button type="button" (click)="approvedSection.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' })" class="btn btn-link-secondary p-0">
+                            Approved {{approvedItems}}
+                        </button>
+                    </div>
+                    <div *ngIf="lastModified">
+                        <span class="instruction-text">
+                            Last Saved {{ lastModified | date: 'MM/dd/yyyy' }} at {{ lastModified | date: 'h:mm a'}}
+                        </span>
+                    </div>
+                </div>
+            </ds-card-inline-content>
+            <ds-card-subtitle>
+                <span class="instruction-text">
+                    Please review the ratings and comments below from the approver. You will need to edit any items in the "Change and Resubmit" section.
+                    Once you have made edits, use the "Mark as resolved" checkbox for that item. To resubmit the evaluation, use the "Submit" button.
+                </span>
+            </ds-card-subtitle>
+        </ds-card-header>
+    </ds-card>
+    <ds-card>
+        <ds-card-content>
+            <div class="overflow-list mt-5">
+                <div *ngIf="rejectedItems">
+                    <h4 #carSection id="car-section">Change and Resubmit</h4>
+                    <div *ngIf="hasCompetencies">
+                        <ng-container *ngTemplateOutlet="rejectedCompetency"></ng-container>
+                    </div>
+                    <div *ngIf="hasGoals">
+                        <ng-container *ngTemplateOutlet="rejectedGoal"></ng-container>
+                    </div>
+                    <div *ngIf="hasFeedback">
+                        <ng-container *ngTemplateOutlet="rejectedFeedback"></ng-container>
+                    </div>
+                </div>
+                <div *ngIf="approvedWithEditsItems">
+                    <h4 #aweSection id="awe-section">Approved with edits</h4>
+                    <div *ngIf="hasCompetencies">
+                        <ng-container *ngTemplateOutlet="approvedCompetency; context: { isEdited: true }"></ng-container>
+                    </div>
+                    <div *ngIf="hasGoals">
+                        <ng-container *ngTemplateOutlet="approvedGoal; context: { isEdited: true }"></ng-container>
+                    </div>
+                    <div *ngIf="hasFeedback">
+                        <ng-container *ngTemplateOutlet="approvedFeedback; context: { isEdited: true }"></ng-container>
+                    </div>
+                </div>
+                <div *ngIf="approvedItems">
+                    <h4 #approvedSection id="approved-section">Approved</h4>
+                    <div *ngIf="hasCompetencies">
+                        <ng-container *ngTemplateOutlet="approvedCompetency; context: { isEdited: false }"></ng-container>
+                    </div>
+                    <div *ngIf="hasGoals">
+                        <ng-container *ngTemplateOutlet="approvedGoal; context: { isEdited: false }"></ng-container>
+                    </div>
+                    <div *ngIf="hasFeedback">
+                        <ng-container *ngTemplateOutlet="approvedFeedback; context: { isEdited: false }"></ng-container>
+                    </div>
+                </div>
+            </div>
+        </ds-card-content>
+        <ds-card-footer>            
+            <div>
+                <button type="button" *ngIf="!evaluationDetail.hasSummaryData; else goToSummary" class="btn btn-primary" (click)="submitEvaluation(true)" [disabled]="disableSubmit">Submit</button>
+                <ng-template #goToSummary>
+                    <button type="button" class="btn btn-primary" (click)="currSubmitState.handler(false)" [disabled]="disableSubmit">Submit</button>
+                </ng-template>
+            </div>
+            <button type="button" class="btn btn-outline-primary" (click)="returnLink()">Return to Review List</button>
+        </ds-card-footer>
+    </ds-card>
+</ng-template>
+
+<ng-template #approvedCompetency let-isEdited="isEdited">
+    <ds-card 
+        *ngFor="let item of castItemsAsType() | status: ApprovalProcessStatus.Approved:isEdited; let compIx = index;"
+        [class.clickable]="true"
+        [class.hoverable]="true" 
+        mode="widget-nobody" 
+        [color]="item.approvalColor()" 
+        [collapse]="true" 
+        (click)="selectCompetencyEvaluation(item)"  
+        [expanded]="item.isActive" 
+        [hover]="true" 
+        #compCard>
+        <div ds-card-icon>{{item.competency.isCore ? 'supervisor_account' : 'assignment_ind'}}</div>
+        <ds-card-header>
+            <ds-card-section-title class="bold pr-6 ">
+                {{ item.competency.name }}
+            </ds-card-section-title>
+            <ds-card-inline-content>
+                <ng-container *ngIf="item.hasContent || item.isActive">
+                    <ng-container>
+                        <div class="star-rating sm">
+                            <ng-container *ngFor="let r of ratings; let i = index;">
+                                <input id="comp-{{compIx}}_{{i}}" type="radio" class="star-radio" name="comp-ratings-{{compIx}}"
+                                    [value]="r.rating" [(ngModel)]="item.ratingValue" disabled />
+                                <label class="star" for="comp-{{compIx}}_{{i}}">
+                                    <mat-icon class="filled">star</mat-icon>
+                                    <mat-icon class="outline-view">star</mat-icon>
+                                    <mat-icon class="outline">star_border</mat-icon>
+                                </label>
+                            </ng-container>
+                        </div>
+                        <span class="instruction-text rating-label-width" >{{ getRatingLabel(item.ratingValue) }}</span>
+                    </ng-container>
+                </ng-container>
+            </ds-card-inline-content>
+            <ds-card-title-action *ngIf="!item.isActive && !item.hasContent && !isReadOnly">
+                <button mat-icon-button
+                        (click)="$event.stopPropagation(); removeCompetencyEvaluation(item.competency)"
+                        *ngIf="false"
+                        type="button"
+                        class="btn btn-icon sm hover-show"
+                        matTooltip="Remove from evaluation">
+                    <mat-icon>clear</mat-icon>
+                </button>
+            </ds-card-title-action>
+            <ds-card-subtitle *ngIf="!item.isActive">
+                <hr class="mt-4 mb-2" />
+                <label class="d-block">Comments</label>
+                <div class="text-muted" *ngIf="item.competency.comment" 
+					[innerHtml]="item.competency.comment.description | formatComment ">
+                </div>
+                <div class="text-muted" *ngIf="!item.competency.comment">
+                    No Comment
+                </div>
+            </ds-card-subtitle>
+        </ds-card-header>
+        <ds-card-content (click)="$event.stopPropagation()" >
+            <ng-container *ngIf="!isReadOnly || item.isWithoutComment || (isSubmitted && !item.isComplete)">
+                <hr class="mt-0 mb-3"/>
+                <div class="text-muted">
+                    {{ item.competency.description }}
+                </div> 
+                <hr class="mt-3"/>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label>Final Comment</label>
+                            <textarea #compComment rows="5" class="form-control" [(ngModel)]="item.comments" (blur)="saveCompetencyEvaluation(item, compIx)" disabled></textarea>
+                        </div>
+                    </div>
+                </div>
+                <ng-container *ngTemplateOutlet="activityFeed; context: { item: item, type: '2' }"></ng-container>
+            </ng-container>
+        </ds-card-content>
+    </ds-card>
+</ng-template>
+
+<ng-template #approvedGoal let-isEdited="isEdited">
+    <ds-card 
+        *ngFor="let item of goalItems | status: ApprovalProcessStatus.Approved:isEdited; let goalIx = index;"
+        [class.clickable]="true"
+        [class.hoverable]="true"
+        mode="widget-nobody"
+        [color]="approvalColor(item)"
+        [collapse]="true"
+        (click)="selectGoalEvaluation(item)"
+        [expanded]="item.isActive"
+        [hover]="true"
+        #goalCard>
+        <div ds-card-icon>track_changes</div>
+        <ds-card-header>
+            <ds-card-section-title class="bold pr-6">
+                {{ item.goal.title }}
+            </ds-card-section-title>
+            <ds-card-inline-content>
+                <span *ngIf="!item.hasContent && !item.isActive" class="font-italic" [ngClass]="isSubmitted ? 'text-danger' : 'text-muted'">Click to add ratings and comments</span>
+                <ng-container *ngIf="item.hasContent || item.isActive">
+                    <ng-container>
+                        <div class="star-rating sm">
+                            <ng-container *ngFor="let r of ratings; let i = index;">
+                                <input id="goal-{{goalIx}}_{{i}}" type="radio" class="star-radio" name="goal-ratings-{{goalIx}}"
+                                    [value]="r.rating" [(ngModel)]="item.ratingValue" disabled />
+                                <label class="star" for="goal-{{goalIx}}_{{i}}">
+                                    <mat-icon class="filled">star</mat-icon>
+                                    <mat-icon class="outline-view">star</mat-icon>
+                                    <mat-icon class="outline">star_border</mat-icon>
+                                </label>
+                            </ng-container>
+                        </div>
+                        <span class="instruction-text rating-label-width" >{{ getRatingLabel(item.ratingValue) }}</span>
+                    </ng-container>
+                </ng-container>
+            </ds-card-inline-content>
+            <ds-card-title-right-content class="align-self-center">
+              <div *ngIf="item.goal.oneTimeEarningName" class="badge badge-pill badge-success">{{item.goal.oneTimeEarningName}}</div>
+            </ds-card-title-right-content>
+            <ds-card-title-action *ngIf="!item.isActive && !item.hasContent && !isReadOnly">
+                <button (click)="$event.stopPropagation(); removeGoalEvaluation(item.goal)" *ngIf="false" mat-icon-button type="button" class="btn btn-icon sm hover-show"
+                        matTooltip="Remove from evaluation">
+                    <mat-icon>clear</mat-icon>
+                </button>
+            </ds-card-title-action>
+            <ds-card-subtitle *ngIf="!item.isActive && item.goal.comment">
+                <hr class="mt-4 mb-2" />
+                <label class="d-block">Comments</label>
+                <div class="text-muted" 
+					[innerHtml]="item.goal.comment.description | formatComment ">
+                </div>
+            </ds-card-subtitle>
+        </ds-card-header>
+        <ds-card-content (click)="$event.stopPropagation()">
+            <ng-container>
+                <hr class="mt-0 mb-3" />
+                <div class="row">
+                    <div class="col-sm-8">
+                        <div class="card-data bordered">
+                            <div class="item" *ngIf="item.goal.startDate">
+                                <label>START:</label>
+                                {{ item.goal.startDate | date: 'MM/dd/yyyy' }}
+                            </div>
+                            <div class="item" *ngIf="item.goal.dueDate">
+                                <label>DUE:</label>
+                                {{ item.goal.dueDate | date: 'MM/dd/yyyy' }}
+                            </div>
+                            <div class="item">
+                                <label>SUBMITTED:</label>
+                                {{ item.goal.completionDate ? (item.goal.completionDate | date: 'MM/dd/yyyy') : 'Not Complete' }}
+                            </div>
+                            <div class="item">
+                                <label>WEIGHT:</label>
+                                {{ item.goal.weight ? (item.goal.weight) : 'Not Weighted' }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4 align-self-center">
+                        <div [style.minWidth]="'300px'">
+                            <ds-progress [color]="item.goal.progress === 100 ? 'success': 'info'"
+                                        [label]="item.goal.progress + '% Complete'"
+                                        [value]="item.goal.progress"></ds-progress>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-muted" *ngIf="item.goal.description"
+                    [innerHtml]=" item.goal.description | formatComment "></div>
+                <ng-container *ngTemplateOutlet="goalTasksTemplate; context: { $implicit: item.goal.tasks }"></ng-container>
+                <hr *ngIf="!item.goal.tasks || item.goal.tasks.length == 0"  class="mt-3" />
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label>Comment</label>
+                            <textarea #goalComment rows="5" class="form-control" [(ngModel)]="item.comments" disabled></textarea>
+                            <div class="invalid-feedback">
+                                Please add a comment.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <ng-container *ngTemplateOutlet="activityFeed; context: { item: item, type: '0' }"></ng-container>
+            </ng-container>
+        </ds-card-content>
+    </ds-card>
+</ng-template>
+
+<ng-template #approvedFeedback let-isEdited="isEdited">
+    <ng-container *ngFor="let response of evaluationDetail.feedbackResponses | status: ApprovalProcessStatus.Approved:isEdited; let idx = index;">
+        <ds-card 
+            mode="widget-nobody" 
+            (click)="selectResponseEvaluation(response)" 
+            [hover]="true"
+            [color]="approvalColor(response)" 
+            [class.clickable]="true" [class.hoverable]="true" 
+            [collapse]="true"
+            [expanded]="response.isActive">
+            <div ds-card-icon>360</div>
+            <ds-card-header>
+                <ds-card-section-title class="bold">
+                    {{ response.feedbackBody }}
+                </ds-card-section-title>
+                <ds-card-subtitle>
+                    <hr class="mt-4 mb-2" />
+                    <label class="d-block">Comments</label>
+                    <div class="text-muted"
+                        [innerHTML]="response.responseText()">
+                    </div>
+                </ds-card-subtitle>
+            </ds-card-header>
+            <ds-card-content (click)="$event.stopPropagation()">
+                <ng-container>
+                    <label>{{ response.feedbackBody }}</label>
+                    <span *ngIf="!response.isRequired" class="ml-1 instruction-text">Optional</span>
+                    <div class="row" [ngSwitch]="response.fieldType">
+                        <div class="col-12" *ngSwitchCase="FieldType.Text">
+                            <div class="form-group">
+                                <textarea rows="5" class="form-control" [(ngModel)]="response.value"
+                                    [required]="response.isRequired" name="feedbackText_{{idx}}" disabled>
+                            </textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-xl-4" *ngSwitchCase="FieldType.List">
+                            <div class="form-group">
+                                <select class="custom-select" [compareWith]="feedbackListItemCompare"
+                                    [(ngModel)]="response.value" [required]="response.isRequired"
+                                    name="feedbackItem_{{idx}}" disabled>
+                                    <option [value]=""></option>
+                                    <option *ngFor="let item of response.feedbackItems" [ngValue]="item">{{item.itemText}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-xl-4" *ngSwitchCase="FieldType.Date">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input matInput class="form-control" [matDatepicker]="feedbackDatePicker"
+                                        [(ngModel)]="response.value" name="feedbackDate_{{idx}}" disabled />
+                                    <div class="input-group-append">
+                                        <mat-datepicker-toggle matSuffix [for]="feedbackDatePicker"
+                                            class="input-group-text date">
+                                            <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #feedbackDatePicker></mat-datepicker>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12" *ngSwitchCase="FieldType.Boolean">
+                            <div class="form-group"
+                                [class.is-invalid]="feedbackRadio.invalid && (feedbackRadio.touched || isSubmitted)">
+                                <div class="custom-control custom-radio custom-control-inline custom-control-bg primary">
+                                    <input type="radio" id="feedback-{{idx}}-yes" name="feedback_{{idx}}_bool"
+                                        class="custom-control-input" [(ngModel)]="response.value"
+                                        (ngModelChange)="saveFeedbackResponse(response)" [required]="response.isRequired"
+                                        [value]="true" #feedbackRadio="ngModel" disabled />
+                                    <label class="custom-control-label" for="feedback-{{idx}}-yes">Yes</label>
+                                    <div class="custom-bg"></div>
+                                </div>
+                                <div class="custom-control custom-radio custom-control-inline custom-control-bg primary">
+                                    <input type="radio" id="feedback-{{idx}}-no" name="feedback_{{idx}}_bool"
+                                        class="custom-control-input" [(ngModel)]="response.value"
+                                        (ngModelChange)="saveFeedbackResponse(response)" [required]="response.isRequired"
+                                        [value]="false" #feedbackRadio="ngModel" disabled />
+                                    <label class="custom-control-label" for="feedback-{{idx}}-no">No</label>
+                                    <div class="custom-bg"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <ng-container *ngTemplateOutlet="activityFeed; context: { item: response, type: '1' }"></ng-container>
+                </ng-container>
+            </ds-card-content>
+        </ds-card>
+    </ng-container>
+</ng-template>
+
+<ng-template #rejectedCompetency>
+    <ds-card 
+        *ngFor="let item of competencyItems | status: ApprovalProcessStatus.Null; let compIx = index;"
+        [class.clickable]="true"
+        [class.hoverable]="true" 
+        mode="widget-nobody" 
+        [color]="item.approvalColor()" 
+        [collapse]="true" 
+        (click)="selectCompetencyEvaluation(item)"  
+        [expanded]="item.isActive" 
+        [hover]="true" 
+        #compCard>
+        <div ds-card-icon>{{item.competency.isCore ? 'supervisor_account' : 'assignment_ind'}}</div>
+        <ds-card-header>
+            <ds-card-section-title class="bold pr-6 ">
+                {{ item.competency.name }}
+            </ds-card-section-title>
+            <ds-card-inline-content>
+                <ng-container *ngIf="item.hasContent || item.isActive">
+                    <div (click)="item.isActive && $event.stopPropagation()" [class.star-select]="item.isActive" class="star-rating sm">
+                        <ng-container *ngFor="let r of ratings; let i = index;">
+                            <input id="comp-rej-{{compIx}}_{{i}}"
+                                type="radio"
+                                class="star-radio"
+                                name="comp-ratings-{{compIx}}"
+                                [value]="r.rating"
+                                [(ngModel)]="item.ratingValue"
+                                [disabled]="!item.isActive"
+                                (ngModelChange)="saveCompetencyEvaluation(item, compIx)" />
+                            <label class="star" for="comp-rej-{{compIx}}_{{i}}" (mouseover)="item.hoverRating = r" (mouseout)="item.hoverRating = null">
+                                <mat-icon class="filled">star</mat-icon>
+                                <mat-icon class="outline-view">star</mat-icon>
+                                <mat-icon class="outline">star_border</mat-icon>
+                            </label>
+                        </ng-container>
+                    </div>
+                    <span class="instruction-text rating-label-width" >{{ item.hoverRating && item.isActive ? item.hoverRating.label : (item.selectedRating ? item.selectedRating.label : "") }}</span>
+                </ng-container>
+            </ds-card-inline-content>
+            <ds-card-title-right-content>
+                <div class="d-flex" (click)="$event.stopPropagation()">
+                    <span [ngClass]="[item.isActive ? 'opacity-100' : 'opacity-0' ]" *ngIf="item.isActive" class="font-sm instruction-text transition-opacity save-width">{{ item.isLoading ? 'Saving...' : (item.hasChanges ? 'Pending...' : 'Saved') }}</span>
+                    <label class="circle-checkbox clickable" for="resolve-comp-{{compIx}}">
+                        <input type="checkbox" id="resolve-comp-{{compIx}}" (click)="updateApprovalStatus(item, -1, 2)" [disabled]="item.isWithoutComment" [checked]="item.approvalProcessStatusId == null" >
+                        <div class="svg">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="checked"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="enabled"><path d="M0 0h24v24H0z" fill="none"/><path d="M7 11v2h10v-2H7zm5-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                        </div>
+                        <div class="circle-checkbox-label">
+                            Mark as resolved
+                        </div>
+                    </label>
+                </div>
+            </ds-card-title-right-content>
+            <ds-card-title-action *ngIf="!item.isActive && !item.hasContent && !isReadOnly">
+                <button mat-icon-button
+                        (click)="$event.stopPropagation(); removeCompetencyEvaluation(item.competency)"
+                        *ngIf="false"
+                        type="button"
+                        class="btn btn-icon sm hover-show"
+                        matTooltip="Remove from evaluation">
+                    <mat-icon>clear</mat-icon>
+                </button>
+            </ds-card-title-action>
+            <ds-card-subtitle *ngIf="!item.isActive">
+                <hr class="mt-4 mb-2" />
+                <label class="d-block">Comments</label>
+                <div class="text-muted" *ngIf="item.competency.comment">
+                    {{ item.competency.comment.description }}
+                </div>
+                <div class="text-muted" *ngIf="!item.competency.comment">
+                    No Comment
+                </div>
+            </ds-card-subtitle>
+        </ds-card-header>
+        <ds-card-content (click)="$event.stopPropagation()" >
+            <ng-container *ngIf="!isReadOnly || item.isWithoutComment || (isSubmitted && !item.isComplete)">
+                <hr class="mt-0 mb-3"/>
+                <div class="text-muted" 
+					[innerHtml]="item.competency.description | formatComment ">
+                </div> 
+                <hr class="mt-3"/>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label>Final Comment</label>
+                            <textarea #compComment rows="5" class="form-control" [(ngModel)]="item.comments" (blur)="saveCompetencyEvaluation(item, compIx)"
+                            [attr.class]="item.isWithoutComment || (isSubmitted && !item.isComplete) ? 'form-control is-invalid' : 'form-control'"></textarea>
+                            <div class="invalid-feedback">
+                                A comment is required based on the rating.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <ng-container *ngTemplateOutlet="activityFeed; context: { item: item, type: '2' }"></ng-container>
+            </ng-container>
+        </ds-card-content>
+    </ds-card>
+</ng-template>
+
+<ng-template #rejectedGoal>
+    <ds-card 
+        *ngFor="let item of goalItems | status: ApprovalProcessStatus.Null; let goalIx = index;"
+        [class.clickable]="true"
+        [class.hoverable]="true"
+        mode="widget-nobody"
+        [color]="approvalColor(item)"
+        [collapse]="true"
+        (click)="selectGoalEvaluation(item)"
+        [expanded]="item.isActive"
+        [hover]="true"
+        #goalCard>
+        <div ds-card-icon>track_changes</div>
+        <ds-card-header>
+            <ds-card-section-title class="bold pr-6">
+                {{ item.goal.title }}
+            </ds-card-section-title>
+            <ds-card-inline-content>
+                <span *ngIf="!item.hasContent && !item.isActive" class="font-italic" [ngClass]="isSubmitted ? 'text-danger' : 'text-muted'">Click to add ratings and comments</span>
+                <ng-container *ngIf="item.hasContent || item.isActive">
+                    <div (click)="item.isActive && $event.stopPropagation()" [class.star-select]="item.isActive" class="star-rating sm">
+                        <ng-container *ngFor="let r of ratings; let i = index;">
+                            <input id="goal-{{goalIx}}_{{i}}"
+                                type="radio"
+                                class="star-radio"
+                                name="goal-ratings-{{goalIx}}"
+                                [value]="r.rating"
+                                [(ngModel)]="item.ratingValue"
+                                [disabled]="!item.isActive"
+                                (ngModelChange)="saveGoalEvaluation(item, goalIx)" />
+                            <label class="star" for="goal-{{goalIx}}_{{i}}" (mouseover)="item.hoverRating = r" (mouseout)="item.hoverRating = null">
+                                <mat-icon class="filled">star</mat-icon>
+                                <mat-icon class="outline-view">star</mat-icon>
+                                <mat-icon class="outline">star_border</mat-icon>
+                            </label>
+                        </ng-container>
+                    </div>
+                    <span class="instruction-text rating-label-width" >{{ item.hoverRating && item.isActive ? item.hoverRating.label : (item.selectedRating ? item.selectedRating.label : "") }}</span>
+                </ng-container>
+            </ds-card-inline-content>
+            <ds-card-title-right-content>
+                <div class="d-flex" (click)="$event.stopPropagation()">
+                    <span *ngIf="item.isActive" class="font-sm instruction-text save-width transition-opacity">{{ item.isLoading ? 'Saving...' : (item.hasChanges ? 'Pending...' : 'Saved') }}</span>
+                    <div *ngIf="item.goal.oneTimeEarningName" class="badge badge-pill badge-success align-self-center mr-2">{{item.goal.oneTimeEarningName}}</div>
+                    <label class="circle-checkbox clickable" for="resolve-goal-{{goalIx}}">
+                        <input type="checkbox" id="resolve-goal-{{goalIx}}" (click)="updateApprovalStatus(item, -1, 0)" [disabled]="item.isWithoutComment" [checked]="item.approvalProcessStatusId == null && !isWithoutComment" >
+                        <div class="svg">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="checked"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="enabled"><path d="M0 0h24v24H0z" fill="none"/><path d="M7 11v2h10v-2H7zm5-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                        </div>
+                        <div class="circle-checkbox-label">
+                            Mark as resolved
+                        </div>
+                    </label>
+                </div>
+            </ds-card-title-right-content>
+            <ds-card-title-action *ngIf="!item.isActive && !item.hasContent && !isReadOnly">
+                <button (click)="$event.stopPropagation(); removeGoalEvaluation(item.goal)" *ngIf="false" mat-icon-button type="button" class="btn btn-icon sm hover-show"
+                        matTooltip="Remove from evaluation">
+                    <mat-icon>clear</mat-icon>
+                </button>
+            </ds-card-title-action>
+            <ds-card-subtitle *ngIf="!item.isActive && item.goal.comment">
+                <hr class="mt-4 mb-2" />
+                <label class="d-block">Comments</label>
+                <div class="text-muted" 
+					[innerHtml]="item.goal.comment.description | formatComment ">
+                </div>
+            </ds-card-subtitle>
+            <ds-card-subtitle *ngIf="(item.isWithoutComment || (isSubmitted && !item.isComplete)) && !item.isActive">
+                <hr class="mt-4 mb-2" />
+                <label class="d-block">Comments </label>
+                <span class="font-italic text-danger">Please enter comments in order to submit the evaluation.</span>
+            </ds-card-subtitle>
+        </ds-card-header>
+        <ds-card-content (click)="$event.stopPropagation()">
+            <ng-container>
+                <hr class="mt-0 mb-3" />
+                <div class="row">
+                    <div class="col-sm-8">
+                        <div class="card-data bordered">
+                            <div class="item" *ngIf="item.goal.startDate">
+                                <label>START:</label>
+                                {{ item.goal.startDate | date: 'MM/dd/yyyy' }}
+                            </div>
+                            <div class="item" *ngIf="item.goal.dueDate">
+                                <label>DUE:</label>
+                                {{ item.goal.dueDate | date: 'MM/dd/yyyy' }}
+                            </div>
+                            <div class="item">
+                                <label>SUBMITTED:</label>
+                                {{ item.goal.completionDate ? (item.goal.completionDate | date: 'MM/dd/yyyy') : 'Not Complete' }}
+                            </div>
+                            <div class="item">
+                                <label>WEIGHT:</label>
+                                {{ item.goal.weight ? (item.goal.weight) : 'Not Weighted' }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4 align-self-center">
+                        <div [style.minWidth]="'300px'">
+                            <ds-progress [color]="item.goal.progress === 100 ? 'success': 'info'"
+                                        [label]="item.goal.progress + '% Complete'"
+                                        [value]="item.goal.progress"></ds-progress>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-muted" *ngIf="item.goal.description"
+                    [innerHtml]=" item.goal.description | formatComment "></div>
+                <ng-container *ngTemplateOutlet="goalTasksTemplate; context: { $implicit: item.goal.tasks }"></ng-container>
+                <hr *ngIf="!item.goal.tasks || item.goal.tasks.length == 0"  class="mt-3" />
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label>Comment</label>
+                            <textarea #goalComment rows="5" class="form-control" [attr.class]="item.isWithoutComment || (isSubmitted && !item.isComplete) ? 'form-control is-invalid' : 'form-control'" [(ngModel)]="item.comments" (blur)="saveGoalEvaluation(item, goalIx)"></textarea>
+                            <div class="invalid-feedback">
+                                A comment is required based on the rating.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <ng-container *ngTemplateOutlet="activityFeed; context: { item: item, type: '0' }"></ng-container>
+            </ng-container>
+        </ds-card-content>
+    </ds-card>
+</ng-template>
+
+<ng-template #rejectedFeedback>
+    <ng-container *ngFor="let response of evaluationDetail.feedbackResponses | status: ApprovalProcessStatus.Null; let idx = index;">
+        <ds-card 
+            mode="widget-nobody" 
+            (click)="response.isActive = !response.isActive" 
+            [hover]="true"
+            [color]="approvalColor(response)" 
+            [class.clickable]="true" [class.hoverable]="true" 
+            [collapse]="true"
+            [expanded]="response.isActive">
+            <div ds-card-icon>360</div>
+            <ds-card-header>
+                <ds-card-section-title class="bold">
+                    {{ response.feedbackBody }}
+                </ds-card-section-title>
+                <ds-card-title-right-content>
+                    <div class="d-flex" (click)="$event.stopPropagation()">
+                        <span *ngIf="response.isActive" class="font-sm text-muted font-italic save-width">
+                            {{ response.isLoading ? 'Saving...' : (response.oldVal != response.value ? 'Pending...' : 'Saved') }}
+                        </span>
+                        <label class="circle-checkbox clickable" for="resolve-fb-{{idx}}">
+                            <input type="checkbox" id="resolve-fb-{{idx}}" (click)="updateApprovalStatus(response, -1, 1)" [checked]="response.approvalProcessStatusId == null">
+                            <div class="svg">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="checked"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="enabled"><path d="M0 0h24v24H0z" fill="none"/><path d="M7 11v2h10v-2H7zm5-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                            </div>
+                            <div class="circle-checkbox-label">
+                                Mark as resolved
+                            </div>
+                        </label>
+                    </div>
+                </ds-card-title-right-content>
+                <ds-card-subtitle>
+                    <hr class="mt-4 mb-2" />
+                    <label class="d-block">Comments</label>
+                    <div class="text-muted"
+                        [innerHTML]="response.responseText()">
+                    </div>
+                </ds-card-subtitle>
+            </ds-card-header>
+            <ds-card-content (click)="$event.stopPropagation()">
+                <ng-container>
+                    <label>{{ response.feedbackBody }}</label>
+                    <span *ngIf="!response.isRequired" class="ml-1 instruction-text">Optional</span>
+                    <div class="row" [ngSwitch]="response.fieldType">
+                        <div class="col-12" *ngSwitchCase="FieldType.Text">
+                            <div class="form-group">
+                                <textarea rows="5" class="form-control" [(ngModel)]="response.value"
+                                    [required]="response.isRequired" name="feedbackText_{{idx}}"
+                                    (ngModelChange)="isFeedbackPending = true" dsFormControlValidator
+                                    [dsFormControlSubmitted]="isSubmitted" (blur)="saveFeedbackResponse(response)">
+                            </textarea>
+                                <div class="invalid-feedback">
+                                    Please enter a response.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-xl-4" *ngSwitchCase="FieldType.List">
+                            <div class="form-group">
+                                <select class="custom-select" [compareWith]="feedbackListItemCompare"
+                                    [(ngModel)]="response.value" [required]="response.isRequired"
+                                    name="feedbackItem_{{idx}}" dsFormControlValidator
+                                    [dsFormControlSubmitted]="isSubmitted" (ngModelChange)="isFeedbackPending = true"
+                                    (blur)="saveFeedbackResponse(response)">
+                                    <option [value]=""></option>
+                                    <option *ngFor="let item of response.feedbackItems" [ngValue]="item">{{item.itemText}}
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Please select an option.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12" *ngSwitchCase="FieldType.MultipleSelection">
+                            <div class="d-flex mb-4">
+                                <div class="col-sm-auto" *ngFor="let item of response.feedbackItems">
+                                    <label class="custom-control custom-checkbox">
+                                        <input id="chkBox{{item.feedbackItemId}}" 
+                                            type="checkbox" 
+                                            class="custom-control-input change-track" 
+                                            name="chkBox-{{item.feedbackItemId}}-{{idx}}"
+                                            [(ngModel)]="item.checked"
+                                            (change)="updateMultiselectResponse(response)"/>
+                                        <label class="custom-control-label" for="chkBox{{item.feedbackItemId}}">
+                                            {{item.itemText}}
+                                        </label>
+                                    </label>
+                                </div>
+                                <input name="feedbackCheckedItems-{{idx}}"
+                                    type="text" style="display:none"
+                                    [(ngModel)]="response.value"
+                                    [required]="response.isRequired"
+                                    aria-describedby="feedbackMultiSelectResponse"
+                                    (ngModelChange)="isFeedbackPending = true"
+                                    dsFormControlValidator
+                                    [dsFormControlSubmitted]="isSubmitted"
+                                     />
+                                <div class="invalid-feedback">
+                                    Please select an option.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-xl-4" *ngSwitchCase="FieldType.Date">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input matInput class="form-control" [matDatepicker]="feedbackDatePicker"
+                                        [(ngModel)]="response.value" [required]="response.isRequired"
+                                        (ngModelChange)="isFeedbackPending = true"
+                                        (dateChange)="saveFeedbackResponse(response)" name="feedbackDate_{{idx}}"
+                                        dsFormControlValidator [dsFormControlSubmitted]="isSubmitted" />
+                                    <div class="input-group-append">
+                                        <mat-datepicker-toggle matSuffix [for]="feedbackDatePicker"
+                                            class="input-group-text date">
+                                            <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #feedbackDatePicker></mat-datepicker>
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        Please enter a date.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12" *ngSwitchCase="FieldType.Boolean">
+                            <div class="form-group"
+                                [class.is-invalid]="feedbackRadio.invalid && (feedbackRadio.touched || isSubmitted)">
+                                <div class="custom-control custom-radio custom-control-inline custom-control-bg primary">
+                                    <input type="radio" id="feedback-{{idx}}-yes" name="feedback_{{idx}}_bool"
+                                        class="custom-control-input" [(ngModel)]="response.value"
+                                        (ngModelChange)="saveFeedbackResponse(response)" [required]="response.isRequired"
+                                        [value]="true" #feedbackRadio="ngModel" />
+                                    <label class="custom-control-label" for="feedback-{{idx}}-yes">Yes</label>
+                                    <div class="custom-bg"></div>
+                                </div>
+                                <div class="custom-control custom-radio custom-control-inline custom-control-bg primary">
+                                    <input type="radio" id="feedback-{{idx}}-no" name="feedback_{{idx}}_bool"
+                                        class="custom-control-input" [(ngModel)]="response.value"
+                                        (ngModelChange)="saveFeedbackResponse(response)" [required]="response.isRequired"
+                                        [value]="false" #feedbackRadio="ngModel" />
+                                    <label class="custom-control-label" for="feedback-{{idx}}-no">No</label>
+                                    <div class="custom-bg"></div>
+                                </div>
+                                <button type="button" *ngIf="response.value !== null" (click)="response.value = null; saveFeedbackResponse(response)" class="btn btn-radio-clear">
+                                    Clear
+                                </button>
+                                <div class="invalid-feedback">
+                                    Please select an option.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <ng-container *ngTemplateOutlet="activityFeed; context: { item: response, type: '1' }"></ng-container>
+                </ng-container>
+            </ds-card-content>
+        </ds-card>
+    </ng-container>
+</ng-template>
+
+<ng-template #activityFeed let-item="item" let-type="type">
+    <div class="list-bordered list-bordered-large">
+        <div class="header d-flex justify-content-between">
+            <span>Activity</span>
+            <button  type="button" class="btn btn-list py-0" (click)="addRemark(item)" [disabled]="remarkEditMode" 
+                *ngIf="!isOriginalEvaluator || (isOriginalEvaluator && (item.approvalProcessStatusId == 0 || item.approvalProcessStatusId == null ))">
+                <i class="material-icons">add</i> Note
+            </button>
+        </div>
+        <ng-container *ngIf="(item.activityFeed != null && item.activityFeed.length); else noRemarksMessage">
+            <div class="body notes-overflow">
+                <div class="item-group" *ngFor="let r of item.activityFeed; let i=index">
+                    <div class="row align-items-center">
+                        <div class="col-sm-6 account-info">
+                            <i class="material-icons">account_circle</i>
+                            <div class="ds-item d-inline-block">
+                                <div class="ds-item-label bold">
+                                    {{r.user.firstName}} {{r.user.lastName}} 
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 d-flex justify-content-sm-end align-items-center">
+                            <span class="bold" [matTooltip]="r.addedDate | date:'h:mm aa'">{{r.addedDate | date:'mediumDate'}}</span>
+                            <!-- <div class="action-icons hover-show" *ngIf="user.userTypeId < 3"> -->
+                                
+                                <!-- <div class="no-action-placeholder" *ngIf="r.isSystemGenerated || remarkEditMode || (isOriginalEvaluator && item.approvalProcessStatusId == 1) || r.addedBy != user.userId"></div> -->
+                                <!-- <button *ngIf="!evaluationDetail.isEvalComplete && !remarkEditMode && !r.isSystemGenerated && (!isOriginalEvaluator || (isOriginalEvaluator && item.approvalProcessStatusId == 0)) && r.addedBy == user.userId" 
+                                    type="button" class="btn btn-link-secondary" [matMenuTriggerFor]="editActivityMenu">
+                                    <i class="material-icons md-18">more_vert</i>
+                                </button>
+                                <mat-menu #editActivityMenu="matMenu">
+                                    <button mat-menu-item type="button" (click)="enableRemarkEdit(r)">
+                                        Edit
+                                    </button>
+                                    <button mat-menu-item type="button" *ngIf="r.remarkId != null && r.remarkId > 0" (click)="deleteRemark(item, r, i, type)">
+                                        Delete
+                                    </button>
+                                </mat-menu> -->
+                            <!-- </div> -->
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12" *ngIf="!r.editItem || evaluationDetail.isEvalComplete; else editRemark" >{{r.description}}</div>
+                        <ng-template #editRemark>
+                            <div class="li-edit-item editable-input col-12">
+                                <textarea #remark [(ngModel)]="r.description" minlength="1" required class="form-control"></textarea>
+                                <div class="invalid-feedback">
+                                    Please add a comment.
+                                </div>
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-primary" [disabled]="r.description == '' || r.description == null" (click)="updateExistingRemark(item, r, i, type)">
+                                        <i class="material-icons">done</i>
+                                    </button>
+                                </div>
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-outline-primary" (click)="clearRemark(item,i)">
+                                        <i class="material-icons">clear</i>
+                                    </button>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+        <ng-template #noRemarksMessage>
+            <div class="body">
+                <div class="empty-state">There is no activity to display.</div>
+            </div>
+        </ng-template>
+    </div>
+</ng-template>

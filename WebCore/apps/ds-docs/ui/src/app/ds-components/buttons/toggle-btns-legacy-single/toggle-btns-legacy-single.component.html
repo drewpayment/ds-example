@@ -1,0 +1,15 @@
+<div class="btn-group btn-toggle-group">
+    <label class="btn btn-legacy-toggle" 
+        *ngFor="let item of items"
+        for="{{item.id}}"
+        [class.active]="itemSelected == item"
+        [class.disabled]="item.disabled">
+        <input name="lengthOfTime"
+            type="radio"
+            value=""
+            id="{{item.id}}"
+            class="custom-control-input" 
+            (click)="changeToggle(this.item)"
+            [disabled]="item.disabled" /> {{item.lengthOfTime}}
+    </label> 
+</div>

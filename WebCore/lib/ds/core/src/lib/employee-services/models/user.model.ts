@@ -1,0 +1,35 @@
+export interface User {
+    userType: number;
+    firstName: string;
+    lastName: string;
+    userName: string;
+    password: string;
+    emailAddress: string;
+    secretQuestionId: number;
+    secretQuestionAnswer: string;
+    EmployeeId: number;
+    lastEmployeeId: number;
+    lastClientId: number
+    lastModifiedByUserId: number;
+    lastLoginDate: Date;
+    ipAddress: string;
+    viewEmployeePayTypes: number;
+    viewEmployeeRateTypes: number;    
+    isSecurityEnabled: boolean;
+    isPasswordEnabled: boolean;
+    isTimeclockEnabled: boolean;
+    isWageTaxHistoryEditable: boolean;
+    isEmployeeSelfServiceViewOnly: boolean;
+    isEmployeeSelfServiceOnly: boolean;
+    isReportingOnly: boolean;
+    isPayrollAccessBlocked: boolean;
+    isHrBlocked: boolean;
+    isEmployeeAccessOnly: boolean;
+    isApplicantTrackingAdmin: boolean;
+    isEditGlEnabled: boolean;
+    isAllowedToAddSystemAdmin: boolean;    
+    tempEnableFromDate: Date;
+    tempEnableToDate: Date;
+    timeoutMinutes: number;    
+    isUserDisabled: boolean;
+}

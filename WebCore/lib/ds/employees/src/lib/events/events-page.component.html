@@ -1,0 +1,16 @@
+<ds-employee-contact-info></ds-employee-contact-info>
+
+<ds-card color="secondary" border="top">
+  <ds-card-header>
+    <ds-card-header-title>Events</ds-card-header-title>
+  </ds-card-header>
+  <ds-card-content >
+    <ng-container *ngIf="!isLoading; else loadingScreen">
+        <ds-event-list [user]="userinfo" [employeeId]="employeeId" [isEssMode]="true"></ds-event-list>
+    </ng-container>
+  </ds-card-content>
+</ds-card>
+
+<ng-template #loadingScreen>
+  <ds-loading-message></ds-loading-message>
+</ng-template>

@@ -1,0 +1,44 @@
+<div *ngIf='!isLoading && !isWorkNumberLoading' mat-dialog-header>
+  <h2 class="dialog-title">
+    <img src="WebCore/Images/EquifaxLogo.png" alt='Equifax Logo' />
+  </h2>
+  <button type="button" class="close" (click)="close()">
+    <mat-icon>clear</mat-icon>
+  </button>
+</div>
+<form *ngIf='!isLoading && !isWorkNumberLoading'>
+  <div mat-dialog-content>
+    <p class="mb-4">Dominion is offering The Work Number® from Equifax to all clients at no extra cost. The Work Number responds to
+      employment and income requests from lenders and government agencies when your employees apply for loans, credit, or
+      government benefits. It frees up time for you while providing privacy and improved opportunities for credit and benefits
+      to your employees.
+    </p>
+
+        <div class="form-group ml-4" >
+          <div class="custom-control custom-radio">
+              <input type="radio" cdkFocusInitial id="yesJoin" selected name="joinEquifax" [(ngModel)]="isAccepted" class="custom-control-input"  [value]="1"> 
+              <label class="custom-control-label" for="yesJoin">Yes, {{clientData.clientName}} would like to use The Work Number® from Equifax
+              <ul>
+                <li>Direct any calls you may receive regarding verification to this site: <a href="https://www.theworknumber.com">https://www.theworknumber.com</a></li>
+              </ul>  
+              </label>
+          </div>
+          <div class="custom-control custom-radio">
+              <input type="radio" id="noJoin" name="joinEquifax" [(ngModel)]="isAccepted" class="custom-control-input" [value]="0">
+              <label class="custom-control-label" for="noJoin">No thank you; we do not want this integration at this time</label> 
+          </div>
+          <div class="invalid-feedback">
+              Please select an option.
+          </div>
+        </div>
+        <p *ngIf='!(workNumberPolicy === null)' class="detail font-xs">Your company setting was updated by {{workNumberPolicy.user.firstName}} {{workNumberPolicy.user.lastName}} on {{workNumberPolicy.modified | date}}.</p>
+        <div class="d-flex justify-content-between align-items-center">          
+          <p class="detail work-number-description font-xs">The Work Number® from Equifax is a registered trademark of TALX Corporation, a wholly owned subsidiary of Equifax Inc.<br/> 
+            Copyright © 2019, Equifax Inc., Atlanta, Georgia. All rights reserved.</p>
+            <img src="WebCore/Images/TheWorkNumberLogo.png" class="work-number-logo" alt='The Work Number® from Equifax' />
+        </div>
+  </div>
+  <div mat-dialog-actions class='bordered'>
+    <button type="button" class="btn btn-save" (click)="saveClose()" >Save</button>
+  </div>
+</form>

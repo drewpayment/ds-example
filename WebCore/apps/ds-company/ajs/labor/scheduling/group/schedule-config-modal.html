@@ -1,0 +1,65 @@
+﻿<div class="modal-header">
+    <h2>Schedule</h2>
+</div>
+<div class="modal-body" ng-form="scheduleForm">
+    <div class="row">
+        <div class="form-group col-sm-7" ng-class="{'has-error': scheduleForm.scheduleName.$invalid && (scheduleForm.scheduleName.$dirty || scheduleForm.$validationSubmitted)}" >
+            <label>
+                Schedule Name
+            </label>
+            <input
+            name="scheduleName"
+            class="form-control"
+            ng-model="schedule.name"
+            ds-auto-focus="true"
+            ng-required="true" />
+            <p class="text-muted italic">Create a unique name for the schedule.</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-1">
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="scheduleIsActive" ng-model="schedule.isActive">
+              <label class="custom-control-label" for="scheduleIsActive">Active</label>
+            </div>
+        </div>
+    </div>
+    <hr class="mt-0" />
+    <div class="row mb-4">
+        <div class="col-sm-7">
+            <h3>Groups to schedule</h3>
+        </div>
+        <div class="col-sm-5">
+            <div class="input-group" ng-form="newSubgroupForm">
+                <input name="name" class="form-control" ng-model="groupFilter.description" />
+                <div class="input-group-append">
+                    <button class="search" type="button">
+                        <i class="material-icons">search</i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row overflow-auto" style="max-height: 300px;">
+        <div class="col-sm-4" ng-repeat="group in groups | filter:groupFilter | orderBy:['description']">
+            <div
+                class="chip"
+                ng-class="{'chip-primary': group.isScheduled, 'chip-default': !group.isScheduled }"
+                ng-click="selectGroup(group)"
+                title="{{group.description}}">
+                <div class="chip-content">
+                    {{ group.description }}
+                </div>
+                <span class="chip-action with-icon">
+                    <i class="material-icons">
+                        {{ group.isScheduled ? 'check_circle' : 'panorama_fish_eye' }}
+                    </i>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer flex-row-reverse">
+    <button class="btn btn-save" ds-validation-submit="scheduleForm" ng-click="save()">Continue</button>
+    <button class="btn btn-cancel" ng-click="cancel()">Cancel</button>
+</div>

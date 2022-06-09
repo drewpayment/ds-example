@@ -1,0 +1,24 @@
+.full-size-chart-wrapper {
+  width: 100%;
+  text-align: center;
+}
+
+.multi-option-pie-chart,
+.single-option-pie-chart {
+  .donut-chart-wrapper {
+    position: relative;
+    margin-bottom: 0.5rem;
+  }
+}
+
+.multi-option-pie-chart {
+  .donut-chart-wrapper {
+    width: 180px;
+  }
+}
+
+.single-option-pie-chart {
+  .donut-chart-wrapper {
+    width: 200px;
+  }
+}

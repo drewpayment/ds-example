@@ -1,0 +1,79 @@
+.instruction-text {
+    color: $text-muted;
+    font-style: italic;
+    font-size: 0.85rem;
+}
+
+.text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.text-muted {
+    color: $text-muted;
+}
+
+.d-inline-block {
+    display: inline-block;
+}
+
+.mb-4 {
+    margin-bottom: 1rem;
+}
+.mr-2 {
+    margin-right: 0.5rem;
+}
+
+.d-flex {
+    display: flex !important;
+}
+
+.d-block {
+    display: block !important;
+}
+
+.justify-content-center {
+    justify-content: center;
+}
+
+.justify-content-between {
+    justify-content: space-between;
+}
+
+.justify-content-end {
+    justify-content: flex-end;
+}
+
+.align-items-center {
+    align-items: center;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.card-submit-btn {
+    width: 80vw;
+    border-radius: 25px;
+}
+
+.text-right {
+    text-align: right !important;
+}
+
+.overflow-auto {
+    overflow: auto;
+}
+
+.mat-card-actions {
+    padding: 1rem !important;
+}
+
+// Mirror an image/icon on it's Y axis
+.flip {
+    -moz-transform: scaleX(-1);
+    -o-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+}

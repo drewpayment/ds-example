@@ -1,0 +1,42 @@
+<div mat-dialog-header>
+    <h2 class="dialog-title">
+        Assign Competency Model
+    </h2>
+    <button type="button" class="close" (click)="onNoClick()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</div>
+<div  mat-dialog-content>
+    <form #filterForm="ngForm">
+        <div class="form-group">
+            <label class="form-control-label">Name</label>
+            <select 
+                class="form-control custom-select" 
+                [(ngModel)]="data.selectedModel"
+                name="model"
+                cdkFocusInitial>
+                <option value="0"></option>
+                <option [ngValue]="comp" *ngFor="let comp of data.models">
+                    {{ comp.name }}
+                </option>                       
+            </select>
+        </div>
+        <div class="form-group mb-0" *ngIf="data.selectedModel.name">
+            <label class="form-control-label">Competencies</label>
+            <ul *ngFor="let comp of data.selectedModel.competencies">
+                <li>{{comp.name}}</li>
+            </ul>
+        </div>
+    </form>
+</div>
+<div  mat-dialog-actions>
+    <button type="button"
+        class="btn btn-primary"
+        (click)="save()"
+    >Save</button>
+    <button type="button"
+        class="btn btn-cancel"
+        (click)="onNoClick()"
+    >Cancel</button>
+</div>
+    

@@ -1,0 +1,205 @@
+@import '../../../../../../../Styles/scss/_bootstrap-variables.scss';
+
+.date {
+  flex: 0 0 160px;
+}
+
+.punch-column {
+  flex: 1 0 150px;
+  flex-wrap: wrap;
+}
+
+.hours {
+  flex: 0 0 70px;
+}
+
+.tc-history-schedule {
+  flex: 1 0 120px;
+}
+
+.exceptions {
+  flex: 1 0 120px;
+}
+
+.notes {
+  flex: 1 0 120px;
+}
+
+
+
+// Reverse borders for Timecard history -- Can be revised once we don't populate same day in 2 different rows
+.time-card {
+  .mat-row:first-of-type {
+      border-top: 0;
+  }
+
+  .mat-row {
+      border-top: 1px solid $table-border-color;
+      border-bottom: none;
+  }
+
+  .mat-cell {
+    align-items: flex-start;
+  }
+
+  .child-row {
+    border-top: none;
+  }
+
+  .sub-total-row {
+    border-top: none;
+
+    .date,
+    .hours {
+      font-weight: 600;
+    }
+  }
+
+  .schedule-total-row {
+    border-top: 2px solid #D8D8D8;
+
+    & + .schedule-total-row:not(last-child) {
+      border-top: none;
+    }
+  }
+
+  .schedule-total {
+    background-color: $table-info-row-bg;
+    border-top: 2px solid #D8D8D8;
+  }
+}
+
+.punch-pair {
+  display: flex;
+  align-items: center;
+}
+
+.punch {
+  margin: .25rem 0;
+}
+
+.btn-punch {
+  padding: 0 .25rem;
+}
+
+.punch {
+  white-space: nowrap;
+}
+
+.btn-punch {
+  font-size: 0.75rem;
+  line-height: inherit;
+  min-width: inherit;
+  margin-left: 0.25rem;
+}
+
+@media screen and (max-width: 1196px) {
+  .card.card-table {
+    box-shadow: none;
+  }
+
+  .mat-table {
+    border: 0;
+    vertical-align: middle;
+  }
+
+  .mat-table caption {
+    font-size: 1em;
+  }
+
+  .mat-header-row {
+    display: none;
+  }
+
+  .mat-table .mat-row {
+    display: block;
+    border-bottom: 1px solid #ddd;
+    padding-top: 1rem;
+
+    &:hover {
+      background-color: transparent;
+    }
+
+    &:after {
+      display: none;
+    }
+  }
+
+  .punch-pair {
+    justify-content: flex-end;
+  }
+
+  .table-text-right.hours {
+    padding-right: 0.50rem !important;
+  }
+
+  .mat-table .mat-cell {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    min-height: 35px;
+    padding: 0 0.50rem 1rem; // Set padding to form
+    text-align: right;
+    &::before {
+      content: attr(data-label);
+      font-weight: normal;
+      margin-right: 10px;
+    }
+  }
+
+  // Reverse borders for Timecard history -- Can be revised once we don't populate same day in 2 different rows
+  .time-card {
+    .mat-row:first-of-type {
+      border-top: 0;
+    }
+
+    .mat-row {
+      border-top: 1px solid $table-border-color;
+      border-bottom: none;
+    }
+
+    .mat-cell {
+      align-items: flex-start;
+    }
+
+    .child-row {
+      border-top: none;
+    }
+
+    .sub-total-row {
+      border-top: none;
+
+      .date,
+      .hours {
+        font-weight: 600;
+      }
+    }
+  }
+
+  .mat-table {
+
+    .schedule-total-row,
+    .schedule-total {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+
+      .mat-cell {
+        justify-content: flex-end;
+
+        &::before {
+          display: none;
+        }
+
+        &:empty {
+          display: none;
+        }
+
+        &:first-child {
+          justify-content: flex-start;
+        }
+      }
+    }
+  }
+
+}

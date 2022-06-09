@@ -1,0 +1,57 @@
+<div mat-dialog-header>
+    <h2 class="dialog-title">Available Competencies</h2>
+    <button type="button" class="close" (click)="onNoClick()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</div>
+<div mat-dialog-content>
+    <ng-container *ngIf="hasCompetencies; else noCompetencies">
+        <div class="card card-table" >
+            <table class="table">
+                <thead class="table-header">
+                    <tr>
+                        <th width="40px">
+                            <div class="custom-control custom-checkbox">
+                                <input id="header-row-checkbox" type="checkbox" class="custom-control-input" (change)="selectAllCompetencies($event)" />
+                                <label class="custom-control-label" for="header-row-checkbox"></label>
+                            </div>
+                        </th>
+                        <th>
+                            Competency
+                        </th>
+                        <th>
+                            Description
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let c of competencies$ | async; let i = index">
+                        <td>
+                            <div class="custom-control custom-checkbox">
+                                <input 
+                                    [id]="'select_' + c.competencyId" 
+                                    type="checkbox" class="custom-control-input" 
+                                    [(ngModel)]="c.selected"
+                                />
+                                <label class="custom-control-label" [for]="'select_' + c.competencyId"></label>
+                            </div>
+                        </td>
+                        <td>
+                            {{c.name}}
+                        </td>
+                        <td>
+                            {{c.description}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </ng-container>
+    <ng-template #noCompetencies>
+        <div class="empty-state">There are no competencies to display.</div>
+    </ng-template>
+</div>
+<div mat-dialog-actions>
+    <button type="button" class="btn btn-primary" (click)="saveSelectedCompetencies()">Save</button>
+    <button type="button" class="btn btn-cancel" (click)="onNoClick()">Cancel</button>
+</div>

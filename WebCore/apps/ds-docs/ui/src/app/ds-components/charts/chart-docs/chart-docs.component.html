@@ -1,0 +1,128 @@
+<markdown ngPreserveWhitespaces>
+  # Charts 
+  
+  [Use ChartJs. Here are the docs](https://www.chartjs.org/docs/latest/)
+  [Angular ChartJs](https://openbase.io/js/ng2-charts/documentation)
+
+  ## Legends
+  This is a custom element that needs to be developed for each graph. 
+</markdown>
+    
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleLegend = !toggleLegend">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleLegend">
+  <div class="ui">
+    <ds-chart-legend></ds-chart-legend>
+  </div>
+  <div class="example">
+      <markdown src="app/ds-components/charts/chart-legend/chart-legend.component.html"></markdown>
+  </div>
+</div>
+
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleLegendLevels = !toggleLegendLevels">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleLegendLevels">
+  <div class="ui">
+    <ds-chart-legend-levels></ds-chart-legend-levels>
+  </div>
+  <div class="example">
+      <markdown src="app/ds-components/charts/chart-legend-levels/chart-legend-levels.component.html"></markdown>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+  ## Colors
+</markdown>
+
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleColors = !toggleColors">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleColors">
+  <div class="ui">
+      <ds-chart-colors></ds-chart-colors>
+  </div>
+  <div class="example">
+    <div class="ds-tabs">
+      <button class="tab" role="navigation" [class.active]="color == 1" (click)="color = 1">Baja Blast</button>
+      <button class="tab" role="navigation" [class.active]="color == 2" (click)="color = 2">Guacamole</button>
+      <button class="tab" role="navigation" [class.active]="color == 3" (click)="color = 3">Nacho Cheese</button>
+      <button class="tab" role="navigation" [class.active]="color == 4" (click)="color = 4">Yo Quiero Taco Bell</button>
+    </div>
+    <ng-container *ngIf="color == 1">
+       <markdown src="app/ds-components/charts/chart-colors/baja-blast/baja-blast.component.html"></markdown> 
+    </ng-container>
+    <ng-container *ngIf="color == 2">
+        <markdown src="app/ds-components/charts/chart-colors/guacamole/guacamole.component.html"></markdown> 
+    </ng-container>
+    <ng-container *ngIf="color == 3">
+        <markdown src="app/ds-components/charts/chart-colors/nacho-cheese/nacho-cheese.component.html"></markdown> 
+    </ng-container>
+    <ng-container *ngIf="color == 4">
+        <markdown src="app/ds-components/charts/chart-colors/yo-quiero-taco-bell/yo-quiero-taco-bell.component.html"></markdown> 
+    </ng-container>
+  </div>
+</div>
+
+<!-- 
+<markdown ngPreserveWhitespaces>
+  ## Analytics Widget
+</markdown>
+
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleWidget = !toggleWidget">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleWidget">
+  <div class="ui">
+      <ds-chart-widget></ds-chart-widget>
+  </div>
+  <div class="example">
+    <div class="ds-tabs">
+      <button class="tab" role="navigation" [class.active]="widgetHTMLActive" (click)="widgetHTMLActive = true">HTML</button>
+      <button class="tab" role="navigation" [class.active]="!widgetHTMLActive" (click)="widgetHTMLActive = false">TS</button>
+    </div>
+    <ng-container *ngIf="widgetHTMLActive">
+       <markdown src="app/ds-components/charts/chart-widget/chart-widget.component.html"></markdown> 
+    </ng-container>
+    <ng-container *ngIf="!widgetHTMLActive">
+        <markdown src="app/ds-components/charts/chart-widget/chart-widget.component.ts"></markdown> 
+    </ng-container>
+  </div>
+</div> -->
+
+<markdown ngPreserveWhitespaces>
+  ## Position
+
+  TODO: Right
+
+  ### Top
+  Add `center` to `ds-legend-group`
+</markdown>
+
+<div class="button-bar">
+    <button class="btn btn-icon" (click)="toggleLegendTop = !toggleLegendTop">
+      <mat-icon>code</mat-icon>
+      View Code
+    </button>
+  </div>
+  <div class="example-block" [class.open]="toggleLegendTop">
+    <div class="ui">
+      <ds-legend-center></ds-legend-center>
+    </div>
+    <div class="example">
+        <markdown src="app/ds-components/charts/legend-center/legend-center.component.html"></markdown>
+    </div>
+  </div>

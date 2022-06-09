@@ -1,0 +1,66 @@
+<div mat-dialog-header>
+    <h2 class="modal-title">
+        Import Chart Of Accounts
+    </h2>
+    <button type="button" class="close" (click)="clear()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</div>
+<div mat-dialog-content>
+    <div class="form-group" [formGroup]="form1">
+        <input name="alert" id="importDataFile" type="file" (change)="onChange($event)" 
+            class="d-none form-control "
+            [formControl]="accountFile" 
+            [class.is-invalid]="accountFile.invalid && formSubmitted" >
+            <div class="file-input"  >
+                <button type="button" class="btn" (click)="browseClicked()" 
+                    [class.btn-outline-primary]="!formSubmitted || !accountFile.invalid"
+                    [class.btn-danger]="accountFile.invalid && formSubmitted"
+                    >{{ (!dataFile) ? 'Browse': 'Change'}}</button>
+                <ng-container *ngIf="!dataFile;else importing">
+                    <div class="form-help-text">Accepted file types include .csv, .xlsx<br />
+                        Max file size: 3mb</div>
+                </ng-container>
+                <ng-template #importing>
+                    <label class="form-control-label">Importing file : {{ (!dataFile) ? '': dataFile.name }}</label>
+                </ng-template>
+            </div>            
+        <div class="invalid-feedback">
+            <span *ngIf="accountFile.errors?.required">Please select a file to import.</span>
+            <span *ngIf="accountFile.errors?.notSupported">The selected file type is not supported.
+                Accepted file types include .csv, .xlsx</span>
+        </div>
+    </div>
+    <div class="row" [class.d-none]="!errList || errList.length == 0">
+        <div class="col-sm-12">
+            <label class="text-danger">Import file has {{ errList.length }} error(s) in {{totalRecords}}
+                record(s).</label>
+            <div class="card card-table">
+            <table class="table">
+                <thead class="table-header">
+                    <tr>
+                        <th>Number</th>
+                        <th>Error</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let err of errList">
+                        <td>
+                            <div style="width: 150px;" title="{{err.number}}"
+                                class="text-left text-nowrap text-truncate">{{err.number}}</div>
+                        </td>
+                        <td><span class="text-danger">{{err.errorInfo}}</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        </div>
+    </div>
+</div>
+<div mat-dialog-actions class="ds-dialog-footer">
+    <div>
+        <button type="button" class="btn btn-outline-primary" (click)="download()">Template</button>
+        <button type="button" class="btn btn-save" (click)="import()">Import</button>        
+    </div>
+    <button type="button" class="btn btn-cancel" (click)="clear()">Cancel</button>
+</div>

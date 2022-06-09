@@ -1,0 +1,53 @@
+// #bankDepositInfoChart {
+//     width: 150px !important;
+//     height: 150px !important;
+// }
+
+.score-pie-chart {
+
+
+  .donut-chart-wrapper {
+    width: 224px;
+    position: relative;
+  }
+}
+.cutout-callout-wrapper {
+  text-align: center;
+  position: absolute;
+  top: 47%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 110px;
+}
+.cutout-callout {
+  font-size: 3rem;
+  font-weight: bold;
+  line-height: 1;
+}
+.percent-width {
+  width: 45px;
+}
+
+
+.ds-legend-group {
+    max-width: 300px; // Hack to prevent large labels from overflowing and keep col-auto for short labels
+}
+
+
+@media (min-width: 768px) {
+    .ds-legend-group {
+        max-width: 400px; // Hack to prevent large labels from overflowing and keep col-auto for short labels
+    }
+}
+
+@media (min-width: 992px) {
+    .ds-legend-group {
+        max-width: 200px; // Hack to prevent large labels from overflowing and keep col-auto for short labels
+    }
+}
+
+@media (min-width: 1200px) {
+    .ds-legend-group {
+        max-width: 300px; // Hack to prevent large labels from overflowing and keep col-auto for short labels
+    }
+}

@@ -1,0 +1,123 @@
+<div mat-dialog-header>
+    <h2 class="dialog-title mt-0">
+        Advanced Enrollment Report
+    </h2>
+    <button type="button" class="close" (click)="cancel()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</div>
+<div mat-dialog-content>
+    <form #copyPlansForm="ngForm">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-control-label">Enrollment Type</label>
+                    <select class="form-control custom-select"
+                            [(ngModel)]="config.enrollmentTypeId"
+                            name="enrollmentType"
+                            dsFormControlValidator cdkFocusInitial>
+                        <option [value]="null">All</option>
+                        <option *ngFor="let type of enrollmentTypes"
+                                [value]="type.enrollmentTypeId">
+                            {{type.description}}
+                        </option>
+                    </select>
+                    <!--<div class="invalid-feedback">
+                    Please select a enrollment type.
+                </div>-->
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-control-label">Employee</label>
+                    <select class="form-control custom-select"
+                            [(ngModel)]="config.employeeId"
+                            name="employee"
+                            dsFormControlValidator>
+                        <option [value]="null">All</option>
+                        <option *ngFor="let employee of employeeList"
+                                [value]="employee.employeeId">
+                            {{employee.firstName + ' ' + employee.lastName}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-control-label">Plans</label>
+                    <select class="form-control custom-select"
+                            [(ngModel)]="config.planId"
+                            name="plan"
+                            dsFormControlValidator>
+                        <option [value]="null">All</option>
+                        <option *ngFor="let plan of planList"
+                                [value]="plan.planId">
+                            {{plan.planName}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-control-label">Providers</label>
+                    <select class="form-control custom-select"
+                            [(ngModel)]="config.providerId"
+                            name="provider"
+                            dsFormControlValidator>
+                        <option [value]="null">All</option>
+                        <option *ngFor="let provider of planProviderList"
+                                [value]="provider.planProviderId">
+                            {{provider.name}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form__group">
+                    <label class="form-control-label">Enrollment Start</label>
+                    <div class="input-group">
+                        <input matInput class="form-control" [matDatepicker]="pickerStartDate"
+                               [(ngModel)]="config.startDate" name="startDate"
+                               dsFormControlValidator />
+                        <div class="input-group-append">
+                            <mat-datepicker-toggle matSuffix [for]="pickerStartDate" class="input-group-text date">
+                                <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #pickerStartDate></mat-datepicker>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-control-label">End</label>
+                    <div class="input-group">
+                        <input matInput class="form-control" [matDatepicker]="pickerEndDate"
+                               [(ngModel)]="config.endDate" name="endDate"
+                               dsFormControlValidator />
+                        <div class="input-group-append">
+                            <mat-datepicker-toggle matSuffix [for]="pickerEndDate" class="input-group-text date">
+                                <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #pickerEndDate></mat-datepicker>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+<div mat-dialog-actions>
+    <button type="submit" class="btn btn-primary" (click)="generateReport()">Submit</button>
+    <button type="button" class="btn btn-cancel" (click)="cancel()">Cancel</button>
+</div>

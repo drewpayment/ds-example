@@ -1,0 +1,68 @@
+<div mat-dialog-header>
+    <h2 class="dialog-title">
+        {{ title }}
+    </h2>
+    <button type="button" class="close" (click)="close()">
+        <mat-icon>clear</mat-icon>
+    </button>
+    <div class="dialog-subtitle">
+        <div class="instruction-text">
+            Check Date: {{ checkDate }}
+        </div>
+    </div>
+</div>
+<div mat-dialog-content>
+
+    <div class="row justify-content-end">
+        <div class="col-auto justify-content-end">
+            <div class="search-container form-group">
+                <mat-form-field class="w-100">
+                    <label class="instruction-text font-xs">Search {{ dataSource.filteredData.length }} of {{ this.data.bankDepositData.length }} Payments</label>
+                    <div class="input-group">
+                        <input (keyup)="applyFilter($event.target.value)" type="search" class="form-control" matInput cdkFocusInitial/>
+                        <div class="input-group-append">
+                            <button type="button" class="search">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="24" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/><path d="M0 0h24v24H0z" fill="none"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+
+    <div class="card card-table">
+        <mat-table [dataSource]="dataSource" color="primary" matSort>
+            <ng-container matColumnDef="Tax">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Tax </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.taxName}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Payment">
+                <mat-header-cell *matHeaderCellDef mat-sort-header class="table-text-right"> Payment This Payroll </mat-header-cell>
+                <mat-cell *matCellDef="let element" class="table-text-right"> ${{(element.amount + element.ssDefermentTax + element.ffcraCredit) | number:'1.2-2'}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="MTD">
+                <mat-header-cell *matHeaderCellDef mat-sort-header class="table-text-right"> MTD </mat-header-cell>
+                <mat-cell *matCellDef="let element" class="table-text-right"> ${{element.mtdTotal | number:'1.2-2'}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="QTD">
+                <mat-header-cell *matHeaderCellDef mat-sort-header class="table-text-right"> QTD </mat-header-cell>
+                <mat-cell *matCellDef="let element" class="table-text-right"> ${{element.qtdTotal | number:'1.2-2'}} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="YTD">
+                <mat-header-cell *matHeaderCellDef mat-sort-header class="table-text-right"> YTD </mat-header-cell>
+                <mat-cell *matCellDef="let element" class="table-text-right"> ${{element.ytdTotal | number:'1.2-2'}} </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+        <mat-paginator [hidden]="dataSource.filteredData.length == 0" [length]="dataSource?.filteredData?.length" [pageSize]="10" [pageSizeOptions]="[10, 25, 50 ]">
+        </mat-paginator>
+    
+        <div *ngIf="dataSource.filteredData.length == 0" class="empty-state">There are no employees to display that match this search.</div>
+    </div>
+</div>
+<div mat-dialog-actions class="ds-dialog-footer">
+    <button type="button" class="btn btn-primary" (click)="print()">Print</button>
+    <button type="button" class="btn btn-cancel" (click)="close()">Close</button>
+</div>

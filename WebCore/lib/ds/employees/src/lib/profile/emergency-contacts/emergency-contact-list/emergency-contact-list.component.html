@@ -1,0 +1,51 @@
+<ds-card>
+    <ds-card-header>
+        <ds-card-header-title>
+            Emergency Contacts
+        </ds-card-header-title>
+        <ds-card-title-action>
+            <button type="button"
+                    class="btn btn-outline-primary"
+                    (click)="showEditEmergencyContactDialog(newEmergencyContact)">
+                <i class="material-icons">add</i> Contact
+            </button>
+        </ds-card-title-action>
+    </ds-card-header>
+    <ds-card-content>
+        <div class="row justify-content-center" *ngIf="isLoading">
+            <div class="col"><ds-loading-message></ds-loading-message></div>
+        </div>
+        <div class="empty-state" *ngIf="(!emergencyContacts?.length || !hasViewPermissions) && !isLoading">
+            There are currently no contacts to display. Add one by clicking the "+ Contact" button.
+        </div>
+        <ng-container *ngIf="emergencyContacts.length && hasViewPermissions">
+            <div class="card card-table">
+                <table class="table">
+                    <thead class="table-header">
+                        <tr>
+                            <th class="W-30">Name</th>
+                            <th class="W-30">Relationship</th>
+                            <th class="W-30">Status</th>
+                            <th class="td-action-icon-width"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let emergencyContact of emergencyContacts">
+                            <td>{{ emergencyContact.firstName + ' ' + emergencyContact.lastName }}</td>
+                            <td>{{ emergencyContact.relation }}</td>
+                            <td>
+                                <span *ngIf="emergencyContact.insertApproved == 1" class="badge badge-pill badge-success">Approved</span>
+                                <span *ngIf="emergencyContact.insertApproved == 0" class="badge badge-pill badge-warning">Pending</span>
+                            </td>
+                            <td class="td-action-icon-width">
+                                <button type="button" class="btn btn-icon table-edit-icon" (click)="showEditEmergencyContactDialog(emergencyContact)">
+                                    <i class="material-icons">mode_edit</i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </ng-container>
+    </ds-card-content>
+</ds-card>

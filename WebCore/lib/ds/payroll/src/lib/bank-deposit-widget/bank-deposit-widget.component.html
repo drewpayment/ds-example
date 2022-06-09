@@ -1,0 +1,35 @@
+<ds-card class="card-height-fix-sm clickable hoverable" hover="true" (click)="grossToNetReport()">
+    <ds-card-header>
+        <ds-card-sub-header-title>Bank Deposit: {{bankDepositTotal | currency}}</ds-card-sub-header-title>
+    </ds-card-header>
+    <ds-card-content>
+        <ng-container *ngIf="!isLoading">
+            <div class="d-flex align-items-center flex-wrap justify-content-around" style="position: relative">
+                <div class="position-relative mx-2" style="width: 175px; height: 200px;">
+                    <!-- <canvas id="bankDepositInfoChart"></canvas> -->
+                    <ng-template #chartDiv>
+                        <canvas
+                            baseChart
+                            [datasets]  ="chartData"
+                            [labels]    ="chartLabels"
+                            [chartType] ="chartType"
+                            [colors]    ="colors"
+                            [options]   ="chartOptions"
+                            #bankDepositInfoChart ="base-chart"
+                        ></canvas>
+                    </ng-template>
+                    <ng-container *ngIf="showChart" [ngTemplateOutlet]="chartDiv"></ng-container>
+
+                    <div class="center-content-wrapper" [ngClass]="{'d-none':!showPrevious}">
+                        <div class="center-content">
+                            <div class="font-3xl"><i class="material-icons text-muted">{{ materialIcon }}</i>{{ percentDifference | percent:'.1' }}</div>
+                            <div class="font-xs instruction-text">Compared to last<br/> closed payroll</div>
+                        </div>
+                    </div>
+                </div>
+                <div #depositLegend class="mx-2" style="display:inline-block"></div>
+            </div>
+            <button class="btn btn-icon nested-cog-bottom hover-show"><i class="material-icons flip">reply</i></button>
+        </ng-container>
+    </ds-card-content>
+</ds-card>

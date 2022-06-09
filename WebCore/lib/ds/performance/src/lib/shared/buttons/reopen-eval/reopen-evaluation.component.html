@@ -1,0 +1,6 @@
+<div *ngIf="canReopen$ | async as user">
+    <button mat-menu-item type="button" (click)="reOpenEval(evaluation, review)"
+        *ngIf="(user.userTypeId == UserType.systemAdmin || user.userTypeId == UserType.companyAdmin || review.reviewOwnerUserId == user.userId) && !review.reviewCompletedDate && evaluation.completedDate">
+        Reopen
+    </button>
+</div>

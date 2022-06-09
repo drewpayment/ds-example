@@ -1,0 +1,92 @@
+<ng-content *ngIf="initComponent$ | async"></ng-content>
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a routerLink="../..">Taxes</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">{{taxDescription}}</li>
+    </ol>
+</nav>
+
+<mat-card *ngIf="!isLoading">
+    <mat-card-header>
+        <mat-card-title>Edit {{taxDescription}}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div [formGroup]="form" class="ds-mobile-grid">
+        <mat-form-field class="row">
+            <mat-label>Filing Status</mat-label>
+            <mat-select formControlName="filing">
+                <mat-option *ngFor="let f of filingStatuses" [value]="f.filingStatusId" (click)="changeExemptions(f.filingStatusId)">
+                    {{f.description}}
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="form.get('filing').hasError">
+              Filing Status is required.
+            </mat-error>
+        </mat-form-field>
+        <ng-container *ngIf="!using2020FederalW4Setup">
+          <mat-form-field class="row">
+            <mat-label>Exemptions</mat-label>
+            <input type="text" matInput formControlName="exemptions" maxlength="2"/> 
+            <mat-error *ngIf="form.get('exemptions').hasError">
+              Exemptions is required and must be a number.
+            </mat-error>
+          </mat-form-field>
+          <div class="row col-2">
+            <mat-form-field>
+              <mat-label>Percent</mat-label>
+              <input type="text" matInput formControlName="additionalPercent"/>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Flat</mat-label>
+              <input type="text" matInput formControlName="additionalAmount"/>
+            </mat-form-field>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="using2020FederalW4Setup">
+          <mat-form-field class="row">
+            <mat-label>Dep. Tax Credit</mat-label>
+            <input type="text" matInput formControlName="taxCredit" />
+          </mat-form-field>
+          <mat-form-field class="row">
+            <mat-label>Other Income</mat-label>
+            <input type="text" matInput formControlName="otherTaxableIncome" />
+          </mat-form-field>
+          <mat-form-field class="row">
+            <mat-label>Deductions</mat-label>
+            <input type="text" matInput formControlName="wageDeduction" />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Extra Withholding</mat-label>
+            <input type="text" matInput formControlName="additionalAmount"/>
+          </mat-form-field>
+          <mat-checkbox class="row" formControlName="hasMoreThanOneJob">Employee has more than one job</mat-checkbox>
+        </ng-container>
+      </div>
+    </mat-card-content>
+    <mat-card-actions>
+        <ng-container *ngIf="!isFederal, else federalSetup">
+          <button mat-flat-button color="accent" [disabled]="clicked" (click)="saveChanges()" *ngIf="!isFederal && hasEditPermissions">
+            <mat-icon>description</mat-icon>
+            Request Change
+          </button>
+         </ng-container>
+         <ng-template #federalSetup>
+          <ng-container *ngIf="hasEditPermissions">
+            <a mat-flat-button color="accent" (click)="goToFederalW4Form()">
+              <mat-icon>edit</mat-icon>
+              Edit
+            </a>
+           </ng-container>
+         </ng-template>
+
+    </mat-card-actions>
+</mat-card>
+
+<ng-container *ngIf="isLoading">
+    <div class="d-flex justify-content-center">
+        <mat-spinner></mat-spinner>
+    </div>
+</ng-container>

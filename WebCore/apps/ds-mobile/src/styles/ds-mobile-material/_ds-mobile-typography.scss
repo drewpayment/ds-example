@@ -1,0 +1,95 @@
+// Typography
+$ds-typography: mat-typography-config(
+  $font-family: '"Source Sans Pro", Arial, Helvetica, sans-serif',
+  $caption:       mat-typography-level(.875rem, 1.5, 400),
+  $body-1:        mat-typography-level(.875rem, 1.5, 400),
+  $body-2:        mat-typography-level(.875rem, 1.5, 600),
+  $subheading-2:  mat-typography-level(.875rem, 1.5, 400)
+);
+
+$light-dividers:     rgba(#E7E7E7, 1);
+$dark-dividers:      rgba(#7d7d7d, 1);
+$dark-disabled-text: rgba(#9C9C9C, 1);
+$dark-disabled-text-ios: #9C9C9C;
+
+$mat-light-theme-background: (
+  status-bar: map_get($mat-grey, 300),
+  app-bar:    map_get($mat-grey, 100),
+  background: map_get($mat-grey, 50),
+  hover:      rgba(black, 0.04),
+  card:       white,
+  dialog:     white,
+  disabled-button: rgba(black, 0.12),
+  raised-button: white,
+  focused-button: $dark-focused,
+  selected-button: map_get($mat-grey, 300),
+  selected-disabled-button: map_get($mat-grey, 400),
+  disabled-button-toggle: map_get($mat-grey, 200),
+  unselected-chip: map_get($mat-grey, 300),
+  disabled-list-option: map_get($mat-grey, 200),
+);
+
+$mat-light-theme-foreground: (
+  base:              black,
+  divider:           $light-dividers,
+  dividers:          $dark-dividers,
+  disabled:          $dark-disabled-text,
+  disabled-button:   rgba(black, 0.26),
+  disabled-text:     $dark-disabled-text,
+  hint-text:         $dark-disabled-text,
+  secondary-text:    $dark-secondary-text,
+  icon:              rgba(117, 117, 117, 1),
+  icons:             rgba(117, 117, 117, 1),
+  text:              rgba(94, 94, 94, 1),
+  slider-off:        rgba(#D8D8D8, 1),
+  slider-off-active: rgba(#D8D8D8, 1),
+);
+
+body {
+    font-family: 'Source Sans Pro', Arial, Helvetica, sans-serif;
+    font-size: 14px;
+}
+
+h1 {
+    @extend .mat-h1;
+}
+p {
+    @extend .mat-body;
+}
+.bold {
+    font-weight: 600;
+}
+.italic {
+    font-style: italic;
+}
+.font-xs {
+    font-size: 0.85rem;
+}
+.font-xl {
+    font-size: 1.5rem;
+}
+.ds-callout {
+    color: #555;
+    font-size: 2.75rem;
+    font-weight: 600;
+}
+.ds-callout-detail {
+    color: #555;
+}
+.form-help-text {
+    font-size: 0.70rem;
+    font-style: italic;
+    color: $text-muted;
+}
+.text-danger {
+    color: #d75d5d;
+}
+.text-light {
+    color: white !important;
+}
+
+// iOS fix
+input.mat-input-element:disabled {
+  opacity: 1;
+  -webkit-text-fill-color: $dark-disabled-text-ios;
+}

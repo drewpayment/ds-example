@@ -1,0 +1,65 @@
+<div mat-dialog-header>
+    <h2 class="dialog-title">
+        {{ dialogTitle }}
+    </h2>
+    <button type="button" class="close" (click)="onNoClick()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</div>
+<div>
+  <div>
+      <table class="table">
+        <thead class="table-header">
+            <tr>
+                <th style="width:250px">Employee Name</th>
+                <th *ngIf="data.isCompetencyView">Competency</th>
+                <th *ngIf="!data.isCompetencyView">Score</th>
+            </tr>
+        </thead>
+      </table>
+  </div>
+  <div #dialogContent class="rating-info-table-wrapper rating-info-table-scroll">
+    <table class="table" *ngIf="!data.isCompetencyView; else competencyView">
+        <ng-container *ngFor="let emp of rating?.reviews">
+        <tr>
+            <td style="width:250px" class="py-2">
+              {{emp.employee.firstName + ' ' + emp.employee.lastName}}
+            </td>
+            <td *ngIf="rating" class="py-2">
+              {{emp?.score?.score | number : '1.0-2'}}
+            </td>
+            <td *ngIf="competency" class="py-1" [attr.score]="emp.score">
+                <ng-container *ngFor="let rate of ratedList; let i = index">
+                    <label class="star mt-1"><i style="opacity:1" class="material-icons"
+                      [class.filled]="(i+1)<=emp?.score?.score" 
+                      [class.outline-view]="(i+1)>emp?.score?.score" 
+                      >star</i></label>
+                </ng-container>
+            </td>
+        </tr>
+        </ng-container>
+    </table>
+    <ng-template #competencyView>
+        <table class="table">
+            <ng-container *ngFor="let emp of employeeList">
+                <tr>
+                    <td style="width:250px" class="py-2">
+                      {{emp.employeeName}}
+                    </td>
+                    <td *ngIf="rating" class="py-2">
+                      {{emp.competencyName}}
+                    </td>
+                    <td *ngIf="competency" class="py-1" [attr.score]="emp.score">
+                        <ng-container *ngFor="let rate of ratedList; let i = index">
+                            <label class="star mt-1"><i style="opacity:1" class="material-icons"
+                              [class.filled]="(i+1)<=emp.score" 
+                              [class.outline-view]="(i+1)>emp.score" 
+                              >star</i></label>
+                        </ng-container>
+                    </td>
+                </tr>
+            </ng-container>
+        </table>
+    </ng-template>
+  </div>
+</div>

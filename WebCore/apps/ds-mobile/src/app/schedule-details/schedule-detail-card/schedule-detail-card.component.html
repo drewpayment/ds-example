@@ -1,0 +1,17 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>Punches For {{ titleDateString() }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <!-- <div class="empty-state" *ngIf="isLoading">
+            Loading...
+        </div>
+        <ng-container *ngIf="!isLoading"> -->
+            <ds-schedule-detail-content
+                [scheduleDetailsDay]="scheduleDetailsDay"
+                [dates]="dates"
+            >
+            </ds-schedule-detail-content>
+        <!-- </ng-container> -->
+    </mat-card-content>
+</mat-card>

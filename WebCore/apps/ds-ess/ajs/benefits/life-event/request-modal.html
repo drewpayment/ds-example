@@ -1,0 +1,48 @@
+﻿<div class="benefits">
+    <div class="modal-header">
+        <h2>Request Life Event</h2>                            
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="close()">
+           <i class="material-icons">clear</i>
+        </button>
+      </div>
+
+    <div class="modal-body">
+  
+        <!--List of life events -->
+        <div ng-hide="isEventSelected">
+            <h3 class="mb-2">Select Life Event</h3>
+            <div ng-repeat="event in lifeEventList">
+                <button type="button" ng-click="selectEvent(event);" class="btn btn-link">{{event.description}}</button>
+            </div>
+        </div>
+        <!--End Life event List-->
+        
+        <div ng-hide="!isEventSelected">
+            <h3 class="mb-2">When did your {{selectedEvent.description}} occur?</h3>
+            <form class="form-horizontal" name="requestLifeEventForm"  novalidate>
+                <ds-inline-validated-input
+                    label-class="col-12 form-control-label"
+                    input-div-class="col-4"
+                    ds-required="1"
+                    is-date="1"
+                    disallow-future-date="1"
+                    disallow-past-date="0"
+                    ds-built-in-pattern-key="mmddyyyy"
+                    ds-built-in-help-message-key="mmddyyyy"
+                    ds-built-in-mask-key="mmddyyyy"	
+                    frm-obj="requestLifeEventForm"
+                    label-text="Date of Event"
+                    input-name="inputEventDate"
+                    ds-model="selectedEvent.eventDate" 
+                    ></ds-inline-validated-input>
+                <button
+                    class="btn btn-primary float-right"
+                    type="submit"
+                    id="submit"
+                    value="Submit"
+                    ng-click="validateThenSubmit()">
+                    Submit Life Event</button>
+            </form>
+        </div>
+   
+    </div></div>

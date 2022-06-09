@@ -1,0 +1,218 @@
+{
+  "GroupScheduleShifts": [
+    {
+      "ScheduleGroup": {
+        "ScheduleGroupId": 1,
+        "ScheduleGroupType": 1,
+        "ClientCostCenter": {
+          "Code": "0001",
+          "Description": "A"
+        }
+      },
+      "GroupScheduleShiftId": 8,
+      "StartTime": "08:00:00",
+      "EndTime": "05:00:00",
+      "DayOfWeek": 0,
+      "NumberOfEmployees": 1
+    },
+    {
+      "ScheduleGroup": {
+        "ScheduleGroupId": 1,
+        "ScheduleGroupType": 1,
+        "ClientCostCenter": {
+          "Code": "0001",
+          "Description": "A"
+        }
+      },
+      "GroupScheduleShiftId": 9,
+      "StartTime": "08:00:00",
+      "EndTime": "05:00:00",
+      "DayOfWeek": 1,
+      "NumberOfEmployees": 2
+    },
+    {
+      "ScheduleGroup": {
+        "ScheduleGroupId": 1,
+        "ScheduleGroupType": 1,
+        "ClientCostCenter": {
+          "Code": "0001",
+          "Description": "A"
+        }
+      },
+      "GroupScheduleShiftId": 10,
+      "StartTime": "08:00:00",
+      "EndTime": "05:00:00",
+      "DayOfWeek": 2,
+      "NumberOfEmployees": 2
+    },
+    {
+      "ScheduleGroup": {
+        "ScheduleGroupId": 1,
+        "ScheduleGroupType": 1,
+        "ClientCostCenter": {
+          "Code": "0001",
+          "Description": "A"
+        }
+      },
+      "GroupScheduleShiftId": 11,
+      "StartTime": "08:00:00",
+      "EndTime": "05:00:00",
+      "DayOfWeek": 3,
+      "NumberOfEmployees": 2
+    },
+    {
+      "ScheduleGroup": {
+        "ScheduleGroupId": 1,
+        "ScheduleGroupType": 1,
+        "ClientCostCenter": {
+          "Code": "0001",
+          "Description": "A"
+        }
+      },
+      "GroupScheduleShiftId": 12,
+      "StartTime": "08:00:00",
+      "EndTime": "05:00:00",
+      "DayOfWeek": 4,
+      "NumberOfEmployees": 2
+    },
+    {
+      "ScheduleGroup": {
+        "ScheduleGroupId": 1,
+        "ScheduleGroupType": 1,
+        "ClientCostCenter": {
+          "Code": "0001",
+          "Description": "A"
+        }
+      },
+      "GroupScheduleShiftId": 13,
+      "StartTime": "08:00:00",
+      "EndTime": "05:00:00",
+      "DayOfWeek": 5,
+      "NumberOfEmployees": 3
+    },
+    {
+      "ScheduleGroup": {
+        "ScheduleGroupId": 1,
+        "ScheduleGroupType": 1,
+        "ClientCostCenter": {
+          "Code": "0001",
+          "Description": "A"
+        }
+      },
+      "GroupScheduleShiftId": 14,
+      "StartTime": "08:00:00",
+      "EndTime": "05:00:00",
+      "DayOfWeek": 6,
+      "NumberOfEmployees": 1
+    },
+    {
+      "ScheduleGroup": {
+        "ScheduleGroupId": 2,
+        "ScheduleGroupType": 1,
+        "ClientCostCenter": {
+          "Code": "0002",
+          "Description": "B"
+        }
+      },
+      "GroupScheduleShiftId": 15,
+      "StartTime": "08:00:00",
+      "EndTime": "05:00:00",
+      "DayOfWeek": 0,
+      "NumberOfEmployees": 1
+    },
+    {
+      "ScheduleGroup": {
+        "ScheduleGroupId": 2,
+        "ScheduleGroupType": 1,
+        "ClientCostCenter": {
+          "Code": "0002",
+          "Description": "B"
+        }
+      },
+      "GroupScheduleShiftId": 16,
+      "StartTime": "08:00:00",
+      "EndTime": "05:00:00",
+      "DayOfWeek": 1,
+      "NumberOfEmployees": 2
+    },
+    {
+      "ScheduleGroup": {
+        "ScheduleGroupId": 2,
+        "ScheduleGroupType": 1,
+        "ClientCostCenter": {
+          "Code": "0002",
+          "Description": "B"
+        }
+      },
+      "GroupScheduleShiftId": 17,
+      "StartTime": "08:00:00",
+      "EndTime": "05:00:00",
+      "DayOfWeek": 2,
+      "NumberOfEmployees": 2
+    },
+    {
+      "ScheduleGroup": {
+        "ScheduleGroupId": 2,
+        "ScheduleGroupType": 1,
+        "ClientCostCenter": {
+          "Code": "0002",
+          "Description": "B"
+        }
+      },
+      "GroupScheduleShiftId": 18,
+      "StartTime": "08:00:00",
+      "EndTime": "05:00:00",
+      "DayOfWeek": 3,
+      "NumberOfEmployees": 2
+    },
+    {
+      "ScheduleGroup": {
+        "ScheduleGroupId": 2,
+        "ScheduleGroupType": 1,
+        "ClientCostCenter": {
+          "Code": "0002",
+          "Description": "B"
+        }
+      },
+      "GroupScheduleShiftId": 19,
+      "StartTime": "08:00:00",
+      "EndTime": "05:00:00",
+      "DayOfWeek": 4,
+      "NumberOfEmployees": 2
+    },
+    {
+      "ScheduleGroup": {
+        "ScheduleGroupId": 2,
+        "ScheduleGroupType": 1,
+        "ClientCostCenter": {
+          "Code": "0002",
+          "Description": "B"
+        }
+      },
+      "GroupScheduleShiftId": 20,
+      "StartTime": "08:00:00",
+      "EndTime": "05:00:00",
+      "DayOfWeek": 5,
+      "NumberOfEmployees": 3
+    },
+    {
+      "ScheduleGroup": {
+        "ScheduleGroupId": 2,
+        "ScheduleGroupType": 1,
+        "ClientCostCenter": {
+          "Code": "0002",
+          "Description": "B"
+        }
+      },
+      "GroupScheduleShiftId": 21,
+      "StartTime": "08:00:00",
+      "EndTime": "05:00:00",
+      "DayOfWeek": 6,
+      "NumberOfEmployees": 1
+    }
+  ],
+  "GroupScheduleId": 5,
+  "ClientId": 1,
+  "Name": "GenericSched_1",
+  "IsActive": true
+}

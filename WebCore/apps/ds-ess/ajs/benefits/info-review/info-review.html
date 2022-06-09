@@ -1,0 +1,232 @@
+﻿<div class="benefits">
+    <benefits-header active-step="1"></benefits-header>
+    <div ng-hide="loading" class="row">
+        <div class="col-md-12">
+            
+            <h1 class="mb-sm">Your Information</h1>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="font-italic mb-lg">
+                        Please review the information below.  Click the pencil icon in the upper right corner to make edits.
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <!--EMPLOYEE INFO-->
+
+                    <div class="panel panel-primary-accent">
+
+                        <div class="panel-heading pb-0">
+                            <h2 class="panel-title no-padding">{{ employee.firstName }} {{ employee.lastName }}
+                                <a>
+                                    <i class="icon-pencil pull-right" ng-click="isEditEmployee = !isEditEmployee"></i>
+                                </a>
+                            </h2>
+                            
+                        </div>
+
+                        <div class="panel-body" ng-form="employeeSettingsForm">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-inline">
+                                        <div class="form-group">
+                                            <label>Date of Birth</label>
+                                            <span class="form-control-static" ng-if="employee.birthDate">{{ employee.birthDate | date:'MMM dd, yyyy' }}</span>
+                                            <em class="form-control-static text-danger" ng-if="!employee.birthDate">MISSING</em>
+                                        </div>
+                                        <div class="form-group ml-lg">
+                                            <label>Gender</label>
+                                            <span class="form-control-static">{{ employee.gender === "M" ? "Male" : "Female" }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 px-0"><hr/></div>
+                            </div>
+
+                            <div ng-show="!employee.birthDate || isEditEmployee">
+                                <div class="row mb-xs">
+                                    <div class="col-md-3 text-muted">
+                                        What is your date of birth?
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <md-datepicker
+                                                    name="birthDate"
+                                                    md-hide-icons="all"
+                                                    class="ds-datepicker form-control ml-0"
+                                                    ng-model="birthDate"
+                                                    id="birthDatePicker"
+                                                    md-is-open="datePickerIsOpen"
+                                                    ng-blur="datePickerIsOpen = false"                                                    
+                                                    ng-class="{ 'is-invalid': employeeSettingsForm.birthDate.$invalid && (employeeSettingsForm.birthDate.$dirty || employeeSettingsForm.$submitted || employeeSettingsForm.birthDate.$touched)}"
+                                                    required
+                                                ></md-datepicker>
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text date">
+                                                        <i class="material-icons" ng-click="datePickerIsOpen = true">date_range</i>
+                                                    </span>
+                                                </div>
+                                                <div class="invalid-feedback" ng-if="employeeSettingsForm.$submitted || employeeSettingsForm.birthDate.$touched" ng-messages="employeeSettingsForm.birthDate.$error">
+                                                    <span ng-message="required">Please enter a date of birth.</span>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- <div id="birthDatePicker" class="input-group" ds-datepicker ng-model="birthDate">
+                                                <input type="text" class="form-control" ds-mask="00/00/0000" placeholder="mm/dd/yyyy"/>
+                                                <div class="input-group-addon add-on">
+                                                    <i data-date-icon="icon-calendar" class="fa fa-calendar" style="top: 0; left: 0;"></i>
+                                                </div>
+                                            </div> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div ng-show="isEditEmployee">
+                                <div class="row mb-xs">
+                                    <div class="col-md-12 text-muted">
+                                        What is your gender?
+                                    </div>
+                                </div>
+                                <div class="row mb-md">
+                                    <div class="col-md-3">
+                                        <div class="form-inline">
+                                            <label class="radio-inline">
+                                                <input type="radio" ng-model="employee.gender" value="M"/>
+                                                Male
+                                            </label>
+                                            <label class="radio-inline ml-sm">
+                                                <input type="radio" ng-model="employee.gender" value="F"/>
+                                                Female
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-sm">
+                                <div class="col-md-12 text-muted">
+                                    Please tell us if any of the below statuses apply to you.
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                        <div class="form-inline form-group">
+                                            <label>I use tobacco products</label>
+                                            <label class="radio-inline ml-md">
+                                                <input type="radio" ng-model="employee.isTobaccoUser" ng-value="true"/>
+                                                Yes
+                                            </label>
+                                            <label class="radio-inline ml-sm">
+                                                <input type="radio" ng-model="employee.isTobaccoUser" ng-value="false" />
+                                                No
+                                            </label>
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h1 class="mb-lg">Your Dependents</h1>
+            <div class="Dependents-info row form-group">
+                <div class="col-md-12">
+                    <div class="font-italic mb-lg">
+                        Please review the dependents below.  Use the "Edit" button on each dependent to make edits.  Add a dependent by clicking the "add dependent" option.
+                    </div>
+                </div>
+
+                <!--CURRENT DEPENDENTS-->
+                <div class="col-sm-6 col-md-4 col-lg-3" ng-repeat="dep in dependents | filter:isActiveDependent">
+                    <div class="panel panel-primary-accent card-height-fix-sm">
+                        <div class="panel-heading pb-0">
+                            <div class="row">
+                                <div class="col-md-8 text-left">
+                                    <h2 class="panel-title no-padding">{{ dep.firstName }} {{ dep.lastName }}</h2>
+                                </div>
+                                <div class="col-md-4 text-right">
+                                    <span class="label label-primary" ng-if="dep.isSpouse">Spouse</span>
+                                    <span class="label label-primary" ng-if="dep.isChild">Child</span>
+                                    <span class="label label-primary" ng-if="dependentIsGood(dep) && !dep.isSpouse && !dep.isChild">Other</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel-body">
+                            <div class="form-horizontal">
+                                <div class="row">
+                                    <label class="col-6 control-label text-left">Date of Birth</label>
+                                    <div class="col-6 text-right">
+                                        <p class="form-control-static">{{ dep.birthDate | date:'MMM dd, yyyy' }}</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label class="col-6 control-label text-left pt-0">Age</label>
+                                    <div class="col-6 text-right">
+                                        <p class="form-control-static pt-0">{{ dep.getAgeAsOf() }}</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label class="col-6 control-label text-left pt-0">Gender</label>
+                                    <div class="col-6 text-right">
+                                        <p class="form-control-static pt-0">{{ dep.gender === "M" ? "Male" : "Female" }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel-footer clearfix" style="border-bottom: 1px solid #ddd; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px;">
+                            <div class="form-horizontal">
+                                <div class="row">
+                                    <label class="col-6 control-label text-left">Student</label>
+                                    <div class="col-6 text-right">
+                                        <p class="form-control-static">{{ dep.isAStudent ? "Yes" : "No" }}</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label class="col-6 control-label text-left pt-0">Disabled</label>
+                                    <div class="col-6 text-right">
+                                        <p class="form-control-static pt-0">{{ dep.hasADisability ? "Yes" : "No" }}</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label class="col-6 control-label text-left pt-0">Tobacco</label>
+                                    <div class="col-6 text-right">
+                                        <p class="form-control-static pt-0">{{ dep.tobaccoUser ? "Yes" : "No" }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <button class="btn btn-default float-right" ng-click="editDependent(dep)">Edit</button>
+                            <em class="text-danger float-right pr-sm mt-xs" ng-if="!dependentIsGood(dep)">Missing Relationship</em>
+                        </div>
+                    </div>
+                </div>
+
+                <!--ADD NEW DEPENDENT-->
+                <div class="col-sm-6 col-md-4 col-lg-3">
+                    <div class="benefit-box incomplete card-height-fix-sm" style="width:100%">
+                        <h2><em>Add Dependent</em></h2>
+                        <a class="btn btn-default mt-20" ng-click="addDependent()">Get Started<i class="icon-angle-right right-side"></i></a>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <button class="btn btn-default float-left" ui-sref="ess.benefits.home">Cancel</button>
+                    <button class="btn btn-primary float-right" ng-click="continueEnrollment()" ng-disabled="!canContinue()">Continue</button>
+                    <em class="text-muted float-right pr-sm mt-xs" ng-if="!dependentsHaveRelationships()">Please review your dependents before continuing</em>
+                    <em class="text-muted float-right pr-sm mt-xs" ng-if="!employeeHasBirthDate() && dependentsHaveRelationships()">Please supply your date of birth before continuing</em>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

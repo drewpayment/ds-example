@@ -1,0 +1,270 @@
+<div ng-show="isLoading">W4 Loading...</div>
+<div ng-show="!isLoading">
+    <div class="ess-container">
+        <div class="panel clearfix">
+            <div class="panel-body col-md-12">
+                <div class="row">
+                    <div class="col-sm-1" style="padding-left: 45px; padding-top: 18px">
+                        <div class="circle-sm">{{circleNumber}}</div>
+                    </div>
+                    <div class="col-sm-8">
+                        <h1>Tax Withholding Assistant</h1>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-11 col-sm-offset-1">
+                        <p>Use the Tax Withholding Assistant to obtain suggestions for completing your W-4 forms.</p>
+                    </div>
+                </div>
+                <form name="frm" class="form">
+                    <div id="myForm" class="form-group">
+
+                        <div class="row">
+                            <div class="col-sm-3 col-sm-offset-1">
+                                <p style="text-align: right; font-style:italic;">Tax Filing Status</p>
+                            </div>
+                            <div class="col-sm-3">
+                                <select name="TaxFilingStatus" class="form-control" data-ng-model="employeeW4AssistData.taxFilingStatus" ng-change="filingStatusChange()"
+                                        data-ng-options="elm.filingStatus as elm.description for elm in filingStatuses"
+                                        ng-required="true"
+                                        ng-class="{ 'required-field' : frm.TaxFilingStatus.$invalid  && (isSoftWarned || !isCompleted)}"></select>
+                            </div>
+                        </div>
+
+
+                        <div class="row ml-20 mr-lg">
+                            <hr />
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3 col-sm-offset-1">
+                                <p style="text-align: right; font-style:italic;">Does someone else claim you as a dependent on their taxes?</p>
+                            </div>
+                            <div class="col-sm-3">
+                                <div style="max-width:92px;" ng-class="{ 'required-field' : frm.IsDependentCareClaim.$invalid  && (isSoftWarned || !isCompleted)}">
+                                    <input name="IsDependentCareClaim" type="radio"
+                                           ng-model="employeeW4AssistData.isDependentCareClaim" ng-value="true"
+                                           ng-required="true">&nbsp;Yes &nbsp;
+                                    <input name="IsDependentCareClaim" type="radio"
+                                           ng-model="employeeW4AssistData.isDependentCareClaim" ng-value="false"
+                                           ng-required="true">&nbsp;No
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3 col-sm-offset-1">
+                                <p style="text-align: right; font-style:italic;">Does your name differ from what is shown on your social security card?</p>
+                            </div>
+                            <div class="col-sm-3">
+                                <div style="max-width:92px;" ng-class="{ 'required-field' : frm.IsNameDifferFromSSC.$invalid  && (isSoftWarned || !isCompleted)}">
+                                    <input name="IsNameDifferFromSSC" type="radio"
+                                           ng-model="employeeW4AssistData.isNameDifferFromSSC" ng-value="true" ng-required="true">&nbsp;Yes &nbsp;
+                                    <input name="IsNameDifferFromSSC" type="radio"
+                                           ng-model="employeeW4AssistData.isNameDifferFromSSC" ng-value="false" ng-required="true">&nbsp;No
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row ml-20 mr-lg">
+                            <hr />
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3 col-sm-offset-1">
+                                <p style="text-align: right; font-style:italic;">Are you married?</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <div style="max-width:260px;" ng-class="{ 'required-field' : frm.MaritalStatus.$invalid  && (isSoftWarned || !isCompleted)}">
+                                    <label data-ng-repeat="elm in maritalStatuses" style="font-weight: normal">
+                                        <input name="MaritalStatus"
+                                               type="radio"
+                                               value="{{elm.id}}"
+                                               ng-model="$parent.employeeW4AssistData.maritalStatus" ng-required="true" />
+                                        {{elm.desc}}&nbsp;
+                                    </label>
+
+                                  <a title="tip:https://dominionsystems.helpdocsonline.com/ID19701" class="help-tooltip">
+                                       <i class="fa fa-question-circle" style="color:lightgray;"></i>
+                                  </a>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3 col-sm-offset-1">
+                                <p style="text-align: right; font-style:italic;">Do you have another job?</p>
+                            </div>
+                            <div class="col-sm-3">
+                                <div style="max-width:92px;" ng-class="{ 'required-field' : frm.DoYouHaveAnotherJob.$invalid  && (isSoftWarned || !isCompleted)}">
+                                    <input name="DoYouHaveAnotherJob" type="radio"
+                                           ng-model="employeeW4AssistData.doYouHaveAnotherJob" ng-value="true" ng-required="true">&nbsp;Yes &nbsp;
+                                    <input name="DoYouHaveAnotherJob" type="radio"
+                                           ng-model="employeeW4AssistData.doYouHaveAnotherJob" ng-value="false" ng-required="true">&nbsp;No
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" ng-show="employeeW4AssistData.maritalStatus == 1">
+                            <div class="col-sm-3 col-sm-offset-1">
+                                <p style="text-align: right; font-style:italic;">Does your spouse also have a job?</p>
+                            </div>
+                            <div class="col-sm-3">
+                                <div style="max-width:92px;" ng-class="{ 'required-field' : frm.IsSpouseEmployed.$invalid  && (isSoftWarned || !isCompleted)}">
+                                    <input name="IsSpouseEmployed" type="radio"
+                                           ng-model="employeeW4AssistData.isSpouseEmployed" ng-value="true" ng-required="employeeW4AssistData.maritalStatus == 1">&nbsp;Yes &nbsp;
+                                    <input name="IsSpouseEmployed" type="radio"
+                                           ng-model="employeeW4AssistData.isSpouseEmployed" ng-value="false" ng-required="employeeW4AssistData.maritalStatus == 1">&nbsp;No
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" ng-show="employeeW4AssistData.isSpouseEmployed || employeeW4AssistData.doYouHaveAnotherJob">
+                            <div class="col-sm-3 col-sm-offset-1">
+                                <p style="text-align: right; font-style:italic;" ng-show="employeeW4AssistData.isSpouseEmployed && employeeW4AssistData.doYouHaveAnotherJob">Will the income from both your second job and your spouse's job earn $1,500 or more this year?</p>
+                                <p style="text-align: right; font-style:italic;" ng-show="!employeeW4AssistData.isSpouseEmployed && employeeW4AssistData.doYouHaveAnotherJob">Will the income from your second job earn $1,500 or more this year?</p>
+                                <p style="text-align: right; font-style:italic;" ng-show="employeeW4AssistData.isSpouseEmployed && !employeeW4AssistData.doYouHaveAnotherJob">Will the income from your spouse's job earn $1,500 or more this year?</p>
+                            </div>
+                            <div class="col-sm-3">
+                                <div style="max-width:92px;" ng-class="{ 'required-field' : frm.SecondJobAndSpouseEarnMoreThan1500.$invalid  && (isSoftWarned || !isCompleted)}">
+                                    <input name="SecondJobAndSpouseEarnMoreThan1500" type="radio"
+                                           ng-model="employeeW4AssistData.isSecondJobAndSpouseEarnMoreThan1500" ng-value="true"
+                                           ng-required="employeeW4AssistData.isSpouseEmployed || employeeW4AssistData.doYouHaveAnotherJob">&nbsp;Yes &nbsp;
+                                    <input name="SecondJobAndSpouseEarnMoreThan1500" type="radio"
+                                           ng-model="employeeW4AssistData.isSecondJobAndSpouseEarnMoreThan1500" ng-value="false"
+                                           ng-required="employeeW4AssistData.isSpouseEmployed || employeeW4AssistData.doYouHaveAnotherJob">&nbsp;No
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" ng-show="employeeW4AssistData.maritalStatus > 0">
+                            <div class="col-sm-3 col-sm-offset-1">
+                                <p style="text-align: right; font-style:italic;">What is your total household income?</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <div style="max-width:450px;" ng-class="{ 'required-field' : frm.HouseholdIncomeStatus.$invalid  && (isSoftWarned || !isCompleted)}">
+                                    <label data-ng-repeat="elm in householdIncome[employeeW4AssistData.maritalStatus]" style="font-weight: normal">
+                                        <input name="HouseholdIncomeStatus"
+                                               type="radio"
+                                               value="{{elm.id}}"
+                                               ng-model="$parent.employeeW4AssistData.householdIncomeStatus"
+                                               ng-required="employeeW4AssistData.maritalStatus > 0" />
+                                        {{elm.desc}}&nbsp;&nbsp;&nbsp
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row ml-20 mr-lg">
+                            <hr />
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3 col-sm-offset-1">
+                                <p style="text-align: right; font-style:italic;">Are you blind?</p>
+                            </div>
+                            <div class="col-sm-3">
+                                <div style="max-width:92px;" ng-class="{ 'required-field' : frm.IsEmployeeBlind.$invalid  && (isSoftWarned || !isCompleted)}">
+                                    <input name="IsEmployeeBlind" type="radio"
+                                           ng-model="employeeW4AssistData.isEmployeeBlind" ng-value="true" ng-required="true">&nbsp;Yes &nbsp;
+                                    <input name="IsEmployeeBlind" type="radio"
+                                           ng-model="employeeW4AssistData.isEmployeeBlind" ng-value="false" ng-required="true">&nbsp;No
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" ng-show="employeeW4AssistData.maritalStatus == 1">
+                            <div class="col-sm-3 col-sm-offset-1">
+                                <p style="text-align: right; font-style:italic;">Is your spouse 65 years of age or older?</p>
+                            </div>
+                            <div class="col-sm-3">
+                                <div style="max-width:92px;" ng-class="{ 'required-field' : frm.IsSpouseOver65.$invalid  && (isSoftWarned || !isCompleted)}">
+                                    <input name="IsSpouseOver65" type="radio"
+                                           ng-model="employeeW4AssistData.isSpouseOver65" ng-value="true" ng-required="employeeW4AssistData.maritalStatus == 1">&nbsp;Yes &nbsp;
+                                    <input name="IsSpouseOver65" type="radio"
+                                           ng-model="employeeW4AssistData.isSpouseOver65" ng-value="false" ng-required="employeeW4AssistData.maritalStatus == 1">&nbsp;No
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" ng-show="employeeW4AssistData.maritalStatus == 1">
+                            <div class="col-sm-3 col-sm-offset-1">
+                                <p style="text-align: right; font-style:italic;">Is your spouse blind?</p>
+                            </div>
+                            <div class="col-sm-3">
+                                <div style="max-width:92px;" ng-class="{ 'required-field' : frm.IsSpouseBlind.$invalid  && (isSoftWarned || !isCompleted)}">
+                                    <input name="IsSpouseBlind" type="radio"
+                                           ng-model="employeeW4AssistData.isSpouseBlind" ng-value="true" ng-required="employeeW4AssistData.maritalStatus == 1">&nbsp;Yes &nbsp;
+                                    <input name="IsSpouseBlind" type="radio"
+                                           ng-model="employeeW4AssistData.isSpouseBlind" ng-value="false" ng-required="employeeW4AssistData.maritalStatus == 1">&nbsp;No
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row ml-20 mr-lg">
+                            <hr />
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3 col-sm-offset-1">
+                                <p style="text-align: right;  font-style:italic;">How many dependents do you have?&nbsp;
+                                  <a title="tip:https://dominionsystems.helpdocsonline.com/ID19702" class="help-tooltip">
+                                    <i class="fa fa-question-circle" style="color:lightgray;"></i>
+                                  </a>
+                                </p>
+                            </div>
+                            <div class="col-sm-3">
+                                <input name="DependentCount" type="number"
+                                       ng-model="employeeW4AssistData.dependentCount" ds-mask="000" style="width: 55px"
+                                       ng-required="true"
+                                       min="0"
+                                       ng-class="{ 'required-field' : frm.DependentCount.$invalid  && (isSoftWarned || !isCompleted)}">&nbsp;
+                            </div>
+                        </div>
+
+                        <div class="row" ng-show="employeeW4AssistData.dependentCount>0">
+                            <div class="col-sm-3 col-sm-offset-1">
+                                <p style="text-align: right; font-style:italic;">Of your dependents, how many of them are children who are eligible for the child tax credit?&nbsp;
+                                <a title="tip:https://dominionsystems.helpdocsonline.com/ID19705" class="help-tooltip">
+                                  <i class="fa fa-question-circle" style="color:lightgray;"></i>
+                                </a>
+
+                                </p>
+                            </div>
+                            <div class="col-sm-3">
+                                <input name="ChildCount" id="ChildCount" type="number" min="0" max={{employeeW4AssistData.dependentCount}}
+                                       ng-model="employeeW4AssistData.childCount" ds-mask="000" style="width: 55px"
+                                       ng-required="employeeW4AssistData.dependentCount>0"
+                                       ng-class="{ 'required-field' : frm.ChildCount.$invalid  && (isSoftWarned || !isCompleted)}">&nbsp;
+                            </div>
+                        </div>
+
+                        <div class="row" ng-show="employeeW4AssistData.dependentCount>0">
+                            <div class="col-sm-3 col-sm-offset-1">
+                                <p style="text-align: right; font-style:italic;">
+                                    Do you have at least $2,000 of dependent or child care expenses that you plan to claim?
+                                </p>
+                            </div>
+                            <div class="col-sm-3">
+                                <div style="max-width:92px;" ng-class="{ 'required-field' : frm.DependentOrChildCareExpensesIsMoreThan2000.$invalid  && (isSoftWarned || !isCompleted)}">
+                                    <input name="DependentOrChildCareExpensesIsMoreThan2000" type="radio"
+                                           ng-model="employeeW4AssistData.isDependentOrChildCareExpensesIsMoreThan2000" ng-value="true" ng-required="employeeW4AssistData.dependentCount>0">&nbsp;Yes &nbsp;
+                                    <input name="DependentOrChildCareExpensesIsMoreThan2000" type="radio"
+                                           ng-model="employeeW4AssistData.isDependentOrChildCareExpensesIsMoreThan2000" ng-value="false" ng-required="employeeW4AssistData.dependentCount>0">&nbsp;No
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+
+
+                <div class="row">
+                    <hr />
+                </div>
+
+                <ds-nav-workflow-footer workflow-Hide-Next="false" workflow-Hide-Prev="false"
+                    my-Workflow="myWorkflow"
+                    on-save="$ctrl.clickSavePageData($direction)" />
+
+            </div>
+        </div>
+    </div>
+</div>
+

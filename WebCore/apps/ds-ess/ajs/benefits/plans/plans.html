@@ -1,0 +1,171 @@
+﻿<div class="benefits">
+    <benefits-header active-step="2" is-signed="isSigned" date-signed="dateSigned"></benefits-header>
+    <div class="row" ng-hide="isLoading">
+
+        <div class="{{coverageType.cssClass}} plan-page col-md-12">
+            <div id="PlanHeading" class="{{coverageType.description}}">
+                <h1>{{coverageType.description}} Plans</h1>
+                <a class="btn btn-clear-white pull-right" ng-click="selectPlan()"><i class="icon-remove-sign left-side"></i>Waive Benefit</a>
+
+                <button class="btn btn-clear-white" ng-click="returnToEnrollment()"><i class="icon icon-arrow-left"></i>Return to all categories</button>
+
+            </div>
+            
+            <h4 class="text-center" ng-if="isNotEligibleForAnyPlans()">You are not eligible for any plans in this category.  Please select 'Waive Benefit' above to continue your enrollment.</h4>
+            
+            <div class="benefit-card" ng-repeat="plan in plans | filter:isPlanViewable">
+
+                <div class="row">
+                    <div class="col-4 left-info" ng-style="syncStyle">
+                        <h1 class="mb-xs">{{ plan.planName }}</h1>
+                        <p>{{ plan.providerName }}</p>
+
+                        <ul>
+                            <li ng-repeat="option in plan.planOptionList | filter:isOptionViewable | orderBy:orderPlanOptions ">
+                                <p class="costs costs-left" ng-class="{'selected-cost': option.isSelected}">
+                                    <i ng-show="option.isSelected" class="fa fa-check-circle fa-md benefit-icon"></i>
+                                    {{ option.name }}
+                                </p>
+                                <p ng-if="!option.hasBenefitAmounts && !option.isEmployeeElected" class="costs costs-right" ng-class="{'selected-cost': option.isSelected}">
+                                    <sup>$</sup>{{ option.cost ? (option.cost | number:2) : "-" }} per Pay
+                                </p>
+                                <p ng-if="!option.hasBenefitAmounts && option.isEmployeeElected" class="costs costs-right" ng-class="{'selected-cost': option.isSelected}">
+                                    <em>Employee Elected</em>
+                                </p>
+                                <p ng-if="option.hasBenefitAmounts && option.selection.selectedBenefitAmount" class="costs costs-right" ng-class="{'selected-cost': option.isSelected}">
+                                    <sup>$</sup>{{ option.selection.selectedBenefitAmount.cost | number:2 }} per Pay
+                                </p>
+                                <p ng-if="option.hasBenefitAmounts && !option.selection.selectedBenefitAmount" class="costs costs-right" ng-class="{'selected-cost': option.isSelected}">
+                                    Waived
+                                </p>
+                            </li>
+                        </ul>
+
+                        <ul>
+                            <li><p class="costs costs-left selected-cost">Cost per Paycheck with Selected Coverages</p> <p class="costs costs-right selected-cost per-pay"><sup>$</sup>{{plan.getTotalCost() | number:2}}</p></li>
+                        </ul>
+                        <button type="button" class="btn btn-default outline" ng-disabled="!isPlanValid(plan)" ng-click="selectPlan(plan)">Select This Plan</button>
+                    </div>
+
+                    <div class="col-8" ds-sync-height>
+                        <div class="top-tabs" ng-if="plan.planOptionList.length > 1">
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-default" ng-class="{'active':plan.showCoverage}" ng-click="plan.showCoverage=true; plan.showInfo=false;">Coverages</button>
+                                <button type="button" class="btn btn-default" ng-class="{'active':plan.showInfo}" ng-click="plan.showInfo=true; plan.showCoverage=false;">Plan Information</button>
+                            </div>
+                        </div>
+
+                        <div ng-show="plan.showCoverage" class="form-group">
+                            <div ng-repeat="option in plan.planOptionList | filter:isOptionViewable | orderBy:orderPlanOptions" class="row benefit-tile" ng-class="{'selected':option.isSelected}" ng-click="!option.hasBenefitAmounts && selectOption(option)">
+                                <div class="col-5">
+                                    <h3>
+                                        <i ng-if="option.isSelected" class="fa fa-check-circle fa-md benefit-icon"></i>{{option.name}}
+                                    </h3>
+                                </div>
+                                <div ng-if="!option.hasBenefitAmounts" class="col">
+                                    <div ng-if="!option.isEmployeeElected" class="row">
+                                        <div class="col">
+                                            <span ng-if="option.copay">Copay</span>
+                                            <p ng-if="option.copay">
+                                                {{ option.copay }}
+                                            </p>
+                                        </div>
+                                        <div class="col">
+                                            <span ng-if="option.deductible">Deductible</span>
+                                            <p ng-if="option.deductible">
+                                                {{ option.deductible }}
+                                            </p>
+                                        </div>
+                                        <div class="col">
+                                            <span ng-if="option.outOfPocketMax">Out of Pocket Max</span>
+                                            <p ng-if="option.outOfPocketMax">
+                                                {{ option.outOfPocketMax }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div ng-if="option.isEmployeeElected" class="mr-md">
+                                        <em ng-show="!option.isSelected" class="pull-right mt-md">Select to enter contribution amount</em>
+                                        <div class="form-inline pull-right" ng-show="option.isSelected">
+                                            <div class="form-group mt-sm">
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text currency">$</span>
+                                                    </div> 
+                                                    <input 
+                                                        type="text" 
+                                                        class="form-control" 
+                                                        style="width:80px"
+                                                        ng-model="option.selection.cost" 
+                                                        ng-model-options="{ updateOn: 'blur'}"
+                                                        ng-click="$event.stopPropagation()"
+                                                        ds-auto-focus="option.isSelected"
+                                                        ds-number 
+                                                        number-mask 
+                                                        number-decimals="2"
+                                                        number-min="option.costMinimumLimit || 0"
+                                                        number-max="option.costMaximumLimit" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <span class="no-padding text-dark mx-3">per Pay</span>
+                                                <small class="no-padding" style="color:#fff" ng-if="option.costMaximumLimit">(${{option.costMaximumLimit | number:2}} Max)</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div ng-if="option.hasBenefitAmounts" class="col">
+                                    <div class="row">
+                                    <div class="col mt-md">
+                                        <span class="text-right">Benefit</span>
+                                    </div>
+                                    <div class="col mt-sm">
+                                        <select
+                                            class="form-control"
+                                            ng-options="amount as getBenefitAmountLabel(amount, option) for amount in option.benefitAmounts | filter:{isSelectable:true} | orderBy:'benefitAmount' track by amount.benefitAmountId"
+                                            ng-model="option.selection.selectedBenefitAmount"
+                                            ng-click="$event.stopPropagation()"
+                                            ng-change="selectOption(option)"
+                                            ng-disabled="option.isLoading">
+                                            <option value="">Waive</option>
+                                        </select>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div ng-repeat="option in plan.planOptionList | filter:{isSelected:true, hasElectableDependents:true}" class="mb-lg mt-md">
+                                <h4 class="mb-xs">Which dependents would you like to cover?</h4>
+                                <div ng-show="option.minNoOfDependents > 1 || option.maxNoOfDependents < 50" class="mb-xs">
+                                    <em class="text-muted" ng-show="option.minNoOfDependents > 1 && option.minNoOfDependents != option.maxNoOfDependents">Please select at least {{option.minNoOfDependents}} dependents.</em>
+                                    <em class="text-muted" ng-show="option.maxNoOfDependents < 50 && option.minNoOfDependents != option.maxNoOfDependents">You may select a maximum of {{option.maxNoOfDependents}} dependents.</em>
+                                    <em class="text-muted" ng-show="option.minNoOfDependents === option.maxNoOfDependents">Please select {{option.maxNoOfDependents}} dependent{{option.maxNoOfDependents > 1 ? 's':''}}.</em>
+                                </div>
+                                <div class="mt-sm mb-sm">
+                                    <div class="btn-group mr-sm mb-xs resources" role="group" ng-repeat="dep in option.eligibleDependents | filter:dependentFilter">
+                                        <button class="btn btn-sm" ng-class="{'btn--accent':dep.isSelected, 'btn-default':!dep.isSelected}" ng-click="dep.isSelected = !dep.isSelected" ng-disabled="!dep.isSelected && option.isDependentLimitSatisfied({checkIfMaxHasBeenReached:true})">
+                                            <i class="fa"
+                                            ng-class="{'fa-check-square benefit-icon':dep.isSelected, 'fa-square-o':!dep.isSelected}"></i>
+                                            {{ dep.dependent.firstName }} {{ dep.dependent.lastName }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div ng-show="plan.showInfo" class="form-group">
+                            <h4>Plan Description</h4>
+                            <div class="well">{{ plan.planDescription}}</div>
+                            <h4>Additional Resources</h4>
+                            <div class="btn-group mr-sm resources" role="group" ng-repeat="doc in plan.resourceList">
+                                <a ng-href="{{doc.url}}" target="_blank" class="btn btn--accent"><i class="fa fa-file-o no-padding benefit-icon"></i></a>
+                                <a ng-href="{{doc.url}}" target="_blank" class="btn btn-default">{{doc.name}}</a>
+                            </div>
+                            <span ng-if="!plan.resourceList || !plan.resourceList.length" class="text-left">None</span>
+                        </div>
+                    </div>
+                    
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

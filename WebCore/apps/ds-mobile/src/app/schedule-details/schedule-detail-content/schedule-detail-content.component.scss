@@ -1,0 +1,50 @@
+@import 'Styles/scss/_bootstrap-variables.scss';
+
+.in-out-punch-pair {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    flex: 1 0 100%;
+}
+
+.punch {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1 0 80px;
+}
+
+.badge {
+    color: #ffffff;
+    padding: .075rem 0.75rem;
+    margin-right: 0.5rem;
+    display: inline-flex;
+    border-radius: 0.75rem;
+    text-transform: uppercase;
+
+    &.success {
+        background-color: $green;
+    }
+    &.danger {
+        background-color: $red;
+    }
+    &.info {
+        background-color: $blue;
+    }
+}
+
+.time {
+    font-size: 1.25rem;
+}
+
+.schedule-title {
+    margin: 0 0 0.5rem 0;
+    text-transform: uppercase;
+    text-align: center;
+
+    .daily-total {
+        font-weight: 400;
+        font-size: 1rem;
+        margin-left: .25rem;
+    }
+}

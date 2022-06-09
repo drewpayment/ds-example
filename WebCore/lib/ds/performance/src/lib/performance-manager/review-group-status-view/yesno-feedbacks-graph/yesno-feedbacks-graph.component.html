@@ -1,0 +1,45 @@
+<ds-card class="card-height-fix-sm">
+  <ds-card-header>
+    <ds-card-inline-content>
+      <div class="font-lg bold">{{feedback.body}}</div>
+    </ds-card-inline-content>
+  </ds-card-header>
+  <ds-card-content>
+      <div *ngIf="showChart" class="row">
+          <div class="col-lg-6" *ngIf="showEmployeeGraph">
+            <div class="analytic-chart-wrapper">
+                <div class="chart-title">Employees</div>
+                <ng-template #yesnoBarChartDiv >
+                    <canvas 
+                        baseChart
+                        [datasets]  ="chartDataSet"
+                        [labels]    ="chartLabels"
+                        [chartType] ="chartType"
+                        [colors]    ="chartColors"
+                        [options]   ="chartOptions"
+                        #yesnoBarChart ="base-chart"
+                    ></canvas>
+                </ng-template>
+                <ng-container  [ngTemplateOutlet]="yesnoBarChartDiv"></ng-container>
+            </div>
+        </div>
+        <div class="col-lg-6" *ngIf="showManagerGraph">
+            <div class="analytic-chart-wrapper">
+                <div class="chart-title">Supervisors</div>
+                    <ng-template #yesnoBarChartDiv2>
+                        <canvas 
+                            baseChart
+                            [datasets]  ="chartDataSet2"
+                            [labels]    ="chartLabels"
+                            [chartType] ="chartType"
+                            [colors]    ="chartColors2"
+                            [options]   ="chartOptions2"
+                            #yesnoBarChart ="base-chart"
+                        ></canvas>
+                    </ng-template>
+                    <ng-container [ngTemplateOutlet]="yesnoBarChartDiv2"></ng-container>
+                </div>
+            </div> 
+        </div>
+  </ds-card-content>
+</ds-card>

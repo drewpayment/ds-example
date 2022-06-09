@@ -1,0 +1,20 @@
+<ds-dashboard-widget [cardType]="cardType" [loaded]="loaded" skeleton="bar-graph-skeleton">
+    <ds-dashboard-widget-header tooltip="If your company uses Dominion to schedule hours, this displays the number of hours scheduled and the number of hours worked per department within the time period."
+        [title]="title" [headerDropdownOptions]="headerDropdownOptions" (headerDropdownChange)="sortCategory($event)"></ds-dashboard-widget-header>
+    <ds-dashboard-widget-content>
+        <div style="display: block" *ngIf="!emptyState">
+            <canvas baseChart #baseChart *ngIf="loaded"
+                [datasets]="barChartData"
+                [labels]="barChartLabels"
+                [options]="barChartOptions"
+                [legend]="barChartLegend"
+                [colors]="barChartColors"
+                [chartType]="barChartType"
+                (chartClick)="openDialog($event)">
+            </canvas>
+        </div>
+        <div  class="empty-state" *ngIf="emptyState">
+            No data available to display
+        </div>
+    </ds-dashboard-widget-content>
+</ds-dashboard-widget>

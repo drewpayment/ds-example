@@ -1,0 +1,189 @@
+<ng-container *ngIf="initLists$ | async"></ng-container>
+<ng-container *ngIf="changeClient$ | async"></ng-container>
+<ds-card mode="nobody" border="top">
+    <div ds-card-header>
+        <ds-card-header-title>Manual Invoices</ds-card-header-title>
+    </div>
+</ds-card>
+<ds-card mode="noheader">
+    <ds-card-content>
+        <form [formGroup]="manualInvoiceFormGroup">
+            <div class="row">
+                <div class="col-lg-6 col-xl-4">
+                    <div class="form-group">
+                        <label class="form-control-label">Client</label>
+                        <ds-client-selector [clientSelectorFormGroup]="manualInvoiceFormGroup" [options]="options" [required]="true" [isInvalid]="isClientSelectorEmpty && client.touched">
+                        </ds-client-selector>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-xl-4">
+                    <div class="form-group">
+                        <label class="form-control-label">Invoice</label>
+                        <input matInput class="form-control" [matDatepicker]="" formControlName="invoice" required dsFormControlValidator />
+                        <div class="invalid-feedback">
+                            Please enter an invoice date.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-8">
+                    <div class="list-bordered action form-group">
+                        <div class="header">
+                            <div class="row">
+                                <div class="col">Billing Item</div>
+                                <div class="col text-right" *ngIf="billingYearsVisible">Year</div>
+                                <div class="col text-right">Amount</div>
+                                <div class="col-auto">
+                                    <div class="action-width"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="body">
+                            <!-- EDITING A BILLING ITEM HERE -->
+                            <div class="item hoverable" *ngFor="let billing of manualInvoice.manualInvoiceDetails">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <ng-container>{{billing.itemDescription}}</ng-container>
+                                    </div>
+                                    <div class="col" *ngIf="billingYearsVisible">
+                                        <div class="text-right" *ngIf="!billing.isEdit && billingYearsVisible">{{billing.billingYear}}</div>
+                                        <ng-container *ngIf="billing.isEdit && billingYearsVisibleForEdit">
+                                            <div class="form-group mb-md-0">
+                                                <select class="custom-select form-control" formControlName="billingyears"
+                                                    dsFormControlValidator >
+                                                    <option *ngFor="let billingyear of billingyears" [value]="billingyear">
+                                                        {{billingyear}}
+                                                    </option>
+                                                </select>
+                                                <div class="invalid-feedback">
+                                                    Please select a billing year.
+                                                </div>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                    <div class="col">
+                                        <div class="text-right" *ngIf="!billing.isEdit">{{billing.amount | currency}}</div>
+                                        <ng-container *ngIf="billing.isEdit">
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text currency">$</span>
+                                                </div>
+                                                <input class="form-control" formControlName="amount" dsFormControlValidator
+                                                pattern="{{this.numberPattern}}" value="{{billing.amount}}"/>
+                                                <div class="invalid-feedback">
+                                                    <ng-container *ngIf="this.amount.errors?.required">Please enter an amount.</ng-container>
+                                                    <ng-container *ngIf="this.amount.errors?.pattern">Please use numbers only.</ng-container>
+                                                </div>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                    <div class="col-auto">
+                                        <ng-container *ngIf="!billing.isEdit, else editControls">
+                                            <div class="action-width">
+                                                <button type="button" class="btn btn-icon float-right" [matMenuTriggerFor]="menu" [disabled]="disableEditMode">
+                                                    <mat-icon>more_vert</mat-icon>
+                                                </button>
+                                                <mat-menu #menu="matMenu">
+                                                    <button mat-menu-item (click)="editRow(billing)">Edit</button>
+                                                    <button mat-menu-item (click)="deleteRow(billing)">Remove</button>
+                                                </mat-menu>
+                                            </div>
+                                        </ng-container>
+                                        <ng-template #editControls>
+                                          <div class="btn-group">
+                                              <button type="button" class="btn btn-icon-primary" (click)="doneEditing(billing)">
+                                                  <mat-icon>done</mat-icon>
+                                              </button>
+                                              <button type="button" class="btn btn-icon-outline-primary" (click)="deleteRow(billing)">
+                                                  <mat-icon>clear</mat-icon>
+                                              </button>
+                                          </div>
+                                        </ng-template>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- ADDING BILLING ITEM HERE -->
+                            <div class="item hoverable" [hidden]="!isAdd">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group mb-md-0">
+                                            <select class="custom-select form-control" formControlName="billingItems" #focus dsFormControlValidator
+                                                (change)="changeBillingItems()" required>
+                                                <option *ngFor="let billingItemDescription of billingItemDescriptions"
+                                                    [value]="billingItemDescription.billingItemDescriptionId">
+                                                    {{billingItemDescription.description}}
+                                                </option>
+                                            </select>
+                                            <div class="invalid-feedback">
+                                                Please select a billing item.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col" *ngIf="billingYearsVisibleForAdd">
+                                        <div class="form-group mb-md-0">
+                                            <select class="custom-select form-control" formControlName="billingyears"
+                                                dsFormControlValidator >
+                                                <option *ngFor="let billingyear of billingyears" [value]="billingyear">
+                                                    {{billingyear}}
+                                                </option>
+                                            </select>
+                                            <div class="invalid-feedback">
+                                                Please select a billing year.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group mb-md-0">
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text currency">$</span>
+                                                </div>
+                                                <input class="form-control" formControlName="amount" required dsFormControlValidator pattern="{{this.numberPattern}}"/>
+                                                <div class="invalid-feedback">
+                                                    <ng-container *ngIf="this.amount.errors?.required">Please enter an amount.</ng-container>
+                                                    <ng-container *ngIf="this.amount.errors?.pattern">Please use numbers only.</ng-container>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="form-group mb-md-0">
+                                          <div class="btn-group">
+                                              <button type="button" class="btn btn-icon-primary" (click)="addManualInvoiceDetail()">
+                                                  <mat-icon>done</mat-icon>
+                                              </button>
+                                              <button type="button" class="btn btn-icon-outline-primary" (click)="removeRow()">
+                                                  <mat-icon>clear</mat-icon>
+                                              </button>
+                                          </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col" *ngIf="!isAdd && !disableEditMode">
+                            <button class="btn btn-list pt-0"  (click)="addItem(); focusField()">
+                                <mat-icon>add</mat-icon> Item
+                            </button>
+                        </div>
+                        <div class="col" *ngIf="billingYearsVisibleForAdd"></div>
+                        <div class="col" *ngIf="manualInvoice.manualInvoiceDetails.length > 0">
+                            <div class="bold text-right">Total: {{calculateTotal() | currency}}</div>
+                        </div>
+                        <div class="col-auto">
+                            <div class="action-width"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </ds-card-content>
+    <ds-card-footer>
+        <div *ngIf="!manualInvoiceDetailsIsEmpty && !disableEditMode">
+            <button class="btn btn-save" type="button" (click)="save()">Submit</button>
+        </div>
+    </ds-card-footer>
+</ds-card>

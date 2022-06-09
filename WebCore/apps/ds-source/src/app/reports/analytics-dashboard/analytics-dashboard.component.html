@@ -1,0 +1,10 @@
+<div *ngIf="dashboardNames.length > 0 && filters.length > 0">
+    <ds-filter-card *ngIf="sessionReady" [filters]="filters" [currentFilters]="currentFilters"
+        [currentDashboard]="currentDashboard" [currentDateRangeType]="currentDateRangeType"
+        [currentDateRangeCustom]="currentDateRangeCustom" [dateRanges]="dateRanges" [dashboards]="dashboardNames"
+        (dashboardChanged)="dashboardChanged($event)" (submittedFilter)="submittedFilter($event)"
+        (dateRangeChanged)="dateRangeChanged($event)"></ds-filter-card>
+</div>
+<div class="row">
+    <ng-template #widgets></ng-template>
+</div>

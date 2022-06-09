@@ -1,0 +1,41 @@
+<div mat-dialog-header>
+    <h2 class="modal-title">Assign Supervisor
+        
+    </h2>
+    <button type="button" class="close" (click)="onNoClick()">
+        <mat-icon>clear</mat-icon>
+    </button>
+    <div class="modal-subtitle">
+        <div class="instruction-text">Please select a supervisor for {{ data.name }}</div>
+    </div>
+</div>
+<div mat-dialog-content>
+    <form #filterForm="ngForm">
+        <div class="row align-items-end">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-control-label">Supervisor</label>
+                    <select 
+                        class="form-control custom-select" 
+                        [(ngModel)]="selectedSupervisor"
+                        name="supervisor" cdkFocusInitial>
+                        <option [ngValue]="null"></option> 
+                        <option [ngValue]="super" *ngFor="let super of supervisors">
+                            {{ super.lastName }}, {{ super.firstName }} 
+                        </option>                       
+                    </select>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div mat-dialog-actions>
+    <button type="button" 
+        class="btn btn-primary"
+        (click)="save()"
+    >Save</button>
+    <button type="button"
+        class="btn btn-cancel"
+        (click)="onNoClick()"
+    >Cancel</button>
+</div>

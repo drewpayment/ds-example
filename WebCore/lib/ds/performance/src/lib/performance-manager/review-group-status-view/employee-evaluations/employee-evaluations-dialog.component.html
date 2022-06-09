@@ -1,0 +1,35 @@
+<div mat-dialog-header>
+    <h2 class="dialog-title">
+        {{ dialogTitle }}
+    </h2>
+    <button type="button" class="close" (click)="onNoClick()">
+        <mat-icon>clear</mat-icon>
+    </button>
+    <div class="dialog-subtitle">
+        <div class="instruction-text">
+            {{ responseText }}
+        </div>
+    </div>
+</div>
+<div mat-dialog-content>
+  <div class="card card-table">
+    <table class="table">
+        <thead class="table-header">
+            <tr>
+                <th style="width:50px">E/S</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of responseList">
+              <td style="width:50px">
+                  {{item.role == 1 ? 'S' : 'E'}}
+              </td>
+              <td>
+                  {{item.name}} {{item.count > 1 ? ' (' + item.count + ' evaluations)' : ''}}
+              </td>
+            </tr>
+        </tbody>
+    </table>
+  </div>
+</div>

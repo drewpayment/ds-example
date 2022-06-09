@@ -1,0 +1,52 @@
+<ng-container *ngIf="checkDevice$ | async" isMobileSite="false">
+  <form [formGroup]="form">
+    <div mat-dialog-header>
+      <h2>Give Feedback</h2>
+      <button class="close" (click)="close()">
+        <mat-icon>clear</mat-icon>
+      </button>
+      <div class="dialog-subtitle">
+        <div class="instruction-text">Please enter your rating and any comments below.</div>
+      </div>
+    </div>
+    <div mat-dialog-content>
+      <div class="ds-mobile-grid form-group">
+        <label class="d-block text-center mb-2">{{npsQuestionData?.questionText}}</label>
+        <div class="form-group">
+          <div class="d-flex align-items-center justify-content-center">
+            <div class="desktop-label instruction-text font-xs" *ngIf="!isMobile">0 -
+              {{npsQuestionData?.lowestScoreLabel}}</div>
+            <mat-radio-group class="rating text-center" aria-label="Select an option" formControlName="score" required
+              [class.is-invalid]="form.pristine && isSubmitted">
+              <ng-container *ngFor="let idx of [0,1,2,3,4,5,6,7,8,9,10]">
+                <mat-radio-button [name]="'score_' + idx" (click)="formatScore(idx)" [id]="'score_' + idx"
+                  [value]="idx">{{idx}}</mat-radio-button>
+              </ng-container>
+              <div class="d-flex justify-content-between" *ngIf="isMobile">
+                <div class="instruction-text font-xs">0 - {{npsQuestionData?.lowestScoreLabel}}</div>
+                <div class="instruction-text font-xs">10 - {{npsQuestionData?.highestScoreLabel}}</div>
+              </div>
+            </mat-radio-group>
+            <div class="desktop-label instruction-text font-xs" *ngIf="!isMobile">10 -
+              {{npsQuestionData?.highestScoreLabel}}</div>
+          </div>
+          <div class="invalid-feedback text-center" [class.d-block]="form.pristine && isSubmitted">Please select a
+            rating.</div>
+        </div>
+      </div>
+      <div class="ds-mobile-grid form-group">Please provide comments based on your rating:</div>
+      <div class="ds-mobile-grid form-group">
+        <mat-form-field class="row" *ngIf="isMobileStyle">
+          <mat-label>Leave a comment</mat-label>
+          <textarea formControlName="feedback" matInput placeholder=""></textarea>
+        </mat-form-field>
+        <textarea class="form-control" formControlName="feedback" *ngIf="!isMobileStyle"></textarea>
+      </div>
+    </div>
+    <div mat-dialog-actions>
+      <button mat-flat-button type="submit" [color]="isMobileStyle ? 'accent' : 'primary'"
+        (click)="saveClose()">Submit</button>
+      <button mat-button class="btn btn-cancel text" (click)="close()" disableRipple>Cancel</button>
+    </div>
+  </form>
+</ng-container>

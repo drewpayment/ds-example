@@ -1,0 +1,93 @@
+<ng-template #loading>
+  <ds-loading-message></ds-loading-message>
+</ng-template>
+
+<ds-card>
+  <ds-card-header>
+    <ds-card-sub-header-title>
+      General
+    </ds-card-sub-header-title>
+  </ds-card-header>
+  <ds-card-content>
+    <ng-container *ngIf="(dropdownLists$ | async) as data; else loading">
+      <form [formGroup]="f">
+        <div class="row" formGroupName="accrual">
+          <div class="col-lg-12 col-xl-3">
+            <div class="form-group">
+              <label>Name</label>
+              <input class="form-control" formControlName="description" dsFormControlValidator />
+              <div class="invalid-feedback">
+                <span>Please enter a name.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4 col-xl-3">
+            <div class="form-group">
+              <label>Plan Type</label>
+              <select class="form-control custom-select" formControlName="planType" dsFormControlValidator>
+                <option value=""></option>
+                <option *ngFor="let planType of data.servicePlanTypes" [ngValue]="planType.id">{{planType.description}}
+                </option>
+              </select>
+              <div class="invalid-feedback">
+                <span>Please select a plan type.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4 col-xl-3">
+            <div class="form-group">
+              <label>Earning</label>
+              <select class="form-control custom-select" formControlName="clientEarningId" dsFormControlValidator>
+                <option value=""></option>
+                <option *ngFor="let earning of data.clientEarnings" [ngValue]="earning.clientEarningId">
+                  {{earning.description}}</option>
+              </select>
+              <div class="invalid-feedback">
+                <span>Please select an earning.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-3 col-xl-3 inline-md-control">
+            <div class="form-group">
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="combineByEarning"
+                  formControlName="isCombineByEarnings">
+                <label class="custom-control-label" for="combineByEarning">Combine By Earning</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <label class="form-control-label">Notes <span class="form-help-text">Optional</span></label>
+            <div class="form-group">
+              <textarea class="form-control" formControlName="notes"></textarea>
+            </div>
+          </div>
+
+          <div class="col-md-auto">
+            <div class="form-group">
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="active" formControlName="isActive">
+                <label class="custom-control-label" for="active">Active</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-auto">
+            <div class="form-group">
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="previewActivities"
+                  formControlName="isShowPreviewMassages">
+                <label class="custom-control-label" for="previewActivities">Preview Activities</label>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </form>
+    </ng-container>
+  </ds-card-content>
+</ds-card>

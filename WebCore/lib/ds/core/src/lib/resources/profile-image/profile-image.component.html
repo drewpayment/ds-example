@@ -1,0 +1,10 @@
+<div class="profile-image-wrapper">
+  <div class="profile-image" (click)="editable && openModal($event)">
+    <ds-avatar size="132" [resource]="source" [firstName]="firstName" [lastName]="lastName"
+      [color]="employeeAvatarColor">
+    </ds-avatar>
+    <div class="onboarding-edit-avatar" *ngIf="editable">
+      <i class="material-icons md-18">add_a_photo</i>
+    </div>
+  </div>
+</div>

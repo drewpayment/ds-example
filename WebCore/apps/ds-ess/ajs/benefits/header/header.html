@@ -1,0 +1,37 @@
+﻿<div class="row">
+    <div class="col-md-12">
+        <div id="oe-header" class="cf">
+            <div class="row">
+                <div class="col-md-3">
+                    <h1 class="heading">Welcome to Open Enrollment!</h1>
+                </div>
+                <div class="col-md-3">
+                    <div class="progress-step " ng-class="{'active':$ctrl.activeStep==1}">
+                        <div class="progress-number">1</div>
+                        <div class="progress-explanation">Review Information</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="progress-step first-child" ng-class="{'active':$ctrl.activeStep==2}">
+                        <div class="progress-number one">2</div>
+                        <div class="progress-explanation">Make Selections</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="progress-step" ng-class="{'active':$ctrl.activeStep==3}">
+                        <div class="progress-number">3</div>
+                        <div class="progress-explanation">Finalize</div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div><!--#oe-header-->
+        <div class="alert alert-warning" ng-show="$ctrl.isSigned">
+            <i class="icon-warning-sign"></i>&nbsp;
+            Your open enrollment was signed on: {{$ctrl.dateSigned | date:'medium'}}.  Any changes made to this open enrollment will require you to repeat the finalization process and sign this open enrollment again.
+        </div>
+
+
+    </div>
+</div>

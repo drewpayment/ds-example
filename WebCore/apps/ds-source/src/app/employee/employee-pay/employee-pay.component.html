@@ -1,0 +1,80 @@
+
+<ng-template #startDateInputTemplate>
+    <div [formGroup]="employeePaycheckHistoryForm" class="form-group">
+        <label class="form-control-label">Start Date</label>
+        <div class="input-group">
+            <!-- dsFormControlValidator wasn't working with this, so added the manual [class.is-invalid] binding -->
+            <input matInput formControlName="startDateInput" class="form-control"
+                [class.is-invalid]="startDate.getControl().hasError(['required', 'matDatepickerParse'])"
+                [matDatepicker]="startDatepicker"
+                [max]="startDate.maxDate()" required />
+            <div class="input-group-append">
+                <mat-datepicker-toggle matSuffix [for]="startDatepicker" class="input-group-text date">
+                    <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                </mat-datepicker-toggle>
+                <mat-datepicker #startDatepicker></mat-datepicker>
+            </div>
+            <mat-error *ngIf="startDate.getControl().hasError('required')" class="invalid-feedback">
+                Start Date is required.
+            </mat-error>
+            <mat-error *ngIf="startDate.getControl().hasError('matDatepickerParse')" class="invalid-feedback">
+                '{{ startDate.getControl().getError('matDatepickerParse').text }}' is not a valid date.
+            </mat-error>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #endDateInputTemplate>
+    <div [formGroup]="employeePaycheckHistoryForm" class="form-group">
+        <label class="form-control-label">End Date</label>
+        <div class="input-group">
+            <!-- dsFormControlValidator wasn't working with this, so added the manual [class.is-invalid] binding -->
+            <input matInput formControlName="endDateInput" class="form-control"
+                [class.is-invalid]="endDate.hasError()"
+                [matDatepicker]="endDatepicker"
+                [min]="endDate.minDate()" required />
+            <div class="input-group-append">
+                <mat-datepicker-toggle matSuffix [for]="endDatepicker" class="input-group-text date">
+                    <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                </mat-datepicker-toggle>
+                <mat-datepicker #endDatepicker></mat-datepicker>
+            </div>
+            <mat-error *ngIf="endDate.getControl().hasError('required')" class="invalid-feedback">
+                End Date is required.
+            </mat-error>
+            <mat-error *ngIf="endDate.getControl().hasError('matDatepickerParse')" class="invalid-feedback">
+                '{{ endDate.getControl().getError('matDatepickerParse').text }}' is not a valid date.
+            </mat-error>
+            <mat-error *ngIf="endDate.getControl().hasError('matDatepickerMin')" class="invalid-feedback">
+                End Date must be after {{ dateToFormattedString(endDate.minDate()) }}.
+            </mat-error>
+        </div>
+    </div>
+</ng-template>
+
+<div [formGroup]="employeePaycheckHistoryForm" class="card">
+    <div class="card-header">
+        <h1 class="d-inline-block">
+            Paycheck History
+        </h1>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3 col-xl-2">
+                <ng-container *ngTemplateOutlet="startDateInputTemplate; context: { $implicit: employeePaycheckHistoryForm }"></ng-container>
+            </div>
+            <div class="col-md-3 col-xl-2">
+                <ng-container *ngTemplateOutlet="endDateInputTemplate; context: { $implicit: employeePaycheckHistoryForm }"></ng-container>
+            </div>
+            <div class="col-md-auto">
+                <div class="form-group inline-md-control">
+                    <button class="btn btn-outline-primary" type="button" (click)="updatePayrollPayCheckList()">
+                        Filter
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <ds-paycheck-table></ds-paycheck-table>
+    </div>
+</div>

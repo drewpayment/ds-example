@@ -1,0 +1,24 @@
+.termination-name {
+    flex: 0 1 200px;
+}
+
+.termination-department {
+    flex: 0 1 250px;
+}
+
+.termination-costCenter {
+    flex: 0 1 250px;
+}
+
+.termination-hireDate {
+    flex: 0 1 100px;
+}
+
+.termination-terminationDate {
+    flex: 0 1 100px;
+}
+
+.termination-terminationReason {
+    flex: 0 1 150px;
+    justify-content: center;
+}

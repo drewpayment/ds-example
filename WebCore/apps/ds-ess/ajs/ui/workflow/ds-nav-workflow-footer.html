@@ -1,0 +1,10 @@
+﻿<div class="row">
+    <div class="col-sm-12">
+        <a ng-click="$ctrl.nextPage(-1);" ng-hide="{{$ctrl.workflowHidePrev}}" ng-disabled="savingChanges" class="pull-left form-group">
+            <input type="button" value="Back" class="btn btn-default" />
+        </a>
+        <a ng-click="$ctrl.nextPage(+1);" ng-hide="{{$ctrl.workflowHideNext}}" ng-disabled="savingChanges" id="saveButton" class="pull-right form-group">
+            <input type="button" class="btn btn-primary" value="Continue" class="btn" />
+        </a>
+    </div>
+</div>

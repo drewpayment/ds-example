@@ -1,0 +1,68 @@
+<ds-card border="top" mode="nobody">
+    <div ds-card-header>
+        <ds-card-header-title>
+            Review Policy
+        </ds-card-header-title>
+        <ds-card-subtitle>
+            <div class="instruction-text">
+                Use this page to establish a Review Policy and automate scheduling. Reviews can be either recurring or one-time events. By default, this Review Policy applies to all active employees. To apply your Review Policy to select employees, click the “+ Group” button to create Groups. Employees assigned to a group will be automatically scheduled for the appropriate review.
+            </div>
+        </ds-card-subtitle>
+        <ds-card-title-action>
+            <button *ngIf="!(data$ | async)?.groups?.length" type="button" class="btn btn-primary" (click)="addGroup()"><mat-icon>add</mat-icon> Group</button>
+        </ds-card-title-action>
+    </div>
+    
+</ds-card>
+<ng-container *ngIf="data$ | async as data">
+    <div *ngIf="data?.groups?.length">
+      <ds-card>
+        <ds-card-header>
+            <ds-card-header-title>
+              Groups<span *ngIf="">: {{data?.groups?.length}}</span>
+            </ds-card-header-title>
+            <ds-card-title-action>
+                <button type="button" class="btn btn-primary" (click)="addGroup()">
+                  <mat-icon>add</mat-icon> Group
+                </button> 
+              </ds-card-title-action>
+            </ds-card-header>
+            <ds-card-content>
+                <div class="overflow-list">
+                  <div class="row">
+                    <div *ngFor="let group of data?.groups" class="col-sm-6 col-lg-4">
+                        <ds-card mode="widget-nobody" color="info-special" hover="true" class="hoverable actionable">
+                            <div ds-card-icon size="lg">people_outline</div>
+                            <ds-card-header>
+                                <ds-card-widget-title>{{group.name}}</ds-card-widget-title>
+                                <ds-card-subtitle>
+                                    <div class="card-data">
+                                        <div class="item">
+                                            <label>{{((group?.reviewTemplates  | toMaybe) | filterTemplatesNotInList : (data?.templates?.active | toMaybe)).length}} Review{{(group.reviewTemplates ? group.reviewTemplates.length : 0) !== 1 ? 's' : ''}}</label>
+                                        </div>
+                                    </div>
+                                </ds-card-subtitle>
+                                <ds-card-title-action>
+                                    <button type="button" class="btn btn-icon nested-cog hover-show" [matMenuTriggerFor]="menu">
+                                      <mat-icon>more_vert</mat-icon>
+                                    </button>
+                                    <mat-menu #menu >
+                                      <button type="button" mat-menu-item (click)="updateGroup(group.groupId)">
+                                          Edit
+                                      </button>
+                                    </mat-menu> 
+                                </ds-card-title-action>
+                            </ds-card-header>
+                        </ds-card>
+                    </div>
+                </div>
+            </div>
+            </ds-card-content>
+      </ds-card>
+    </div>  
+</ng-container>
+<ds-review-template-list
+[SourceTemplates]="data$ | async | toggleTemplates : viewArchive"
+(RequestToToggleList)="toggleTemplateList()"
+[IsArchiveView]="viewArchive">
+</ds-review-template-list>

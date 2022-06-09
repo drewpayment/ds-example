@@ -1,0 +1,213 @@
+<ds-card>
+  <ds-card-header>
+    <ds-card-sub-header-title>Filter</ds-card-sub-header-title>
+  </ds-card-header>
+  
+  <ds-card-content>
+    <ng-container *ngIf="!isLoading; else loaderContent">
+      <div class="row">
+        <div class="col-xl-12">
+          <ng-container [formGroup]="f">
+            <div class="row">
+              <div class="col-6 col-lg-3 col-xl-2">
+                <div class="form-group">
+                  <label>Display From</label>
+                  <div class="input-group">
+                    <input matInput class="form-control" [ngClass]="{'is-invalid': startDate.hasError('matDatepickerMax')}"
+                      formControlName="startDate"
+                      [matDatepicker]="StartDatePicker" 
+                      [max]="endDate.value"/>
+                    <div class="input-group-append">
+                      <mat-datepicker-toggle matSuffix [for]="StartDatePicker" class="input-group-text date">
+                        <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                      </mat-datepicker-toggle>
+                      <mat-datepicker #StartDatePicker></mat-datepicker>
+                    </div>
+                    <mat-error class="invalid-feedback" *ngIf="startDate.hasError('matDatepickerMax')">
+                      Please enter a date on or before {{endDate.value | convertToMoment | momentFormat : momentFormatString}}
+                    </mat-error>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6 col-lg-3 col-xl-2">
+                <div class="form-group">
+                  <label>To</label>
+                  <div class="input-group">
+                    <input matInput class="form-control" [ngClass]="{'is-invalid': endDate.hasError('matDatepickerMin')}"
+                      formControlName="endDate"
+                      [matDatepicker]="EndDatePicker"
+                      [min]="startDate.value" />
+                    <div class="input-group-append">
+                      <mat-datepicker-toggle matSuffix [for]="EndDatePicker" class="input-group-text date">
+                        <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                      </mat-datepicker-toggle>
+                      <mat-datepicker #EndDatePicker></mat-datepicker>
+                    </div>
+                    <mat-error class="invalid-feedback" *ngIf="endDate.hasError('matDatepickerMin')">
+                      Please enter a date on or after {{startDate.value | convertToMoment | momentFormat : momentFormatString}}
+                    </mat-error>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-6 col-xl-8">
+                <div class="form-group">
+                  <label class="form-control-label">Folder(s)</label>
+                    <mat-form-field class="form-control">
+                      <mat-chip-list #folderList>
+                        <mat-chip
+                          *ngFor="let folder of selectedFolders; let i=index"
+                          [selectable]="true"
+                          [removable]="true"
+                          (removed)="remove(folder)">
+                          {{ folder.description }}
+                          <mat-icon matChipRemove>clear</mat-icon>
+                        </mat-chip>
+                        <input
+                          type="text"
+                          #folderInput
+                          [formControl]="folderCtrl"
+                          [matAutocomplete]="auto"
+                          [matChipInputFor]="folderList"
+                          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                          [matChipInputAddOnBlur]="addOnBlur"
+                          (matChipInputTokenEnd)="add($event)">
+                      </mat-chip-list>
+                      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                        <mat-option *ngFor="let folder of filteredFolders | async" [value]="folder">
+                          {{folder.description}}
+                        </mat-option>
+                      </mat-autocomplete>
+                    </mat-form-field>
+                </div>
+              </div>
+            </div> 
+          </ng-container>
+        </div>
+      </div>
+    </ng-container>
+  </ds-card-content>
+
+  <ds-card-footer *ngIf="!isLoading">
+    <div class="row justify-content-end">
+      <div class="col-auto">
+        <button type="button" class="btn btn-outline-primary" (click)="showAttachments()">Filter</button>
+      </div>
+    </div>
+  </ds-card-footer>
+</ds-card>
+
+<div class="row" *ngIf="((pdfAttachments != null && pdfAttachments.length) || (otherAttachments != null && otherAttachments.length)) && showAttachmentCards;">
+  <div [ngClass]="pdfColWidth" *ngIf="pdfAttachments != null && pdfAttachments.length">
+    <ds-card *ngIf="showAttachmentCards">
+      <ds-card-header>
+        <ds-card-sub-header-title>
+          PDF Files
+        </ds-card-sub-header-title>
+        <ds-card-subtitle>
+          <div class="instruction-text">
+            Select a filename to preview the PDF. Only PDF files can be previewed.
+          </div>
+        </ds-card-subtitle>
+      </ds-card-header>
+      <ds-card-content>
+        <ng-container *ngIf="!isAttachmentsLoading; else loaderContent">
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group inline-radio">
+                <label>Show</label>
+                <ng-container *ngFor="let attachment of pdfAttachments; let i=index;">
+                  <div class="custom-control custom-radio custom-control-bg info" (click)="selectAttachment(attachment)">
+                    <input id="{{attachment.name + i}}" type="radio" name="{{attachment.name + i}}" [checked]="attachment.resourceId == (selectedPDFAttachment ? selectedPDFAttachment.resourceId : 0)" value="{{attachment.resourceId}}" class="custom-control-input">
+                    <label class="custom-control-label" for="{{attachment.name + i}}">{{attachment.name}}</label>
+                    <div class="custom-bg"></div>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group">
+                  <div class="iframe-wrapper">
+                  <iframe #iframe *ngIf="selectedPDFAttachment != null" name="filePreview" [src]="safeSource" class="iframesize" frameborder="0"></iframe>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </ds-card-content>
+    </ds-card>
+  </div>
+  <div [ngClass]="otherColWidth" *ngIf="otherAttachments != null && otherAttachments.length">
+      <ng-container *ngIf="showAttachmentCards">
+        <div class="ds-card card-height-fix-sm" [ngClass]="{'match-lg-height' : (pdfAttachments != null && pdfAttachments.length)}">
+            <div class="ds-card-header">
+              <div class="ds-card-header-row">
+                    <div class="ds-card-title">
+                        <h2><ng-container *ngIf="pdfAttachments != null && pdfAttachments.length">Other </ng-container>Files</h2>
+                    </div>
+                </div>
+                <div class="ds-card-subtitle">
+                    <div class="instruction-text">
+                        Select a filename to download the attachment and preview.
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <ng-container *ngIf="!isAttachmentsLoading; else loaderContent">
+                    <div class="overflow-list overflow-y-scroll-container">
+                      <div class="row">
+                        <ng-container *ngFor="let attachment of otherAttachments">
+                          <div [ngClass]="otherColCardWidth"> 
+                            <ds-card hover="true" color="info" mode="object" x-align="center" class="hoverable" (click)="download(attachment)">
+                              <ds-card-header>
+                                <ds-card-sub-header-title>
+                                </ds-card-sub-header-title>
+                                <ds-card-title-action>  
+                                  <button type="button" class="btn btn-icon nested-cog hover-show" [matMenuTriggerFor]="employeeAttachment" (click)="onEvent($event)">
+                                    <i class="material-icons">more_vert</i>
+                                  </button>
+                                  <mat-menu #employeeAttachment="matMenu">
+                                    <button mat-menu-item (click)="download(attachment)">Download</button>
+                                  </mat-menu>
+                                </ds-card-title-action>
+                                <ds-card-subtitle>
+                                  <div class="split-content">
+                                    <div class="top">
+                                      <div class="object-card-avatar">
+                                        <div class="resource-img-container">
+                                            <img class="resource-img"
+                                            src="WebCore/Images/Resources/{{getMappedExtension(attachment.extension)}}.png" />
+                                        </div>
+                                      </div>
+                                      <div class="font-lg text-center mb-4 text-truncate">
+                                        <b>{{attachment.name}}</b>
+                                      </div>
+                                      <div class="text-muted text-center text-truncate font-xs">
+                                        Uploaded: {{attachment.addedDate | date:'MM/dd/yy h:mm a'}}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </ds-card-subtitle>
+                              </ds-card-header>                              
+                            </ds-card>
+                          </div>
+                        </ng-container>
+                      </div>
+                    </div>
+                </ng-container>
+            </div>
+          </div>
+      </ng-container>
+  </div>
+</div> 
+
+<ng-template #loaderContent>
+  <ds-loading-message></ds-loading-message>
+</ng-template>
+
+<ds-card mode="noheader" *ngIf="(pdfAttachments == null || !pdfAttachments.length) && (otherAttachments == null || !otherAttachments.length) && showAttachmentCards;">
+  <ds-card-content>
+    <div class="empty-state">There are no attachments to display. Click the "+ Attachment" button to add one for this employee.</div>
+  </ds-card-content>
+</ds-card>

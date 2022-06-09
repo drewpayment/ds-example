@@ -1,0 +1,77 @@
+<ds-card mode="nobody" border="top">
+    <div ds-card-header>
+        <ds-card-sub-header-title>Overview</ds-card-sub-header-title>
+    </div>
+</ds-card>
+<ds-card *ngIf="hasEarningsData">
+    <div ds-card-header>
+        <ds-card-sub-header-title>Additional Earnings</ds-card-sub-header-title>
+    </div>
+    <ds-card-content>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-control-label">Name</label>
+                    <input type="text" class="form-control" [(ngModel)]="oneTimeEarningSettings.name" disabled />
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-2">
+                <div class="form-group">
+                    <label class="form-control-label">Type</label>
+                    <select class="custom-select" [(ngModel)]="oneTimeEarningSettings.increaseType" disabled>
+                        <option *ngFor="let key of increaseTypeKeys" [ngValue]="key" [label]="increaseType[key]"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-6  col-md-2">
+                <div class="form-group">
+                    <label class="form-control-label">Amount</label>
+                    <div class="input-group">
+                            <div class="input-group-prepend" *ngIf="oneTimeEarningSettings.increaseType!=1">
+                                <span class="input-group-text currency">$</span>
+                            </div>
+                            <input type="text" class="form-control" [(ngModel)]="oneTimeEarningSettings.increaseAmount" disabled/>
+                            <div class="input-group-append" *ngIf="oneTimeEarningSettings.increaseType==1">
+                                <span class="input-group-text percent">%</span>
+                            </div>
+                            
+                        </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-2" *ngIf="false">
+                <div class="form-group">
+                    <label class="form-control-label">Based On</label>
+                    <select class="custom-select" [(ngModel)]="oneTimeEarningSettings.basedOn" disabled>
+                        <option *ngFor="let key of basedOnKeys" [ngValue]="key" [label]="getBasedOnLabel(key)"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3" *ngIf="false">
+                <div class="form-group">
+                    <label class="form-control-label">Measurement</label>
+                    <select class="custom-select" [(ngModel)]="oneTimeEarningSettings.measurement" disabled>
+                        <option *ngFor="let key of measurementKeys" [ngValue]="key" [label]="measurement[key]"></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </ds-card-content>
+</ds-card>
+<ds-card>
+    <ds-card-header>
+        <ds-card-header-title>
+            Competencies
+        </ds-card-header-title>
+        <ds-card-subtitle>
+            <div class="instruction-text">Below is the list of competencies assigned to you. If you have any questions on expectations, please contact your supervisor or HR department.</div>
+        </ds-card-subtitle>
+    </ds-card-header>
+    <ds-card-content>
+        <div class="empty-state" *ngIf="!competencies.length">
+            There are no competencies assigned to you.
+        </div>
+        <ng-container *ngFor="let comp of competencies">
+            <ds-competency [competency]="comp"></ds-competency>
+        </ng-container>
+    </ds-card-content>
+</ds-card>

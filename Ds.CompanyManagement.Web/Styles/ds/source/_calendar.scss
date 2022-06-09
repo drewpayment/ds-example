@@ -1,0 +1,347 @@
+$cal-header-bg-color: #555555; 
+$cal-row-bg-color: #fff;
+$cal-row-alt-bg-color: #EEFAF9;
+$cal-weekend-bg-color: darken($cal-row-alt-bg-color, 3%); 
+$cal-weekend-bg-color-print: #f3f3f3;
+$cal-today-bg-color: lighten($state-info-bg, 5%);
+
+$cal-row-border-color: darken($cal-row-bg-color, 10%);
+$cal-divider-border-color: darken($cal-row-bg-color, 10%);//darken($cal-row-alt-bg-color, 7%);
+$cal-week-day-width: 12%;
+
+$cal-info-title-color: #333;
+$cal-info-selected-bg: $btn-secondary-bg;
+$cal-info-selected-color: $btn-secondary-color;
+
+@mixin row-color-variant($row-color, $weekend-color: $cal-weekend-bg-color, $today-color: $cal-today-bg-color) {
+
+    background-color: $row-color;
+
+    .today {
+        background-color: $today-color;
+    }
+
+    .weekend {
+        background-color: $weekend-color;
+    }
+
+    &:hover {
+        background-color: darken($row-color, 2%);
+
+        .today {
+            background-color: darken($today-color, 2%);
+        }
+
+        .weekend {
+            background-color: darken($weekend-color, 2%);
+        }
+    }
+}
+
+table.calendar {
+    width: 100%;
+    border-bottom: 1px solid $cal-row-border-color;
+
+    &.week {      
+
+        td.day {
+            width: $cal-week-day-width; 
+            min-width: $cal-week-day-width;  
+        }
+    }    
+
+    .group-selector {
+        width: 100%;
+    }
+
+    .cal-header {   
+
+        .info, 
+        .day {
+            background-color: $cal-header-bg-color !important;
+            font-size: 14px;
+            text-align: center;
+            padding: 7px 0px;
+            color: #eee !important;
+            border: 1px solid darken($cal-header-bg-color, 5%);
+        }
+
+        .day {
+            text-transform: uppercase;
+
+            .day-of-week {
+                color: #eee !important;
+                font-weight: 100;
+            }
+
+            .date {
+                font-weight: 600;
+                color: #fff !important;
+            }
+        }
+    }
+
+    .cal-row {    
+
+        &.divider-row {
+            border-top: 4px solid $cal-divider-border-color;
+        }
+        
+        .info {            
+            padding: 13px;
+            text-align: left;
+            border-left: 1px solid $cal-row-border-color;
+            border-right: 1px solid $cal-row-border-color;
+
+            .info-title {
+                color: $cal-info-title-color;
+            }
+
+            .info-action {
+                display:none;
+                color: $cal-header-bg-color;
+                font-size: 20px;
+                float: right; 
+                margin-top: -7px;
+                margin-bottom: -7px;
+                margin-right: -10px;
+                padding-right: 10px;             
+            }
+
+            &:hover {
+                .info-action {
+                    display: inline-block;
+                }
+            }
+
+            &.selected {
+                background-color: $cal-info-selected-bg;
+                border-bottom-color: $cal-info-selected-color;
+                border-right-color: $cal-info-selected-color;
+
+                .info-title {
+                    color: $cal-info-selected-color;
+                }
+            }  
+            
+            &.disabled {
+                opacity: 0.4;
+            }         
+        }
+
+        .day {        
+            border-left: 1px solid $cal-row-border-color;
+            border-right: 1px solid $cal-row-border-color;
+            padding: 5px;
+            vertical-align: top;
+
+            .day-edit {
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+
+        @include row-color-variant($cal-row-bg-color, darken($cal-row-alt-bg-color, 3%));
+
+        &.subgroup-row {       
+        
+            .info {            
+                padding-left: 25px;  
+            }
+        }
+
+        &.alt-row {
+            @include row-color-variant($cal-row-alt-bg-color, darken($cal-row-alt-bg-color, 3%));
+        }
+
+        &.info-row {
+            @include row-color-variant(#eee, darken(#eee, 3%));
+        }
+    }    
+
+    .cal-footer {
+        background-color: $cal-row-border-color;
+        border: 1px solid $cal-row-border-color;
+        
+        .info {
+            padding: 10px 5px;
+        }
+    }
+}
+
+@media print {
+    
+    .no-style-print {
+        border: none;
+        background-color: transparent;
+        box-shadow: none;    
+        padding: 0px;
+        margin: 0px;
+    }
+
+    .schedule-report-header {
+        .schedule-title {
+            font-size: 1.3em;
+            display: inline-block;
+        }
+
+        .schedule-date-range {
+            font-size: 1.3em;
+            display: inline-block;
+        }
+    }     
+
+    .schedule-report-print-date {
+        font-style: italic;
+        margin-top: 1em;
+    }
+
+    table.calendar {
+        margin-top: 3em;
+
+        .cal-row { 
+
+            border-bottom: 1px solid $cal-row-border-color;
+            
+            .day {
+                
+                vertical-align: middle;
+
+                .schedule-report-shift {
+                    font-size: 0.8em;
+
+                    .secondary,
+                    &.secondary {
+                        color: darken($input-bg-disabled, 30%) !important;
+                    }
+                }
+
+                &.weekend {
+                    background-color: $cal-weekend-bg-color-print !important;
+                }
+
+                &.today {
+                    background-color: inherit !important;
+                }
+            }
+
+            &.info-row {
+                background-color: $cal-weekend-bg-color-print !important;
+            }
+        }
+    }
+}
+
+/******************************************************
+ * SCHEDULE STATE
+ ******************************************************/
+ .schedule-state {
+ 
+    padding-top: 6px;
+    font-size: 14px;
+
+    i {
+        vertical-align: middle;
+        font-size: 16px;
+        padding-right: 8px;
+    }
+
+    &.unsaved {
+        padding-top: 6px;
+        padding-right: 2px;
+        font-size: 20px;
+        color: #C8C8C8;
+
+        i {
+            vertical-align: text-top;
+            font-size: 20px;
+        }
+    }
+
+    &.preview {
+        color: $brand-warning;
+    }
+
+    &.published {
+        color: $brand-primary;
+    }
+
+    &.unpublished {
+        color: $gray;
+    }
+
+    &.recurring {
+        color: $gray;
+    }
+ }
+
+/******************************************************
+ * SHIFT EDITOR MODAL
+ ******************************************************/
+.time-picker {
+    width: 100px !important;
+}
+
+.employee-count {
+    width: 60px !important;
+    text-align: center;
+}
+
+.day-selector {
+
+    .btn {
+        margin: 0px 3px;
+        min-width: 60px;
+    }
+}
+
+.shift-editor {
+    overflow: auto;
+    max-height: 500px;
+}
+
+/******************************************************
+ * EMPLOYEE SHIFT SCHEDULER
+ ******************************************************/
+ .week-selector {    
+
+    //@extend .navbar-brand;
+    float: none;
+    padding-top: 5px;
+    padding-bottom: 0px;
+
+    //position: absolute;
+    width: 100%;
+    //left: 0;
+    text-align: center;
+    margin: auto;
+    font-size: 16px;
+    vertical-align: middle;
+
+
+    .week-range {
+        display: inline-block;
+        min-width: 220px;
+        text-align:center;
+    }
+
+    .week-nav {
+        @extend .text-muted;
+    }
+ }
+
+.panel-body {
+
+    position: relative;
+
+    .overlay {
+       position: absolute;
+       z-index: 100;
+       width: 100%;
+       height: 100%;
+       background-color: white;
+       margin-left: $panel-body-padding * -1;
+       margin-top: $panel-body-padding * -1;
+       @include opacity(0.6);
+    }
+}

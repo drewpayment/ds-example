@@ -1,0 +1,197 @@
+<ds-card mode="noheader" *ngIf="isLoading">
+    <ds-card-content>
+        <ds-loading-message></ds-loading-message>
+    </ds-card-content>
+</ds-card>
+
+<ds-card mode="noheader" *ngIf="!hasSelectedReviewTemplate && !isLoading">
+    <ds-card-content>
+        <div class="empty-state">
+            Use the filters above to schedule employees.
+        </div>
+    </ds-card-content>
+</ds-card>
+<div [hidden]="!hasSelectedReviewTemplate || isLoading">
+    <ds-card [mode]="dataSource.length > 0 ? 'card' : 'noheader'">
+        <ds-card-header *ngIf="dataSource.length > 0">
+            <span class="instruction-text" >
+                Use the Employee List below to select employees.  If Groups are used on the review, then the list below renders accordingly.
+                You may also use filters (located in the upper right of the screen) to refine the list further. Once assigned to a review, the employees selected will appear on the "Status" tab.
+            </span>
+            <ds-card-title-action>
+                <button type="button"
+                    class="btn btn-primary white-space-nowrap"
+                    [disabled]="!this.selectedEmployees?.length"
+                    (click)="showAddReviewDialog()">
+                    <i class="material-icons">add</i> Review
+                </button>
+            </ds-card-title-action>
+        </ds-card-header>
+        <ds-card-content>
+            <div class="empty-state" *ngIf="dataSource.length == 0">
+                There are no employees to display for the filters selected.
+            </div>
+            <div class="card card-xl-table" [class.d-none]="dataSource.length == 0">
+                <div class="table-xl-responsive">
+                    <mat-table [dataSource]="dataSource" color="primary"
+                        matSort
+                        matSortActive="name"
+                        matSortDisableClear
+                        matSortDirection="asc"
+                    >
+                        <ng-container matColumnDef="selected">
+                            <mat-header-cell *matHeaderCellDef class="table-checkbox">
+                                <div class="custom-control custom-checkbox">
+                                    <input id="header-row-checkbox"
+                                        class="custom-control-input"
+                                        type="checkbox"
+                                        (change)="$event ? masterToggle() : null"
+                                        [checked]="selection.hasValue() && isAllSelected()"
+                                    />
+                                    <label class="custom-control-label" for="header-row-checkbox"></label>
+                                </div>
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let item; let i = index" class="table-checkbox">
+                                <div class="custom-control custom-checkbox">
+                                    <input [id]="'selected_'+i"
+                                        class="custom-control-input"
+                                        type="checkbox"
+                                        (click)="$event.stopPropagation()"
+                                        (change)="$event ? selection.toggle(item) : null"
+                                        [checked]="isSelected(item)"
+                                        [class.is-invalid]="isInvalid"
+                                    />
+                                    <label class="custom-control-label" [for]="'selected_'+i">
+                                        <span>Select</span>
+                                    </label>
+                                </div>
+                            </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="avatar">
+                            <mat-header-cell *matHeaderCellDef class="justify-content-center">
+                                <i class="material-icons">person</i>
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let item" class="justify-content-center mat-td-profile-width">
+                                <ds-avatar
+                                  resource="{{item.profileImage.extraLarge.url}}"
+                                  firstName="{{item.firstName}}"
+                                  lastName="{{item.lastName}}"
+                                  size="24"
+                                ></ds-avatar>
+                            </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="name">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header="name">
+                                Name
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let item" data-label="Name">
+                                <span class="text-truncate">{{item.lastName}}, {{item.firstName}}</span>
+                            </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="number">
+                            <mat-header-cell *matHeaderCellDef class="table-text-right" mat-sort-header="number">
+                                <span class="text-truncate">Number</span>
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let item" class="table-text-right" data-label="Number">
+                                {{item.employeeNumber}}
+                            </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="division">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header="division">
+                                Division
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let item" data-label="Division">
+                                {{item.divisionName}}
+                            </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="department">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header="department">
+                                Department
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let item" data-label="Department">
+                                {{item.departmentName}}
+                            </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="jobTitle">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header="jobTitle">
+                                Job Title
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let item" data-label="Job Title">
+                                {{item.jobTitle}}
+                            </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="supervisor">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header="supervisor">
+                                Supervisor
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let item" data-label="Supervisor">
+                                <span *ngIf="item.directSupervisor != null; else assignSupervisor">
+                                    {{item.directSupervisor}}
+                                </span>
+                                <ng-template #assignSupervisor>
+                                    <button type="button" class="btn btn-anchor" (click)="showSupervisorDialog(item)">
+                                        Assign
+                                    </button>
+                                </ng-template>
+                            </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="hireDate">
+                            <mat-header-cell *matHeaderCellDef class="schedule-table-date table-text-right" mat-sort-header="hireDate">
+                                Date of Hire
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let item" class="schedule-table-date table-text-right" data-label="Date of Hire">
+                                {{item.hireDate | date:'shortDate'}}
+                            </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="serviceLength">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header="serviceLength">
+                                Length of Service
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let item" data-label="Length of Service">
+                                {{getServiceLength(item)}}
+                            </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="payType">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header="payType">
+                                Pay Type
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let item" data-label="Pay Type">
+                                {{item.payType | payType}}
+                            </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="competencyModel">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header="competencyModel">
+                                <span class="text-truncate">Competency Model</span>
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let item" data-label="Competency Model">
+                                <span *ngIf="item.competencyModel != null; else noModel">
+                                    <span class="text-truncate">{{item.competencyModel.name}}</span>
+                                </span>
+                                <ng-template #noModel>
+                                    <button type="button" class="btn btn-anchor" (click)="showCompetencyDialog(item)">
+                                        Assign
+                                    </button>
+                                </ng-template>
+                            </mat-cell>
+                        </ng-container>
+
+                        <mat-header-row *matHeaderRowDef="displayColumns"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns:displayColumns;"></mat-row>
+                    </mat-table>
+                </div>
+                <mat-paginator [length]="pagingLength" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 50]"></mat-paginator>
+            </div>
+        </ds-card-content>
+    </ds-card>
+</div>

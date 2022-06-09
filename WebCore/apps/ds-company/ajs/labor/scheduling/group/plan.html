@@ -1,0 +1,202 @@
+﻿    <div class="card-body">
+        <!-- ACTIONS -->
+        <div class="row pb-4 align-items-center">
+            <div class="col-md-5">
+                <div class="form-row hidden-print">
+                    <div class="col-auto">
+                        <select class="form-control custom-select"
+                                ng-model="schedule"
+                                ng-options="sched as sched.name for sched in schedules | orderBy:'name'"
+                                ng-change="scheduleSelected(schedule)">
+                            <option value="">Select Schedule</option>
+                        </select>
+                    </div>
+                    <div class="col-auto">
+                        <button class="btn btn-primary"
+                                title="Add Schedule"
+                                ng-click="addSchedule()">
+                            <i class="material-icons">add</i>
+                            Schedule
+                        </button>
+                        <button class="btn btn-outline-primary"
+                                title="Edit Schedule"
+                                ng-click="editSchedule(schedule)"
+                                ng-show="schedule">
+                            <i class="material-icons">mode_edit</i>
+                            Schedule
+                        </button>
+                    </div> 
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="d-flex align-items-center justify-content-end ng-scope" ng-if="schedule">
+
+                    <!-- schedule state -->
+                    <div class="font-sm text-muted pr-6" ng-if="!schedule.isActive && schedule">
+                        <i class="material-icons">do_not_disturb_on</i> Disabled Schedule
+                    </div>
+                    <div class="font-sm text-muted pr-6" ng-if="schedule.isActive && schedule">
+                        <i class="material-icons">send</i> Published Schedule
+                    </div>
+
+                    <div class="col-auto text-danger" ng-if="!schedule.$isSaved" title="Unsaved Changes Exist">
+                        <i class="material-icons">warning</i>
+                    </div>
+
+                    <div class="btn-group" dropdown is-open="schedule.$isActionOpen">
+                        <button class="btn btn-primary"
+                                ng-class="{'btn-primary': schedule.$isSaved, 'btn-danger': !schedule.$isSaved}"
+                                ng-click="saveSchedule()"
+                                ng-if="(!schedule.$isSaved && schedule.isActive) || (schedule.$isSaved && !schedule.isActive)">
+                            <i class="material-icons">send</i> {{ schedule.isActive ? 'Publish Changes' : 'Publish Schedule' }}
+                        </button>
+                        <button class="btn btn-primary"
+                                ng-if="schedule.$isSaved && schedule.isActive"
+                                ng-click="toggleActions($event)">
+                            <i class="material-icons">date_range</i> Schedule Actions
+                        </button>
+                        <button class="btn btn-danger"
+                                ng-click="saveSchedule(!schedule.isActive)"
+                                ng-if="!schedule.$isSaved && !schedule.isActive">
+                            <i class="material-icons">done</i> &nbsp; Save Changes
+                        </button>
+                        <button class="btn dropdown-toggle"
+                                ng-class="{'btn-primary': schedule.$isSaved, 'btn-danger': !schedule.$isSaved}"
+                                dropdown-toggle></button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" ng-if="schedule.isActive || (!schedule.$isSaved && !schedule.isActive)" href="" ng-click="saveSchedule(schedule.isActive)">
+
+                                <!--<i class="fa fa-fw text-muted" ng-class="{'fa-minus-circle': schedule.isActive, 'fa-paper-plane': !schedule.isActive }"></i> {{ schedule.isActive ? (schedule.$isSaved ? 'Disable Schedule' : 'Disable Schedule & Save'): 'Publish Schedule & Save' }}-->
+
+                                <i class="material-icons">
+                                    {{ schedule.isActive ? 'do_not_disturb_on' : 'send' }}
+                                </i>
+                                {{ schedule.isActive ? (schedule.$isSaved ? 'Disable Schedule' : 'Disable Schedule & Save'): 'Publish Schedule & Save' }}
+
+                            </a>
+                            <a ng-if="schedule.isActive || (!schedule.$isSaved && !schedule.isActive)" class="divider"></a>
+                            <a class="dropdown-item" href="" ng-click="copySchedule()"><i class="material-icons">content_copy</i> Copy Schedule</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table class="table calendar" ng-if="schedule">
+            <thead>
+                <tr class="table-header">
+                    <th class="info"></th>
+                    <th ng-repeat="day in week.$days" class="day text-center">
+                        {{ day.$moment.format('ddd') }}
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="table-bordered" ng-repeat="group in schedule.groups | filter:{isReadOnly:false} | orderBy:'description'">
+                <tr class="cal-row"
+                    ng-class="{ 'alt-row': $index % 2 == 0 }">
+                    <td class="hoverable schedule-first-col">
+                        <b>{{ group.description }}</b>
+                        <div class="clickable dropdown hover-show float-right" dropdown>
+                            <i class="material-icons" dropdown-toggle>more_vert</i>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="" ng-click="addSubgroup(group)">{{ group.hasNamedSubgroups() ? 'Select Subgroups' : 'Add Subgroups' }}</a>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="day hoverable clickable"
+                        ng-click="addShift(group.$defaultSubgroup, day.$dayOfWeek)"
+                        ng-class="{ weekend: day.isWeekend() }"
+                        ng-repeat="day in week.$days">
+
+                        <div class="chip chip-sm chip-blue-dark"
+                             ng-repeat="shift in group.$defaultSubgroup.shifts | filter:{ dayOfWeek: day.$dayOfWeek } | orderBy:'startTime'"
+                             ng-click="editShift(group.$defaultSubgroup, shift, $event)">
+                            <div class="chip-content" title="{{ shift.toTimeRangeString() }}">
+                                <span moment-text
+                                      moment="shift.$startMoment"
+                                      moment-format="h:mma"
+                                      moment-single-char-meridiem="true"></span>
+                                -
+                                <span moment-text
+                                      moment="shift.$endMoment"
+                                      moment-format="h:mma"
+                                      moment-single-char-meridiem="true"></span>
+                            </div>
+                            <span class="chip-action action-block">
+                                {{ shift.numberOfEmployees }}
+                            </span>
+                        </div>
+
+                        <div class="text-center" ng-show="!group.$defaultSubgroup.hasShiftOnDay(day.$dayOfWeek)">
+                            <button class="btn btn-icon hover-show">
+                                <i class="material-icons">add</i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="cal-row subgroup-row"
+                    ng-class="{ 'alt-row': $parent.$index % 2 == 0 }"
+                    ng-repeat="subgroup in group.subgroups | filter:byNonDefaultSubGroup | orderBy:['name']">
+
+                    <td class="info schedule-first-col"
+                        ng-form="subgroupForm">
+
+                        <div class="info-title hoverable pl-4"
+                             ng-if="!subgroup.$isEditing"
+                             ng-click="editSubgroup(subgroup)">
+                            {{ subgroup.name }}
+                            <!--<i class="fa fa-pencil fa-fw hover-show pull-right"></i>-->
+                            <div class="clickable float-right hover-show">
+                                <i class="material-icons">mode_edit</i>
+                            </div>
+                        </div>
+
+                        <div class="form-inline" ng-show="subgroup.$isEditing">
+                            <div class="form-group" ng-class="{ 'has-error': subgroupForm.name.$invalid }">
+                                <input name="name"
+                                       class="form-control form-control-sm"
+                                       ng-model="subgroup.$editName"
+                                       ng-blur="subgroupForm.name.$invalid || updateSubgroup(subgroup)"
+                                       ng-required="true"
+                                       ds-auto-focus="subgroup.$isEditing" />
+                            </div>
+                        </div>
+                    </td>
+                    <td class="day hoverable clickable"
+                        ng-click="addShift(subgroup, day.$dayOfWeek)"
+                        ng-class="{ weekend: day.isWeekend() }"
+                        ng-repeat="day in week.$days">
+
+                        <div class="chip chip-sm chip-blue-dark"
+                             ng-repeat="shift in subgroup.shifts | filter:{ dayOfWeek: day.$dayOfWeek}"
+                             ng-click="editShift(subgroup, shift, $event)">
+
+                            <div class="chip-content" title="{{ shift.toTimeRangeString() }}">
+                                <span moment-text
+                                      moment="shift.$startMoment"
+                                      moment-format="h:mma"
+                                      moment-single-char-meridiem="true"></span>
+                                -
+                                <span moment-text
+                                      moment="shift.$endMoment"
+                                      moment-format="h:mma"
+                                      moment-single-char-meridiem="true"></span>
+                            </div>
+                            <span class="chip-action action-block">
+                                {{ shift.numberOfEmployees }}
+                            </span>
+                        </div>
+
+                        <div class="text-center" ng-show="!subgroup.hasShiftOnDay(day.$dayOfWeek)">
+                            <!--<button class="btn btn-default hover-show day-edit btn-sm">
+                                <i class="fa fa-plus"></i>
+                            </button>-->
+                            <button class="btn btn-icon hover-show">
+                                <i class="material-icons">add</i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

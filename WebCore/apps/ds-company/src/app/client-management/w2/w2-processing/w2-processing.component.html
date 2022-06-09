@@ -1,0 +1,432 @@
+<ds-card border="top" mode="nobody">
+  <ds-card-header>
+      <ds-card-header-title>W-2 Processing</ds-card-header-title>
+      <ds-card-subtitle>
+        <form [formGroup]="form">
+          <div class="row">
+            <div class="col-md-2">
+              <label>Year</label>
+              <select
+                class="form-control custom-select"
+                formControlName="year"
+                required
+              >
+                <option
+                  *ngFor="let year of yearsList; let i = index"
+                  [value]="year"
+                >
+                  {{ year }}
+                </option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label>Type</label>
+              <select
+                class="form-control custom-select"
+                formControlName="type"
+                required
+              >
+                <option *ngFor="let type of types; let i = index" [value]="type.id">
+                  {{ type.name }}
+                </option>
+              </select>
+            </div>
+            <div class="col-md-auto inline-md-control">
+              <button
+                type="button"
+                class="btn btn-outline-primary"
+                (click)="filterPressed()"
+              >
+                Filter
+              </button>
+            </div>
+          </div>
+        </form>
+      </ds-card-subtitle>
+  </ds-card-header>
+</ds-card>
+
+<div [hidden]="!clientsLoaded && (datasource.data == null || !datasource.data.length) ||
+               filterClicked && clientsLoaded && (datasource.data == null || !datasource.data.length)">
+  <div class="row">
+    <div class="col-lg-4">
+      <ds-widget
+        mode="statisticNobody"
+        [loaded]="clientsLoaded"
+        color="info"
+        skeleton="nps-card-skeleton"
+        *ngIf="filteredType !== '6'"
+      >
+        <ds-widget-header>
+          <ds-widget-icon>description</ds-widget-icon>
+          <ds-widget-title-value>{{
+            quantitySum | number: "1.0"
+          }}</ds-widget-title-value>
+          <ds-widget-title truncate="true">Total W-2s</ds-widget-title>
+        </ds-widget-header>
+      </ds-widget>
+    </div>
+    <div class="col-lg-4">
+      <ds-widget
+        mode="statisticNobody"
+        [loaded]="clientsLoaded"
+        color="success"
+        skeleton="nps-card-skeleton"
+        *ngIf="filteredType !== '6'"
+      >
+        <ds-widget-header>
+          <ds-widget-icon>monetization_on</ds-widget-icon>
+          <ds-widget-title-value
+            >${{ billedSum | number: "1.2-2" }}</ds-widget-title-value
+          >
+          <ds-widget-title truncate="true">Billed</ds-widget-title>
+        </ds-widget-header>
+      </ds-widget>
+    </div>
+    <div class="col-lg-4">
+      <ds-widget
+        mode="statisticNobody"
+        [loaded]="clientsLoaded"
+        color="warning"
+        skeleton="nps-card-skeleton"
+        *ngIf="filteredType !== '6'"
+      >
+        <ds-widget-header>
+          <ds-widget-icon>receipt_long</ds-widget-icon>
+          <ds-widget-title-value
+            >${{ toBillSum | number: "1.2-2" }}</ds-widget-title-value
+          >
+          <ds-widget-title truncate="true">To Bill</ds-widget-title>
+        </ds-widget-header>
+      </ds-widget>
+    </div>
+  </div>
+
+  <ds-card [hidden]="!clientsLoaded">
+    <div ds-card-header>
+      <ds-card-header-title>Clients</ds-card-header-title>
+      <ds-card-title-right-content>
+        <button *ngIf="filteredType !== '6'"
+          type="button"
+          class="btn btn-outline-primary"
+          (click)="create()"
+        >
+          Create W-2s / W-3s
+        </button>
+      </ds-card-title-right-content>
+      <ds-card-title-action>
+        <button type="button" class="btn btn-primary" (click)="submit()">
+          Submit
+        </button>
+      </ds-card-title-action>
+    </div>
+    <ds-card-content>
+      <div class="row">
+        <div class="col-md-auto">
+          <div class="search-container form-group">
+            <label class="instruction-text font-xs"
+              >Search {{ datasource.filteredData.length }} of
+              {{ datasource.data.length }} Clients</label
+            >
+            <div class="input-group">
+              <input
+                type="search"
+                class="form-control"
+                placeholder="Filter By Client Code or Client Name"
+                (keyup)="applyFilter($event.target.value)"
+              />
+              <div class="input-group-append">
+                <button type="button" class="search">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="24"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
+                    />
+                    <path d="M0 0h24v24H0z" fill="none" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card card-table" >
+        <div class="table-responsive">
+          <table
+            mat-table
+            [dataSource]="datasource"
+            matSort
+            matSortActive="clientName"
+            matSortDirection="asc"
+            class="w-100"
+          >
+            <ng-container matColumnDef="clientCode">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Code</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.clientCode }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="clientName">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.clientName }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="quantity">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-right">
+                W2 Quantity
+              </th>
+              <td mat-cell *matCellDef="let element" class="text-right">
+                {{ element.quantity }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="billed" class="text-right">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-right">Billed</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.billed | currency }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="toBill">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-right">To Bill</th>
+              <td mat-cell *matCellDef="let element" class="text-right">
+                {{ element.toBill | currency }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="employeesLastUpdatedOn">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-right">
+                Last Summarized
+              </th>
+              <td mat-cell *matCellDef="let element" class="text-right">
+                <button class="btn btn-anchor" (click)="lastSummarizedClicked(element)">
+                  {{ element.employeesLastUpdatedOn }}
+                </button>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="approvedForClient">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-center">
+                Approved For Client
+              </th>
+              <td mat-cell *matCellDef="let element; let i = index">
+                <div class="table-checkbox">
+                  <div class="custom-control custom-checkbox" [hidden]="!element.isApprovable">
+                    <input
+                      class="custom-control-input"
+                      type="checkbox"
+                      [id]="'selected_' + i"
+                      [checked]="element.approvedForClient"
+                      (change)="onApprovedForClientCheckChange(element.clientCode, $event.target.checked)"
+                    />
+                    <label class="custom-control-label" [for]="'selected_' + i">
+                    </label>
+                  </div>
+                </div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="create">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-center">
+                Create {{ filteredType !== "6" ? "W-2s" : "1099s" }}
+              </th>
+              <td mat-cell *matCellDef="let element; let i = index">
+                <div class="table-checkbox">
+                  <div class="custom-control custom-checkbox">
+                    <input
+                      class="custom-control-input"
+                      type="checkbox"
+                      [id]="'selectedcr_' + i"
+                      [checked]="element.create"
+                      (change)="onCreateCheckChange(element.clientCode, $event.target.checked)"
+                    />
+                    <label class="custom-control-label" [for]="'selectedcr_' + i">
+                    </label>
+                  </div>
+                </div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="date1099">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-right">
+                1099 Date
+              </th>
+              <td mat-cell *matCellDef="let element" class="text-right">
+                {{ element.date1099 | date: "MM/dd/yyyy" }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="creationDate">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-right">
+                Created On
+              </th>
+              <td mat-cell *matCellDef="let element" class="text-right">
+                {{ element.creationDate | date: "MM/dd/yyyy" }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="w2sReady">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-center">
+                W-2's Ready
+              </th>
+              <td mat-cell *matCellDef="let element; let i = index">
+                <div class="table-checkbox">
+                  <div class="custom-control custom-checkbox">
+                    <input
+                      class="custom-control-input"
+                      type="checkbox"
+                      [id]="'selectedw_' + i"
+                      [checked]="element.w2sReady"
+                      (change)="onW2sReadyCheckChange(element.clientCode, $event.target.checked)"
+                    />
+                    <label class="custom-control-label" [for]="'selectedw_' + i">
+                    </label>
+                  </div>
+                </div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="createManifest">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-center">
+                Create Manifest
+              </th>
+              <td mat-cell *matCellDef="let element; let i = index">
+                <div class="table-checkbox">
+                  <div class="custom-control custom-checkbox">
+                    <input
+                      class="custom-control-input"
+                      type="checkbox"
+                      [id]="'selectedc_' + i"
+                      [checked]="element.createManifest"
+                      (change)="onCreateManifestCheckChange(element.clientCode, $event.target.checked)"
+                    />
+                    <label class="custom-control-label" [for]="'selectedc_' + i">
+                    </label>
+                  </div>
+                </div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="deliveryDate">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-right">
+                Delivery Date
+              </th>
+              <td mat-cell *matCellDef="let element" class="text-right">
+                {{ element.deliveryDate | date: "MM/dd/yyyy" }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="hasNotes">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-center">Notes</th>
+              <td mat-cell *matCellDef="let client" class="text-center">
+                <button
+                  class="btn btn-icon"
+                  (click)="openNotesDialog(client)"
+                  *ngIf="client.hasNotes"
+                >
+                  <mat-icon
+                    matTooltip="Annual Note: {{
+                      client.annualNotes
+                    }} Misc Note: {{ client.miscNotes }}"
+                    >comment</mat-icon
+                  >
+                </button>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="edit" stickyEnd>
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                class="td-action-icon-width mat-table-sticky-border-end"
+              ></th>
+              <td
+                mat-cell
+                *matCellDef="let client"
+                class="td-action-icon-width mat-table-sticky-border-end"
+              >
+                <button
+                  type="button"
+                  [matMenuTriggerFor]="menu"
+                  class="btn btn-icon"
+                >
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                  <button
+                    mat-menu-item
+                    (click)="createManualInvoice(client)"
+                    *ngIf="
+                      this.userInfo.isAllowedToAddSystemAdmin ||
+                      this.userInfo.isArAdmin
+                    "
+                  >
+                    Create Manual Invoice
+                  </button>
+                  <button
+                    mat-menu-item
+                    (click)="billWithNextPayroll(client)"
+                    *ngIf="
+                      this.userInfo.isAllowedToAddSystemAdmin ||
+                      this.userInfo.isArAdmin
+                    "
+                  >
+                    Bill with Next Payroll
+                  </button>
+                  <button mat-menu-item (click)="openNotesDialog(client)">
+                    Add Note
+                  </button>
+                </mat-menu>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          </table>
+        </div>
+        <mat-paginator
+          class="form-group"
+          #clientsPaginator
+          [pageSize]="10"
+          [pageSizeOptions]="[10, 25, 50]"
+          showFirstLastButtons
+        >
+        </mat-paginator>
+      </div>
+    </ds-card-content>
+  </ds-card>
+</div>
+
+<div class="card" *ngIf="filterClicked && !clientsLoaded">
+  <div class="card-body">
+    <ds-loading-message></ds-loading-message>
+  </div>
+</div>
+
+<div class="card" *ngIf="!filterClicked && !clientsLoaded">
+  <div class="card-body">
+      <div class="empty-state">
+          Use the filters to display W-2 processing information here.
+      </div>
+  </div>
+</div>
+
+<div class="card" *ngIf="filterClicked && clientsLoaded && (datasource.data == null || !datasource.data.length)">
+  <div class="card-body">
+    <div class="row justify-content-center">
+      <div class="col-auto">
+        <div class="empty-state-cycle info">
+            <i class="material-icons">info</i>
+            <div class="title">There is no data to display for the selected filters.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

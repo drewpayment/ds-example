@@ -1,0 +1,23 @@
+<markdown ngPreserveWhitespaces>
+  # Navigation
+
+  ## Navigation Tabs 
+</markdown>
+
+<div class="button-bar">
+    <button class="btn btn-icon" (click)="toggleNavTitle = !toggleNavTitle">
+        <i class="material-icons">code</i>
+        View Code
+    </button>
+</div>
+<div class="example-block" [class.open]="toggleNavTitle">
+    <div class="ui">
+      <div class="overflow-list">
+        <ds-nav-title></ds-nav-title>
+      </div>
+    </div>
+    <div>
+        <markdown src="app/ds-components/nav/nav-title/nav-title.component.html"></markdown>
+        <markdown src="app/ds-components/nav/nav-title/nav-title.component.ts"></markdown>
+    </div>
+</div>

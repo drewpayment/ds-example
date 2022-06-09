@@ -1,0 +1,74 @@
+<ng-container *ngIf="isLoading; else notLoading" dsTimeout>
+  <div class="container" style="height: 100%;">
+    <div class="row justify-content-center">
+      <ds-loading-message></ds-loading-message>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #notLoading>
+
+  <!-- <ds-nav-menu siteDesignation="ess"></ds-nav-menu> -->
+  <ng-container *ngIf="hasMenuWrapper; then menuWrapper; else legacy" siteDesignation="ess"></ng-container>
+  <ng-template #menuWrapper>
+    <ds-nav-menu siteDesignation="ess"></ds-nav-menu>
+    <ngx-ess-msg></ngx-ess-msg>
+    <!-- <ng-container *ngIf="isOnboarding; else notOnboarding">
+            <ess-ngx-onboarding-header></ess-ngx-onboarding-header>
+        </ng-container>
+        <ng-template #notOnboarding>
+            <ngx-ess-header></ngx-ess-header>
+        </ng-template> -->
+  </ng-template>
+
+  <ng-template #legacy>
+    <ng-container *ngIf="isOnboarding; else notOnboarding">
+      <ess-ngx-onboarding-header></ess-ngx-onboarding-header>
+    </ng-container>
+    <ng-template #notOnboarding>
+      <ngx-ess-msg></ngx-ess-msg>
+      <ngx-ess-header></ngx-ess-header>
+    </ng-template>
+
+    <ng-template #withSubmenu>
+      <div class="col-sm-4 col-md-3">
+        <ng-container *ngIf="isOnboarding; else notOnboardingSidebar">
+          <ess-ngx-onboarding-sidebar></ess-ngx-onboarding-sidebar>
+        </ng-container>
+        <ng-template #notOnboardingSidebar>
+          <router-outlet name="sidebar"></router-outlet>
+        </ng-template>
+      </div>
+      <div class="col-sm-8 col-md-9">
+        <router-outlet></router-outlet>
+      </div>
+    </ng-template>
+
+    <div class="ess-wrapper wrapper-style">
+      <div class="container">
+        <div class="row">
+          <ng-container *ngIf="!hasSubmenu; else withSubmenu">
+            <div class="col-sm-11 col-md-12">
+              <router-outlet></router-outlet>
+            </div>
+          </ng-container>
+
+          <ng-template #withSubmenu>
+            <div class="col-sm-4 col-md-3">
+              <ng-container *ngIf="isOnboarding; else notOnboardingSidebar">
+                <ess-ngx-onboarding-sidebar></ess-ngx-onboarding-sidebar>
+              </ng-container>
+              <ng-template #notOnboardingSidebar>
+                <router-outlet name="sidebar"></router-outlet>
+              </ng-template>
+            </div>
+            <div class="col-sm-8 col-md-9">
+              <router-outlet></router-outlet>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+</ng-template>

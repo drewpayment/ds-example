@@ -1,0 +1,127 @@
+<ng-content *ngIf="initComponent$ | async"></ng-content>
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a routerLink="../../edit/{{taxId}}">Federal</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Edit W4</li>
+    </ol>
+</nav>
+
+<mat-card *ngIf="!isLoading">
+    <mat-card-header>
+        <mat-card-title>Edit {{taxDescription}}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div [formGroup]="form" class="ds-mobile-grid">
+        <mat-form-field class="row">
+            <mat-label>Filing Status</mat-label>
+            <mat-select formControlName="filing">
+                <mat-option *ngFor="let f of filingStatuses" [value]="f.filingStatusId" (click)="changeExemptions(f.filingStatusId)">
+                    {{f.description}}
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="form.get('filing').hasError">
+              Filing Status is required.
+            </mat-error>
+        </mat-form-field>
+        <div class="row mat-checkbox-layout">
+          <mat-checkbox class="custom-checkbox" [checked]="hasMoreThanOneJob" formControlName="hasMoreThanOneJob" [value]="hasMoreThanOneJob">
+            Check this box if you (1) hold more than one job at a time, or (2) you are married filing jointly and your spouse also works.
+          </mat-checkbox>
+        </div>
+        <div class="form-group instruction-text mat-checkbox-secondary-text">
+          Select this same option for the other job. This options is accurated for jobs with similar pay.
+        </div>
+        <div class="row mat-checkbox-layout">
+          <mat-checkbox class="custom-checkbox" (click)="toggleDependents(!lessThan200)">
+            Check this box if your income will be $200,000 or less ($400,000 or less if married filing jointly).
+          </mat-checkbox>
+        </div>
+        <hr class="form-group full-width">
+        <div class="row">
+          <div class="bold">
+            Do you have any other adjustments?
+          </div>
+          <div class="instruction-text form-group">
+            This includes non-job income, deductions, or extra withholdings.
+          </div>
+          <mat-button-toggle-group #group="matButtonToggleGroup" value="Yes" class="form-group">
+            <mat-button-toggle value="Yes" (click)="toggleHasAdjusments(true)">
+              Yes
+            </mat-button-toggle>
+            <mat-button-toggle value="No" (click)="toggleHasAdjusments(false)">
+              No
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+
+        <ng-container *ngIf="lessThan200">
+            <label class="form-control-label bold">Enter the number of qualifying children under 17 you are claiming</label>
+            <mat-form-field class="row">
+              <input type="text" matInput formControlName="qualifyingChildren" (keypress)="numberOnly($event)"/>
+            </mat-form-field>
+
+            <label class="form-control-label bold">Enter the number of other dependents you are claiming</label>
+            <mat-form-field class="row">
+              <input type="text" matInput formControlName="otherDependents" (keypress)="numberOnly($event)"/>
+            </mat-form-field>
+        </ng-container>
+
+        <ng-container *ngIf="hasAdjustments">
+          <label class="form-control-label bold">Enter Any Other (Non-Job) Income <span class="form-help-text">Optional</span></label>
+          <mat-form-field class="row">
+            <input type="text" matInput formControlName="otherTaxableIncome" (keypress)="numberOnly($event)"/>
+            <span matPrefix>$&nbsp;</span>
+          </mat-form-field>
+
+          <label class="form-control-label bold">Enter Any Extra Wage Deductions <span class="form-help-text">Optional</span></label>
+          <mat-form-field class="row">
+            <input type="text" matInput formControlName="wageDeduction" (keypress)="numberOnly($event)"/>
+            <span matPrefix>$&nbsp;</span>
+          </mat-form-field>
+          
+          <label class="form-control-label bold">Enter Any Extra Tax Withheld From Each Pay <span class="form-help-text">Optional</span></label>
+          <mat-form-field class="form-group row">
+            <input type="text" matInput formControlName="additionalAmount" (keypress)="numberOnly($event)"/>
+            <span matPrefix>$&nbsp;</span>
+          </mat-form-field>
+        </ng-container>
+      </div>
+
+      <ng-container>
+        <div class="section-title section-margin">Disclaimer and E-Signature</div>
+        <div [formGroup]="form" class="row mat-checkbox-layout form-group">
+          <mat-checkbox  type="checkbox" class="custom-checkbox" formControlName="esign" id="disclaimerCheckBox">
+            Under penalties of perjury, I declare that this certificate, to the best of my knowledge and belief, is true, correct, and complete.
+          </mat-checkbox>
+        </div>
+        <mat-error *ngIf="!form.get('esign').value && !form.get('esign').pristine">
+          Disclaimer checkbox is required.
+       </mat-error>
+        <div [formGroup]="form" class="ds-mobile-grid">
+          <label class="bold">Please enter your first and last name</label>
+          <mat-form-field class="row" floatLabel="never">
+            <input  class="max-input" type="text" matInput formControlName="firstNameLastName" placeholder="First Name Last Name"/>
+            <mat-error *ngIf="form.get('firstNameLastName').hasError">
+              E-Signature is required.
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <a mat-flat-button color="accent" (click)="saveChanges()">
+          <mat-icon>check_circle_outline</mat-icon>
+          Submit
+        </a>
+        <a mat-flat-button color="#99a5b4" (click)="closeForm()">
+          Cancel
+        </a>
+      </ng-container>
+    </mat-card-content>
+</mat-card>
+
+<ng-container *ngIf="isLoading">
+    <div class="d-flex justify-content-center">
+        <mat-spinner></mat-spinner>
+    </div>
+</ng-container>

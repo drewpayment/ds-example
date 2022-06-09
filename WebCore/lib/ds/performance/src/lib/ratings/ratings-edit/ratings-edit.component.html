@@ -1,0 +1,318 @@
+<ds-card border="top" mode="nobody">
+    <div ds-card-header>
+        <ds-card-header-title>Ratings and Scoring</ds-card-header-title>
+        <ds-card-subtitle>
+            <div class="instruction-text">
+                Below is a default rating system to use in reviews. Each label and description is editable.
+            </div>
+        </ds-card-subtitle>
+    </div>
+</ds-card>
+
+<ds-card>
+    <div ds-card-header>
+        <ds-card-sub-header-title>Ratings</ds-card-sub-header-title>
+    </div>
+    <div ds-card-content>
+        <div class="card card-table">
+            <div class="table-responsive">
+                <table mat-table [dataSource]="dataSource" class="table ratings">
+                    <!-- RATING COLUMN -->
+                    <ng-container matColumnDef="rating">
+                        <th mat-header-cell *matHeaderCellDef>Rating</th>
+                        <td mat-cell *matCellDef="let e; let i = index">
+                            <div class="star-rating">
+                                <ng-container *ngFor="let r of reviewRatings">
+                                    <input id="{{r.rating}}_{{i}}" type="radio" class="star-radio" [attr.name]="'rating_'+(reviewRatings.length - i)" [value]="r.rating" [ngModel]="e.rating" disabled />
+                                    <label class="star" for="{{r.rating}}_{{i}}">
+                                        <mat-icon class="filled">star</mat-icon>
+                                        <mat-icon class="outline-view">star</mat-icon>
+                                        <mat-icon class="outline">star_border</mat-icon>
+                                    </label>
+                                </ng-container>
+                            </div>
+                        </td>
+                    </ng-container>
+
+                    <!-- LABEL COLUMN -->
+                    <ng-container matColumnDef="label">
+                        <th mat-header-cell *matHeaderCellDef>Label</th>
+                        <td mat-cell *matCellDef="let e">{{e.label}}</td>
+                    </ng-container>
+
+                    <!-- DESCRIPTION COLUMN -->
+                    <ng-container matColumnDef="description">
+                        <th mat-header-cell *matHeaderCellDef>Description</th>
+                        <td mat-cell *matCellDef="let e" style="max-width:300px;">
+                            {{e.description}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="actions">
+                        <th mat-header-cell *matHeaderCellDef>&nbsp;</th>
+                        <td mat-cell *matCellDef="let e">
+                            <!-- <mat-menu #moreMenu="matMenu">
+                                <button mat-menu-item type="button" (click)="openEditDialog(e)">Edit</button>
+                            </mat-menu>
+                            <button type="button" 
+                                class="text-muted float-right hover-show" 
+                                mat-icon-button 
+                                [matMenuTriggerFor]="moreMenu" 
+                            >
+                                <mat-icon>more_vert</mat-icon>
+                            </button> -->
+                            <button type="button" (click)="openEditDialog(e)" class="btn btn-icon table-edit-icon clickable float-right" mat-icon-button>
+                                <mat-icon>mode_edit</mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="tableColumns" class="table-header"></tr>
+                    <tr mat-row *matRowDef="let row; columns: tableColumns; let i = index" class="hoverable"></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</ds-card>
+
+<div *ngIf="true || (scoreModel$ | async) as scoreModel">
+    <form [formGroup]="scoringFormGroup">
+
+        <ds-card mode="nobody">
+            <div ds-card-header y-align="center">
+                <ds-card-sub-header-title>Scoring</ds-card-sub-header-title>
+                <ds-card-inline-content >
+                    <div class="switch-setting">
+                        <label class="switch switch-default switch-pill switch-success">
+                            <input type="checkbox" class="switch-input" aria-describedby="enableScoring"
+                                   formControlName="enableScoring" id="enableScoring">
+                            <span class="switch-label"></span>
+                            <span class="switch-handle"></span>
+                            <span class="ds-switch-off">Off</span>
+                            <span class="ds-switch-on">On</span>
+                        </label>
+                    </div>
+                </ds-card-inline-content>
+                <ds-card-subtitle>
+                    <div class="instruction-text">
+                        <span *ngIf="scoringFormGroup.controls.enableScoring.value === true">All scores use the 5-Star Rating above. Each star is worth one point.</span>
+                        <span *ngIf="scoringFormGroup.controls.enableScoring.value === false">All reports and printed forms will have the star rating by the appropriate items on the review.</span>
+                    </div>
+                </ds-card-subtitle>
+                <ds-card-title-action>
+                    <div class="switch-setting" *ngIf="scoringFormGroup.controls.enableScoring.value === true">
+                        <label for="displayScore" class="white-space-nowrap">Display score to employees</label>
+                        <label class="switch switch-default switch-pill switch-success">
+                            <input formControlName="viewableByEmp" type="checkbox" id="displayScore" class="switch-input" aria-describedby="displayScoreToEmployees">
+                            <span class="switch-label"></span>
+                            <span class="switch-handle"></span>
+                            <span class="ds-switch-off">Off</span>
+                            <span class="ds-switch-on">On</span>
+                        </label>
+                    </div>
+                </ds-card-title-action>
+            </div>
+        </ds-card>
+
+        <ng-container *ngIf="scoringFormGroup.controls.enableScoring.value === true">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-xl-4 border-xl-right">
+                            <h3>Display Preferences</h3>
+                            <div class="instruction-text">Select a display method for scores.</div>
+                            <div class="form-group" *ngFor="let methodType of (methodTypes$ | async) as methodTypes; index as i">
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" id="displayPrefRadio{{i}}" name="displayPrefs" class="custom-control-input" formControlName="displayPrefs" value="{{methodType.scoreMethodTypeId}}">
+                                    <label class="custom-control-label" for="displayPrefRadio{{i}}">{{methodType.name}}</label>
+                                </div>
+                                <div class="instruction-text">{{methodType.description}}</div>
+                            </div>
+                        </div>
+                        <div class="col-xl-8">
+                            <div class="switch-title">
+                                <h3>Scoring Definitions</h3>
+                                <label class="switch switch-default switch-pill switch-success switch-sm">
+                                    <input type="checkbox" class="switch-input" aria-describedby="enableScoringDefinitions"
+                                           formControlName="enableDefinitions">
+                                    <span class="switch-label"></span>
+                                    <span class="switch-handle"></span>
+                                    <span class="ds-switch-off">Off</span>
+                                    <span class="ds-switch-on">On</span>
+                                </label>
+                            </div>
+                            <div class="card card-table">
+                              <div class="table-responsive">
+                                <table mat-table formArrayName="scoreRange" [dataSource]="tableDataStream" class="table table-validation table-fixed scoring">
+                                    <ng-container matColumnDef="minimum">
+                                        <th mat-header-cell *matHeaderCellDef width="150px">Minimum</th>
+                                        <td mat-cell *matCellDef="let e; let i = index;" [formGroupName]="i">
+                                            <div class="form-group">
+                                                <div [ngClass]="getDisplayPrefs.value == '2' ? 'input-group' : ''">
+                                                    <input type="number" class="form-control" autofocus formControlName="minimum" placeholder="#.##" [ngClass]="{'is-invalid':  (scoreRangeArray.controls[i].controls.minimum.touched || submitted) &&
+                                                        (scoreRangeArray.controls[i].controls.minimum.errors?.minGtrThnMax ||
+                                                        scoreRangeArray.controls[i].controls.minimum.errors?.nextMaxGtrThnMin ||
+                                                        scoreRangeArray.controls[i].controls.minimum.errors?.mustBe0 ||
+                                                        scoreRangeArray.controls[i].controls.minimum.errors?.required) }" />
+                                                    <div class="input-group-append" *ngIf="getDisplayPrefs.value == '2'">
+                                                        <span class="input-group-text percent">%</span>
+                                                    </div>
+                                                    <div class="invalid-feedback">
+                                                        <span *ngIf="(scoreRangeArray.controls[i].controls.minimum.touched || submitted) && scoreRangeArray.controls[i].controls.minimum.errors?.minGtrThnMax">
+                                                            Must be less than the Maximum.
+                                                        </span>
+                                                        <span *ngIf="(scoreRangeArray.controls[i].controls.minimum.touched || submitted) && scoreRangeArray.controls[i].controls.minimum.errors?.nextMaxGtrThnMin">
+                                                            Must be greater than the Maximum below.
+                                                        </span>
+                                                        <span *ngIf="(scoreRangeArray.controls[i].controls.minimum.touched || submitted) && scoreRangeArray.controls[i].controls.minimum.errors?.mustBe0">
+                                                            Minimum must be 0.
+                                                        </span>
+                                                        <span *ngIf="(scoreRangeArray.controls[i].controls.minimum.touched || submitted) && scoreRangeArray.controls[i].controls.minimum.errors?.required">
+                                                            Please enter a value.
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="maximum">
+                                        <th mat-header-cell *matHeaderCellDef width="150px">Maximum</th>
+                                        <td mat-cell *matCellDef="let e; let i = index;" [formGroupName]="i">
+                                            <div class="form-group">
+                                                <div [ngClass]="getDisplayPrefs.value == '2' ? 'input-group' : ''">
+                                                    <input type="number" class="form-control" formControlName="maximum" placeholder="#.##" [ngClass]="{'is-invalid': (scoreRangeArray.controls[i].controls.maximum.touched || submitted) &&
+                                                            (scoreRangeArray.controls[i].controls.maximum.errors?.prevMinLessThnMax || scoreRangeArray.controls[i].controls.maximum.errors?.prevMinLessThnMax || scoreRangeArray.controls[i].controls.maximum.errors?.nextMaxGtrThnMin ||
+                                                            scoreRangeArray.controls[i].controls.maximum.errors?.mustBe5 ||
+                                                            scoreRangeArray.controls[i].controls.maximum.errors?.mustBe100 ||
+                                                            scoreRangeArray.controls[i].controls.maximum.errors?.required)}" />
+                                                    <div class="input-group-append" *ngIf="getDisplayPrefs.value == '2'">
+                                                        <span class="input-group-text percent">%</span>
+                                                    </div>
+                                                    <div class="invalid-feedback flex-1-1-100">
+                                                        <span *ngIf="(scoreRangeArray.controls[i].controls.maximum.touched || submitted) && scoreRangeArray.controls[i].controls.maximum.errors?.prevMinLessThnMax">
+                                                            Must be less than the Maximum.
+                                                        </span>
+                                                        <span *ngIf="(scoreRangeArray.controls[i].controls.maximum.touched || submitted) && scoreRangeArray.controls[i].controls.maximum.errors?.prevMinLessThnMax">
+                                                            Minimum above must be greater than the Maximum.
+                                                        </span>
+                                                        <span *ngIf="(scoreRangeArray.controls[i].controls.maximum.touched || submitted) && scoreRangeArray.controls[i].controls.maximum.errors?.nextMaxGtrThnMin">
+                                                            Maximum must be less than the Minimum above.
+                                                        </span>
+                                                        <span *ngIf="(scoreRangeArray.controls[i].controls.maximum.touched || submitted) && scoreRangeArray.controls[i].controls.maximum.errors?.mustBe5">
+                                                            Maximum must be 5.
+                                                        </span>
+                                                        <span *ngIf="(scoreRangeArray.controls[i].controls.maximum.touched || submitted) && scoreRangeArray.controls[i].controls.maximum.errors?.mustBe100">
+                                                            The Maximum must be 100.
+                                                        </span>
+                                                        <span *ngIf="(scoreRangeArray.controls[i].controls.maximum.touched || submitted) && scoreRangeArray.controls[i].controls.maximum.errors?.required">
+                                                            Please enter a value.
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="label">
+                                        <th mat-header-cell *matHeaderCellDef width="150px">Label</th>
+                                        <td mat-cell *matCellDef="let e; let i = index;" [formGroupName]="i">
+                                            <div class="form-group">
+                                                <input type="text" formControlName="label" class="form-control" required [ngClass]="{'is-invalid': (scoreRangeArray.controls[i].controls.label.touched || submitted) && scoreRangeArray.controls[i].controls.label.errors?.required}" />
+                                                <div class="invalid-feedback">
+                                                    Please enter a label.
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="description">
+                                        <th mat-header-cell *matHeaderCellDef>Description <span class="italic">Optional</span></th>
+                                        <td mat-cell *matCellDef="let e; let i = index;" [formGroupName]="i">
+                                            <input type="text" class="form-control" formControlName="description" />
+                                        </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="meritPercent">
+                                        <th mat-header-cell *matHeaderCellDef>Merit %</th>
+                                        <td mat-cell *matCellDef="let e; let i = index;" [formGroupName]="i">
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" formControlName="meritPercent" placeholder="#.##" [ngClass]="{'is-invalid': (scoreRangeArray.controls[i].controls.meritPercent.touched || submitted) && (scoreRangeArray.controls[i].controls.meritPercent.errors?.mustBePercent ||
+                                                            scoreRangeArray.controls[i].controls.meritPercent.errors?.required)}" />
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text percent">%</span>
+                                                </div>
+                                                <div class="invalid-feedback flex-1-1-100">
+                                                    <span *ngIf="(scoreRangeArray.controls[i].controls.meritPercent.touched || submitted) && scoreRangeArray.controls[i].controls.meritPercent.errors?.mustBePercent">
+                                                        Please enter a valid percent.
+                                                    </span>
+                                                    <span *ngIf="(scoreRangeArray.controls[i].controls.meritPercent.touched || submitted) && scoreRangeArray.controls[i].controls.meritPercent.errors?.required">
+                                                        Please enter a percent.
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="actions">
+                                        <th mat-header-cell *matHeaderCellDef class="td-action-icon-width">&nbsp;</th>
+                                        <td mat-cell *matCellDef="let e, let i = index;">
+                                            <button *ngIf="scoreRangeArray.enabled" (click)="$event.stopPropagation();" type="button" class="btn btn-icon table-edit-icon float-right" [matMenuTriggerFor]="menu">
+                                                <mat-icon>more_vert</mat-icon>
+                                            </button>
+                                            <mat-menu #menu>
+                                                <button *ngIf="i > 0" type="button" (click)="addRowAbove(i)" mat-menu-item>
+                                                    <span>Add Row Above</span>
+                                                </button>
+                                                <button *ngIf="i < scoreRangeArray.controls.length - 1 || scoreRangeArray.controls.length == 1" (click)="addRowBelow(i)" type="button" mat-menu-item>
+                                                    <span>Add Row Below</span>
+                                                </button>
+                                                <button (click)="removeRange(i)" type="button" mat-menu-item>
+                                                    <span>Remove</span>
+                                                </button>
+                                            </mat-menu>
+                                        </td>
+                                    </ng-container>
+                                    <tr mat-header-row *matHeaderRowDef="scoreDefColumns" class="table-header"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: scoreDefColumns; let i = index" class="hoverable"></tr>
+                                </table>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+
+        <ds-card mode="nobody">
+            <div ds-card-header y-align="center">
+                <ds-card-sub-header-title>Additional Earnings</ds-card-sub-header-title>
+                <ds-card-inline-content>
+                    <div class="switch-setting">
+                        <label class="switch switch-default switch-pill switch-success">
+                            <input type="checkbox" class="switch-input" aria-describedby="additionalEarnings"
+                                   formControlName="additionalEarnings" id="additionalEarnings">
+                            <span class="switch-label"></span>
+                            <span class="switch-handle"></span>
+                            <span class="ds-switch-off">Off</span>
+                            <span class="ds-switch-on">On</span>
+                        </label>
+                    </div>
+                </ds-card-inline-content>
+                <ds-card-subtitle>
+                    <div class="instruction-text">
+                        Additional Earnings allows you to identify employees that are eligible to receive payments such as bonus. This feature creates an "Additional Earnings" section on reviews for that employee and allows the
+                        supervisor to enter a Payroll Request.
+                    </div>
+                </ds-card-subtitle>
+            </div>
+        </ds-card>
+    </form>
+</div>
+<div class="card">
+    <div class="card-body">
+        <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-save" #save>Save</button>
+        </div>
+    </div>
+</div>
+
+<ng-template #loading>
+    <div class="loading-message">Loading...</div>
+</ng-template>

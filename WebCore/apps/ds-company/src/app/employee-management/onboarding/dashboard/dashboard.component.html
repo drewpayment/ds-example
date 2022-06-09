@@ -1,0 +1,447 @@
+<ds-card mode="nobody" border="top">
+    <ds-card-header>
+        <ds-card-header-title>Onboarding</ds-card-header-title>
+        <ds-card-bread-crumb>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a [href]="employeeRoute">Employee</a>
+                    </li>
+                    <li class="breadcrumb-item active">Onboarding</li>
+                </ol>
+            </nav>
+        </ds-card-bread-crumb>
+        <ds-card-title-right-content>
+          <button id="OnboardingOptions" type="button" *ngIf="!isLoading"
+            class="btn btn-outline-primary dropdown-toggle" [matMenuTriggerFor]="menu">
+            Options
+          </button>
+          <mat-menu #menu >
+            <button type="button" mat-menu-item tabindex="-1" (click)="redirectToCustomPages()" 
+                [hidden]="!showCustomPagesOption" >Custom Pages</button>
+            <button type="button" mat-menu-item tabindex="-1" (click)="redirectToCertifyI9List()" 
+                [hidden]="!showCertifyI9Option">Certify I-9 List</button>
+            <button type="button" mat-menu-item tabindex="-1" (click)="redirectToAdminTaskList()"
+                [hidden]="!showTaskListsOption"> Task Lists</button>
+            <button type="button" mat-menu-item tabindex="-1" (click)="redirectToEmailTemplates()"
+                [hidden]="!showEmailTemplatesOption" >Email Templates</button>
+            <button type="button" mat-menu-item tabindex="-1" (click)="loadEmployees(true)"
+                [hidden]="isOnboardingCompleted">Closed Records</button>
+            <button type="button" mat-menu-item tabindex="-1" (click)="loadEmployees(false)"
+                [hidden]="!isOnboardingCompleted" >Current Records</button>
+            <button type="button" mat-menu-item tabindex="-1" (click)="redirectToWelcomeMessage()"
+                [hidden]="!showWelcomeMessageOption">Welcome Message</button>
+            <button type="button" mat-menu-item tabindex="-1" (click)="redirectToFinalDisclaimer()"
+                [hidden]="!showFinalDisclaimerOption">Final Disclaimer</button>
+          </mat-menu>
+        </ds-card-title-right-content>
+        <ds-card-title-action *ngIf="showAddEmployee">
+          <button class="btn btn-primary" *ngIf="!isLoading" (click)="addNewHire()"><mat-icon>add</mat-icon> New Hire</button>
+        </ds-card-title-action>
+    </ds-card-header>
+</ds-card>
+<ds-card>
+    <ds-card-header  *ngIf="!isLoading">
+        <ds-card-sub-header-title>
+          <ng-container>
+            <ng-container *ngIf="!isOnboardingCompleted">Current Records: </ng-container>
+            <ng-container *ngIf="isOnboardingCompleted" >Closed Records: </ng-container>
+              {{displayedCount}}
+          </ng-container>
+        </ds-card-sub-header-title>
+        <ds-card-title-action>
+          <button class="btn btn-outline-primary" (click)="loadEmployees(isOnboardingCompleted ? false: true)">{{isOnboardingCompleted?'View Current Records':'View Closed Records'}}</button>
+        </ds-card-title-action>
+    </ds-card-header>
+    <ds-card-content>
+      <div class="row justify-content-between" *ngIf="!isLoading">
+        <div class="col-md-auto">
+          <div class="form-group" *ngIf="relatedClients.length > 1">
+            <label for="searchClientCode">Client Code</label>
+            <select class="custom-select form-control" name="searchClientCode"  [(ngModel)]="relatedClientId"
+                (change)="updateRelatedClient($event)">
+                <option [value]="0">ALL</option>
+                <option *ngFor="let relatedClient of relatedClients" [value]="relatedClient.clientId">{{
+                    relatedClient.clientCode }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-auto">
+          <div class="row">
+            <div class="col-md-auto order-md-1 pl-md-0">
+              <div class="toggle-view form-group inline-md-control">
+                <button type="button" class="btn btn-icon view-toggle"
+                    (click)="updateDisplayValue('table')"
+                    [class.text-dark]="displayValue=='table'"
+                    [class.text-muted]="displayValue!='table'"
+                    title="List View" >
+                    <i class="material-icons">list</i>
+                </button>
+                <button type="button" class="btn btn-icon view-toggle"
+                    (click)="updateDisplayValue('card')"
+                    [class.text-dark]="displayValue=='card'"
+                    [class.text-muted]="displayValue!='card'"
+                    title="Card View" >
+                    <i class="material-icons">view_module</i>
+                </button>
+              </div>
+            </div>
+            <div class="col-md-auto">
+              <div class="search-container form-group">
+                <label class="instruction-text font-xs">Search
+                    {{displayedCount}} of {{totalCount}}
+                    Employees</label>
+                <ng-container *ngIf="isOnboardingCompleted" >
+                  <label class="ml-1 instruction-text font-xs">{{rangeLabel}}</label>
+                </ng-container>
+                <div class="input-group">
+                    <input class="form-control" (keyup)="applyFilter($event.target.value)" type="search" [(ngModel)]="searchWord"
+                    name="searchWord" matInput cdkFocusIntial />
+                    <div class="input-group-append">
+                        <button class="search" type="button" (click)="applyFilter(searchWord)">
+                            <i class="material-icons">search</i>
+                        </button>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" *ngIf="!isLoading && isOnboardingCompleted">
+        <div class="col-md-3">
+          <div class="form-group ">
+              <label class="form-control-label">Display From</label>
+              <div class="input-group">
+                <input matInput #fromInput
+                  class="form-control"
+                  [max]="toDate"
+                  [matDatepicker]="fromDatePicker"
+                  [(ngModel)]="searchHireDateFrom"
+                  name="fromDatePicker"
+                  #fromDateNgModel="ngModel" />
+                <div class="input-group-append">
+                  <mat-datepicker-toggle matSuffix [for]="fromDatePicker" class="input-group-text date">
+                    <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                  </mat-datepicker-toggle>
+                  <mat-datepicker #fromDatePicker></mat-datepicker>
+                </div>
+              </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group ">
+              <label class="form-control-label">To</label>
+              <div class="input-group">
+                <input matInput #toInput
+                  class="form-control"
+                  [min]="fromDate"
+                  [matDatepicker]="toDatePicker"
+                  [(ngModel)]="searchHireDateTo"
+                  name="toDatePicker"
+                  #toDateNgModel="ngModel" />
+                <div class="input-group-append">
+                  <mat-datepicker-toggle matSuffix [for]="toDatePicker" class="input-group-text date">
+                    <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                  </mat-datepicker-toggle>
+                  <mat-datepicker #toDatePicker></mat-datepicker>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group inline-lg-control">
+            <button type="button" class="btn btn-primary" (click)="applyDateFilters()">Filter</button>
+          </div>            
+        </div>
+      </div>        
+        <ng-container *ngIf="!isLoading; else loading">
+        <ng-container *ngIf="employees.length > 0; else emptyState">
+        <ng-container *ngIf="displayValue=='card'; else tableView">
+          <div class="kanban">
+              <div class="kanban-header d-none d-md-block">
+                  <div class="row">
+                      <div class="col-md-3">
+                          <h3 *ngIf="!searchText">Needs Attention:
+                              {{(employees| onboardingEmployeeFilter : needAttentionFilter).length}}</h3>
+                      </div>
+                      <div class="col-md-3">
+                          <h3 *ngIf="!searchText">In Progress: {{(employees| onboardingEmployeeFilter : inprogressFilter).length}}
+                          </h3>
+                      </div>
+                      <div class="col-md-3">
+                          <h3 *ngIf="!searchText">Employee Completed:
+                              {{(employees| onboardingEmployeeFilter : completedFilter).length}}</h3>
+                      </div>
+                      <div class="col-md-3">
+                          <h3 *ngIf="!searchText">Ready to Close:
+                              {{(employees| onboardingEmployeeFilter : closeOnboardingFilter).length}}</h3>
+                      </div>
+                  </div>
+              </div>
+              <div class="kanban-body" style="max-height: 500px;">
+                  <div class="row">
+                      <div class="col-md-3">
+                          <div [hidden]="(employees| onboardingEmployeeFilter : needAttentionFilter).length == 0">
+                              <h3 class="d-md-none" *ngIf="!searchText">Needs Attention:
+                                  {{(employees| onboardingEmployeeFilter : needAttentionFilter).length}}</h3>
+                              <ds-card 
+                                mode="nobody" 
+                                border="top" 
+                                color="danger"
+                                hover="true"
+                                (click)="dashboardDetails(emp, 1)"
+                                *ngFor="let emp of employees | onboardingEmployeeFilter : needAttentionFilter">
+                                <ds-card-precontent *ngIf="emp?.employeeNumber">
+                                  <div class="text-muted">#{{emp?.employeeNumber}}</div>
+                                </ds-card-precontent>
+                                <div ds-card-header x-align="center">
+                                  <ds-card-widget-title class="flex-1-1-100">
+                                    <div class="d-inline-flex mr-2">
+                                      <ds-avatar
+                                        name="{{emp?.employeeName}}"
+                                        size="24"
+                                        resource="{{emp?.profileImage?.extraLarge?.url}}"
+                                        color="{{emp?.employeeAvatar?.avatarColor}}">
+                                      </ds-avatar>
+                                    </div>
+                                    {{emp?.employeeName}}
+                                  </ds-card-widget-title>
+                                  <ds-card-subtitle >
+                                    <div class="text-muted mb-2" *ngIf="emp?.hireDate">Hire Date: {{getHireDate(emp) | date:'MM/dd/yyyy'}}</div>
+                                    <div class="mb-2">
+                                      <label class="form-help-text"> Employee: {{emp?.pctComplete}}%</label>
+                                       <ds-progress color="success" mode="determinate" [value]="emp?.pctComplete"></ds-progress>
+                                    </div>
+                                    <div class="mb-4">
+                                      <label class="form-help-text">Admin: {{emp?.adminPctComplete}}%</label>
+                                      <ds-progress color="info" mode="determinate" [value]="emp.adminPctComplete"></ds-progress>
+                                    </div>
+                                    <div [hidden]="emp?.isWorkflowComplete">
+                                        <mat-icon class="text-danger">warning</mat-icon> Set-Up Incomplete
+                                    </div>
+                                    <div [hidden]="!(emp?.isWorkflowComplete && emp.invitationSent == null)">
+                                        <mat-icon class="text-danger">warning</mat-icon> Set-Up Incomplete
+                                    </div>
+                                    <div [hidden]="!(emp?.isWorkflowComplete && emp.invitationSent != null)">
+                                        <mat-icon class="text-warning">info</mat-icon> Pending Employee Sign In 
+                                    </div>
+                                    <div class="kanban-error-placeholder"
+                                      [hidden]="!(emp.isWorkflowComplete && emp.invitationSent != null && emp.employeeStarted != mull)">
+                                    </div>
+                                  </ds-card-subtitle>
+                                </div>
+                              </ds-card>
+                          </div>
+                      </div>
+                      <div class="col-md-3">
+                          <div [hidden]="(employees| onboardingEmployeeFilter : inprogressFilter).length == 0">
+                              <h3 class="d-md-none" *ngIf="!searchText">In Progress:
+                                  {{(employees| onboardingEmployeeFilter : inprogressFilter).length}}</h3>
+                              <ds-card 
+                                mode="nobody" 
+                                border="top" 
+                                hover="true"
+                                color="warning"
+                                (click)="dashboardDetails(emp, 2)"
+                                *ngFor="let emp of employees | onboardingEmployeeFilter : inprogressFilter">
+                                <ds-card-precontent *ngIf="emp?.employeeNumber">
+                                  <div class="text-muted">#{{emp?.employeeNumber}}</div>
+                                </ds-card-precontent>
+                                <div ds-card-header x-align="center">
+                                  <ds-card-widget-title class="flex-1-1-100">
+                                    <div class="d-inline-flex mr-2">
+                                      <ds-avatar
+                                        name="{{emp?.employeeName}}"
+                                        size="24"
+                                        resource="{{emp?.profileImage?.extraLarge?.url}}"
+                                        color="{{emp?.employeeAvatar?.avatarColor}}">
+                                      </ds-avatar>
+                                    </div>
+                                    {{emp?.employeeName}}
+                                  </ds-card-widget-title>
+                                  <ds-card-subtitle >
+                                    <div class="text-muted mb-2" *ngIf="emp?.hireDate">Hire Date: {{getHireDate(emp) | date:'MM/dd/yyyy'}}</div>
+                                    <div class="mb-2">
+                                      <label class="form-help-text"> Employee: {{emp?.pctComplete}}%</label>
+                                      <ds-progress color="success" mode="determinate" [value]="emp?.pctComplete"></ds-progress>
+                                    </div>
+                                    <div class="mb-4">
+                                      <label class="form-help-text">Admin: {{emp.adminPctComplete}}%</label>
+                                      <ds-progress color="info" mode="determinate" [value]="emp.adminPctComplete"></ds-progress>
+                                    </div>
+                                    <div class="kanban-error-placeholder"></div>
+                                  </ds-card-subtitle>
+                                </div>
+                              </ds-card>
+                          </div>
+                      </div>
+
+                      <div class="col-md-3">
+                          <div [hidden]="(employees| onboardingEmployeeFilter : completedFilter).length == 0">
+                              <h3 class="d-md-none" *ngIf="!searchText">Employee Completed:
+                                  {{(employees| onboardingEmployeeFilter : completedFilter).length}}</h3>
+                              <ds-card 
+                                mode="nobody" 
+                                border="top" 
+                                hover="true"
+                                color="success"
+                                (click)="dashboardDetails(emp, 3)"
+                                *ngFor="let emp of employees | onboardingEmployeeFilter : completedFilter">
+                                <ds-card-precontent *ngIf="emp?.employeeNumber">
+                                  <div class="text-muted">#{{emp?.employeeNumber}}</div>
+                                </ds-card-precontent>
+                                <div ds-card-header x-align="center">
+                                  <ds-card-widget-title class="flex-1-1-100">
+                                    <div class="d-inline-flex mr-2">
+                                      <ds-avatar
+                                        name="{{emp?.employeeName}}"
+                                        size="24"
+                                        resource="{{emp?.profileImage?.extraLarge?.url}}"
+                                        color="{{emp?.employeeAvatar?.avatarColor}}">
+                                      </ds-avatar>
+                                    </div>
+                                    {{emp?.employeeName}}
+                                  </ds-card-widget-title>
+                                  <ds-card-subtitle >
+                                    <div class="text-muted mb-2" *ngIf="emp?.hireDate">Hire Date: {{getHireDate(emp) | date:'MM/dd/yyyy'}}</div>
+                                    <div class="mb-2">
+                                      <label class="form-help-text"> Employee: {{emp?.pctComplete}}%</label>
+                                      <ds-progress color="success" mode="determinate" [value]="emp?.pctComplete"></ds-progress>
+                                    </div>
+                                    <div class="mb-4">
+                                      <label class="form-help-text">Admin: {{emp?.adminPctComplete}}%</label>
+                                      <ds-progress color="info" mode="determinate" [value]="emp?.adminPctComplete"></ds-progress>
+                                    </div>
+                                    <div class="kanban-error-placeholder"></div>
+                                  </ds-card-subtitle>
+                                </div>
+                              </ds-card>
+                          </div>
+                      </div>
+                      <div class="col-md-3">
+                          <div [hidden]="(employees| onboardingEmployeeFilter : closeOnboardingFilter).length == 0">
+                              <h3 class="d-md-none" *ngIf="!searchText">Ready to Close:
+                                  {{(employees| onboardingEmployeeFilter : closeOnboardingFilter).length}}</h3>
+                              <ds-card 
+                                  mode="nobody" 
+                                  border="top" 
+                                  hover="true"
+                                  color="info"
+                                  (click)="dashboardDetails(emp,4)"
+                                  *ngFor="let emp of employees | onboardingEmployeeFilter : closeOnboardingFilter">
+                                  <ds-card-precontent *ngIf="emp?.employeeNumber">
+                                    <div class="text-muted">#{{emp?.employeeNumber}}</div>
+                                  </ds-card-precontent>
+                                  <div ds-card-header x-align="center">
+                                    <ds-card-widget-title class="flex-1-1-100">
+                                      <div class="d-inline-flex mr-2">
+                                        <ds-avatar
+                                          name="{{emp?.employeeName}}"
+                                          size="24"
+                                          resource="{{emp?.profileImage?.extraLarge?.url}}"
+                                          color="{{emp?.employeeAvatar?.avatarColor}}">
+                                        </ds-avatar>
+                                      </div>
+                                      {{emp?.employeeName}}
+                                    </ds-card-widget-title>
+                                    <ds-card-subtitle >
+                                      <div class="text-muted mb-2" *ngIf="emp?.hireDate">Hire Date: {{getHireDate(emp) | date:'MM/dd/yyyy'}}</div>
+                                      <div class="mb-2">
+                                        <label class="form-help-text"> Employee: {{emp?.pctComplete}}%</label>
+                                        <ds-progress color="success" mode="determinate" [value]="emp?.pctComplete"></ds-progress>
+                                      </div>
+                                      <div class="mb-4">
+                                        <label class="form-help-text">Admin: {{emp?.adminPctComplete}}%</label>
+                                        <ds-progress color="info" mode="determinate" [value]="emp?.adminPctComplete"></ds-progress>
+                                      </div>
+                                      <div class="kanban-error-placeholder"></div>
+                                    </ds-card-subtitle>
+                                  </div>
+                              </ds-card>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+        </ng-container>
+        <ng-template #tableView >
+        <div class="card card-table" *ngIf="dataSource && dataSource.data && dataSource.data.length">
+            <mat-table [dataSource]="dataSource" matSort color="primary">
+                <ng-container matColumnDef="Person">
+                    <mat-header-cell *matHeaderCellDef class="avatar-cell mat-td-avatar-width"> <i class="material-icons">person</i> </mat-header-cell>
+                    <mat-cell *matCellDef="let emp;" data-label="Name" class="mat-td-avatar-width">
+                        <ds-avatar  name="{{emp?.employeeName}}" size="24" resource="{{emp?.profileImage?.extraLarge?.url}}"
+                                    color="{{emp?.employeeAvatar?.avatarColor}}"></ds-avatar>
+                    </mat-cell>
+                    </ng-container>
+                <ng-container matColumnDef="Name">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Name </mat-header-cell>
+                    <mat-cell *matCellDef="let emp;" data-label="Name">
+                      <button class="btn btn-anchor text-left"
+                          (click)="dashboardDetails(emp, 1)">
+                          {{emp.employeeName}}
+                      </button>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Number" >
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Number </mat-header-cell>
+                    <mat-cell *matCellDef="let emp;" data-label="Number">{{emp?.employeeNumber}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Hire Date" >
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="table-text-right"> Date of hire </mat-header-cell>
+                    <mat-cell *matCellDef="let emp;" class="table-text-right" data-label="Hire Date">{{getHireDate(emp) | date:'MM/dd/yyyy'}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Job Title">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Job Title </mat-header-cell>
+                    <mat-cell *matCellDef="let emp;" data-label="Job Title">{{ emp?.jobTitle }}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Status">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Employee </mat-header-cell>
+                    <mat-cell *matCellDef="let emp;" data-label="Status">
+                      <span [ngClass]="{'text-success': emp.sortEmployee=='Completed','text-danger': emp.sortEmployee=='Needs Attention'}">
+                          {{emp.sortEmployee}}
+                      </span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="AdminStatus">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Admin </mat-header-cell>
+                    <mat-cell *matCellDef="let emp;" data-label="AdminStatus">
+                      <span [ngClass]="{'text-success': emp.sortAdmin=='Completed','text-danger': emp.sortAdmin=='Setup Incomplete'}">
+                          {{emp.sortAdmin}}
+                      </span>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+            <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[10,25,50]" showFirstLastButtons></mat-paginator>
+        </div>
+        </ng-template>
+        </ng-container>
+        </ng-container>
+    </ds-card-content>
+</ds-card>
+<ng-template #loading>
+    <ds-loading-message>
+    </ds-loading-message>
+</ng-template>
+<ng-template #emptyState>
+  <ng-container *ngIf="!errorMsg; else exceptionState">
+    <div class="empty-state">
+        <ng-container *ngIf="searchText">
+            <span [hidden]="!!searchClientId">No results were found for <b>{{searchText}}</b></span>
+            <span [hidden]="!searchClientId">No results were found for <b>{{searchText}}</b> in code <b>{{relatedClientCode(searchClientId)}}</b></span>
+        </ng-container>
+        <ng-container *ngIf="!searchText">
+            <span [hidden]="!!searchClientId">No results were found</span>
+            <span [hidden]="!searchClientId">No results were found for code <b>{{relatedClientCode(searchClientId)}}</b></span>
+        </ng-container>
+    </div>
+  </ng-container>
+</ng-template>
+<ng-template #exceptionState>
+  <div class="empty-state">
+    {{errorMsg}}
+  </div>
+</ng-template>

@@ -1,0 +1,114 @@
+<div mat-dialog-header>
+    <h2 class="dialog-title mt-0">
+        Copy Plans
+    </h2>
+    <button type="button" class="close" (click)="cancel()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</div>
+<div mat-dialog-content>
+    <form #copyPlansForm="ngForm">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-control-label">Plan Start</label>
+                    <div class="input-group">
+                        <input  class="form-control" [matDatepicker]="pickerStartDate"
+                               [(ngModel)]="config.startDate" required name="startDate"
+                               dsFormControlValidator />
+                        <div class="input-group-append">
+                            <mat-datepicker-toggle matSuffix [for]="pickerStartDate" class="input-group-text date">
+                                <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #pickerStartDate></mat-datepicker>
+                        </div>
+                        <div class="invalid-feedback">
+                            Please enter a start date.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-control-label">Plan End</label>
+                    <div class="input-group">
+                        <input  class="form-control" [matDatepicker]="pickerEndDate"
+                               [(ngModel)]="config.endDate" required name="endDate"
+                               dsFormControlValidator />
+                        <div class="input-group-append">
+                            <mat-datepicker-toggle matSuffix [for]="pickerEndDate" class="input-group-text date">
+                                <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #pickerEndDate></mat-datepicker>
+                        </div>
+                        <div class="invalid-feedback">
+                            Please enter an end date.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr class="mt-0 mb-2" />
+        <label class="form-control-label">Please select the plans to copy for the new plan year:</label>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-control-label">Plan Year</label>
+                    <select class="form-control custom-select"
+                            [(ngModel)]="config.planYear"
+                            name="planYear"
+                            required
+                            dsFormControlValidator
+                            (ngModelChange)="loadPlans()">
+                        <option *ngFor="let year of planYears"
+                                [value]="year">
+                            {{year}}
+                        </option>
+                        <option [value]=0>
+                            Not Specified
+                        </option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a plan year.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row form-group" *ngIf="yearPlans">
+            <div class="col-12">
+                <label class="form-control-label">Plan List</label> <span class="form-help-text pl-2">Select all that apply to the new plan year</span>
+            </div>
+            <div class="col-12">
+                <div class="custom-control custom-checkbox custom-control-pill primary">
+                    <input type="checkbox" class="custom-control-input" id="yearplan_selectAll" name="yearplan_selectAll" (change)="selectAllPlans($event)">
+                    <label class="custom-control-label" for="yearplan_selectAll">Select All</label>
+                    <div class="custom-bg"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group" [class.is-invalid]="noPlansChosen() && (copyPlansForm.submitted)">
+                    <ng-container *ngFor="let yearPlan of yearPlans; let idx = index;">
+                        <div class="custom-control custom-checkbox custom-control-pill primary m-1 ml-0" title="{{yearPlan.planName}}">
+                            <input type="checkbox" id="yearplan-{{idx}}_selection" name="yearplan_selection" class="custom-control-input"
+                                [(ngModel)]="yearPlan.selected" 
+                                required
+                                dsFormControlValidator
+                                [value]="false" />
+                            <label class="custom-control-label" for="yearplan-{{idx}}_selection" ><div class="text-truncate">{{yearPlan.planName}}</div></label>
+                            <div class="custom-bg"></div>
+                        </div>
+                    </ng-container>
+                    <div class="invalid-feedback">
+                        Please select the plans to copy for the new plan year
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div mat-dialog-actions>
+    <button type="submit" class="btn btn-save" (click)="copyPlansForm.submitted = true; copyPlans()">Save</button>
+    <button type="button" class="btn btn-cancel" (click)="cancel()">Cancel</button>
+</div>

@@ -1,0 +1,52 @@
+<ds-card border="top" mode="nobody" [color]="headerColor" class="navigation-card" *ngIf="!!evaluation && !isLoading; else loadingEvaluation">
+    <div ds-card-header>
+        <ds-card-header-title>
+            <div class="text-truncate">{{ review.title }} &mdash; {{ evaluation == null ? '' : getEvaluationTypeName() }}</div>
+        </ds-card-header-title>
+        <ds-card-bread-crumb>
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-2">
+                <li class="breadcrumb-item"><a [routerLink]="" (click)="returnLink()">Review List</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ evaluation == null ? '' : getEvaluationTypeName() }}</li>
+            </ol>
+          </nav>
+        </ds-card-bread-crumb>
+        <ds-card-title-action *ngIf="canViewAttachments && canEditAttachments">  
+            <button type="button" class="btn btn-outline-primary" (click)="addAttachment()" >
+                <mat-icon>add</mat-icon>Attachment</button>
+        </ds-card-title-action> 
+        <ds-card-subtitle>
+            <div class="card-data bordered flex-wrap">
+                <div class="item">
+                    <label>DUE:</label> 
+                    {{ evaluation == null ? '' : evaluation.dueDate | date: 'MM/dd/yyyy' }}
+                </div>
+                <div class="item">
+                    <label>EVALUATION PERIOD:</label>
+                    {{ review.evaluationPeriodFromDate | date: 'MM/dd/yyyy' }} &ndash; {{ review.evaluationPeriodToDate | date: 'MM/dd/yyyy' }}
+                </div>
+                <div class="item">
+                    <label>EVALUATED BY:</label>
+                    {{evaluation == null ? '' : evaluation.evaluatedByContact.firstName}} {{evaluation == null ? '' : evaluation.evaluatedByContact.lastName}}
+                </div>
+            </div>
+        </ds-card-subtitle>
+    </div>
+    <ds-card-nav>
+        <div class="ds-tabs" *ngIf="evaluation.hasSummaryData">
+            <div class="tab" [routerLink]="['detail']" [routerLinkActive]="['active']">Evaluation</div>
+            <div class="tab" *ngIf="canVisitSummary === true" [routerLink]="['summary']" [routerLinkActive]="['active']">Summary</div>
+            <div class="tab" *ngIf="canViewAttachments == true" [routerLink]="['attachments']" [routerLinkActive]="['active']"> Attachments</div>
+        </div>
+    </ds-card-nav>
+</ds-card>
+<ng-template #loadingEvaluation>
+    <ds-card>
+        <ds-card-content>
+            <div class="empty-state">
+                Loading...
+            </div>
+        </ds-card-content>
+    </ds-card>
+</ng-template>
+<router-outlet *ngIf="!!evaluation && !isLoading" ></router-outlet>

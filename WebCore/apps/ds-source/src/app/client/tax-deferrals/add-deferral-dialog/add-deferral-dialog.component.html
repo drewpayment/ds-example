@@ -1,0 +1,64 @@
+
+<mat-dialog-header>
+    <h2 class="dialog-title">
+        Client Tax Deferral
+    </h2>
+    <button type="button" class="close" (click)="onNoClick()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</mat-dialog-header>
+<ng-container [formGroup]="f">
+    <mat-dialog-content>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-control-label">Tax Type</label>
+                    <select class="form-control custom-select" formControlName="taxType"
+                        dsFormControlValidator [dsFormControlSubmitted]="isSubmitted">
+                        <option>-- Select Tax Type --</option>
+                        <option value="0">Employer Social Security</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a tax type.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-6">
+                <div class="form-group">
+                    <label>End Date</label>
+                    <div class="input-group">
+                        <input matInput class="form-control" 
+                            [matDatepicker]="endDatepicker" formControlName="endDate">
+                        <div class="input-group-append">
+                            <mat-datepicker-toggle matSuffix [for]="endDatepicker"
+                                class="input-group-text date">
+                                <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #endDatepicker></mat-datepicker>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6">
+                <div class="form-group">
+                    <div class="switch-setting">
+                        <label for="MyID">Activate Deferral on Save</label>
+                        <label class="switch switch-default switch-pill switch-success switch-sm">
+                            <input type="checkbox" class="switch-input" formControlName="isDeferred" />
+                            <span class="switch-label"></span>
+                            <span class="switch-handle"></span>
+                            <span class="ds-switch-off">Off</span>
+                            <span class="ds-switch-on">On</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-dialog-content>
+    <div mat-dialog-actions>
+        <button type="submit" class="btn btn-save" (click)="saveForm()">Save</button>
+        <button type="button" class="btn btn-cancel" (click)="reset()">Cancel</button>
+    </div>
+</ng-container>

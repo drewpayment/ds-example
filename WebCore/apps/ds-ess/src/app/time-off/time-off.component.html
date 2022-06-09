@@ -1,0 +1,80 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="ds-card">
+            <div class="ds-card-header header-bar border-top-primary">
+                <div class="ds-card-header-row">
+                    <div class="ds-card-title">
+                        <h1>Time Off</h1>
+                    </div>
+                    <div class="ds-card-action" *ngIf="canRequestTimeOff">
+                        <button type="button" class="btn btn-save" (click)="requestNew()">
+                            <mat-icon>add</mat-icon>
+                            <span>Request</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-container *ngIf="isLoading">
+    <ds-card mode="noheader">
+        <ds-card-content>
+            <div class="row justify-content-center">
+                <div class="col">
+                    <ds-loading-message></ds-loading-message>
+                </div>
+            </div>
+        </ds-card-content>
+    </ds-card>
+</ng-container>
+
+<ng-container *ngIf="true && (policies$ | async) as policies">
+    <ng-container *ngIf="policies.length; else noPolicies">
+        <ds-card mode="noheader">
+            <ds-card-content>
+                <div class="overflow-list">
+                    <div class="row color-variation">
+                        <div class="col-6 col-lg-6 col-xl-4 color-variation-info" *ngFor="let policy of policies; let i = index;">
+                            <!-- TODO: NEED CONTEXTUAL COLORS -->
+                            <ds-card mode="nobody" border="top" color="info" hover="true" (click)="viewActivity(policy)">
+                                <div ds-card-header x-align="center">
+                                <ds-card-widget-title class="text-medium-dark">
+                                        <div class="text-medium-dark text-truncate">
+                                            <i class="material-icons mr-1" >schedule</i>
+                                            <span>{{ policy.policyName }}</span>
+                                        </div>
+                                </ds-card-widget-title>
+                                <ds-card-subtitle>
+                                        <div class="text-center">
+                                            <div class="text-center font-7xl line-height-125">
+                                                {{ policy.unitsAvailable }}
+                                            </div>
+                                            <h4 class="text-center mb-1 font-lg">
+                                                {{ policy.timeOffUnitType | timeOffUnitName }} Left
+                                            </h4>
+                                        </div>
+                                        <hr />
+                                        <button type="button" class="text-center btn btn-link" (click)="viewActivity(policy)" >
+                                            View Activity
+                                            <i class="material-icons">keyboard_arrow_right</i>
+                                        </button>
+                                </ds-card-subtitle>
+                                </div>
+                            </ds-card>
+                        </div>
+                    </div>    
+                </div>
+            </ds-card-content>
+        </ds-card>
+    </ng-container>
+    <ng-template #noPolicies>
+        <ds-card mode="noheader" *ngIf="!isLoading">
+            <ds-card-content>
+                <div class="empty-state">You do not have any time-off policies set up.  Please contact your company administrator for more information.</div>
+            </ds-card-content>
+        </ds-card>
+    </ng-template>
+</ng-container>
+

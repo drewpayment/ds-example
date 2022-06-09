@@ -1,0 +1,76 @@
+<div class="print-header">
+    <div class="d-flex align-items-center justify-content-between">
+        <h3>{{section.empFirstName + ' ' + section.empLastName}} 
+              <span class="font-sm"># {{section.empNumber}}</span>
+        </h3>
+        <div class="card-data bordered">
+            <div class="item" *ngIf="section.jobTitle" style="color: #fff !important;">{{section.jobTitle}}</div>
+            <div class="item" *ngIf="section.department" style="color: #fff !important;">{{section.department}}</div>
+            <div class="item" *ngIf="section.division" style="color: #fff !important;">{{section.division}}</div>
+        </div>
+    </div>
+</div>
+<div *ngIf="section.meritRequestItems.length" >
+<div *ngFor="let requestItem of section.meritRequestItems; last as isLast" class="print-page-section-group">
+    <div class="row">
+        <div class="col-md-12">
+            <span class="bold">Base Pay</span>: 
+            {{requestItem.payoutFrom | payrollRequestReportCurrency}}<span *ngIf="requestItem.payType === PayType.Hourly">/hr</span>
+            to
+            {{requestItem.payoutTo | payrollRequestReportCurrency}}<span *ngIf="requestItem.payType === PayType.Hourly">/hr</span>
+             Effective On {{requestItem.effectiveDate | date: 'MM/dd/yyyy'}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <span class="bold">Merit Increase Awarded</span>: <ng-container
+                [ngTemplateOutlet]="requestItem.increaseType === IncreaseType.Flat ? awardedFlat : awardedPercent">
+            </ng-container>
+            <ng-container *ngTemplateOutlet="approvedByTemplate; context: { $implicit: requestItem}"></ng-container>
+        </div>
+        <ng-template #awardedFlat>
+            {{requestItem.increaseAmount | payrollRequestReportCurrency}}
+        </ng-template>
+        <ng-template #awardedPercent>
+            {{requestItem.increaseAmount | number:'1.2-2'}}%
+        </ng-template>
+    </div>
+    <div class="row" *ngIf="isLast && isScoringEnabled">
+        <div class="col-md-12">
+            <span class="bold">Merit Increase Recommendation</span>: {{section.meritRecommendation | number:'1.2-2'}}% (Based on
+            {{section.score | number : '1.0-2'}} Overall Score)
+        </div>
+    </div>
+</div>
+
+</div>
+<div class="print-page-section-group" *ngFor="let requestItem of section.oneTimeItems">
+    <div class="row">
+        <div class="col-md-12">
+            <span class="bold">{{requestItem.awardDescription}}</span>:
+            {{requestItem.payoutTo  | payrollRequestReportCurrency}}
+            Effective on {{requestItem.effectiveDate | date: 'MM/dd/yyyy'}} <ng-container
+                *ngTemplateOutlet="approvedByTemplate; context: { $implicit: requestItem}"></ng-container>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <span class="bold">Target</span>:
+            {{(requestItem.target || 0)  | payrollRequestReportCurrency}}
+            <ng-container
+                [ngTemplateOutlet]="requestItem.increaseType === IncreaseType.Flat ? targetFlat : targetPercent">
+            </ng-container> (Based on {{requestItem.completedGoals}} of {{requestItem.totalGoals}} Eligible Goals
+            Completed)
+        </div>
+        <ng-template #targetFlat>
+            Flat
+        </ng-template>
+        <ng-template #targetPercent>
+            ({{requestItem.increaseAmount | number:'1.2-2'}}% Base Pay)
+        </ng-template>
+    </div>
+</div>
+<ng-template #approvedByTemplate let-requestItem>
+    <span *ngIf="requestItem.approvalStatusId === ApprovalStatus.Approved"><span class="bold">Approved By</span>:
+        {{requestItem.approvedBy}} {{requestItem.approvedOn | date: 'MM/dd/yyyy \'at\' h:mm a'}}</span>
+</ng-template>

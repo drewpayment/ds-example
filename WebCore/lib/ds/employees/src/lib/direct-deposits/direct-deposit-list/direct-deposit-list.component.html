@@ -1,0 +1,30 @@
+<ds-card *ngIf="accounts.length > 0">
+    <ds-card-header>
+        <ds-card-header-title>
+            Direct Deposits
+        </ds-card-header-title>
+    </ds-card-header>
+    <ds-card-content>
+        <div class="empty-state" *ngIf="accounts.length <= 0">
+            You have not setup any direct deposit accounts yet. Please contact your company administrator.
+        </div>
+        <ng-container *ngIf="accounts.length > 0">
+            <div class="card card-table">
+                <table class="table">
+                    <thead class="table-header">
+                        <tr class="visible-md visible-lg">
+                            <th>Account</th>
+                            <th class="table-text-right">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let account of accounts">
+                            <td>{{ account.nickname }} Account ({{ account.maskedAccountNumber }})</td>
+                            <td class="table-text-right">{{ getAmount(account) }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </ng-container>
+    </ds-card-content>
+</ds-card>

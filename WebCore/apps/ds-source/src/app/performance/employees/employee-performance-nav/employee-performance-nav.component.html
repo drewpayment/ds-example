@@ -1,0 +1,26 @@
+<ds-card border="top" mode="nav" color="secondary">
+    <ds-card-header>
+        <ds-card-header-title>Performance</ds-card-header-title>
+        <ds-card-title-action *ngIf="canViewAttachments && canEditAttachments">  
+            <button type="button" class="btn btn-outline-primary" (click)="addAttachment()" >
+                <mat-icon>add</mat-icon>Attachment</button>
+        </ds-card-title-action> 
+        <ds-card-bread-crumb>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="ChangeEmployee.aspx?Submenu=Employee&URL=EmployeePerformance.aspx#">Employee List</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Performance</li>
+                </ol>
+            </nav>
+        </ds-card-bread-crumb>
+    </ds-card-header>
+    <ds-card-nav>
+      <div class="ds-tabs">
+        <a class="tab" routerLink="/performance/employees/competencies" routerLinkActive="active" *ngIf="canViewCompetency">Overview</a>
+        <a class="tab" routerLink="/performance/employees/reviews" routerLinkActive="active" *ngIf="canViewReviews">Reviews</a>
+        <a class="tab" routerLink="/performance/employees/goals" routerLinkActive="active" *ngIf="canViewGoals">Goals</a>
+        <a class="tab" routerLink="/performance/employees/attachments" routerLinkActive="active" *ngIf="canViewAttachments">Attachments</a>
+      </div>
+    </ds-card-nav>
+</ds-card>
+<router-outlet></router-outlet>

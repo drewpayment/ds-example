@@ -1,0 +1,29 @@
+<markdown ngPreserveWhiteSpaces>
+    # Sidenav
+</markdown>
+
+<div class="button-bar">
+    <button class="btn btn-icon" (click)="toggleSideNav = !toggleSideNav">
+        <mat-icon>code</mat-icon>
+        View Code
+    </button>
+</div>
+<div class="example-block" [class.open]="toggleSideNav">
+    <div class="ui">
+        <ds-sidenav></ds-sidenav>
+    </div>
+    <div class="example">
+        <div class="ds-tabs" *ngIf="toggleSideNav">
+            <button class="tab" role="navigation" [class.active]="sidenavExample == 1"
+                (click)="sidenavExample = 1">HTML</button>
+            <button class="tab" role="navigation" [class.active]="sidenavExample == 2"
+            (click)="sidenavExample = 2">TS</button>
+        </div>
+        <ng-container *ngIf="sidenavExample == 1">
+            <markdown src="app/ds-components/sidenav/sidenav/sidenav.component.html"></markdown>
+        </ng-container>
+        <ng-container *ngIf="sidenavExample == 2">
+            <markdown src="app/ds-components/sidenav/sidenav/sidenav.component.ts"></markdown>
+        </ng-container>
+    </div>
+</div>

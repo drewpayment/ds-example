@@ -1,0 +1,83 @@
+<markdown ngPreserveWhitespaces>
+  # Confirm Dialog
+
+  <p class="description">Confirm modals serve as a stop gap for accidentally deleting a record.</p>
+
+  ## Use 
+  The confirm modal asks if the user is sure they want to delete the record. The primary action is cancel, and located in the lower right corner. 
+  There is no cancel icon in the upper corner. The user needs to choose one option, Remove or Cancel.
+
+  _Sample Text:_  Are you sure you want to delete this task?
+
+</markdown>
+  
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleConfirm = !toggleConfirm">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleConfirm">
+  <div class="ui">
+     <ds-confirm-dialog-example></ds-confirm-dialog-example>
+  </div>
+  <div class="example">
+    <div class="ds-tabs">
+        <button class="tab" role="navigation" [class.active]="ConfirmExample == 1" (click)="ConfirmExample = 1">HTML</button>
+        <button class="tab" role="navigation" [class.active]="ConfirmExample == 2" (click)="ConfirmExample = 2">TS</button>
+        <button class="tab" role="navigation" [class.active]="ConfirmExample == 3" (click)="ConfirmExample = 3">Module</button>
+        <button class="tab" role="navigation" [class.active]="ConfirmExample == 4" (click)="ConfirmExample = 4">AJS Example</button>
+      </div>
+      <ng-container *ngIf="ConfirmExample == 1">
+        <markdown src="app/ds-components/confirm-dialog/confirm-dialog/confirm-dialog.component.html"></markdown>
+      </ng-container>
+      <ng-container *ngIf="ConfirmExample == 2">
+        <markdown src="app/ds-components/confirm-dialog/confirm-dialog/confirm-dialog.component.ts"></markdown>
+      </ng-container>
+      <ng-container *ngIf="ConfirmExample == 3">
+        <markdown src="app/ds-components/confirm-dialog/confirm-dialog.module.ts"  lineHighlight [line]="'9, 17'"></markdown>
+      </ng-container>
+      <ng-container *ngIf="ConfirmExample == 4">
+        <markdown src="app/ds-components/confirm-dialog/onfirm-dialog/confirm-dialog-legacy.html"></markdown>
+      </ng-container>
+  </div>
+</div>
+
+<markdown>
+Values    |                     |                                                                                                             |
+----------| ------------------- | ----------------------------------------------------------------------------------------------------------- |
+`title`   | Optional            | Top section of the message. Usually the "Are you sure..." section. This communicates the action being done. |
+`message` | Optional            | Detail text shown muted and italicised                                                                      |
+`confirm` | Default of "Delete" | What the confirm button text should say. Usually "Delete" or "Remove"                                       |
+</markdown>
+
+<markdown ngPreserveWhitespaces>
+  ## Communication Dialog
+</markdown>
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleCommunication = !toggleCommunication">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleCommunication">
+  <div class="ui">
+      <button type="button" class="btn btn-outline-primary" (click)="openDialog()">Open Modal</button>
+  </div>
+  <div class="example">
+      <markdown src="app/ds-components/confirm-dialog/communication-dialog/communication-dialog.component.html"></markdown>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+## Ds Component
+_Can be used with NGX or AJS_<br/>
+Confirm Modal will automatically build the modal based on attributes assigned to the delete button. It needs to be imported into the component file.
+
+
+
+
+## Legacy Support
+There is currently no legacy support. Use a javascript alert on any page where Angular is not available.
+
+</markdown>

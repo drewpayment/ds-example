@@ -1,0 +1,251 @@
+<ng-template #dueBadgeTemplate let-relativeTime>
+    <span *ngIf="relativeTime.isInPast" class="badge badge-pill badge-pill-lg badge-danger">Overdue</span>
+    <span *ngIf="relativeTime.isSoon" class="badge badge-pill badge-pill-lg badge-warning text-white">Due {{ relativeTime.displayText }}</span>
+    <span *ngIf="relativeTime.isUpcoming" class="badge badge-pill badge-pill-lg badge-info text-white">Due {{ relativeTime.displayText }}</span>
+</ng-template>
+<ng-template #needsApprovalBadge>
+    <span class="badge badge-pill badge-pill-lg badge-warning">Needs Approval</span>
+</ng-template>
+
+<ds-card>
+    <div ds-card-header>
+        <ds-card-sub-header-title>{{ archive ? "Review History" : "Scheduled Reviews" }}</ds-card-sub-header-title>
+        <ds-card-title-right-content>
+          <button *ngIf="canEdit || !isEmployeeViewMode" type="button" class="btn btn-outline-primary" (click)="archive = !archive">View {{ archive ? 'Active' : 'History' }}</button>
+        </ds-card-title-right-content>
+        <ds-card-title-action>
+            <button *ngIf="canEdit" type="button" class="btn btn-primary" (click)="addReview()"><i class="material-icons">add</i> Review</button>
+        </ds-card-title-action>
+    </div>
+    <div ds-card-content [class.pt-0]="!hasReviews">
+        <ng-container *ngIf="hasReviews; else noReviews">
+            <ds-card *ngFor="let review of reviews" hover="true" mode="{{hasEvaluations(review) ? 'widget' : 'widget-nobody'}}" [color]="isReviewClosed(review) ? 'light' : 'info'" class="hoverable">
+                <div ds-card-icon>supervised_user_circle</div>
+                <div ds-card-header>
+                    <ds-card-section-title>
+                        {{review.title}}
+                    </ds-card-section-title>
+                    <ds-card-inline-content>
+                        <div class="card-data bordered flex-wrap">
+                            <div class="item">
+                                <label class="text-uppercase">Review Process:</label> {{ review.reviewProcessStartDate | date: 'MM/dd/yyyy' }} - {{ review.reviewProcessDueDate | date: 'MM/dd/yyyy' }}
+                            </div>
+                            <div class="item">
+                                <label>EVALUATION PERIOD:</label> {{ review.evaluationPeriodFromDate | date: 'MM/dd/yyyy' }} - {{ review.evaluationPeriodToDate | date: 'MM/dd/yyyy' }}
+                            </div>
+                            <div class="item" *ngIf="isReviewClosed(review)">
+                                <label>CLOSED:</label> {{ review.reviewCompletedDate | date: 'MM/dd/yyyy' }}
+                            </div>
+                        </div>
+                    </ds-card-inline-content>
+                    <ds-card-title-action *ngIf="canEdit">
+                        <mat-menu #toggleMenu="matMenu">
+                            <button mat-menu-item type="button" (click)="openNoteModal(review)">Add Note</button>
+                            <button mat-menu-item type="button" *ngIf="!isReviewClosed(review)" (click)="editReview(review)">Edit</button>
+                            <button mat-menu-item type="button"
+                                *ngIf="!isReviewClosed(review) && !hasMeeting(review) && !review.isReviewMeetingRequired"
+                                (click)="editMeeting(review)">Schedule Meeting</button>
+                            <ds-close-review [review]="review" (reviewClosed)="updateViewableReviews()"></ds-close-review>
+                            <button mat-menu-item *ngIf="isReviewClosed(review);" type="button" (click)="reOpenReview(review)">Reopen</button>
+                        </mat-menu>
+                        <button [matMenuTriggerFor]="toggleMenu" type="button" class="btn btn-icon hover-show">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                    </ds-card-title-action>
+                </div>
+                <div ds-card-content>
+                    <div class="row">
+                        <div class="col-md-6 col-lg-3" *ngFor="let evaluation of review.evaluations; let i = index">
+                            <ds-card [hover]="canOpenEval(evaluation, review)" 
+                                [class.clickable]="canOpenEval(evaluation, review)" 
+                                mode="object" x-align="center" 
+                                class="card-height-fix-sm" 
+                                (click)="viewEvaluation(evaluation, review)" 
+                                (mouseover)="evaluation.hoverEval = true" 
+                                (mouseout)="evaluation.hoverEval = false"
+                            >
+                                <div ds-card-header>
+                                    <ds-card-subtitle>
+                                        <div class="split-content">
+                                            <div class="top">
+                                                <div class="object-card-avatar">
+                                                  <ng-container *ngIf="evaluation.evaluatedByContact, else avatarIcon">
+                                                    <ds-avatar
+                                                    size="72"
+                                                    firstName='{{evaluation.evaluatedByContact.firstName}}'
+                                                    lastName='{{evaluation.evaluatedByContact.lastName}}'
+                                                    resource="{{ 
+                                                      (evaluation.evaluatedByContact && 
+                                                       evaluation.evaluatedByContact.profileImage && 
+                                                       evaluation.evaluatedByContact.profileImage.extraLarge && 
+                                                       evaluation.evaluatedByContact.profileImage.extraLarge.url) ? evaluation.evaluatedByContact.profileImage.extraLarge.url : ''}}">
+                                                    </ds-avatar>
+                                                  </ng-container>
+                                                  <ng-template #avatarIcon>
+                                                    <mat-icon class="avatar" >account_circle</mat-icon>
+                                                  </ng-template>
+                                                </div>
+                                                <h3 class="bold text-center">{{getEvaluationTypeName(evaluation)}}</h3>
+                                                <div class="font-lg text-center mb-4">
+                                                    {{ evaluation.evaluatedByContact ? evaluation.evaluatedByContact.firstName : ""}}
+                                                    {{ evaluation.evaluatedByContact ? evaluation.evaluatedByContact.lastName : "" }}
+                                                </div>
+                                                <div class="card-data justify-content-center mb-2">
+                                                    <div class="item" *ngIf="!evaluation.completedDate; else completedDate">
+                                                        <label>DUE:</label> {{ evaluation.dueDate | date: 'MM/dd/yyyy' }}
+                                                    </div>
+                                                    <ng-template #completedDate>
+                                                        <div class="item">
+                                                            <label>SUBMITTED:</label> {{ evaluation.completedDate | date: 'MM/dd/yyyy' }}
+                                                        </div>
+                                                    </ng-template>
+                                                </div>
+                                            </div>
+                                            <div class="bottom">
+                                                <div class="text-center" *ngIf="!evaluation.completedDate; else evalCompletedTemplate">
+                                                    <ng-container *ngIf="evaluation.isApprovalProcess && evaluation.evaluatedByUserId != evaluation.currentAssignedUserId">
+                                                        <ng-container *ngTemplateOutlet="needsApprovalBadge"></ng-container>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="!evaluation.isApprovalProcess || (evaluation.evaluatedByUserId == evaluation.currentAssignedUserId)">
+                                                        <ng-container *ngTemplateOutlet="dueBadgeTemplate; context: { $implicit: evaluation.dueDate | toFriendlyTimeDiff }"></ng-container>
+                                                    </ng-container>
+                                                </div>
+                                                <ng-template #evalCompletedTemplate >
+                                                    <div class="text-center">                                            
+                                                        <span class="badge badge-pill badge-pill-lg badge-success">Submitted</span>
+                                                    </div>
+                                                </ng-template>    
+                                            </div>
+                                        </div>                        
+                                    </ds-card-subtitle>
+                                    <ds-card-title-action *ngIf="(evaluation.completedDate && (canEdit || canReopen(review))) || canViewEval(evaluation, review)" (click)="$event.stopPropagation()">
+                                        <mat-menu #toggleMenu="matMenu">
+                                            <button mat-menu-item type="button" *ngIf="!isUsersReview && evaluation.role == EvaluationRoleType.Manager" (click)="printReview(evaluation, review, true)">Print for employee</button>
+                                            <button mat-menu-item type="button" (click)="printReview(evaluation, review)">Print</button>
+                                            <button mat-menu-item type="button" (click)="releaseEvalToEmployee(evaluation, review, true)" *ngIf="evaluation.role !== EvaluationRoleType.Self && evaluation.completedDate && !evaluation.isViewableByEmployee && (evaluation.completedDate && canEdit)">Share with Employee</button>
+                                            <button mat-menu-item type="button" (click)="releaseEvalToEmployee(evaluation, review, false)" *ngIf="evaluation.role !== EvaluationRoleType.Self && evaluation.completedDate && evaluation.isViewableByEmployee && (evaluation.completedDate && canEdit)">Hide from Employee</button>
+                                            <ds-reopen-evaluation [review]="review" [evaluation]="evaluation" (evaluationReopened)="evalSelected(evaluation, review)"></ds-reopen-evaluation>
+                                            <ds-send-complete-eval-reminder [completedDate]="evaluation.completedDate" [evalDueDateStatus]="evaluation.dueDate | toFriendlyTimeDiff" [evaluationId]="evaluation.evaluationId"></ds-send-complete-eval-reminder>
+                                        </mat-menu>
+                                        <button [matMenuTriggerFor]="toggleMenu" type="button" class="btn btn-icon nested-cog" [ngClass]="evaluation.hoverEval ? 'hover-show' : 'opacity-0'">
+                                            <mat-icon>more_vert</mat-icon>
+                                        </button>
+                                    </ds-card-title-action>
+                                </div>
+                            </ds-card>
+                        </div>
+                        <div class="col-md-6 col-lg-3" *ngFor="let meeting of review.meetings">
+                            <ds-card mode="object" 
+                                class="hoverable card-height-fix-sm" 
+                                [hover]="canEdit"
+                                [class.clickable]="canEdit"
+                                (mouseover)="meeting.hovered = true" 
+                                (mouseout)="meeting.hovered = false">
+                                <ds-card-header>
+                                    <ds-card-subtitle>
+                                        <div class="object-card-avatar">
+                                            <mat-icon class="avatar">today</mat-icon>
+                                        </div>
+                                        <h3 class="bold text-center">Review Meeting</h3>
+                                        <div class="card-data flex-wrap">
+                                            <div class="item">
+                                                <label> DATE:</label> {{ meeting.startDateTime | date: 'MM/dd/yyyy' }}
+                                            </div>
+                                            <div class="item">
+                                                <label>TIME:</label> {{ meeting.startDateTime | date: 'h:mm a' }}<!-- - {{ meeting.endDateTime | date: 'h:mm a' }}-->
+                                            </div>
+                                        </div>
+                                        <div class="card-data block wrap mb-2">
+                                            <div class="item" *ngIf="meeting.location">
+                                                <label>LOCATION:</label> {{ meeting.location }}
+                                            </div>
+                                            <div class="item list-repeat">
+                                                <label>ATTENDEES:</label>
+                                                <span *ngFor="let contact of meeting.attendees" class="list-repeat-item">
+                                                    {{ contact.firstName }} {{ contact.lastName }}<span class="list-repeat-seperator">,</span>
+                                                </span>
+                                                
+                                            </div>
+                                        </div>    
+                                        <!-- <div class="text-center" *ngIf="!meeting.completedDate; else meetingCompletedTemplate">
+                                            <ng-container *ngTemplateOutlet="dueBadgeTemplate; context: { $implicit: getFriendlyTimeDifference(meeting.startDateTime) }">
+                                            </ng-container>
+                                        </div> -->
+                                        <ng-template #meetingCompletedTemplate >
+                                            <div class="text-center">                                            
+                                                <span class="badge badge-pill badge-pill-lg badge-success">Submitted {{ meeting.completedDate | date: 'MM/dd/yyyy' }} </span>
+                                            </div>
+                                        </ng-template>                              
+                                    </ds-card-subtitle>
+                                    <ds-card-title-action *ngIf="canEdit && !isReviewClosed(review)" (click)="$event.stopPropagation()">
+                                            <mat-menu #toggleMenu="matMenu">
+                                                <button mat-menu-item type="button" (click)="editMeeting(review)">Edit</button>
+                                                <button mat-menu-item type="button" (click)="unscheduleMeeting(review)">Unschedule</button>
+                                            </mat-menu>
+                                            <button [matMenuTriggerFor]="toggleMenu" type="button" class="btn btn-icon nested-cog" [ngClass]="meeting.hovered ? 'hover-show' : 'opacity-0'">
+                                                <mat-icon>more_vert</mat-icon>
+                                            </button>
+                                        </ds-card-title-action>
+                                </ds-card-header>
+                            </ds-card>
+                        </div>
+                        <div class="col-md-6 col-lg-3" *ngIf="!hasMeeting(review) && review.isReviewMeetingRequired">
+                            <ds-card mode="object" 
+                                class="hoverable card-height-fix-sm" 
+                                [hover]="canEdit"
+                                [class.clickable]="canEdit"
+                                (click)="canEdit && !isReviewClosed(review) && editMeeting(review)"
+                                (mouseover)="review.scheduleHovered = true" 
+                                (mouseout)="review.scheduleHovered = false">
+                                <ds-card-header>
+                                    <ds-card-subtitle>
+                                        <div class="d-flex flex-column justify-content-between h-100">
+                                            <div>
+                                                <div class="object-card-avatar">
+                                                    <mat-icon class="avatar">today</mat-icon>
+                                                </div>
+                                                <h3 class="bold text-center">Review Meeting</h3>
+                                                <div class="card-data justify-content-center">
+                                                    <div class="item">
+                                                        <label> DATE:</label> Not Scheduled
+                                                    </div>
+                                                </div>     
+                                            </div>
+                                            <div class="text-center" *ngIf="canEdit && !isReviewClosed(review)">                                   
+                                                <button type="button" class="btn btn-primary mt-3" (click)="$event.stopPropagation(); editMeeting(review)">Schedule</button>
+                                            </div>
+                                        </div>
+                                        <!-- <div class="text-center">                                            
+                                            <span class="badge badge-pill badge-pill-lg badge-info">Not Scheduled</span>
+                                        </div>                             -->
+                                    </ds-card-subtitle>
+                                </ds-card-header>
+                            </ds-card>
+                        </div>
+                    </div>                
+                </div>
+            </ds-card>
+        </ng-container>
+        <ng-template #noReviews>
+            <ng-container *ngIf="!archive; else noArchivedReviews">
+                <div class="empty-state" *ngIf="canEdit; else employeeNoReviews">There are no reviews to display. Click the "+ Review" button to add one for this employee.</div>
+            </ng-container>
+        </ng-template>
+        <ng-template #employeeNoReviews>
+            <div class="empty-state-cycle success" *ngIf="!archive; else noArchivedReviews">
+                <i class="material-icons">check</i>
+                <div class="title">You're all caught up.</div>
+                <p>Reviews will show up here when available.</p>
+            </div>
+        </ng-template>
+        <ng-template #noArchivedReviews>
+            <div class="empty-state-cycle warning">
+                <i class="material-icons">info</i>
+                <div class="title">No review history found.</div>
+                <p>Closed reviews will show up here once complete.</p>
+            </div>
+        </ng-template>
+        
+    </div>
+</ds-card>
+    

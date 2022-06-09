@@ -1,0 +1,172 @@
+<markdown ngPreserveWhitespaces>
+  # Tables
+  </markdown>
+  
+  <!-- <markdown ngPreserveWhitespaces>
+  #### Check Boxes and Validation
+  If rows are required to continue with an action, add validation. Once a single row is checked, the invalid states are reset.
+  </markdown> -->
+  <markdown ngPreserveWhitespaces>
+  #### Pagination
+  Use if the returned data will be larger than 10 records.
+  </markdown>
+  <markdown ngPreserveWhitespaces>
+  #### Sorting
+  All tables should sort
+  </markdown>
+  <markdown ngPreserveWhitespaces>
+  #### Column Alignment
+  - Strings are left aligned
+  - Numbers, including currency, are right aligned
+  - Dates are right aligned
+  - Icons are centered
+  - Checkboxes are centered
+  </markdown>
+
+<markdown>
+## Formatting Directives
+Directive    |                       | Description                                                                                                                    |
+------------ | --------------------- |------------------------------------------------------------------------------------------------------------------------------- |
+`formGroup`  | `ds-table-container`  | Changes styles if applied based on form status. Example: If no `formGroup` is passed, the table will have view styles applied. | 
+</markdown>
+
+<markdown>
+## Formatting Directives
+Directive         |                             | Description                                                                                        |
+----------------- | --------------------------- |--------------------------------------------------------------------------------------------------- |
+`alignRight`      | `ds-header-cell`, `ds-cell` | Aligns content to the right                                                                        |
+`alignCenter`     | `ds-header-cell`, `ds-cell` | Aligns content to the center                                                                       |
+`AlignViewRight`  | `ds-header-cell`, `ds-cell` | Aligns content only when in view state, ex. right aligned data like currency                       |
+`tableCheckbox`   | `ds-header-cell`, `ds-cell` | Sets width and alignment for table checkboxes                                                      |
+`TableAction`     | `ds-header-cell`, `ds-cell` | Sets width and alignment for action coulmns                                                        |
+</markdown>
+  
+  
+<markdown ngPreserveWhitespaces>
+  ## View 
+</markdown>
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleViewTable = !toggleViewTable">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleViewTable">
+  <div class="ui overflow-list">
+    <ds-table-view></ds-table-view>
+  </div>
+  <div class="example">
+    <div class="ds-tabs">
+      <button type="button" class="tab" role="navigation" [class.active]="tableViewExample == 1" (click)="tableViewExample = 1">HTML</button>
+      <button type="button" class="tab" role="navigation" [class.active]="tableViewExample == 2" (click)="tableViewExample = 2">TS</button>
+      <button type="button" class="tab" role="navigation" [class.active]="tableViewExample == 3" (click)="tableViewExample = 3">CSS</button>
+    </div>
+    <ng-container *ngIf="tableViewExample == 1">
+      <markdown src="app/ds-components/tables/table-view/table-view.component.html"></markdown>
+    </ng-container>
+    <ng-container *ngIf="tableViewExample == 2">
+        <markdown src="app/ds-components/tables/table-view/table-view.component.ts"></markdown>
+    </ng-container>
+    <ng-container *ngIf="tableViewExample == 3">
+        <markdown src="app/ds-components/tables/table-view/table-view.component.scss"></markdown>
+    </ng-container>
+  </div>
+
+  <markdown ngPreserveWhitespaces>
+    ## View and Edit
+    Edit state removes the row highlight and adds side borders. 
+    Use `formGroup` on `dsTableContainer` to apply view and edit styles without additional CSS. `.view` is applied if there is no `formGroup` or if the form is present but disabled.
+    Adding rows will autoFocus the first input.
+  </markdown>
+  <div class="button-bar">
+    <button class="btn btn-icon" (click)="toggleAddPageTable = !toggleAddPageTable">
+      <mat-icon>code</mat-icon>
+      View Code
+    </button>
+  </div>
+  <div class="example-block" [class.open]="toggleAddPageTable">
+    <div class="ui overflow-list">
+      <ds-table-add-edit></ds-table-add-edit>
+    </div>
+    <div class="example">
+      <div class="ds-tabs">
+        <button type="button" class="tab" role="navigation" [class.active]="toggleAddPageExample == 1" (click)="toggleAddPageExample = 1">HTML</button>
+        <button type="button" class="tab" role="navigation" [class.active]="toggleAddPageExample == 2" (click)="toggleAddPageExample = 2">TS</button>
+        <button type="button" class="tab" role="navigation" [class.active]="toggleAddPageExample == 3" (click)="toggleAddPageExample = 3">CSS</button>
+      </div>
+      <ng-container *ngIf="toggleAddPageExample == 1">
+        <markdown src="app/ds-components/tables/table-add-edit/table-add-page.component.html"></markdown>
+      </ng-container>
+      <ng-container *ngIf="toggleAddPageExample == 2">
+          <markdown src="app/ds-components/tables/table-add-edit/table-add-page.component.ts" lineHighlight [line]="'36, 44'"></markdown>
+      </ng-container>
+      <ng-container *ngIf="toggleAddPageExample == 3">
+          <markdown src="app/ds-components/tables/table-add-edit/table-add-page.component.scss"></markdown>
+      </ng-container>
+    </div>
+    <ng-container *ngIf="toggleAddPageExample == 1">
+      <markdown src="app/ds-components/tables/table-add-edit/table-add-page.component.html"></markdown>
+    </ng-container>
+    <ng-container *ngIf="toggleAddPageExample == 2">
+        <markdown src="app/ds-components/tables/table-add-edit/table-add-page.component.ts" lineHighlight [line]="'36, 44'"></markdown>
+    </ng-container>
+    <ng-container *ngIf="toggleAddPageExample == 3">
+        <markdown src="app/ds-components/tables/table-add-edit/table-add-page.component.scss"></markdown>
+    </ng-container>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+  ## Validation
+  The onLoad directive shows the tooltip when errors are shown. Validation should update on change. 
+</markdown>
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleValidationTable = !toggleValidationTable">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleValidationTable">
+  <div class="ui overflow-list">
+    <ds-table-validation></ds-table-validation>
+  </div>
+  <div class="example">
+    <div class="ds-tabs">
+      <button type="button" class="tab" role="navigation" [class.active]="tableValidationExample == 1" (click)="tableValidationExample = 1">HTML</button>
+      <button type="button" class="tab" role="navigation" [class.active]="tableValidationExample == 2" (click)="tableValidationExample = 2">TS</button>
+      <button type="button" class="tab" role="navigation" [class.active]="tableValidationExample == 3" (click)="tableValidationExample = 3">MODULE</button>
+    </div>
+    <ng-container *ngIf="tableValidationExample == 1">
+      <markdown src="app/ds-components/tables/table-validation/table-validation.component.html"></markdown>
+    </ng-container>
+    <ng-container *ngIf="tableValidationExample == 2">
+        <markdown src="app/ds-components/tables/table-validation/table-validation.component.ts"></markdown>
+    </ng-container>
+    <ng-container *ngIf="tableValidationExample == 3">
+        <markdown src="app/ds-components/tables/tables.module.ts"></markdown>
+    </ng-container>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+  ## Empty State
+</markdown>
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleEmptyTable = !toggleEmptyTable">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleEmptyTable">
+  <div class="ui overflow-list">
+    <ds-table-empty></ds-table-empty>
+  </div>
+  <div class="example">
+    <div class="ds-tabs">
+      <button type="button" class="tab" role="navigation" [class.active]="tableEmptyExample == 1" (click)="tableEmptyExample = 1">HTML</button>
+    </div>
+    <ng-container *ngIf="tableEmptyExample == 1">
+      <markdown src="app/ds-components/tables/table-empty/table-empty.component.html"></markdown>
+    </ng-container>
+  </div>
+</div>

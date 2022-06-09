@@ -1,0 +1,24 @@
+<ds-dashboard-widget [cardType]="cardType" [loaded]="loaded" skeleton="bar-graph-skeleton">
+    <ds-dashboard-widget-header tooltip="If your company uses Dominion for attendance points, this displays the number of points per department, cost center, or supervisor within the time period."
+    [title]="title" [headerDropdownOptions]="headerDropdownOptions" (headerDropdownChange)="headerDropdownChanged($event)">
+    </ds-dashboard-widget-header>
+
+    <ds-dashboard-widget-content>
+        <div *ngIf="employeePointTotals.length == 0">
+            <div class="empty-state">
+                No data available to display.
+            </div>
+        </div>
+        <div class="chart" *ngIf="employeePointTotals.length != 0">
+            <canvas baseChart #baseChart width="400" height="150" *ngIf="loaded"
+                (chartClick)="openDialog($event)"
+                [datasets]="barChartData"
+                [labels]="barChartLabels"
+                [options]="barChartOptions"
+                [colors]="chartColors"
+                [legend]="pieChartLegend"
+                [chartType]="barChartType">
+            </canvas>
+        </div>
+    </ds-dashboard-widget-content>
+</ds-dashboard-widget>

@@ -1,0 +1,63 @@
+
+  <ds-card>
+    <ds-card-header>
+      <ds-card-header-title>Table</ds-card-header-title>
+      <ds-card-title-action>
+      </ds-card-title-action>
+    </ds-card-header>
+    <ds-card-content>
+      <form [formGroup]="form">
+        <ds-table-container>
+          <table 
+            ds-table 
+            formArrayName="rows" 
+            [dataSource]="dataSource" 
+            matSort 
+            (matSortChange)="sortData($event)">
+            <ng-container dsColumnDef="character">
+              <th ds-header-cell *dsHeaderCellDef mat-sort-header="character"> Character </th>
+              <td ds-cell *dsCellDef="let element, let i = index" [formGroupName]="i"> 
+                <input type="text" class="form-control" formControlName="character"/>
+            </td>
+            </ng-container>
+            <ng-container dsColumnDef="movie">
+              <th ds-header-cell *dsHeaderCellDef mat-sort-header="movie"> Movie </th>
+              <td ds-cell *dsCellDef="let element, let i = index" [formGroupName]="i"> 
+                <input type="text" class="form-control" formControlName="movie"/>
+              </td>
+            </ng-container>
+            <ng-container dsColumnDef="year">
+              <th ds-header-cell *dsHeaderCellDef mat-sort-header="year"> Year </th>
+              <td ds-cell *dsCellDef="let element, let i = index" [formGroupName]="i">
+                <mat-select class="form-control custom-select" formControlName="year" [(value)]="selected">
+                  <mat-option *ngFor="let year of years" [value]="year.id">{{ year.year }}</mat-option>
+                </mat-select>
+              </td>
+            </ng-container>
+            <ng-container dsColumnDef="edit">
+              <th ds-header-cell *dsHeaderCellDef class="td-action-icon-width"></th>
+              <td ds-cell *dsCellDef="let element, let i = index" class="td-action-icon-width">
+                <button type="button" class="btn btn-icon" [matMenuTriggerFor]="menu">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item >Delete</button>
+                </mat-menu>
+              </td>
+            </ng-container>
+            <tr ds-header-row *dsHeaderRowDef="displayedColumns"></tr>
+            <tr ds-row *dsRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+          <!-- <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons></mat-paginator> -->
+          <add-button (click)="addRow()">
+            <mat-icon>add</mat-icon> Row
+          </add-button>
+        </ds-table-container>
+      </form>
+
+    </ds-card-content>
+    <ds-card-footer>
+      <button class="btn btn-save" >Save</button>
+      <button class="btn btn-cancel">Cancel</button>
+    </ds-card-footer>
+  </ds-card>

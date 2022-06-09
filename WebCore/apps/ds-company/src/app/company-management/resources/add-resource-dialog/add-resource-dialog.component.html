@@ -1,0 +1,99 @@
+<mat-dialog-header>
+    <h2 class="dialog-title">
+        {{currentResource.resourceId > 0 ? "Edit Resource" : "New Resource" }}
+    </h2>
+    <button type="button" class="close" (click)="clear()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</mat-dialog-header>
+<mat-dialog-content [formGroup]="form1">
+    <div class="form-group">
+        <label class="form-control-label">Resource Type</label>
+        <div>
+            <mat-button-toggle-group #group="matButtonToggleGroup" formControlName="resourceType"
+                (change)="setResourceType()" toggle-type="checkbox">
+                <mat-button-toggle value="1" aria-label="Document">
+                    Document
+                </mat-button-toggle>
+                <mat-button-toggle value="2" aria-label="Link">
+                    Link
+                </mat-button-toggle>
+                <mat-button-toggle value="4" aria-label="Video">
+                    Video
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
+    </div>
+    <div class="form-group" *ngIf="currentResource.resourceTypeId != 1">
+        <label class="form-control-label">URL</label>
+        <input type="text" formControlName="resourceURL" class="form-control"
+            [class.is-invalid]=" (form1.controls.resourceURL.touched || formSubmitted) && 
+                            (form1.controls.resourceURL.errors?.required || form1.controls.resourceURL.errors?.pattern)">
+        <div class="invalid-feedback">
+            <span *ngIf="form1.controls.resourceURL.errors?.required">Please enter a URL.</span>
+            <span *ngIf="form1.controls.resourceURL.errors?.pattern">Please enter a valid URL.</span>
+        </div>
+    </div>
+    <div class="form-group" *ngIf="currentResource.resourceTypeId == 1"
+        [class.custom-validation]="formSubmitted && (!resourceFile||resourceFileTypeError||resourceFileDuplError)">
+        
+        <div class="file-input">
+            <button type="button" class="btn btn-outline-primary" (click)="browseClicked()">Browse</button>
+            <input name="resource" class="d-none" id="resourceAdded" type="file" (change)="onChange($event)">
+            <div class="form-help-text" *ngIf="!resourceFile">
+              Accepted file types include .pdf, .doc, .docx, .xlsx, .xls, .txt, .rtf<br />
+              Max file size: 3mb
+            </div>
+            <label class="form-control-label mb-0 text-truncate" *ngIf="resourceFile">{{ (!resourceFile) ? '':
+              resourceFile.name }}</label>
+        </div>
+        <div class="help-block with-errors form-control-feedback">
+            <span *ngIf="!resourceFile && formSubmitted">Please select a resource.</span>
+            <span *ngIf="resourceFile && formSubmitted && resourceFileTypeError">The selected file type is not
+                supported. Accepted file types include .pdf, .doc, .docx, .xlsx, .xls, .txt, .rtf</span>
+            <span *ngIf="resourceFile && formSubmitted && resourceFileDuplError">The file is already attached with this folder. Please choose a different file. </span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="form-control-label">Name</label>
+        <input type="text" formControlName="resourceName" class="form-control" maxlength="250" required
+            [class.is-invalid]="((formSubmitted || form1.controls.resourceName.touched)  && (form1.controls.resourceName.errors?.required  ||
+            form1.controls.resourceName.errors?.duplicate ))">
+        <div class="invalid-feedback">
+            <span *ngIf="form1.controls.resourceName.errors?.required">Please enter a name.</span>
+            <span *ngIf="form1.controls.resourceName.errors?.duplicate">Please enter a different name.</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="form-control-label">Security Level</label>
+        <select class="form-control custom-select" formControlName="securityLevel" (change)="setSecurityLevel()"
+            required>
+            <option *ngFor="let securityLvl of securityLevels" [value]="securityLvl.id">
+                {{securityLvl.desc}}
+            </option>
+        </select>
+    </div>
+    <div class="form-group" [class.d-none]="currentResource.securityLevel != 4">
+        <div class="custom-control custom-checkbox">
+            <input id="manager" type="checkbox" class="custom-control-input" formControlName="isManagerResource" />
+            <label class="custom-control-label" for="manager">Manager's only</label>
+        </div>
+    </div>
+    <div class="form-group" *ngIf="allFolders.length > 0">
+        <label class="form-control-label">Folder</label>
+        <select [class.is-invalid]="formSubmitted && (form1.controls.destinationFolder.errors?.required)"
+            class="form-control custom-select" formControlName="destinationFolder" required>
+            <option class="text-muted" value=""></option>
+            <option *ngFor="let folder of allFolders" [value]="folder.companyResourceFolderId">
+                {{folder.description}}
+            </option>
+        </select>
+        <div class="invalid-feedback">
+            <span *ngIf="form1.controls.destinationFolder.errors?.required">Please select a destination folder.</span>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button type="button" class="btn btn-save" (click)="save()">Save</button>
+    <button type="button" class="btn btn-cancel" (click)="clear()">Cancel</button>
+</mat-dialog-actions>

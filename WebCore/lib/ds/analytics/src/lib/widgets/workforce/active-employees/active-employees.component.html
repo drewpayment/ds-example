@@ -1,0 +1,15 @@
+<ds-dashboard-widget [cardType]="cardType" [loaded]="loaded" skeleton="pie-graph-skeleton">
+    <ds-dashboard-widget-content [infoData]="infoData">
+        <ds-dashboard-widget-bottom-content>
+            <div class="chart" *ngIf="!emptyState">
+                <canvas baseChart [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType" [options]="pieChartOptions" [colors]="pieChartColors" (chartClick)="openDialog($event)">
+                </canvas>
+            </div>
+            <div *ngIf=emptyState>
+                <div class="empty-state">
+                    No data available to display
+                </div>
+            </div>
+        </ds-dashboard-widget-bottom-content>
+    </ds-dashboard-widget-content>
+</ds-dashboard-widget>

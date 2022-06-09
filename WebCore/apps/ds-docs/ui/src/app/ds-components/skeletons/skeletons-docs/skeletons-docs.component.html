@@ -1,0 +1,165 @@
+
+<markdown ngPreserveWhitespaces>
+    # Loading Skeletons
+  
+    <p class="description">Loading skeletons act as a placeholder while a widget loads. They create the effect of reduced load times as well as reassure the user that content is loading. </p>
+  
+    ## Use 
+    When creating a widget with either the ds-dashboard-widget (seen on the Analytics Dashboard) or the ds-widget, (seen on the Nps Dashboard) 
+    use skeletons as a loading animation while the API returns the data. 
+
+  
+  </markdown>
+    
+  <div class="button-bar">
+    <button class="btn btn-icon" (click)="toggleConfirm = !toggleConfirm">
+      <mat-icon>code</mat-icon>
+      View Code
+    </button>
+  </div>
+  <div class="example-block" [class.open]="toggleConfirm">
+    <div class="ui">
+        <div class="row">
+            <div class="col-sm-6 col-md-12 col-lg-6 col-xl-3">
+                <ds-widget mode="statistic" [loaded]="false" skeleton="info-card-skeleton">
+                    <ds-widget-header></ds-widget-header>
+                    <ds-widget-content></ds-widget-content>
+                </ds-widget>
+            </div>
+            <div class="col-sm-6 col-md-12 col-lg-6 col-xl-3">
+                <ds-widget mode="statistic" color="primary" [loaded]="true" skeleton="info-card-skeleton">
+                    <ds-widget-header>
+                        <ds-widget-icon>business</ds-widget-icon> 
+                        <ds-widget-title-value>100%</ds-widget-title-value>
+                        <ds-widget-title truncate="true">Title</ds-widget-title>
+                    </ds-widget-header>
+                    <ds-widget-content>
+                        <ds-widget-detail>
+                            <div class="text-break">
+                                <div class="line">Detaill</div> 
+                            </div>
+                            </ds-widget-detail>
+                        <ds-widget-detail bold="true">Bold Detail</ds-widget-detail>
+                    </ds-widget-content>
+                </ds-widget>
+            </div>
+        </div>
+    </div>
+    <div class="example">
+      <div class="ds-tabs">
+          <button class="tab" role="navigation" [class.active]="ConfirmExample == 1" (click)="ConfirmExample = 1">Loading</button>
+          <button class="tab" role="navigation" [class.active]="ConfirmExample == 2" (click)="ConfirmExample = 2">Loaded</button>
+        </div>
+        <ng-container *ngIf="ConfirmExample == 1">
+          <markdown src="app/ds-components/skeletons/skeleton-example/skeleton-example-loading.html"></markdown>
+        </ng-container>
+        <ng-container *ngIf="ConfirmExample == 2">
+          <markdown src="app/ds-components/skeletons/skeleton-example/skeleton-example-widget.html"  lineHighlight [line]="'9, 17'"></markdown>
+        </ng-container>
+    </div>
+  </div>
+
+<markdown ngPreserveWhitespaces>
+# How To Add a Loading Skeleton
+ - Add a boolean to your ts file that is initialized to false. Set it to true after the api has returned the data for the widget.
+ - Add [loaded]="myBoolean" to the 'ds-widget' level of the markup (where myBoolean is from the previous step)
+ - Add skeleton="example-skeleton" to the 'ds-widget' level of the markup. Names of skeletons are below.
+</markdown>
+
+<markdown>
+Values    |           | Data Type |                                                                                 |
+----------| --------- | --------- | ------------------------------------------------------------------------------- |
+`loaded`  | Required  | Boolean   | Whether or not your content is loaded. Skeleton will show while loaded = false  |
+`skeleton`| Required  | string    | The name of the skeleton                                                        |
+</markdown>
+
+<markdown ngPreserveWhitespaces>
+# Button Card Skeleton:
+skeleton="button-card-skeleton"
+</markdown>
+<div class="row">
+  <div class="col-sm-12">
+      <ds-widget mode="statistic" [loaded]="false" skeleton="button-card-skeleton">
+          <ds-widget-header></ds-widget-header>
+          <ds-widget-content></ds-widget-content>
+      </ds-widget>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+  # Siple Card Skeleton:
+  skeleton="simple-card-skeleton"
+  </markdown>
+  <div class="row">
+    <div class="col-sm-4">
+        <ds-widget mode="statistic" [loaded]="false" skeleton="simple-card-skeleton">
+            <ds-widget-header></ds-widget-header>
+            <ds-widget-content></ds-widget-content>
+        </ds-widget>
+    </div>
+  </div>
+
+<markdown ngPreserveWhitespaces>
+  # Info Card Skeleton:
+  skeleton="info-card-skeleton"
+</markdown>
+<div class="row">
+  <div class="col-sm-4">
+      <ds-widget mode="statistic" [loaded]="false" skeleton="info-card-skeleton">
+          <ds-widget-header></ds-widget-header>
+          <ds-widget-content></ds-widget-content>
+      </ds-widget>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+# Pie Graph Skeleton:
+skeleton="pie-graph-skeleton"
+</markdown>
+<div class="row">
+  <div class="col-sm-6">
+      <ds-widget mode="statistic" [loaded]="false" skeleton="pie-graph-skeleton">
+          <ds-widget-header></ds-widget-header>
+          <ds-widget-content></ds-widget-content>
+      </ds-widget>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+  # Bar Graph Skeleton:
+  skeleton="bar-graph-skeleton"
+</markdown>
+<div class="row">
+  <div class="col-sm-12">
+      <ds-widget mode="statistic" [loaded]="false" skeleton="bar-graph-skeleton">
+          <ds-widget-header></ds-widget-header>
+          <ds-widget-content></ds-widget-content>
+      </ds-widget>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+  # Punch Graph Skeleton:
+  skeleton="punch-graph-skeleton"
+</markdown>
+<div class="row">
+  <div class="col-sm-4">
+      <ds-widget mode="statistic" [loaded]="false" skeleton="punch-graph-skeleton">
+          <ds-widget-header></ds-widget-header>
+          <ds-widget-content></ds-widget-content>
+      </ds-widget>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+  # Table Skeleton:
+  skeleton="table-view-skeleton"
+</markdown>
+<div class="row">
+  <div class="col-sm-12">
+      <ds-widget mode="statistic" [loaded]="false" skeleton="table-view-skeleton">
+          <ds-widget-header></ds-widget-header>
+          <ds-widget-content></ds-widget-content>
+      </ds-widget>
+  </div>
+</div>

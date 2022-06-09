@@ -1,0 +1,58 @@
+<div class="ds-card-header-row">
+    <div class="ds-card-title">
+        <h2 class="borderless-select">
+            <ng-container *ngIf="tooltip"  >
+                <div class="d-flex justify-content-start w-100">
+                    <div class="helpiq2-tip mt-6" [class.d-none]="!hovered" >
+                        <div class="helpiq2_tooltip" [innerHTML]="tooltip" >                            
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+            <span>{{ title }}</span>
+            <a *ngIf="tooltip"  class="ds-tooltip" title="" (click)="hovered=!hovered" (mouseenter)="hovered = true" (mouseleave)="hovered = false">
+                <i class="tooltip-icon material-icons">help</i>
+            </a>
+            <div *ngIf="options.length">
+                <!-- <select (change)="headerDropdownChanged($event)" id="headerDropdownOptions">
+                    <option *ngFor="let option of headerDropdownOptions" value="{{ option }}">{{ option }}</option>
+                </select> -->
+
+                <select [formControl]="headerDropdownOption">
+                    <option *ngFor="let o of options" value="{{o.id}}">{{ o.val }}</option>
+                </select>
+            </div>
+        </h2>
+        <!-- Grows empty space when card-content takes up less space -->
+        <div class="ds-card-inline-content"></div>
+        <div class="ds-card-right-content">
+            <div *ngIf="availableChartTypes.length > 0">
+                <a mat-button class="btn btn-icon" (click)="chartChanged('pie')" *ngIf="availableChartTypes.includes('pie')">
+                    <mat-icon [ngClass]="{'text-muted': selectedChartType != 'pie', 'text-dark': selectedChartType == 'pie'}">pie_chart</mat-icon>
+                </a>
+                <a mat-button class="btn btn-icon" (click)="chartChanged('bar')" *ngIf="availableChartTypes.includes('bar')">
+                    <mat-icon [ngClass]="{'text-muted': selectedChartType != 'bar', 'text-dark': selectedChartType == 'bar'}">bar_chart</mat-icon>
+                </a>
+                <a mat-button class="btn btn-icon" (click)="chartChanged('line')" *ngIf="availableChartTypes.includes('line')">
+                    <mat-icon [ngClass]="{'text-muted': selectedChartType != 'line', 'text-dark': selectedChartType == 'line'}">timeline</mat-icon>
+                </a>
+                <a mat-button class="btn btn-icon" (click)="chartChanged('donut')" *ngIf="availableChartTypes.includes('donut')">
+                    <mat-icon [ngClass]="{'text-muted': selectedChartType != 'donut', 'text-dark': selectedChartType == 'donut'}">donut_large</mat-icon>
+                </a>
+                <a mat-button class="btn btn-icon" (click)="chartChanged('list')" *ngIf="availableChartTypes.includes('list')">
+                    <mat-icon [ngClass]="{'text-muted': selectedChartType != 'list', 'text-dark': selectedChartType == 'list'}">list</mat-icon>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="ds-card-action">
+        <div *ngIf="settingsItems.length > 0">
+            <button type="button" mat-button [matMenuTriggerFor]="menu" class="btn btn-outline-primary dropdown-toggle text-nowrap">
+                Options
+                </button>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item *ngFor="let item of settingsItems" (click)="settingSelect(item)">{{ item }}</button>
+            </mat-menu>
+        </div>
+    </div>
+</div>

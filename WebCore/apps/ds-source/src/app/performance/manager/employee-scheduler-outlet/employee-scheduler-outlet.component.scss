@@ -1,0 +1,55 @@
+.mat-header-cell,
+.mat-cell {
+    order: 1;
+
+    &.mat-column-selected {
+        order: 0;
+    }
+}
+.mat-column-selected {
+    flex: 0 0 35px;
+}
+.mat-column-avatar {
+    flex: 0 0 40px;
+}
+.mat-column-name {
+    flex: 1 1 100px;
+    min-width: 100px;;
+}
+.mat-column-number {
+    flex: 1 0 80px;
+}
+.mat-column-division {
+    flex: 1 0 80px;
+}
+.mat-column-department {
+    flex: 1 0 95px;
+}
+.mat-column-jobTitle {
+    flex: 1 0 80px;
+}
+.mat-column-supervisor {
+    flex: 1 0 90px;
+}
+.mat-column-hireDate {
+    flex: 1 0 105px;
+}
+.mat-column-serviceLength {
+    flex: 1 0 125px;
+}
+.mat-column-payType {
+    flex: 1 0 77px;
+}
+.mat-column-competencyModel {
+    flex: 1 0 150px;
+}
+
+@media screen and ( min-width: 1200px ) {
+    // prevent collapse
+    .table-xl-responsive {
+        overflow-x: auto;
+    }
+    .mat-table {
+        min-width: 1050px;
+    }
+}

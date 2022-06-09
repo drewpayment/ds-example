@@ -1,0 +1,142 @@
+<ds-card border="top" mode="nobody">
+    <div ds-card-header>
+        <ds-card-header-title>
+            Certify I-9
+        </ds-card-header-title>
+        <ds-card-subtitle>
+            <nav aria-label="breadcrumb" *ngIf="showBreadCrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{{onboardingUrl}}">Onboarding</a>
+                    </li>
+                    <li class="breadcrumb-item active">Certify I-9</li>
+                </ol>
+            </nav>
+        </ds-card-subtitle>
+    </div>
+</ds-card>
+<ng-container *ngIf="!isLoading; else loadingScreen">
+    <ds-card>
+        <ds-card-header>
+            <ds-card-sub-header-title>
+                Records to certify : {{displayedCount}}
+            </ds-card-sub-header-title>
+            <ds-card-title-right-content *ngIf="relatedClients.length > 1" class="d-flex">
+                <div class="col-auto borderless-select">
+                    <label for="searchClientCode">Client Code</label>
+                    <select class="custom-select form-control py-0 bold" name="searchClientCode"
+                        (change)="updateRelatedClient($event)">
+                        <option [value]="0">ALL</option>
+                        <option *ngFor="let relatedClient of relatedClients" [value]="relatedClient.clientId">{{
+                            relatedClient.clientCode }}</option>
+                    </select>
+                </div>
+            </ds-card-title-right-content>
+            <ds-card-title-action>
+                <div class="row align-items-end">
+                    <div class="col-auto search-container">
+                        <label class="instruction-text font-xs">Search {{displayedCount}} of {{totalCount}} Employees</label>
+                        <div class="input-group">
+                            <input class="form-control" (keyup)="applyFilter($event.target.value)" type="search" 
+                                [(ngModel)]="searchWord"
+                                name="alertSearch" matInput cdkFocusIntial />
+                            <div class="input-group-append">
+                                <button class="search" type="button">
+                                    <i class="material-icons">search</i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ds-card-title-action>
+        </ds-card-header>
+        <ds-card-content>
+            <ng-container *ngIf="employees.length; else noData">
+                <ng-container *ngTemplateOutlet="cardView"></ng-container>
+            </ng-container>
+            <ng-template #noData>
+                <div class="empty-state">No employees found.</div>
+            </ng-template>
+            <ng-template #cardView>
+                <mat-drawer-container hasBackdrop="true" [@changeDrawerHeightOnOpen]="activeId != 0">
+                    <mat-drawer-content>
+                        <ng-container *ngFor="let employee of employees; let i = index;">
+                            <ds-card mode="callout" color="yellow" hover="true" [drawerMask]="true"
+                                [drawerMaskActive]="employee.employeeId == activeEmployeeId"
+                                (click)="toggleActiveEmployeeId(employee.employeeId)" class="action">
+                                <ds-card-avatar class="ml-2">
+                                    <ds-avatar
+                                        size="48"
+                                        firstName="{{employee.employeeFirstName}}"
+                                        lastName="{{employee.employeeLastName}}"
+                                        resource="{{ !!employee.profileImage && (employee.profileImage.profileImageInfo.length > 0) ? 
+                                            employee.profileImage.profileImageInfo[0].source + employee.profileImage.sasToken : ''}}" >
+                                    </ds-avatar>
+                                </ds-card-avatar>
+                                <ds-card-header>
+                                    <ds-card-inline-content class="text-truncate">
+                                        <div class="text-truncate">
+                                            <div class="ds-card-title-callout text-truncate mb-1"
+                                                title="{{employee.employeeLastName}}, {{employee.employeeFirstName}}">
+                                                {{employee.employeeFirstName}} {{employee.employeeLastName}}
+                                                <span
+                                                    class="text-medium-dark font-sm">#{{employee.employeeNumber}}</span>
+                                            </div>
+                                            <div class="card-data-grid">
+                                                <ng-container >
+                                                  <div class="label">Job Title</div>
+                                                  <div class="value text-truncate">{{employee.jobTitle ? employee.jobTitle : "&mdash;"}}</div>
+                                                </ng-container>
+                                                <ng-container *ngIf="employee.hireDate">
+                                                  <div class="label">Hire Date</div>
+                                                  <div class="value text-truncate">{{employee.hireDate | date: 'MM/dd/yyyy'}}</div>
+                                                </ng-container>
+                                            </div>
+                                        </div>
+                                    </ds-card-inline-content>
+                                </ds-card-header>
+                            </ds-card>
+                        </ng-container>
+                    </mat-drawer-content>
+
+                    <mat-drawer 
+                        #drawer 
+                        [mode]="over"
+                        position="end"
+                        [opened]="activeEmployeeId > 0"
+                        disableClose="true"
+                        autoFocus="false" 
+                        [@matDrawerAfterHeightChange]="activeEmployeeId > 0" >
+                        
+                        <ng-container *ngIf="activeEmployee != null; else drawerLoadingScreen">
+                            <ng-container *ngTemplateOutlet="cardDrawerContent;"></ng-container>
+                        </ng-container>
+                
+                    </mat-drawer>
+
+                </mat-drawer-container>
+            </ng-template>
+
+            <ng-template #cardDrawerContent>
+                <ds-certify-i9-form 
+                    [user]="userinfo" 
+                    [documents]="titles" 
+                    [countries]="countries" 
+                    [states]="states"
+                    (i9StatusChange)="i9StatusChanged($event)">
+                </ds-certify-i9-form>
+            </ng-template>
+        </ds-card-content>
+    </ds-card>
+</ng-container>
+<ng-template #loadingScreen>
+  <ds-card mode="noheader">
+    <ds-card-content>
+      <ds-loading-message></ds-loading-message>
+    </ds-card-content>
+  </ds-card>
+</ng-template>
+
+<ng-template #drawerLoadingScreen>
+  <ds-loading-message></ds-loading-message>
+</ng-template>

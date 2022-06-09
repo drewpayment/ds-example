@@ -1,0 +1,32 @@
+<ds-card hover="true" 
+    mode="object" x-align="center" 
+    class="hoverable card-height-fix-sm"
+    [color]="refDateType | refDateToColor">
+    <div ds-card-header>
+        <ds-card-subtitle>
+            <div class="split-content">
+                <div class="top">
+                    <div class="object-card-avatar">
+                        <mat-icon class="avatar">{{isRecurring | refDateToMatIcon}}</mat-icon>
+                    </div>
+                    <div class="font-lg text-center">
+                        {{Name}}
+                    </div>
+                    <div class="font-sm text-center text-muted">
+                        {{isRecurring | isRecurringToString}}
+                    </div>
+                </div>
+            </div>                        
+        </ds-card-subtitle>
+        <ds-card-title-action>
+            <button type="button" class="btn btn-icon nested-cog hover-show" [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu >
+              <button *ngFor="let menuItem of MenuItemsToDisplay" type="button" mat-menu-item (click)="menuItem.action(TemplateId)">
+                <span>{{menuItem.text}}</span>
+              </button>
+            </mat-menu>
+          </ds-card-title-action>
+    </div>
+</ds-card>

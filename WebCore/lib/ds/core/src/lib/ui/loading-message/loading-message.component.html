@@ -1,0 +1,19 @@
+<div class="dominion-arch-container">
+  <div class="dominion-arch">
+    <div class="circle arch-1"></div>
+    <div class="circle arch-2"></div>
+    <div class="circle arch-3"></div>
+    <div class="circle arch-4"></div>
+    <div class="circle arch-5"></div>
+    <div class="circle arch-6"></div>
+  </div>
+  <div class="message">
+    <div #ref>
+      <ng-content></ng-content>
+    </div>
+    <div class="instruction-text" *ngIf="!ref.children.length && !ref.innerText.length">
+      Loading
+    </div>
+  </div>  
+</div>
+

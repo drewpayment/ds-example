@@ -1,0 +1,125 @@
+<div class="card" *ngIf="isLoading">
+  <div class="card-body">
+    <div class="loading-message">Loading...</div>
+  </div>
+</div>
+
+<div *ngIf="!isLoading">
+  <ng-container *ngIf="true; else newMenuLayout">
+    <div class="card">
+      <div class="card-header header-bar border-top-primary">
+        <div class="ds-card-header-row">
+          <div class="ds-card-title">
+            <h1 [innerText]="'Hello, ' + user?.userFirstName + '!'"></h1>
+          </div>
+          <div class="ds-card-action">
+            <ng-container *ngIf="!(user.userTypeId == 1)">
+              <ds-nps-survey-trigger></ds-nps-survey-trigger>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="openTerms$ | async"></ng-container>
+  <ng-template #newMenuLayout>
+    <div class="title" *ngIf="!isLoading" [innerText]="'Hello, ' + user?.userFirstName + '!'"></div>
+  </ng-template>
+
+  <div class="row flex-column-reverse flex-md-row-reverse">
+    <div class="col-md d-flex flex-column order-md-1 shortcuts-alerts" style="flex: 2;">
+      <div class="row h-100">
+        <div class="col-sm-6 col-md-12 col-lg flex-grow-1" style="flex: 2;"
+          [ngClass]="(settings.showTurboTaxMicrositeLink)?'col-sm-6':'col-sm-12'">
+          <div class="card shortcuts card-height-fix-sm">
+            <div class="card-body">
+              <div class="overflow-list-no-padding">
+                <ds-dominion-shortcut-widget></ds-dominion-shortcut-widget>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-12 col-xl-4 employee-turbotax-banner" *ngIf="settings.showTurboTaxMicrositeLink">
+          <ds-card class="card-height-fix-sm">
+            <ds-card-header>
+              <ds-card-header-title class="pb-0"><img class="turbotax-logo" src="WebCore/Images/turbotax.png" />
+                Integration with Dominion Systems</ds-card-header-title>
+            </ds-card-header>
+            <ds-card-content class="pt-0">
+              <div *ngIf="true" class="mb-4">Ready to file your taxes? Dominion integrates your W2 information with
+                TurboTax for your added convenience. Follow the link below to see if your W2 information is ready.</div>
+              <label *ngIf="false" class="mb-2">TurboTax integration has not been approved for your company. Please
+                contact your Company Administrator to enable this feature.</label>
+              <label *ngIf="settings.showW2Status" class="mb-2">Unfortunately, your W-2 information has not been sent to
+                TurboTax yet.
+                Please check again at a later time.</label>
+              <div class="d-flex justify-content-end">
+                <button type="button" *ngIf="!settings.showW2Status" class="btn btn-primary"
+                  (click)="openTurboTaxInNewWindow()"><i class="material-icons">launch</i> Go to TurboTax</button>
+              </div>
+            </ds-card-content>
+          </ds-card>
+        </div>
+      </div>
+    </div>
+    <div class="col-md order-md-0" style="flex: 1" *ngIf="settings.showPunchCard">
+      <ds-input-punches-widget></ds-input-punches-widget>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="true">
+    <div class="col-sm-6">
+      <ds-card class="card-height-fix-sm">
+        <ds-card-header>
+          <ds-card-sub-header-title><i class="material-icons text-primary mr-2">info</i>Dominion Alerts
+          </ds-card-sub-header-title>
+        </ds-card-header>
+        <ds-card-content class="pt-0 d-flex flex-column">
+          <div class="overflow-y-auto" style="max-height: 450px">
+            <ng-container *ngTemplateOutlet="alertsTemplate; context: { $implicit: sortedAlerts }"></ng-container>
+          </div>
+        </ds-card-content>
+      </ds-card>
+    </div>
+    <div class="col-sm-6">
+      <ds-card class="card-height-fix-sm">
+        <ds-card-header>
+          <ds-card-sub-header-title><i class="material-icons text-warning mr-2">info</i>Company Alerts
+          </ds-card-sub-header-title>
+        </ds-card-header>
+        <ds-card-content class="pt-0 d-flex flex-column">
+          <div class="overflow-y-auto" style="max-height: 450px">
+            <ng-container *ngTemplateOutlet="alertsTemplate; context: { $implicit: sortedMessages }"></ng-container>
+          </div>
+        </ds-card-content>
+      </ds-card>
+    </div>
+  </div>
+
+  <ds-clock-time-card-widget *ngIf="settings.showPunchCard"></ds-clock-time-card-widget>
+</div>
+<ng-template #alertsTemplate let-alerts>
+  <ng-container *ngIf="alerts.length == 0">
+    <div class="empty-state-cycle success">
+      <i class="material-icons">check</i>
+      <div class="title">You're all caught up.</div>
+      <p>Alerts will show up here as they are available.</p>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="alerts.length > 0">
+  <div *ngFor="let alert of alerts" class="alert mb-4">
+    <div class="date bold">{{ alert.datePosted | date: 'MM/dd/yyyy' }}</div>
+    <div class="alert-message">
+      {{alert.alertText}}
+      <a [href]="alert.alertLink" target="_blank" *ngIf="alert.alertCategoryId == 3"
+        class="d-block mt-1 text-truncate">
+        Visit
+      </a>
+      <button *ngIf="alert.alertCategoryId == 1" type="button"
+        class="btn btn-anchor d-block mt-1" (click)="download(alert)">
+        View
+      </button>
+    </div>
+  </div>
+  </ng-container>
+</ng-template>

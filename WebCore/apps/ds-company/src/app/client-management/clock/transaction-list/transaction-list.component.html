@@ -1,0 +1,100 @@
+<div [hidden]="!transactionsLoaded">
+    <div class="card card-2xl-table" *ngIf="transactionsDataSource.data.length > 0, else emptyState">
+        <div class="table-2xl-responsive">
+            <mat-table [dataSource]="transactionsDataSource" matSort color="primary">
+                <ng-container matColumnDef="clockName">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="clockName"> Clock Name
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let transaction" class="clockName" data-label="Clock Name">
+                        <div class="text-truncate">{{transaction.clockName}}</div>
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="devSn">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="devSn table-text-right"> Serial Number
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let transaction" class="devSn table-text-right" data-label="Serial Number">
+                        <div class="text-truncate">{{transaction.devSn}}</div>
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="ipAddress">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="ipAddress table-text-right"> IP Address
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let transaction" class="ipAddress table-text-right" data-label="IP Address">
+                        <div class="text-truncate">{{transaction.ipAddress}}</div>
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="pin">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="pin table-text-right"> PIN
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let transaction" class="pin table-text-right" data-label="PIN">
+                        <div class="text-truncate">{{transaction.pin}}</div>
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="attTime">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="attTime table-text-right"> Time
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let transaction" class="attTime table-text-right" data-label="Time">
+                        {{transaction.attTime | date:'medium'}}
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="status">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="status"> State
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let transaction" class="status" data-label="State">
+                        {{transaction.status}}
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="verify">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="verification"> Verification
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let transaction" class="verification" data-label="Verification">
+                        <div class="text-truncate">{{transaction.verification}}</div>
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="workCode">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="workCode table-text-right"> Work Code
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let transaction" class="workCode table-text-right" data-label="Work Code">
+                        {{transaction.workCode}}
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="reserved1">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="reserved1 table-text-right"> Reserved1
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let transaction" class="reserved1 table-text-right" data-label="Reserved1">
+                        {{transaction.reserved1}}
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="reserved2">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="reserved2 table-text-right"> Reserved2
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let transaction" class="reserved2 table-text-right" data-label="Reserved2">
+                        {{transaction.reserved2}}
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: columns;"></mat-row>
+            </mat-table>
+            <mat-paginator #transactionsPaginator [pageSizeOptions]="[10, 25, 50]" [pageSize]="25" showFirstLastButtons></mat-paginator>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="!transactionsLoaded">
+    <ds-loading-message></ds-loading-message>
+</div>
+
+<ng-template #emptyState>
+    <div class="empty-state">There is no data to display.</div>
+</ng-template>
+

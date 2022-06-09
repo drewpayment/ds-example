@@ -1,0 +1,22 @@
+/* Temp Files. Strip when updated to main */
+
+/*Main.css Classes (forms.scss)*/
+.form-control.is-invalid {
+    border-color: #a94442 ;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    background-color: #FEF3F3;
+}
+
+/*Bootstrap v4 Classes*/
+.d-inline {
+    display: inline!important;
+}
+
+.input-group-height{
+    height: 38px;
+}
+
+.invalid-feedback{
+    color: #d75d5d;
+}

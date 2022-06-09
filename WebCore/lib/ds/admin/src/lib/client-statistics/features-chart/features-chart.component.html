@@ -1,0 +1,17 @@
+<div class="card">
+    <div class="card-header">
+        <h2>Total Active Clients: {{ getTotalActiveClients() }}</h2>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-xl-8">
+                <div class="bar-chart-wrapper">
+                    <canvas baseChart [colors]="barColors" (chartClick)="open($event)" [datasets]="barChartData"
+                        [labels]="barChartLabels" [options]="barChartOptions" [legend]="'false'"
+                        [chartType]="'horizontalBar'">
+                    </canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,80 @@
+
+<h2 mat-dialog-title>
+    Select Company
+</h2>
+
+<mat-dialog-content class="mat-typography">
+    <div class="row justify-content-between">
+        <div class="col-md-6">
+            <div class="form-group inline-radio">
+                <span class="bold pr-2">Filter:</span>
+                <div class="custom-control custom-radio custom-control-bg primary">
+                    <input type="radio" id="filterActive" name="filterActiveOption"
+                        [checked]="filterActive.value ? 'checked' : ''"
+                        class="custom-control-input"
+                        (click)="filterActive.setValue(true);" />
+                    <label class="custom-control-label" for="filterActive">Active</label>
+                    <div class="custom-bg"></div>
+                </div>
+
+                <div class="custom-control custom-radio custom-control-bg primary">
+                    <input type="radio" value="" id="filterAll" name="filterActiveOption"
+                        (click)="filterActive.setValue(null);"
+                        class="custom-control-input" />
+                    <label class="custom-control-label" for="filterAll">All</label>
+                    <div class="custom-bg"></div>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="col-md-6">
+            <div class="form-group inline-form-elements">
+                <label class="form-control-label bold">Sort:</label>
+                <div class="custom-control custom-radio">
+                    <input type="radio" id="sortByName" name="sortOptions" checked="checked" class="custom-control-input" />
+                    <label class="custom-control-label" for="sortByName">Name</label>
+                </div>
+
+                <div class="custom-control custom-radio">
+                    <input type="radio" id="sortByCode" name="sortOptions" class="custom-control-input" />
+                    <label class="custom-control-label" for="sortByCode">Code</label>
+                </div>
+
+                <div class="custom-control custom-radio">
+                    <input type="radio" id="sortByFedId" name="sortOptions" class="custom-control-input" />
+                    <label class="custom-control-label" for="sortByFedId">Federal ID</label>
+                </div>
+            </div>
+        </div>     -->
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group inline-form-elements">
+                <input type="text" placeholder="Name, Code, Federal ID..." dsFocus
+                    class="form-control w-100"
+                    [formControl]="clientSearchInput"
+                    [matAutocomplete]="auto"
+                    [placeholder]="selectedClient?.clientName || ''" />
+                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" autoActiveFirstOption="true">
+                    <ng-container *ngFor="let c of clients$|async; let i = index">
+                        <mat-option [value]="c">
+                            <div class="row justify-content-between flex-1-1-100" >
+                                <div class="col">
+                                  <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                      <span class="text-truncate">{{c.clientName }}</span>
+                                      / {{c.clientCode}}
+                                    </div>
+                                    <div class="badge badge-pill badge-client-info ml-2" *ngIf="c.clientStatusCode !='T'"> {{c.clientStatusCode}}<ng-container *ngIf="c.isTaxManagement"> / TM</ng-container></div>
+                                    <div class="badge badge-pill badge-danger ml-2" *ngIf="c.clientStatusCode =='T'">Terminated<ng-container *ngIf="c.isTaxManagement"> / TM</ng-container></div>
+                                  </div>
+                                </div>
+                                <div class="col-auto">{{ c.federalId }}</div>
+                            </div>
+                        </mat-option>
+                    </ng-container>
+                </mat-autocomplete>
+            </div>
+        </div>
+    </div>
+</mat-dialog-content>

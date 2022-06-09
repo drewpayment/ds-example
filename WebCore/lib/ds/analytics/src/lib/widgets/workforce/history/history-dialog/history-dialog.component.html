@@ -1,0 +1,33 @@
+<div mat-dialog-header>
+    <h2 class="dialog-title">
+        History Datasets
+    </h2>
+    <button type="button" class="close" (click)="close()">
+        <mat-icon>clear</mat-icon>
+    </button>
+    <div class="dialog-subtitle">
+        <div class="instruction-text">
+            Please select up to five years of available data to compare on the history graph.
+        </div>
+    </div>
+</div>
+<div mat-dialog-content>
+    <div class="form-group inline-form-elements">
+        <div [formGroup]="dataForm">
+            <span *ngFor="let year of years">
+                <div class="custom-control custom-checkbox custom-control-pill primary">
+                    <input type="checkbox" class="custom-control-input" value="{{year}}" formControlName="Year_{{year}}" id="Year_{{year}}" (change)="yearChange($event)" [checked]="yearSelected(year)"/>
+                    <label class="custom-control-label" for="Year_{{year}}">{{year}}</label>
+                    <div class="custom-bg"></div>
+                </div>
+            </span>
+        </div>
+        <div class="invalid-feedback" *ngIf="dataForm.hasError('selectionNotValid') && submitted">
+            Please select between 2 to 5 years to compare.
+        </div>
+    </div>
+</div>
+<div mat-dialog-actions>
+    <button type="submit" class="btn btn-primary" (click)="saveYears()">Save</button>
+    <button type="button" class="btn btn-cancel" (click)="close()">Cancel</button>
+</div>

@@ -1,0 +1,262 @@
+
+
+<ng-container *ngFor="let goal of (goals|async); let i = index">
+    <ds-card collapse="true" mode="card" color="info" [expanded]="i === 0">
+        <div ds-card-header>
+            <ds-card-title-icon class="text-info">business</ds-card-title-icon>
+            <ds-card-sub-header-title>{{goal.title}}</ds-card-sub-header-title>
+            <ds-card-inline-content>
+                <ds-card-sub-header-title *ngIf="goal.dueDate != null && !isGoalCompleted(goal)" class="pl-2">
+                    <span class="text-muted">Due: {{goal.dueDate | date:'shortDate'}}</span>
+                </ds-card-sub-header-title>
+                <ds-card-sub-header-title *ngIf="isGoalCompleted(goal)">
+                    <span class="text-muted">{{getCompletionAccuracyMessage(goal)}}</span>
+                </ds-card-sub-header-title>
+            </ds-card-inline-content>
+            <ds-card-title-right-content style="width: 400px;" *ngIf="goal.subGoals != null && goal.subGoals.length > 0">
+                <ds-progress
+                    [value]="calculateProgress(goal)"
+                    color="info"
+                    labelPosition="left"
+                    [label]="'Overall Progress: ' + calculateProgress(goal) + '%'"
+                ></ds-progress>
+            </ds-card-title-right-content>
+            <ds-card-title-action>
+                <button type="button" class="btn btn-outline-primary" (click)="addSubGoal(goal)" 
+                *ngIf="canEditGoal(goal) && !goal.isArchived && (goal.subGoals == null || goal.subGoals.length == 0)">
+                    <mat-icon>add</mat-icon> Sub Goal
+                </button>
+            </ds-card-title-action>
+        </div>
+        <div ds-card-content>
+            <ds-card-collapse-instruction-text  [innerHtml]=" goal.description | formatDescription ">
+            </ds-card-collapse-instruction-text>
+            
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="form-group">
+                        <div class="card-data bordered h3">
+                            <div class="item">
+                                <label>Start:</label> {{goal.startDate | date:'shortDate'}}
+                            </div>
+                            <div class="item" *ngIf="goal.goalOwner != null; else noGoalOwner">
+                                <label>Goal Owner:</label> {{goal.goalOwner.lastName}}, {{goal.goalOwner.firstName}} 
+                            </div>
+                            <ng-template #noGoalOwner>
+                                <div class="item">
+                                    No Owner
+                                </div>
+                            </ng-template>
+                            <div class="item" *ngIf="goal.subGoals != null && goal.subGoals.length > 0">
+                                {{goal.subGoals != null ? goal.subGoals.length : "0"}} Sub {{goal.subGoals.length > 1 ? 'Goals' : 'Goal'}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 d-flex justify-content-end">
+                    <div class="form-group">
+                    <ng-container *ngIf="goal.subGoals != null && goal.subGoals.length > 0">
+                        <button type="button" 
+                            class="btn btn-icon p-1 view-toggle" 
+                            [ngClass]="goal.showKanBanView ? 'text-muted' : 'text-dark'" 
+                            (click)="switchView('list', goal)"
+                        >
+                            <i class="material-icons">view_list</i>
+                        </button>
+                        <button type="button" 
+                            class="btn btn-icon text-dark p-1 view-toggle" 
+                            [ngClass]="goal.showKanBanView ? 'text-dark' : 'text-muted'"
+                            (click)="switchView('kanban', goal)"
+                        >
+                            <i class="material-icons">view_module</i>
+                        </button>
+                    </ng-container>
+                    <ng-container *ngIf="canEditGoal(goal)">
+                        <button type="button" class="btn btn-outline-primary dropdown-toggle text-nowrap" [matMenuTriggerFor]="companyGoalMoreMenu">
+                            Options
+                        </button>
+                        <mat-menu #companyGoalMoreMenu="matMenu">
+                            <button mat-menu-item (click)="editCompanyGoal(goal)"      *ngIf="!goal.isArchived">Edit</button>
+                            <button mat-menu-item (click)="deleteGoal(goal)"          *ngIf="canAddGoals && !isGoalCompleted(goal)">Delete</button>
+                            <button mat-menu-item (click)="changeArchiveStatus(goal)" *ngIf="isGoalCompleted(goal)">{{goal.isArchived ? "UnArchive" : "Archive"}}</button>
+                            <button mat-menu-item (click)="addSubGoal(goal)"          *ngIf="!goal.showKanBanView && canEditGoal(goal)">+ Sub Goal</button>
+                        </mat-menu>
+                    </ng-container>
+                </div>
+                </div>
+            </div>
+
+        <ng-container *ngIf="{
+            NotStarted: goal.subGoals|filterGoals:CompletionStatusType.NotStarted,
+            InProgress: goal.subGoals|filterGoals:CompletionStatusType.InProgress,
+            Overdue:    goal.subGoals|filterGoals:CompletionStatusType.Overdue,
+            Done:       goal.subGoals|filterGoals:CompletionStatusType.Done
+        } as subGoals">
+            <div class="overflow-list" *ngIf="goal.showKanBanView; else showListView">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h3 class="d-none d-md-block">To do: {{subGoals.NotStarted.length}}</h3>
+                        </div>
+                        <div class="col-md-3">
+                            <h3 class="d-none d-md-block">In Progress: {{subGoals.InProgress.length}}</h3>
+                        </div>
+                        <div class="col-md-3">
+                            <h3 class="d-none d-md-block">Overdue: {{subGoals.Overdue.length}}</h3>
+                        </div>
+                        <div class="col-md-3">
+                            <h3 class="d-none d-md-block">Complete: {{subGoals.Done.length}}</h3>
+                        </div>
+                    </div>
+                    <div class="row overflow-y-auto" style="max-height: 500px;">
+                        <div class="col-md-3">
+                            <h3 class="d-md-none">To do: {{subGoals.NotStarted.length}}</h3>
+                            <div class="d-flex flex-column">
+                                    <div *ngIf="canEditGoal(goal)">
+                                        <ds-card mode="nobody" color="secondary" border="top" class="clickable" hover="true" (click)="addSubGoal(goal)">
+                                            <ds-card-header x-align="center">
+                                                <ds-card-title-icon class="text-medium-dark">add</ds-card-title-icon>
+                                                <ds-card-widget-title class="text-medium-dark">
+                                                    Sub Goal
+                                                </ds-card-widget-title>
+                                            </ds-card-header>
+                                        </ds-card>
+                                    </div>
+                                <div *ngFor="let g of subGoals.NotStarted">
+                                    <ds-goal-status-card [goal]="g" [employee]="goal.goalOwner" [goalOwners]="goalOwners"
+                                        [isEditable]="canEditGoal(goal) && !goal.isArchived">
+                                    </ds-goal-status-card>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                                <h3 class="d-md-none">In Progress: {{subGoals.InProgress.length}}</h3>
+                                <div class="d-flex flex-column">
+                                    <ng-container *ngFor="let g of subGoals.InProgress">
+                                        <ds-goal-status-card [goal]="g" [employee]="goal.goalOwner" [goalOwners]="goalOwners"
+                                            [isEditable]="canEditGoal(goal) && !goal.isArchived">
+                                        </ds-goal-status-card>
+                                    </ng-container>
+                                </div>
+                        </div>
+                        <div class="col-md-3">
+                            <h3 class="d-md-none">Overdue: {{subGoals.Overdue.length}}</h3>
+                            <div class="d-flex flex-column">
+                                <ng-container *ngFor="let g of subGoals.Overdue">
+                                    <ds-goal-status-card [goal]="g" [employee]="goal.goalOwner" [goalOwners]="goalOwners"
+                                        [isEditable]="canEditGoal(goal) && !goal.isArchived">
+                                    </ds-goal-status-card>
+                                </ng-container>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <h3 class="d-md-none">Complete: {{subGoals.Done.length}}</h3>
+                            <div class="d-flex flex-column">
+                                <ng-container *ngFor="let g of subGoals.Done">
+                                    <ds-goal-status-card [goal]="g" [employee]="goal.goalOwner" [goalOwners]="goalOwners"
+                                        [isEditable]="canEditGoal(goal) && !goal.isArchived">
+                                    </ds-goal-status-card>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </ng-container>
+
+            <ng-template #showListView>
+                <div class="card card-table m-1" *ngIf="goal.subGoals != null && goal.subGoals.length;">
+                    <table mat-table [dataSource]="goal.subGoals" class="table">
+                        <!-- GOAL NAME -->
+                        <ng-container matColumnDef="goalName">
+                            <th mat-header-cell *matHeaderCellDef>Goal Name</th>
+                            <td mat-cell *matCellDef="let item">{{item.title}}</td>
+                        </ng-container>
+                        
+                        <!-- DESCRIPTION -->
+                        <ng-container matColumnDef="description">
+                            <th mat-header-cell *matHeaderCellDef class="w-35">Description</th>
+                            <td mat-cell *matCellDef="let item">{{item.description}}</td>
+                        </ng-container>
+                        
+                        <!-- STATUS -->
+                        <ng-container matColumnDef="status">
+                            <th mat-header-cell *matHeaderCellDef>Status</th>
+                            <td mat-cell *matCellDef="let item">{{getGoalStatus(item)}}</td>
+                        </ng-container>
+                        
+                        <!-- START DATE -->
+                        <ng-container matColumnDef="start" >
+                            <th mat-header-cell *matHeaderCellDef class="table-text-right">Start</th>
+                            <td mat-cell *matCellDef="let item" class="table-text-right">{{item.startDate | date:'shortDate'}}</td>
+                        </ng-container>
+                        
+                        <!-- DUE DATE -->
+                        <ng-container matColumnDef="due">
+                            <th mat-header-cell *matHeaderCellDef class="table-text-right">Due</th>
+                            <td mat-cell *matCellDef="let item" class="table-text-right">{{item.dueDate | date:'shortDate'}}</td>
+                        </ng-container>
+                        
+                        <!-- COMPLETION DATE -->
+                        <ng-container matColumnDef="complete">
+                            <th mat-header-cell *matHeaderCellDef class="table-text-right">Complete</th>
+                            <td mat-cell *matCellDef="let item" class="table-text-right">{{item.completionDate | date:'shortDate'}}</td>
+                        </ng-container>
+                        
+                        <!-- GOAL OWNER -->
+                        <ng-container matColumnDef="goalOwner">
+                            <th mat-header-cell *matHeaderCellDef>
+                                <i class="material-icons">person</i> Goal Owner
+                            </th>
+                            <td mat-cell *matCellDef="let item">
+                              <ng-container *ngIf="item && item.goalOwner">
+                                <ds-avatar
+                                    size="24"
+                                    firstName="{{item?.goalOwner?.firstName}}"
+                                    lastName="{{item?.goalOwner?.lastName}}"
+                                    resource="{{item?.goalOwner?.profileImage?.extraLarge?.url}}"
+                                  ></ds-avatar>
+                                  {{item.goalOwner.lastName}}, {{item.goalOwner.firstName}}
+                              </ng-container>
+                            </td>
+                        </ng-container>
+                        
+                        <!-- META -->
+                        <ng-container matColumnDef="meta" class="hoverable">
+                            <th mat-header-cell *matHeaderCellDef>&nbsp;</th>
+                            <td mat-cell *matCellDef="let item">
+                                <ng-container *ngIf="canEditGoal(goal)">
+                                    <button type="button" class="btn btn-icon float-right" [matMenuTriggerFor]="rowMenu">
+                                        <i class="material-icons">more_vert</i>
+                                    </button>
+                                    <mat-menu #rowMenu="matMenu">
+                                        <button mat-menu-item (click)="editSubGoal(item)">Edit</button>
+                                    </mat-menu>
+                                </ng-container>
+                            </td>
+                        </ng-container>
+                        
+                        <tr mat-header-row *matHeaderRowDef="displayColumns" class="table-header nowrap hoverable"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayColumns;"></tr>
+                    </table>
+                </div>
+            </ng-template>
+        </div>
+        
+    </ds-card>
+</ng-container>
+
+<ng-template #noGoalsMsg let-goal>
+        <div class="overflow-list" *ngIf="canEditGoal(goal)">
+            <div class="row">
+                <div class="col-md-3">
+                    <ds-card mode="nobody" color="secondary" border="top" class="clickable" hover="true" (click)="addSubGoal(goal)">
+                        <ds-card-header x-align="center">
+                            <ds-card-title-icon class="text-medium-dark">add</ds-card-title-icon>
+                            <ds-card-widget-title class="text-medium-dark">
+                                Sub Goals
+                            </ds-card-widget-title>
+                        </ds-card-header>
+                    </ds-card>
+                </div>
+            </div>
+        </div>
+    </ng-template>

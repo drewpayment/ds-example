@@ -1,0 +1,83 @@
+<div [formGroup]="f">
+    <div *ngIf="!isLoading" class="instruction-text form-group">
+        Select the client code(s) to include in the EEOC report. All codes need to have the same FEIN number. The last run Pay Period is displayed, per code, but you can change it using the drop down field. Select "Continue" to go to Step 2: Validate Locations.
+    </div>
+    <ng-container *ngIf="formInit|async as init">
+        <ng-container *ngIf="!hasErr, else noClients">
+            <div class="overflow-list form-group" *ngIf="!isLoading" formArrayName="feinGroups">
+                <ng-container *ngFor="let fg of feinGroupArray().controls; let i = index" [formGroupName]="i">
+                    <h4>FEIN: {{ feinGroup(i).get('feinStr')?.value }}</h4>
+                    <div class="row" formArrayName="clients">
+                        <div class="col-xl-4 col-lg-6 col-md-12"
+                            *ngFor="let client of clientArray(i).controls; let j = index" [formGroupName]="j">
+                            <ds-card (click)="clientClicked(clientGroup(i, j))"
+                                [hover]="(currFein == null || (feinGroup(i).value.fein == currFein))"
+                                mode="widget-nobody"
+                                [color]="clientGroup(i, j).value.selected ? 'success' : 'disabled'">
+                                <div ds-card-icon size="sm">
+                                    <ng-container *ngIf="clientGroup(i, j).value.selected, else iconNotSelected">
+                                        check_circle</ng-container>
+                                    <ng-template #iconNotSelected>remove_circle_outline</ng-template>
+                                </div>
+                                <div ds-card-icon-title>Content</div>
+                                <ds-card-header>
+                                    <ds-card-widget-title>
+                                        {{clientGroup(i, j).value.code}}
+                                        <span class="instruction-text font-lg">
+                                            {{clientGroup(i, j).value.companyName}}
+                                        </span>
+                                    </ds-card-widget-title>
+                                    <ds-card-subtitle>
+                                        <!-- <input type="checkbox" disabled
+                                        formControlName="{{'formCheckbox' + clientGroup(i, j).value.clientId}}"
+                                        title="{{'Include ' + clientGroup(i, j).value.code}}"> -->
+                                        <hr>
+                                        <div class="row">
+                                            <div class="col-xl-12 col-lg-12 col-md-8 col-sm-10">
+                                                <div class="form-group">
+                                                    <mat-label class="form-control-label">Pay Period</mat-label>
+                                                    <mat-select matInput formControlName="selectedPayPeriod"
+                                                        [disabled]="currFein && feinGroup(i).value.fein != currFein"
+                                                        class="form-control custom-select"
+                                                        (click)="$event.stopPropagation()"
+                                                        (selectionChange)="dropdownChange(clientGroup(i,j))"
+                                                        formArrayName="payPeriods">
+                                                        <ng-container
+                                                            *ngFor="let period of payPeriodArray(i, j).controls; let p = index"
+                                                            [formGroupName]="p">
+                                                            <mat-option [value]="payPeriod(i, j, p).value.payrollId">
+                                                                {{payPeriod(i, j, p).value.description}}
+                                                            </mat-option>
+                                                        </ng-container>
+                                                    </mat-select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </ds-card-subtitle>
+                                </ds-card-header>
+                            </ds-card>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+            <ng-container *ngIf="!isLoading">
+                <div class="d-flex justify-content-end align-items-center">
+                    <div class="text-danger mr-2" *ngIf="!isStepValid"> Please select at least one code to continue.
+                    </div>
+                    <button type="button" mat-button matStepperNext class="btn btn-save"
+                        (click)="outputPayrollIdsAndClients()">Continue</button>
+                </div>
+            </ng-container>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngIf="isLoading">
+        <ds-loading-message></ds-loading-message>
+    </ng-container>
+</div>
+<ng-template #noClients>
+    <ng-container *ngIf="!isLoading">
+        <div class="empty-state">
+            There are no payrolls for the year selected.
+        </div>
+    </ng-container>
+</ng-template>

@@ -1,0 +1,702 @@
+<div *ngIf="reportPopupSvc.isPayrollRequestReportOpen$ | async"></div>
+<div *ngIf="!isLoading; else loading">
+    <ng-container *ngIf="hasData; else noReviewsFound">
+        <ds-card mode="card" color="info">
+            <ds-card-header y-align="center">
+                <ds-card-sub-header-title>
+                    {{ payrollRequest.reviewTemplateName }}
+                </ds-card-sub-header-title>
+                <ds-card-title-right-content>
+                  <button type="button" class="btn btn-icon p-1" tooltip="Table View"
+                      [ngClass]="{'text-dark': viewState == 'table', 'text-muted': viewState == 'card'}"
+                      (click)="clearDrawer(); getPayrollRequestArgs(); viewState = 'table';setShowTable(viewState);">
+                      <mat-icon>view_list</mat-icon>
+                  </button>
+                  <button type="button" class="btn btn-icon p-1" tooltip="Card View"
+                      [ngClass]="{'text-dark': viewState == 'card', 'text-muted': viewState == 'table'}"
+                      (click)="clearDrawer(); getReviewArgs(); viewState = 'card';setShowTable(viewState);">
+                      <mat-icon>view_module</mat-icon>
+                  </button>
+                </ds-card-title-right-content>
+                <ds-card-title-action>
+                    <button [matMenuTriggerFor]="matReportMenu" type="button" class="btn btn-outline-primary text-nowrap dropdown-toggle">
+                        Total Payout
+                    </button>
+                    <mat-menu #matReportMenu="matMenu">
+                        <button mat-menu-item (click)="reportPopupSvc.open()">Report</button>
+                        <button mat-menu-item (click)="download()">CSV</button>
+                    </mat-menu>
+                </ds-card-title-action>
+                <ds-card-subtitle>
+                    <div class="instruction-text">
+                        Payroll requests for this review are displayed below. {{viewState == 'table'
+                            ? 'Use the table to edit and approve requests.'
+                            : 'To view the requests and make adjustments, click the employee name to open the details panel.'}}
+                    </div>
+                </ds-card-subtitle>
+            </ds-card-header>
+            <ds-card-content>
+                <ng-container *ngIf="viewState == 'card'; else tableView">
+                    <ng-container *ngTemplateOutlet="cardView;"></ng-container>
+                </ng-container>
+            </ds-card-content>
+        </ds-card>
+    </ng-container>
+</div>
+
+<ng-template #loading>
+    <ds-card mode="noheader">
+        <ds-card-content>
+            <ds-loading-message></ds-loading-message>
+        </ds-card-content>
+    </ds-card>
+</ng-template>
+
+<ng-template #noReviewsFound>
+    <ds-card mode="noheader">
+        <ds-card-content>
+            <div class="table-empty-state">
+                There are no reviews to display with the current filters selected.
+            </div>
+        </ds-card-content>
+    </ds-card>
+</ng-template>
+
+<ng-template #tableView>
+    <ng-container *ngIf="payrollRequestSvc.tableAutosave$ | async"></ng-container>
+    <div class="row justify-content-between">
+        <div class="col-auto">
+            <div class="form-group inline-form-elements">
+                <label class="form-control-label mt-2">Filter</label>
+                <div class="custom-control badge-checkbox primary">
+                    <input type="checkbox" class="custom-control-input" id="merit" [checked]="showMerit"
+                        (click)="showMerit = !showMerit;argsStore.showMeritClicked(showMerit); getPayrollRequestArgs()">
+                    <label class="badge-checkbox-label" for="merit">Merit Increase: {{meritCount}}</label>
+                </div>
+                <div class="custom-control badge-checkbox primary">
+                    <input type="checkbox" class="custom-control-input" id="oneTime" [checked]="showOneTime"
+                        (click)="showOneTime = !showOneTime;argsStore.showOneTimeClicked(showOneTime); getPayrollRequestArgs()">
+                    <label class="badge-checkbox-label" for="oneTime">Additional Earnings: {{otCount}}</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-auto">
+            <div class="form-group">
+                <span *ngIf="pageIsSaving() | async" class="font-sm instruction-text save-width transition-opacity">Saving...</span>
+                <button [matMenuTriggerFor]="massStatus" type="button"
+                    class="btn btn-outline-primary text-nowrap dropdown-toggle">
+                    Change Status
+                </button>
+                <mat-menu #massStatus="matMenu">
+                    <button mat-menu-item (click)="massUpdateApprovalStatus(2)">Approved</button>
+                    <button mat-menu-item (click)="massUpdateApprovalStatus(3)">Declined</button>
+                </mat-menu>
+            </div>
+        </div>
+    </div>
+    <div class="card card-table mb-0">
+        <div class="table-responsive">
+            <table mat-table
+                [dataSource]="matTableDs"
+                class="grid"
+                matSort
+                matSortActive="employeeLastName"
+                matSortDisableClear
+                matSortDirection="asc">
+                <ng-container matColumnDef="select" sticky>
+                    <th mat-header-cell *matHeaderCellDef class="td-checkbox">
+                        <div class="table-checkbox">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="customCheckSelectAll" [checked]="selectAll" (click)="selectAll = !selectAll; updateSelectAll()">
+                                <label class="custom-control-label" for="customCheckSelectAll"></label>
+                            </div>
+                        </div>
+                    </th>
+                    <td mat-cell *matCellDef="let element; let i = index;" class="td-checkbox">
+                        <div class="table-checkbox"
+                            *ngIf="(element.approvalStatusId && element.approvalStatusId != 4) && !element.processedByPayroll">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" [id]="'isSelected' + i" [(ngModel)]="element.isSelectedOnTableView" (click)="checkSelectAll()">
+                                <label class="custom-control-label" [for]="'isSelected' + i"></label>
+                            </div>
+                        </div>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="avatar" sticky>
+                    <th mat-header-cell *matHeaderCellDef class="text-center">
+                        <mat-icon>person</mat-icon>
+                    </th>
+                    <td mat-cell *matCellDef="let element" class="text-center">
+                      <ds-avatar
+                        size="24"
+                        firstName="{{ element.employeeFirstName }}"
+                        lastName="{{ element.employeeLastName }}"></ds-avatar>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="employeeLastName" sticky>
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="employeeLastName table-text-left">Name</th>
+                    <td mat-cell *matCellDef="let element" class="employeeLastName table-text-left">
+                        {{element.employeeLastName + ', ' + element.employeeFirstName }}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="employeeNumber" sticky>
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="table-text-right mat-table-sticky-border">Number</th>
+                    <td mat-cell *matCellDef="let element" class="table-text-right mat-table-sticky-border">
+                        {{element.employeeNumber}}</td>
+                </ng-container>
+                <ng-container matColumnDef="award">
+                    <th mat-header-cell *matHeaderCellDef>Award</th>
+                    <td mat-cell *matCellDef="let element" class="grid-input-container">
+                        {{element.requestType == 1 ? 'Merit Increase' : 'Additional Earnings'}}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="earning">
+                    <th mat-header-cell *matHeaderCellDef>Earning</th>
+                    <td mat-cell *matCellDef="let element" class="grid-input-container">{{element.awardDescription}}</td>
+                </ng-container>
+                <ng-container matColumnDef="type">
+                    <th mat-header-cell *matHeaderCellDef>Type</th>
+                    <td mat-cell *matCellDef="let element" class="grid-input-container">
+                        <select class="grid-select custom-select" *ngIf="element.approvalStatusId != 4 && !element.processedByPayroll"
+                            [(ngModel)]="element.increaseType" (ngModelChange)="element.payoutTo = reCalcPayout(element);element.annualizedTotalAmount=reCalcAnnualizedTotalAmount(element);save(element, matTableDs.data)">
+                            <option value="1">Percent</option>
+                            <option value="2">Flat</option>
+                        </select>
+                        <ng-container *ngIf="element.approvalStatusId != 4 && element.processedByPayroll">{{element.increaseType == 1 ? 'Percent' : 'Flat'}}</ng-container>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="amount">
+                    <th mat-header-cell *matHeaderCellDef>Amount</th>
+                    <td mat-cell *matCellDef="let element" class="grid-input-container">
+                        <ng-container *ngIf="!element.processedByPayroll">
+                            <div class="grid-input-group" *ngIf="(element.approvalStatusId && element.approvalStatusId != 4) && (element.increaseType == 1 || element.increaseType == 2)">
+                                <div class="grid-prepend" *ngIf="element.increaseType == 2">
+                                    <span class="currency">$</span>
+                                </div>
+                                <input type="number" mask="" class="grid-input form-control"
+                                    [ngClass]="checkAmountBeforeSaving(element.increaseAmount) ? '' : 'is-invalid'" [(ngModel)]="element.increaseAmount"  [ngModelOptions]="{'updateOn': 'blur'}" (ngModelChange)="element.payoutTo = reCalcPayout(element);element.annualizedTotalAmount=reCalcAnnualizedTotalAmount(element);save(element, matTableDs.data)"/>
+                                <div class="grid-append" *ngIf="element.increaseType == 1">
+                                    <span class="percent">%</span>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="(element.approvalStatusId && element.approvalStatusId != 4) && element.processedByPayroll">
+                            <ng-container *ngIf="element.increaseType == 2">${{element.increaseAmount| number : '1.2-2'}}</ng-container>
+                            <ng-container *ngIf="element.increaseType == 1">{{element.increaseAmount| number : '1.2-2'}}%</ng-container>
+                        </ng-container>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="annualizedTotalAmount">
+                    <th mat-header-cell *matHeaderCellDef class="table-text-right">Annualized Amount</th>
+                    <td mat-cell *matCellDef="let element" class="table-text-right">
+                        ${{element.annualizedTotalAmount| number : '1.2-2'}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="effective">
+                    <th mat-header-cell *matHeaderCellDef>Effective</th>
+                    <td mat-cell *matCellDef="let element" class="grid-input-container">
+                        <div class="grid-input-group form-control" *ngIf="(element.approvalStatusId && element.approvalStatusId != 4) && !element.processedByPayroll">
+                            <input class="grid-input form-control" [ngClass]="checkDateBeforeSaving(element.effectiveDate) ? '' : 'is-invalid'" [(ngModel)]="element.effectiveDate" [ngModelOptions]="{'updateOn': 'blur'}" (ngModelChange)="save(element, matTableDs.data)" [matDatepicker]="dueDate" />
+                            <div class="grid-append">
+                                <mat-datepicker-toggle matSuffix [for]="dueDate">
+                                    <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                                </mat-datepicker-toggle>
+                            </div>
+                            <mat-datepicker #dueDate></mat-datepicker>
+                        </div>
+                        <ng-container *ngIf="(element.approvalStatusId && element.approvalStatusId != 4) || element.processedByPayroll">{{element.effectiveDate | date}}</ng-container>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef>Status</th>
+                    <td mat-cell *matCellDef="let element">
+                        <ng-container *ngIf="element.approvalStatusId && element.approvalStatusId != 4; else noRequestButton">
+                            <button [matMenuTriggerFor]="menu" type="button" class="btn text-nowrap dropdown-toggle w-100"
+                                [ngClass]="getApprovalStatusBtnColor(element.approvalStatusId)"
+                                [disabled]="element.processedByPayroll">
+                                {{getApprovalStatusLabel(element.approvalStatusId)}}
+                            </button>
+                            <mat-menu #menu="matMenu">
+                                <button mat-menu-item (click)="updateItemApprovalStatus(element, 2)">Approved</button>
+                                <button mat-menu-item (click)="updateItemApprovalStatus(element, 3)">Declined</button>
+                            </mat-menu>
+                        </ng-container>
+                        <ng-template #noRequestButton>
+                            <button [matMenuTriggerFor]="menu" type="button" class="btn text-nowrap dropdown-toggle w-100"
+                                [ngClass]="getApprovalStatusBtnColor(element.approvalStatusId)">
+                                {{getApprovalStatusLabel(element.approvalStatusId)}}
+                            </button>
+                            <mat-menu #menu="matMenu">
+                                <button mat-menu-item (click)="updateItemApprovalStatus(element, 1)">Create Request</button>
+                            </mat-menu>
+                        </ng-template>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="payrollStatus">
+                    <th mat-header-cell *matHeaderCellDef>Payroll Status</th>
+                    <td mat-cell *matCellDef="let element">
+                        <div *ngIf="element.approvalStatusId == 2 && !element.processedByPayroll">Pending</div>
+                        <div *ngIf="element.approvalStatusId == 2 && element.processedByPayroll">Processed</div>
+                        <div *ngIf="element.approvalStatusId != 2">Not Processed</div>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="payout">
+                    <th mat-header-cell *matHeaderCellDef class="table-text-right">Payout</th>
+                    <td mat-cell *matCellDef="let element" class="table-text-right">
+                        <ng-container *ngIf="(element.approvalStatusId && element.approvalStatusId != 4 && element.requestType == 1)">
+                            <ng-container *ngIf="element.canViewPayout; else hidden">
+                                <ng-container *ngIf="element.payType == 1">{{element.payoutFrom | currency : 'USD' : 'symbol' : '1.0-4'}} to {{element.payoutTo | currency : 'USD' : 'symbol' : '1.0-4'}}</ng-container>
+                                <ng-container *ngIf="element.payType == 2">{{element.payoutFrom | currency : 'USD' : 'symbol' : '1.0-2'}} to {{element.payoutTo | currency : 'USD' : 'symbol' : '1.0-2'}}</ng-container>
+                            </ng-container>
+                        </ng-container>
+                        <ng-container *ngIf="(element.approvalStatusId && element.approvalStatusId != 4 && element.requestType == 2)">
+                            <ng-container *ngIf="element.canViewPayout; else hidden">{{element.payoutTo | currency : 'USD' : 'symbol' : '1.0-2'}}</ng-container>
+                        </ng-container>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="recommendation">
+                    <th mat-header-cell *matHeaderCellDef class="table-text-right">Recommendation</th>
+                    <td mat-cell *matCellDef="let element" class="table-text-right">
+                        <div class="card-data bordered" *ngIf="(element.approvalStatusId && element.approvalStatusId != 4 && element.requestType == 1)">
+                            <div *ngIf="isScoringEnabled" class="item text-nowrap">
+                                <label>Score:</label> {{element.score | number : '1.0-2'}}
+                            </div>
+                            <div class="item">{{element.percent}}%</div>
+                        </div>
+                        <div class="card-data bordered" *ngIf="(element.approvalStatusId && element.approvalStatusId != 4 && element.requestType == 2)">
+                            <div class="item text-nowrap">
+                                <label>{{element.completedGoals}} of {{element.totalGoals}} Goals</label>
+                            </div>
+                            <div class="item">{{(element.completedGoals/element.totalGoals) | percent}}</div>
+                        </div>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="supervisor">
+                    <th mat-header-cell *matHeaderCellDef>Supervisor</th>
+                    <td mat-cell *matCellDef="let element">{{element.directSupervisor?.lastName}}, {{element.directSupervisor?.firstName}}</td>
+                </ng-container>
+                <ng-container matColumnDef="jobTitle">
+                    <th mat-header-cell *matHeaderCellDef>Job Title</th>
+                    <td mat-cell *matCellDef="let element">{{element.employeeJobTitle}}</td>
+                </ng-container>
+                <ng-container matColumnDef="action" stickyEnd>
+                    <th mat-header-cell *matHeaderCellDef class="td-action-icon-width mat-table-sticky-border-end d-none">
+                    </th>
+                    <td mat-cell *matCellDef="let element" class="td-action-icon-width mat-table-sticky-border-end d-none">
+                        <button [matMenuTriggerFor]="menu" class="btn btn-icon hover-show p-2" type="button">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #menu="matMenu">
+                            <button type="button" mat-menu-item>Action</button>
+                            <button type="button" mat-menu-item>Action</button>
+                        </mat-menu>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row class="hoverable" *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+        </div>
+        <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons [length]="matTableDs.length"></mat-paginator>
+    </div>
+</ng-template>
+
+<ng-template #cardView>
+    <div class="row">
+        <div class="col-md-10">
+            <div class="form-group inline-form-elements">
+                <ng-container *ngIf="payrollRequest.pendingProposalCount">
+                    <div class="custom-control badge-checkbox warning mr-2">
+                        <input type="checkbox" id="pending" class="custom-control-input" [checked]="showNeedsApproval"
+                            (click)="showNeedsApproval = !showNeedsApproval; getReviewArgs();" />
+                        <label class="badge-checkbox-label" for="pending">Needs Approval: {{pendingMerits}}
+                            </label>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="approvedCount > 0">
+                    <div class="custom-control badge-checkbox success mr-2">
+                        <input type="checkbox" class="custom-control-input" id="approved" [checked]="showApproved"
+                            (click)="showApproved = !showApproved; getReviewArgs();">
+                        <label class="badge-checkbox-label" for="approved">Approved: {{approvedMerits}}
+                            </label>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="declinedCount > 0">
+                    <div class="custom-control badge-checkbox danger mr-2">
+                        <input type="checkbox" class="custom-control-input" id="declined" [checked]="showDeclined"
+                            (click)="showDeclined = !showDeclined; getReviewArgs();">
+                        <label class="badge-checkbox-label" for="declined">Declined: {{declinedMerits}}
+                            </label>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+    <mat-drawer-container
+        hasBackdrop="true"
+        [@changeDrawerHeightOnOpen]="activeReviewId > 0">
+        <mat-drawer-content>
+            <ng-container
+                *ngFor="let review of payrollRequest.reviews | proposalItemsApprovalStatus : reviewArgs; let i = index;">
+                <ds-card mode="callout" [color]="getReviewColor(review.proposal?.approvalStatus)" hover="true"
+                    [drawerMask]="true" [drawerMaskActive]="review.reviewId == activeReviewId"
+                    (click)="toggleActiveReviewId(review.reviewId)"
+                    class="action">
+                    <ds-card-avatar>
+                        <ds-avatar
+                        firstName="{{review.reviewedEmployeeContact.firstName}}"
+                        lastName="{{review.reviewedEmployeeContact.lastName}}"
+                        size="48"
+                        resource="{{review.reviewedEmployeeContact.profileImage.extraLarge.url}}">
+                        </ds-avatar>
+                        
+                    </ds-card-avatar>
+                    <ds-card-header>
+                        <ds-card-inline-content class="text-truncate">
+                        <div class="text-truncate">
+                            <div class="ds-card-title-callout text-truncate">
+                                {{review.reviewedEmployeeContact.lastName}}, {{review.reviewedEmployeeContact.firstName}}
+                                <span class="text-medium-dark font-sm">#{{review.reviewedEmployeeContact.employeeNumber}}</span>
+                            </div>
+                            <div class="card-data-grid">
+                                <ng-container *ngIf="isScoringEnabled">
+                                    <div class="label">Overall Score</div> 
+                                    <div class="value">
+                                        <ng-container *ngIf="review.overallScore, else empty">{{review.overallScore}}</ng-container>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngIf="review.proposal != null && review.proposal.approvalStatus == 2">
+                                    <div class="label">Payroll</div> 
+                                    <div class="value">{{proposalHasItemProcessedByPayrollByReview(review.reviewId) ? 'Processed' : 'Pending' }}</div>
+                                </ng-container>
+                                <ng-container *ngIf="review.proposal == null">
+                                    <div class="label">No Payroll Request</div>
+                                </ng-container>
+                                <ng-template #empty>
+                                    <div class="label">&mdash;</div>
+                                </ng-template>
+                            </div>
+                        </div>
+                        </ds-card-inline-content>
+                        <ds-card-title-action>
+                            <ng-container [ngSwitch]="review.proposal?.approvalStatus">
+                                <span class="badge badge-pill badge-warning ml-2" *ngSwitchCase="1">Needs Approval</span>
+                                <span class="badge badge-pill badge-success ml-2" *ngSwitchCase="2">Approved</span>
+                                <span class="badge badge-pill badge-danger ml-2" *ngSwitchCase="3">Declined</span>
+                                <span class="badge badge-pill badge-gray ml-2" *ngSwitchCase="null">No Request</span>
+                            </ng-container>
+                        </ds-card-title-action>
+                    </ds-card-header>
+                </ds-card>
+            </ng-container>
+        </mat-drawer-content>
+        <mat-drawer #drawer mode="over" position="end" [opened]="activeReviewId > 0"
+            [class.open]="activeReviewId > 0"
+            [@matDrawerAfterHeightChange]="activeReviewId > 0">
+            <ng-container *ngIf="activeReview != null; else cardDrawerLoading">
+                <ng-container *ngTemplateOutlet="cardDrawerContent;"></ng-container>
+            </ng-container>
+        </mat-drawer>
+    </mat-drawer-container>
+</ng-template>
+
+<ng-template #cardDrawerLoading>
+    <div class="drawer-content">
+        <ds-loading-message></ds-loading-message>
+    </div>
+</ng-template>
+
+<ng-template #cardDrawerContent>
+    <div class="mat-drawer-inner-container-form">
+        <div class="drawer-header">
+            <button type="button" (click)="clearDrawer()" class="btn btn-icon">
+                <i class="material-icons">arrow_forward_ios</i>
+            </button>
+            <h2>Payroll Requests For: {{activeReview.reviewedEmployeeContact.lastName}}, {{activeReview.reviewedEmployeeContact.firstName}}</h2>
+        </div>
+        <div class="drawer-content">
+            <ng-container *ngIf="true">
+                <!-- canApprove -->
+                <hr class="mb-2" />
+                <div class="instruction-text mb-4">Below is a list of eligible rates for this employee with the supervisor's
+                    request. Select any rate to specify a rate increase. When ready, select "Approve" to save these
+                    increases and notify Payroll.</div>
+                <hr class="mb-2" />
+            </ng-container>
+            <div class="row">
+                <div class="col-auto">
+                    <h4 class="bold d-inline-block mr-2">Merit Increase</h4>
+                    <div class="instruction-text d-inline-block" *ngIf="activeReview.payrollRequestEffectiveDate">Effective {{activeReview.payrollRequestEffectiveDate | date : 'MM/dd/yyyy'}}</div>
+                </div>
+                <div class="col-auto">
+                    <h4 class="bold d-inline-block mr-2">Recommendation</h4>
+                    <div class="instruction-text d-inline-block">{{ recommendedPercent }}%</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="card card-table">
+                    <div class="table-responsive">
+                        <table mat-table [dataSource]="prItemsPerReview | async | payrollRequestRequestType: 1" class="table">
+                            <ng-container matColumnDef="select">
+                                <th mat-header-cell *matHeaderCellDef class="payroll-requests-table-include"></th>
+                                <td mat-cell *matCellDef="let element; let i = index;" class="payroll-requests-table-include">
+                                    <div class="table-checkbox" *ngIf="!isApprovedOrDeclined() && !element.processedByPayroll">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" [id]="'isSelectedOnPerReview' + i"
+                                                [checked]="element.isEnabledOnProposal" (click)="element.isEnabledOnProposal = !element.isEnabledOnProposal; enablingRequestOnCard(element)">
+                                            <label class="custom-control-label" [for]="'isSelectedOnPerReview' + i"></label>
+                                        </div>
+                                    </div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="earning">
+                                <th mat-header-cell *matHeaderCellDef class="payroll-requests-table-rate">Rates</th>
+                                <td mat-cell *matCellDef="let element" class="payroll-requests-table-rate">{{element.awardDescription}}</td>
+                            </ng-container>
+                            <ng-container matColumnDef="currentAmount">
+                                <th mat-header-cell *matHeaderCellDef class="payroll-requests-table-current text-right">Current</th>
+                                <td mat-cell *matCellDef="let element" class="payroll-requests-table-current text-right">
+                                    <ng-container *ngIf="element.canViewPayout; else hidden">
+                                        <ng-container *ngIf="element.payType == 1">{{element.payoutFrom | currency : 'USD' : 'symbol' : '1.0-4'}}</ng-container>
+                                        <ng-container *ngIf="element.payType == 2">{{element.payoutFrom | currency : 'USD' : 'symbol' : '1.0-2'}}</ng-container>
+                                    </ng-container>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="increaseType">
+                                <th mat-header-cell *matHeaderCellDef class="payroll-requests-table-increase">Type</th>
+                                <td mat-cell *matCellDef="let element" class="payroll-requests-table-increase">
+                                    <div class="form-group" *ngIf="!isApprovedOrDeclined() && !element.processedByPayroll" >
+                                        <select class="form-control custom-select" (ngModelChange)="element.payoutTo = reCalcPayout(element); element.annualizedTotalAmount=reCalcAnnualizedTotalAmount(element);" [(ngModel)]="element.increaseType" [disabled]="!element.isEnabledOnProposal" >
+                                            <option value="1">Percent</option>
+                                            <option value="2">Flat</option>
+                                        </select>
+                                    </div>
+                                    <ng-container *ngIf="isApprovedOrDeclined() || element.processedByPayroll">{{element.increaseType == 1 ? 'Percent' : 'Flat'}}</ng-container>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="increaseAmount">
+                                <th mat-header-cell *matHeaderCellDef class="payroll-requests-table-amount">Amount</th>
+                                <td mat-cell *matCellDef="let element" class="payroll-requests-table-amount">
+                                    <div class="input-group" *ngIf="!isApprovedOrDeclined() && !element.processedByPayroll">
+                                        <div class="input-group-prepend" *ngIf="element.increaseType == 2">
+                                            <span class="input-group-text currency">$</span>
+                                        </div>
+                                        <input type="number" class="form-control" [ngClass]="checkAmountBeforeSaving(element.increaseAmount) ? '' : 'is-invalid'" (blur)="element.payoutTo = reCalcPayout(element); element.annualizedTotalAmount=reCalcAnnualizedTotalAmount(element);"
+                                            [(ngModel)]="element.increaseAmount" [disabled]="!element.isEnabledOnProposal"/>
+                                        <div class="input-group-append" *ngIf="element.increaseType == 1">
+                                            <span class="input-group-text percent">%</span>
+                                        </div>
+                                    </div>
+                                    <ng-container *ngIf="isApprovedOrDeclined() || element.processedByPayroll">
+                                        <ng-container *ngIf="element.increaseType == 2">${{element.increaseAmount | number : '1.2-2'}}</ng-container>
+                                        <ng-container *ngIf="element.increaseType == 1">{{element.increaseAmount | number : '1.2-2'}}%</ng-container>
+                                    </ng-container>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="proposedTotal">
+                                <th mat-header-cell *matHeaderCellDef class="payroll-requests-table-proposed text-right">Proposed</th>
+                                <td mat-cell *matCellDef="let element" class="payroll-requests-table-proposed text-right">
+                                    <ng-container *ngIf="element.canViewPayout; else hidden">
+                                        <ng-container *ngIf="element.payType == 1">{{element.payoutTo | currency : 'USD' : 'symbol' : '1.0-4'}}</ng-container>
+                                        <ng-container *ngIf="element.payType == 2">{{element.payoutTo | currency : 'USD' : 'symbol' : '1.0-2'}}</ng-container>
+                                    </ng-container>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="effective">
+                                <th mat-header-cell *matHeaderCellDef class="payroll-request-table-apply-on">Effective</th>
+                                <td mat-cell *matCellDef="let element" class="payroll-request-table-apply-on">
+                                    <div class="input-group" *ngIf="!isApprovedOrDeclined() && !element.processedByPayroll">
+                                        <input class="form-control" [disabled]="!element.isEnabledOnProposal" [ngClass]="checkDateBeforeSaving(element.effectiveDate) ? '' : 'is-invalid'"
+                                            [(ngModel)]="element.effectiveDate" [matDatepicker]="effDate" />
+                                        <div class="input-group-append">
+                                            <mat-datepicker-toggle matSuffix [for]="effDate" class="input-group-text date">
+                                                <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                                            </mat-datepicker-toggle>
+                                        </div>
+                                        <mat-datepicker #effDate></mat-datepicker>
+                                    </div>
+                                    <ng-container *ngIf="isApprovedOrDeclined() || element.processedByPayroll">{{element.effectiveDate | date}}</ng-container>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="payrollStatus">
+                                <th mat-header-cell *matHeaderCellDef class="payroll-request-table-payroll">{{proposalHasItemProcessedByPayroll() ? 'Status' : ''}}</th>
+                                <td mat-cell *matCellDef="let element" class="payroll-request-table-payroll">
+                                    {{element.processedByPayroll ? 'Processed' : ''}}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="approvalStatus">
+                                <th mat-header-cell *matHeaderCellDef class="payroll-request-table-payroll">Approval Status</th>
+                                <td mat-cell *matCellDef="let element" class="payroll-request-table-payroll">
+                                    {{getApprovalStatusLabel(element.approvalStatusId)}}
+                                </td>
+                            </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="displayedCardTableColumns"></tr>
+                            <tr mat-row class="hoverable" *matRowDef="let row; columns: displayedCardTableColumns;"></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <ng-container *ngIf="payrollRequest.oneTimeCount > 0">
+                <div class="row">
+                    <div class="col-auto">
+                        <h4 class="bold d-inline-block mr-2">Additional Earnings</h4>
+                        <div class="instruction-text d-inline-block">{{activeReview.completedGoals}} of {{activeReview.totalGoals}} eligible goals completed</div>
+                    </div>
+                    <div class="col-auto">
+                        <h4 class="bold d-inline-block mr-2">Recommend</h4>
+                        <div class="instruction-text d-inline-block">{{ recommendedGoalPercent | percent }} of target</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="card card-table">
+                        <div class="table-responsive">
+                            <table mat-table [dataSource]="prItemsPerReview | async | payrollRequestRequestType: 2" class="table">
+                                <ng-container matColumnDef="select">
+                                    <th mat-header-cell *matHeaderCellDef class="payroll-requests-table-include"></th>
+                                    <td mat-cell *matCellDef="let element; let i = index;" class="payroll-requests-table-include">
+                                        <div class="table-checkbox" *ngIf="!isApprovedOrDeclined() && !element.processedByPayroll">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" [id]="'isSelectedOnPerReviewOT' + i"
+                                                    [checked]="element.isEnabledOnProposal"
+                                                    (click)="element.isEnabledOnProposal = !element.isEnabledOnProposal; enablingRequestOnCard(element)">
+                                                <label class="custom-control-label" [for]="'isSelectedOnPerReviewOT' + i"></label>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="earning">
+                                    <th mat-header-cell *matHeaderCellDef class="payroll-requests-table-rate">Earning</th>
+                                    <td mat-cell *matCellDef="let element" class="payroll-requests-table-rate">{{element.awardDescription}}</td>
+                                </ng-container>
+                                <ng-container matColumnDef="increaseType">
+                                    <th mat-header-cell *matHeaderCellDef class="payroll-requests-table-increase">Type</th>
+                                    <td mat-cell *matCellDef="let element" class="payroll-requests-table-increase">
+                                        <div class="form-group" *ngIf="!isApprovedOrDeclined() && !element.processedByPayroll" >
+                                            <select class="form-control custom-select" (ngModelChange)="element.payoutTo = reCalcPayout(element); element.annualizedTotalAmount=reCalcAnnualizedTotalAmount(element);" [(ngModel)]="element.increaseType" [disabled]="!element.isEnabledOnProposal">
+                                                <option value="1">Percent</option>
+                                                <option value="2">Flat</option>
+                                            </select>
+                                        </div>
+                                        <ng-container *ngIf="isApprovedOrDeclined() || element.processedByPayroll">{{element.increaseType == 1 ? 'Percent' : 'Flat'}}</ng-container>
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="increaseAmount">
+                                    <th mat-header-cell *matHeaderCellDef class="payroll-requests-table-amount">Amount</th>
+                                    <td mat-cell *matCellDef="let element" class="payroll-requests-table-amount">
+                                        <div class="input-group" *ngIf="!isApprovedOrDeclined() && !element.processedByPayroll">
+                                            <div class="input-group-prepend" *ngIf="element.increaseType == 2">
+                                                <span class="input-group-text currency">$</span>
+                                            </div>
+                                            <input type="number" class="form-control" [ngClass]="checkAmountBeforeSaving(element.increaseAmount) ? '' : 'is-invalid'" (blur)="element.payoutTo = reCalcPayout(element); element.annualizedTotalAmount=reCalcAnnualizedTotalAmount(element);"
+                                                [(ngModel)]="element.increaseAmount" [disabled]="!element.isEnabledOnProposal"/>
+                                            <div class="input-group-append" *ngIf="element.increaseType == 1">
+                                            <span class="input-group-text percent">%</span>
+                                            </div>
+                                        </div>
+                                        <ng-container *ngIf="isApprovedOrDeclined() || element.processedByPayroll">
+                                            <ng-container *ngIf="element.increaseType == 2">${{element.increaseAmount | number : '1.2-2'}}</ng-container>
+                                            <ng-container *ngIf="element.increaseType == 1">{{element.increaseAmount | number : '1.2-2'}}%</ng-container>
+                                        </ng-container>
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="basedOn">
+                                    <th mat-header-cell *matHeaderCellDef class="payroll-request-table-amount">Measurement</th>
+                                    <td mat-cell *matCellDef="let element" class="payroll-request-table-amount">Goal Completion</td>
+                                </ng-container>
+                                <ng-container matColumnDef="proposedTotal">
+                                    <th mat-header-cell *matHeaderCellDef class="payroll-requests-table-proposed text-right">Payout</th>
+                                    <td mat-cell *matCellDef="let element" class="payroll-requests-table-proposed text-right">
+                                        <ng-container *ngIf="element.canViewPayout; else hidden">
+                                            <ng-container *ngIf="element.payType == 1">{{element.payoutTo | currency : 'USD' : 'symbol' : '1.0-4'}}</ng-container>
+                                            <ng-container *ngIf="element.payType == 2">{{element.payoutTo | currency : 'USD' : 'symbol' : '1.0-2'}}</ng-container>
+                                        </ng-container>
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="effective">
+                                    <th mat-header-cell *matHeaderCellDef class="payroll-request-table-apply-on">Effective</th>
+                                    <td mat-cell *matCellDef="let element" class="payroll-request-table-apply-on">
+                                        <div class="input-group" *ngIf="!isApprovedOrDeclined() && !element.processedByPayroll">
+                                            <input class="form-control" [disabled]="!element.isEnabledOnProposal" [ngClass]="checkDateBeforeSaving(element.effectiveDate) ? '' : 'is-invalid'"
+                                                [(ngModel)]="element.effectiveDate" [matDatepicker]="effDate" />
+                                            <div class="input-group-append">
+                                                <mat-datepicker-toggle matSuffix [for]="effDate" class="input-group-text date">
+                                                    <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                                                </mat-datepicker-toggle>
+                                            </div>
+                                            <mat-datepicker #effDate></mat-datepicker>
+                                        </div>
+                                        <ng-container *ngIf="isApprovedOrDeclined() || element.processedByPayroll">{{element.effectiveDate | date}}</ng-container>
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="payrollStatus">
+                                    <th mat-header-cell *matHeaderCellDef class="payroll-request-table-payroll">{{proposalHasItemProcessedByPayroll() ? 'Status' : ''}}</th>
+                                    <td mat-cell *matCellDef="let element" class="payroll-request-table-payroll">
+                                        {{element.processedByPayroll ? 'Processed' : ''}}
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="approvalStatus">
+                                    <th mat-header-cell *matHeaderCellDef class="payroll-request-table-payroll">Approval Status</th>
+                                    <td mat-cell *matCellDef="let element" class="payroll-request-table-payroll">
+                                        {{getApprovalStatusLabel(element.approvalStatusId)}}
+                                    </td>
+                                </ng-container>
+                                <tr mat-header-row *matHeaderRowDef="displayedOTTableColumns"></tr>
+                                <tr mat-row class="hoverable" *matRowDef="let row; columns: displayedOTTableColumns;"></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+
+            <div class="form-group row justify-content-between">
+                <div class="col-auto">
+                    <button type="button" *ngIf="canDecline" class="btn btn-cancel" (click)="declineProposal()">Decline</button>
+                </div>
+                <div class="col-auto">
+                    <button type="button" *ngIf="canApprove" class="btn btn-save float-right" (click)="approveProposal()">Approve</button>
+                    <!--*ngIf="CanApprove" [disabled]="disableApprove"-->
+                    <button type="button" *ngIf="canEdit" class="btn btn-outline-primary mr-1" (click)="editProposal()" >Edit</button>
+                </div>
+            </div>
+            <ng-container *ngTemplateOutlet="activityFeed; context: { review: activeReview }"></ng-container>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #activityFeed let-review="review">
+    <div class="list-bordered list-bordered-large">
+        <div class="header d-flex justify-content-between">
+            <span>Activity</span>
+        </div>
+        <ng-container *ngIf="(review.proposal != null && review.proposal.remarks != null && review.proposal.remarks.length); else noRemarksMessage">
+            <div class="body notes-overflow">
+                <div class="item-group" *ngFor="let r of review.proposal.remarks; let i=index">
+                    <div class="row align-items-center">
+                        <div class="col-sm-6 account-info">
+                            <i class="material-icons">account_circle</i>
+                            <div class="ds-item d-inline-block">
+                                <div class="ds-item-label bold">
+                                    {{r.user.lastName}}, {{r.user.firstName}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 d-flex justify-content-sm-end align-items-center">
+                            <span class="bold"
+                                [matTooltip]="r.addedDate | date:'h:mm aa'">{{r.addedDate | date:'mediumDate'}}</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">{{r.description}}</div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+        <ng-template #noRemarksMessage>
+            <div class="body">
+                <div class="empty-state">There is no activity to display.</div>
+            </div>
+        </ng-template>
+    </div>
+</ng-template>
+
+<ng-template #hidden>Hidden</ng-template>

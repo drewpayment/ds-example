@@ -1,0 +1,28 @@
+//Column sizes
+.mat-column-profileImage {
+    flex: 0 1 50px;
+    min-width: 40px;;
+}
+.mat-column-name {
+    flex: 1 1 250px;
+}
+.mat-column-checkNumber {
+    flex: 1 0 90px;
+}
+.mat-column-subCheck {
+    flex: 1 1 100px;
+}
+.mat-column-checkDate {
+    flex: 1 1 100px;
+}
+.mat-column-grossPay {
+    flex: 1 1 100px;
+    min-width: 100px;
+}
+.mat-column-netPay {
+    flex: 1 1 100px;
+    min-width: 100px;
+}
+.mat-column-checkAmount {
+    flex: 1 1 100px;
+}

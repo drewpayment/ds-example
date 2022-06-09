@@ -1,0 +1,26 @@
+<mat-dialog-content>
+    <ng-container>
+        <div class="form-group text-center">
+            Are you sure you want to delete this folder? <br>
+            If yes, please select a new folder for this folder's files to be stored in.
+        </div>
+        <div [formGroup]="form1">
+            <label class="form-control-label">Destination Folder</label>
+            <select [class.is-invalid]="formSubmitted && (form1.controls.destinationFolder.errors?.required)"
+                class="form-control custom-select" formControlName="destinationFolder" required>
+                <option class="text-muted" value=""></option>
+                <option *ngFor="let folder of allFolders" [value]="folder.companyResourceFolderId">
+                    {{folder.description}}
+                </option>
+            </select>
+            <div class="invalid-feedback">
+                <span *ngIf="form1.controls.destinationFolder.errors?.required">Please select a destination
+                    folder.</span>
+            </div>
+        </div>
+    </ng-container>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button type="button" class="btn btn-cancel" (click)="delete()">Move Files and Delete Folder</button>
+    <button type="button" class="btn btn-save" (click)="clear()">Cancel</button>
+</mat-dialog-actions>

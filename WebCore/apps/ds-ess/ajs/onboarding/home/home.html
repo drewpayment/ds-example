@@ -1,0 +1,25 @@
+﻿<div ng-show="isLoading">Loading Onboarding...</div>
+<div ng-show="isLoaded">
+    <div class="ess-container">
+        <div class="panel clearfix">
+            <div class="panel-body text-center">
+                <div>
+                    <h1>Welcome to Onboarding, {{employeeContactInformationData.firstName}}! </h1>
+                </div>
+                <div>
+                    <p ng-if="!welcomeMessage">
+                        This is where we'll gather information to help get you started in your position. You'll be able to submit your 
+                        onboarding for review when you complete all required steps. If you have questions please reach out to your HR 
+                        representative or direct supervisor.
+                    </p>
+                    <p ng-if="!!welcomeMessage" ng-bind-html="welcomeMessage" ></p>
+                </div>
+                <div class="text-center">
+                    <a ng-click="StartOnboarding()">
+                        <input type="button" value="Begin Onboarding" class="btn btn-primary" />
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,318 @@
+<div mat-dialog-header>
+    <h2 class="dialog-title">        
+        {{ review.title }}   
+    </h2>
+    <button type="button" class="close" (click)="cancel()">
+        <mat-icon>clear</mat-icon>
+    </button> 
+     <div class="dialog-subtitle">
+        <div class="instruction-text" *ngIf="!isSelfEval; else selfEvalInstruction">  
+            Please review your evaluation for 
+            {{ review.reviewedEmployeeContact.firstName }} 
+            {{ review.reviewedEmployeeContact.lastName }}.
+            Once submitted, you cannot make changes.
+        </div>
+        <ng-template #selfEvalInstruction>
+            <div class="instruction-text">  
+                Please review your self-evaluation.
+                Once submitted, you cannot make changes.
+            </div>
+        </ng-template>
+    </div>
+</div>
+<div mat-dialog-content>
+    <div class="overflow-list mb-4">
+        <div class="card" *ngIf="shouldShowChart">
+            <div class="card-body">
+                    <ds-scoring-graph [evaluationId]="evaluation.evaluationId" [reviewId]="review.reviewId" [isInModal]="true"></ds-scoring-graph>
+            </div>
+        </div>
+<div *ngIf="(isPayrollRequestsAvailable$ | async) === true">
+    <ds-card *ngIf="evaluation.hasSummaryData && hasSelectedRateOrBonus; else payrollRequestEmptyState">
+        <ds-card-header>
+            <ds-card-sub-header-title>
+                Payroll Requests
+            </ds-card-sub-header-title>
+        </ds-card-header>
+        <div ds-card-content>
+            <hr class="mt-0" />
+            <ul>
+                <li *ngIf="hasSelectedMeritIncrease">
+                    <div class="mb-1">
+                        <span class="bold">Merit Increase</span><span class="text-muted italic"> Recommended increase {{findRecommendation(score, evaluation.meritIncreaseInfo.meritRecommendations) | number:'1.2-2'}}%</span>
+                    </div>
+                    <div class="pl-5 mb-1" *ngFor="let merit of evaluation.meritIncreaseInfo.currentPayInfo">
+                        <div *ngIf="merit.selected">
+                            {{merit.rateDesc}} increase
+                            <span *ngIf="evaluation.meritIncreaseInfo.canViewRates">
+                                from {{merit.currentAmount | currency : 'USD' : true : '1.2-2' }} to
+                                {{merit.proposedTotal | currency : 'USD' : true : '1.2-2'}}
+                            </span>
+                            <span *ngIf="merit.applyMeritIncreaseOn">
+                                 | Effective {{merit.applyMeritIncreaseOn | date : "MM/dd/yyyy"}}
+                            </span>
+                        </div>
+                    </div>
+                </li>
+                <li *ngIf="(evaluation.meritIncreaseInfo.oneTimeEarning != null && !isEmptyObject(this.evaluation.meritIncreaseInfo.oneTimeEarning) && this.evaluation.meritIncreaseInfo.oneTimeEarning.approvalStatusID !== ApprovalStatus.Rejected)">
+                        <div class="mb-1">
+                            <span class="bold">Additional Earning</span><span class="text-muted italic" *ngIf="(oneTimeEarningRecommendation$ | async)?.total > 0"> Recommended increase {{(oneTimeEarningRecommendation$ | async)?.recommendation  | number:'1.2-2'}} {{(oneTimeEarningRecommendation$ | async)?.type == IncreaseType.Percentage ? '%' : ''}}</span>
+                        </div>
+                        <div class="pl-5 mb-1">
+                            <div *ngIf="!isEmptyObject(evaluation.meritIncreaseInfo.oneTimeEarning)">
+                                <span *ngIf="evaluation.meritIncreaseInfo.canViewRates">Payout Amount: {{evaluation.meritIncreaseInfo.oneTimeEarning.proposedTotalAmount | currency : 'USD' : true : '1.2-2'}}
+                                </span>
+                                <span *ngIf="evaluation.meritIncreaseInfo.oneTimeEarning.mayBeIncludedInPayroll">
+                                     | Effective {{evaluation.meritIncreaseInfo.oneTimeEarning.mayBeIncludedInPayroll | date : "MM/dd/yyyy"}}
+                                </span>
+                            </div>
+                        </div>
+                    </li>
+            </ul>
+        </div>
+    </ds-card>
+</div>
+        <ng-template #payrollRequestEmptyState>
+            <ds-card>
+                <ds-card-header>
+                    <ds-card-sub-header-title>
+                        Payroll Requests
+                    </ds-card-sub-header-title>
+                </ds-card-header>
+                <div ds-card-content>
+                    <hr class="mt-0" />
+                    <div class="instruction-text">
+                        No Payroll Requests submitted.
+                    </div>
+                </div>
+            </ds-card>
+        </ng-template>
+
+        <ds-card>
+            <ds-card-header>
+                <ds-card-sub-header-title>
+                    {{ getEvaluationTypeName() }}
+                </ds-card-sub-header-title>
+            </ds-card-header>
+            <div ds-card-content>
+                <div *ngIf="hasCompetencies">
+                    <div *ngFor="let groupName of competencyGroups; let ind = index;">
+                        <hr class="mb-2"/>
+                        <div class="bold font-md mb-4" name="competencies-section">{{groupName + ': ' + filterItemsOfType(groupName).length}}</div>
+                        <div *ngFor="let item of filterItemsOfType(groupName); let compIx = index;" class="mb-4">
+                            <div class="row">
+                                <div class="col-md">
+                                    <div class="bold text-super-dark-gray text-uppercase">
+                                        {{ item.competency.name }}
+                                    </div>
+                                </div>
+                                <div class="col-md">
+                                    <div class="d-flex align-items-center flex-wrap">
+                                        <div class="star-rating sm">
+                                            <ng-container *ngFor="let r of evaluation.ratings; let i = index;">
+                                                <input id="comp-{{compIx}}_{{i}}" type="radio" class="star-radio" name="comp-ratings-{{compIx}}"
+                                                    [value]="r.rating" [ngModel]="item.competency.ratingValue" disabled />
+                                                <label class="star" for="comp-{{compIx}}_{{i}}">
+                                                    <mat-icon class="filled">star</mat-icon>
+                                                    <mat-icon class="outline-view">star</mat-icon>
+                                                    <mat-icon class="outline">star_border</mat-icon>
+                                                </label>
+                                            </ng-container>
+                                        </div>
+                                        <span class="star-description">
+                                            {{ getRatingLabel(item.competency.ratingValue) }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="font-sm text-muted font-italic"
+                                [innerHTML]="item.competency | noCommentsEntered | formatComment ">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="hasGoals">
+                    <hr class="mt-0 mb-2">
+                    <div class="bold">
+                        Goals: {{ evaluation.goalEvaluations.length }}
+                    </div>
+                    <div *ngFor="let goal of evaluation.goalEvaluations; let goalIx = index" class="mb-4">
+                        <div class="row" >
+                            <div class="col-md">
+                                <h4 class="bold text-super-dark-gray">
+                                    {{ goal.title }}
+                                </h4>
+                            </div>
+                            <div class="col-md">
+                                <div class="d-flex align-items-center flex-wrap">
+                                    <div class="star-rating sm">
+                                        <ng-container *ngFor="let r of evaluation.ratings; let i = index;">
+                                            <input 
+                                                id="goal-{{goalIx}}_{{i}}"
+                                                type="radio" 
+                                                class="star-radio"
+                                                name="goal-ratings-{{goalIx}}"
+                                                [value]="r.rating"
+                                                [ngModel]="goal.ratingValue"
+                                                disabled
+                                            />
+                                            <label class="star" for="goal-{{goalIx}}_{{i}}">
+                                                <mat-icon class="filled">star</mat-icon>
+                                                <mat-icon class="outline-view">star</mat-icon>
+                                                <mat-icon class="outline">star_border</mat-icon>
+                                            </label>
+                                        </ng-container>
+                                    </div>
+                                    <span class="star-description">
+                                        {{ getRatingLabel(goal.ratingValue) }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="font-sm text-muted font-italic"
+                            [innerHTML]="goal | noCommentsEntered | formatComment ">
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="hasFeedback">
+                    <hr class="mt-0 mb-2">
+                    <div class="bold">
+                        Feedback: {{ evaluation.feedbackResponses.length }}
+                    </div>
+                    <div *ngFor="let response of evaluation.feedbackResponses; let idx = index;" >
+                        <label class="bold">{{ idx + 1 }}. {{ response.feedbackBody }}</label>      
+                        <span *ngIf="!response.isRequired" class="ml-1 instruction-text">Optional</span>
+                        <span *ngIf="!response.isRequired && !response.isVisibleToEmployee" class="instruction-text">;</span>
+                        <p class="mt-0 mb-3" [class.text-muted]="!response.hasResponse()" [class.italic]="!response.hasResponse()"
+                            [innerHTML]="response.responseText()">
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </ds-card>
+    </div>
+    <form #form="ngForm">
+        <ng-container *ngIf="evaluation.isApprovalProcess">
+            <div class="list-bordered">
+                <div #passApproval class="body">
+                    <div class="item-group">
+                        <div class="form-group">
+                            <ng-container *ngIf="user.userId != evaluation.evaluatedByUserId">
+                                <label class="form-control-label">Please select the next step for this evaluation.</label>
+                                <div class="control-spacer-lg">
+                                    <div class="custom-control custom-radio inline-select">
+                                        <input type="radio" id="approverRadio" name="approvalProcessSelector" class="custom-control-input"  
+                                            required dsFormControlValidator
+                                            [value]="1"
+                                            [(ngModel)]="nextStepSelector">
+                                        <label class="custom-control-label inline-select-wrapper" for="approverRadio">
+                                            <div class="inline-select-label">Send Review To:</div>
+                                            <select class="form-control custom-select" name="supervisor" 
+                                                [disabled]="nextStepSelector != 1"
+                                                [(ngModel)]="evaluation.currentAssignedUserId" required dsFormControlValidator>
+                                                <option class="text-muted" [ngValue]="null"></option>
+                                                <option *ngFor="let super of supervisors | sortContacts" [ngValue]="super.userId">{{super | contactToName}}</option>
+                                            </select>
+                                            <div class="invalid-feedback mt-1 ml-2">
+                                                Please select an approver.
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" id="approvalProcessFinalizedRadio" name="approvalProcessSelector" class="custom-control-input" 
+                                            required dsFormControlValidator
+                                            [value]="2" [attr.disabled]="returnToSender ? '' : null"
+                                            [(ngModel)]="nextStepSelector"
+                                            (click)="evaluation.currentAssignedUserId = null">
+                                        <label class="custom-control-label" for="approvalProcessFinalizedRadio">
+                                            <span>Approval process is finished</span>
+                                        </label>
+                                    </div>
+                                    <div class="invalid-feedback" [class.d-block]="nextStepSelector == null && form.submitted">
+                                        Please select the next step for this evaluation.
+                                    </div>
+                                    <div class="nested-control-spacer-lg" *ngIf="nextStepSelector == 2">
+                                      <div class="custom-control custom-checkbox" *ngIf="!returnToSender">
+                                        <input id="chkShareWithEmployee" class="custom-control-input" type="checkbox" 
+                                            [(ngModel)]="evaluation.isViewableByEmployee" name="isViewableByEmployee"
+                                            [disabled]="nextStepSelector != 2" /> 
+                                        <label class="custom-control-label" for="chkShareWithEmployee">Share review with employee</label>
+                                      </div>
+                                    </div>
+                                  </div>
+                            </ng-container>
+                            <ng-container *ngIf="user.userId == evaluation.evaluatedByUserId">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <label class="form-control-label">Send Review To</label>
+                                        <select class="form-control custom select" name="supervisor" 
+                                            [(ngModel)]="evaluation.currentAssignedUserId"
+                                            required dsFormControlValidator>
+                                            <option class="text-muted" [ngValue]="null"></option>
+                                            <option *ngFor="let super of supervisors | sortContacts" [ngValue]="super.userId">{{super | contactToName}}</option>
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            Please select an approver.
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+        <ng-container container *ngIf="!returnToSender">
+            <h3>
+                Disclaimer {{ !isSelfEval && !evaluation.isApprovalProcess ? "and Release to Employee" : "and Signature" }}
+            </h3>
+            <p>
+                By signing this form, I authorize that the information provided on this review is complete and accurate. I agree to keep the information confidential, unless being shared by the appropriate parties.
+            </p>
+            <div class="form-group" *ngIf="!isSelfEval && !evaluation.isApprovalProcess">
+                <div class="custom-control custom-checkbox">
+                    <input id="chkShareWithEmployee" class="custom-control-input" type="checkbox" [(ngModel)]="evaluation.isViewableByEmployee" name="isViewableByEmployee" /> 
+                    <label class="custom-control-label" for="chkShareWithEmployee">Share review with employee</label>
+                </div>
+            </div>
+            <div class="row" #name>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label class="form-control-label">First Name</label>
+                        <input type="text" class="form-control" [(ngModel)]="signature.signeeFirstName" name="firstName" required dsFormControlValidator />
+                        <div class="invalid-feedback">
+                            Please enter signee first name.
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label class="form-control-label">Last Name</label>
+                        <input type="text" class="form-control" [(ngModel)]="signature.signeeLastName" name="lastName" required dsFormControlValidator />
+                        <div class="invalid-feedback">
+                            Please enter signee last name.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+        
+    </form>
+</div>
+<div mat-dialog-actions>
+    <ng-container *ngIf="!successfullySubmitted; else successfulCalcAndSave">
+        <button type="submit"
+            class="btn btn-primary"
+            (click)="form.submitted = true; submitEvaluation(form)"
+        >Submit</button>
+        <button type="button"
+            class="btn btn-cancel"
+            (click)="cancel()"
+        >Edit Form</button>
+    </ng-container>
+    
+</div>
+
+<ng-template #successfulCalcAndSave>
+    <button class="btn btn-primary" (click)="closeModal()">Save</button>
+</ng-template> 

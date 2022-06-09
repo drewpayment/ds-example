@@ -1,0 +1,86 @@
+<mat-dialog-header>
+  <h2 class="dialog-title">Custom Classes</h2>
+  <button type="button" class="close" (click)="cancel()">
+    <i class="material-icons">clear</i>
+  </button>
+</mat-dialog-header>
+
+<mat-dialog-content>
+  <ng-container *ngIf="!isLoading">
+    <form [formGroup]="form">
+      <div class="row">
+        <div class="col-6">
+          <div class="form-group">
+            <label class="form-control-label">Custom Class</label>
+            <select class="custom-select form-control" formControlName="customClasses" cdkFocusInitial>
+              <option value="">-- Add Custom Class--</option>
+              <option *ngFor="let cc of customClasses" [ngValue]="cc.clientGLCustomClassId">{{ cc.description }}
+              </option>
+            </select>
+          </div>
+  
+        </div>
+        <div class="col-6">
+          <div class="form-group">
+            <label class="form-control-label">Division</label>
+            <select class="custom-select form-control" formControlName="divisions" [class.is-invalid]="((form.controls['divisions'].touched || formSubmitted) && form.controls['divisions'].invalid)">
+              <option value=""></option>
+              <option *ngFor="let d of divisions" [ngValue]="d.clientDivisionId">{{ d.name }}</option>
+            </select>
+            <div class="invalid-feedback">
+              Please select a division.
+            </div>
+          </div>
+  
+        </div>
+      </div>
+      <div class="row" *ngIf="divisionSelected">
+        <div class="col-4">
+          <div class="form-group">
+            <label class="form-control-label">Group</label>
+            <select class="custom-select form-control" formControlName="groups" [class.is-invalid]="((form.controls['groups'].touched || formSubmitted) && form.controls['groups'].invalid)">
+              <option value=""></option>
+              <option *ngFor="let d of groups" [ngValue]="d.clientGroupId">{{ d.description }}</option>
+            </select>
+            <div class="invalid-feedback">
+              Please select a group.
+            </div>
+          </div>
+  
+        </div>
+        <div class="col-4">
+          <div class="form-group">
+            <label class="form-control-label">Department</label>
+            <select class="custom-select form-control" formControlName="departments" [class.is-invalid]="((form.controls['departments'].touched || formSubmitted) && form.controls['departments'].invalid)">
+              <option value=""></option>
+              <option *ngFor="let d of departments" [ngValue]="d.clientDepartmentId">{{ d.name }}</option>
+            </select>
+            <div class="invalid-feedback">
+              Please select a department.
+            </div>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="form-group">
+            <label class="form-control-label">Cost Center</label>
+            <select class="custom-select form-control" formControlName="costCenters" [class.is-invalid]="((form.controls['costCenters'].touched || formSubmitted) && form.controls['costCenters'].invalid)">
+              <option value=""></option>
+              <option *ngFor="let cc of costCenters" [ngValue]="cc.clientCostCenterId">{{ cc.description }}</option>
+            </select>
+            <div class="invalid-feedback">
+              Please select a cost center.
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+  <ng-container *ngIf="isLoading">
+    <ds-loading-message></ds-loading-message>
+  </ng-container>
+</mat-dialog-content>
+<mat-dialog-actions  *ngIf="!isLoading">
+  <button type="submit" class="btn btn-save"
+    CausesValidation="True" (click)="save()">Save</button>
+  <button type="button" class="btn btn-cancel" (click)="cancel()">Cancel</button>
+</mat-dialog-actions>

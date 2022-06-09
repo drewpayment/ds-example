@@ -1,0 +1,65 @@
+<ds-card border="top">
+  <div ds-card-header>
+    <ds-card-header-title>Competency Models</ds-card-header-title>
+    <ds-card-subtitle>
+      <div class="instruction-text">Competency Models are used to assign Competencies to Employees based on shared employment
+        attributes.
+      </div>
+    </ds-card-subtitle>
+    <ds-card-title-action>
+      <button #addModelButton class="btn btn-primary" type="button">
+        <i class="material-icons">add</i> Model
+      </button>
+    </ds-card-title-action>
+  </div>
+  <div ds-card-content>
+    <div *ngIf="(models$ | async) as models; else loading;">
+      <ng-container *ngIf="!(models == null || models.length == 0); else noModels">
+        <div class="overflow-list">
+          <div class="row">
+            <div class="col-sm-6 col-md-4" *ngFor="let model of models">
+              <ds-card mode="callout" color="info" hover="true" class="hoverable" color-fade>
+                <div ds-card-header>
+                  <!-- <ds-card-sub-header-title title="{{model.name}}">
+                    {{model.name}}
+                  </ds-card-sub-header-title> -->
+                  <ds-card-widget-title>
+                    {{model.name}}
+                  </ds-card-widget-title>
+                  <ds-card-title-action>
+                    <button (click)="$event.stopPropagation();" type="button" class="btn btn-icon nested-cog hover-show" [matMenuTriggerFor]="menu">
+                      <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu>
+                      <button (click)="editModelEmitter.next(model)" type="button" mat-menu-item>
+                        <span>Edit</span>
+                      </button>
+                      <button type="button" (click)="copy(model)" mat-menu-item>
+                        <span>Copy</span>
+                      </button>
+                      <button (click)="deleteCompModel(model.competencyModelId);" type="button" mat-menu-item>
+                        <span>Remove</span>
+                      </button>
+                    </mat-menu>
+                  </ds-card-title-action>
+                  <ds-card-subtitle>
+                    {{coreCompCount != null ? (((model.competencies || []).length + coreCompCount) + ' Competenc' + ((model.competencies || []).length + coreCompCount == 1 ? 'y' : 'ies')) : 'loading...'}} | {{(model.empPerfConfigs
+                    || []).length}} Employee{{(model.empPerfConfigs || []).length == 1 ? '' : 's'}}
+                  </ds-card-subtitle>
+                </div>
+              </ds-card>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</ds-card>
+<ng-template #loading>
+  <div class="loading-message">Loading...</div>
+</ng-template>
+<ng-template #noModels>
+    <div class="empty-state">There are no models to display. Click the "+ Model" button to create a Competency Model.</div>
+</ng-template>
+<ng-template #nav>
+</ng-template>

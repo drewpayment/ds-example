@@ -1,0 +1,69 @@
+<ng-template #loading>
+  <ds-card mode="nobody" border="top">
+    <div ds-card-header>
+      <ds-card-header-title>Time Off Policies</ds-card-header-title>
+      <ds-card-subtitle></ds-card-subtitle>
+    </div>
+    <ds-card-content>
+      <ds-loading-message></ds-loading-message>
+    </ds-card-content>
+  </ds-card>
+</ng-template>
+
+<ng-template #loadedAndEmpty>
+  <ds-card mode="nobody" border="top">
+    <div ds-card-header>
+      <ds-card-header-title>Time Off Policies</ds-card-header-title>
+      <ds-card-subtitle></ds-card-subtitle>
+    </div>
+    <ds-card-content>
+      <div class="empty-state">TODO: Loaded and Empty</div>
+    </ds-card-content>
+  </ds-card>
+</ng-template>
+
+<!-- ----------------------------------------------------------------------------------- -->
+
+<ng-container *ngIf="!isLoading; else loading">
+  <ds-card mode="nav" border="top">
+    <div ds-card-header>
+      <ds-card-header-title>Time Off Policies</ds-card-header-title>
+      <ds-card-subtitle>
+        <form [formGroup]="f">
+          <div class="row" formGroupName="accrual">
+            <div class="col-md-6">
+              <label class="form-control-label">Policy</label>
+              <select #selectedAccrual class="form-control custom-select" formControlName="clientAccrualIdUI"
+                [attr.disabled]="attrDisabledSelectedAccrualDropdown$|async"
+              >
+                <option *ngFor="let ca of clientAccruals$|async" [ngValue]="ca.clientAccrualId + ''"
+                  [selected]="f.get('accrual.clientAccrualId')?.value == ca.clientAccrualId"
+                >
+                  {{ca?.description}}
+                </option>
+              </select>
+            </div>
+          </div>
+        </form>
+      </ds-card-subtitle>
+      <ds-card-title-action>
+        <button *ngIf="f.get('accrual.clientAccrualId')?.value > 0"
+          type="button" class="btn btn-outline-primary" (click)="copySelectedAccrual()">Copy Policy</button>
+      </ds-card-title-action>
+    </div>
+    <ds-card-content>
+      <!--tabs found here-->
+      <ds-card-nav>
+        <div class="ds-tabs" role="navigation">
+          <button class="tab" (click)="submitIfHasPendingChangesAndNavigate(['setup'])" [class.active]="isSetupTab">Setup</button>
+          <button class="tab" (click)="submitIfHasPendingChangesAndNavigate(['schedules'])" [class.active]="isSchedulesTab">Schedules</button>
+        </div>
+      </ds-card-nav>
+    </ds-card-content>
+  </ds-card>
+
+  <!-- Shows contents for selected tab. -->
+  <router-outlet></router-outlet>
+
+  <ds-client-accruals-footer-card></ds-client-accruals-footer-card>
+</ng-container>

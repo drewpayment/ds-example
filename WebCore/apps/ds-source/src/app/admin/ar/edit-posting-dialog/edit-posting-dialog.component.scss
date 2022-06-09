@@ -1,0 +1,50 @@
+// Setting min-width to prevent collapse on small screens
+.mat-column-postedDate {
+    min-width: 105px;
+}
+.mat-column-paymentDate {
+    min-width: 105px;
+}
+.mat-column-arDepositId {
+    min-width: 80px;
+}
+.mat-column-type {
+    min-width: 50px;
+}
+.mat-column-createdDate {
+    min-width: 72px;
+}
+.mat-column-postedByUsername {
+    min-width: 116px;
+}
+.mat-column-postedDate {
+    width: 145px;
+}
+.mat-column-total {
+    min-width: 115px;
+}
+
+.mat-column-clientCode {
+    min-width: 50px;
+}
+.mat-column-clientName {
+    min-width: 115px;
+}
+.mat-column-invoiceNum {
+    min-width: 75px;
+}
+.mat-column-invoiceDate {
+    min-width: 95px;
+}
+.mat-column-checkNumber {
+    min-width: 66px;
+}
+.mat-column-amount {
+    min-width: 67px;
+}
+.mat-column-isNsf {
+    min-width: 55px;
+}
+.mat-column-paymentDate {
+    width: 145px;
+}

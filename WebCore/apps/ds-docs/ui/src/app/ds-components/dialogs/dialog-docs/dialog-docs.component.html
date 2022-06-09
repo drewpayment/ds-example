@@ -1,0 +1,108 @@
+<markdown ngPreserveWhitespaces>
+# Dialogs 
+
+<p class="description">Dialogs are also called modals, depending on the enviornment.</p>
+
+## Sizes
+Below are max-width values and use cases for modals. The modal will never exceed the media width.
+
+**Small**
+Width: 300px<br/>
+*Example: DsConfirm messages*
+
+**Medium**
+Width: 500px<br/>
+*Example: Simple form modals with a few fields*
+
+**Large**
+Width: 800px<br/>
+*Example: Complex form modals with two or more columns*
+
+## Methodology
+When opening a dialog with form elements, put focus on the first element. The positive action button needs to be first in the markup in the actions area. 
+
+## Layout
+Dialogs use an `h2` title. Show `Delete` if there is data to delete. Otherwise, show `Cancel`.
+
+</markdown>
+
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleModal = !toggleModal">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleModal">
+  <div class="ui">
+    <button type="button" class="btn btn-outline-primary" (click)="openDialog()">Open Modal</button>
+  </div>
+  <div class="example">
+    <div class="ds-tabs">
+      <button class="tab" role="navigation" [class.active]="TabExample == 1" (click)="TabExample = 1">HTML</button>
+      <button class="tab" role="navigation" [class.active]="TabExample == 2" (click)="TabExample = 2">TS</button>
+    </div>
+    <ng-container *ngIf="TabExample == 1">
+      <markdown src="app/ds-components/dialogs/basic-dialog/basic-dialog.component.html"></markdown>
+    </ng-container>
+    <ng-container *ngIf="TabExample == 2">
+        <markdown src="app/ds-components/dialogs/basic-dialog/basic-dialog.component.ts"></markdown>
+    </ng-container>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespace>
+## Examples
+</markdown>
+<markdown ngPreserveWhitespace>
+### Borders
+</markdown>
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleBorderModal = !toggleBorderModal">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleBorderModal">
+  <div class="ui">
+    <button type="button" class="btn btn-outline-primary" (click)="openBorderDialog()">Open Modal</button>
+  </div>
+  <div class="example">
+    <div class="ds-tabs">
+      <button class="tab" role="navigation" [class.active]="TabBorderExample == 1" (click)="TabBorderExample = 1">HTML</button>
+      <button class="tab" role="navigation" [class.active]="TabBorderExample == 2" (click)="TabBorderExample = 2">TS</button>
+    </div>
+    <ng-container *ngIf="TabBorderExample == 1">
+      <markdown src="app/ds-components/dialogs/bordered-dialog/bordered-dialog.component.html" lineHighlight [line]="'1,17'"></markdown>
+    </ng-container>
+    <ng-container *ngIf="TabBorderExample == 2">
+      <markdown src="app/ds-components/dialogs/bordered-dialog/bordered-dialog.component.ts"></markdown>
+    </ng-container>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespace>
+### Tabs
+</markdown>
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleTabModal = !toggleTabModal">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleTabModal">
+  <div class="ui">
+    <button type="button" class="btn btn-outline-primary" (click)="openNavDialog()">Open Modal</button>
+  </div>
+  <div class="example">
+    <div class="ds-tabs">
+      <button class="tab" role="navigation" [class.active]="TabModalExample == 1" (click)="TabModalExample = 1">HTML</button>
+      <button class="tab" role="navigation" [class.active]="TabModalExample == 2" (click)="TabModalExample = 2">TS</button>
+    </div>
+    <ng-container *ngIf="TabModalExample == 1">
+      <markdown src="app/ds-components/dialogs/nav-dialog/nav-dialog.component.html"></markdown>
+    </ng-container>
+    <ng-container *ngIf="TabModalExample == 2">
+      <markdown src="app/ds-components/dialogs/nav-dialog/nav-dialog.component.ts"></markdown>
+    </ng-container>
+  </div>
+</div>

@@ -1,0 +1,21 @@
+{
+  "name": "dsui",
+  "version": "2.1.2",
+  "description": "This is the build system used for the DSUI CSS framework.",
+  "main": "dsui-build.js",
+  "scripts": {
+    "build": "gulp",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Naomi Carroll <naomi.carroll@dominionsystems.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^3.1.1",
+    "gulp-cached": "^1.1.1",
+    "gulp-livereload": "^3.8.1",
+    "gulp-sass": "^2.3.2",
+    "gulp-sass-lint": "^1.3.2",
+    "gulp-sourcemaps": "^1.9.1"
+  }
+}

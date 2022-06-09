@@ -1,0 +1,32 @@
+<form [formGroup]="contactForm">
+  <ds-card mode="noheader">
+    <ds-card-content>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-control-label mr-1">Single Select</label>
+            <ds-contact-autocomplete 
+                [multiple]="false" 
+                [contacts]="contacts"
+                formControlName="single"
+                required
+                errorFeedback="Please select a contact">
+            </ds-contact-autocomplete>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-control-label mr-1">Multiple Select</label>
+            <ds-contact-autocomplete 
+                [multiple]="true" 
+                [contacts]="contacts"
+                formControlName="multi"
+                required 
+                errorFeedback="Please select one or more contacts">
+            </ds-contact-autocomplete>
+          </div>
+        </div>
+      </div>
+    </ds-card-content>
+  </ds-card>
+</form>

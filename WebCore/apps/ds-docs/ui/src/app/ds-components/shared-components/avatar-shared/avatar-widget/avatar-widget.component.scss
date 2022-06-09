@@ -1,0 +1,8 @@
+.avatar-spacer {
+  display: flex;
+  overflow: hidden;
+  > ds-avatar {
+    display: inline-block;
+    margin-right: 4px;
+  }
+}

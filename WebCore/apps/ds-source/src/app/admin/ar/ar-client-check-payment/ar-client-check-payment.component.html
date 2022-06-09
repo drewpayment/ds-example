@@ -1,0 +1,191 @@
+<ds-card border="top" mode="nobody">
+    <ds-card-header>
+        <ds-card-header-title>
+            AR Client Check Payment
+        </ds-card-header-title>
+        <ds-card-bread-crumb>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#" routerLink="/ar/deposits">AR Deposits</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">AR Client Check Payment</li>
+                </ol>
+            </nav>
+        </ds-card-bread-crumb>
+    </ds-card-header>
+</ds-card>
+<ng-template #pageContent>
+   <ds-card [mode]="+this.depositId == 0 ? 'noheader' : ''">
+    <ds-card-header *ngIf="+this.depositId > 0">
+        <ds-card-header-title>
+            Deposit #{{deposit == null ? "" : deposit.arDepositId}}
+            {{deposit == null ? "" : deposit.postedDate != null ? "(Posted)" : ""}}
+
+        </ds-card-header-title>
+    </ds-card-header>
+
+    <ds-card-content>
+        <form [formGroup]="clientCheckPaymentFormGroup">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-control-label">Client</label>
+                        <ds-client-selector
+                            [clientSelectorFormGroup]="clientCheckPaymentFormGroup"
+                            [options]="options"
+                            [required]="true"
+                            [isInvalid]="isClientSelectorEmpty">
+                        </ds-client-selector>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <div class="form-group inline-md-control">
+                        <button class="btn btn-outline-primary" type="button" (click)="openInvoicesClicked()">Open Invoices</button>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-table" [hidden]="!arClientCheckPaymentsLoaded || arDominionCheckPayments.length == 0">
+                        <div class="table-responsive">
+                            <table mat-table [dataSource]="matTableDatasource" formArrayName="checkPayments" class="table">
+                                <ng-container matColumnDef="invoiceNumber">
+                                    <th mat-header-cell *matHeaderCellDef  class="table-text-right" class="table-text-right">Invoice</th>
+                                    <td mat-cell *matCellDef="let payment; let index = index" [formGroupName]="index" class="table-text-right">
+                                        {{payment.invoiceNumber}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="invoiceDate">
+                                    <th mat-header-cell *matHeaderCellDef class="table-text-right">Invoice Date</th>
+                                    <td mat-cell *matCellDef="let payment; let index = index" [formGroupName]="index" class="table-text-right">
+                                        {{payment.invoiceDate | date: 'MM/dd/yyyy'}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="paymentDate">
+                                    <th mat-header-cell *matHeaderCellDef class="table-text-right">Payment Date</th>
+                                    <td mat-cell *matCellDef="let payment; let index = index" [formGroupName]="index"
+                                        class="table-text-right mat-column-paymentDate">
+                                        <ng-container *ngIf="checkPaymentsFormArray.controls[index]?.controls['paymentDate'].disabled, else paymentDateEnabled">
+                                            {{payment.paymentDate | date: 'MM/dd/yyyy'}}
+                                        </ng-container>
+                                        <ng-template #paymentDateEnabled>
+                                            <div class="input-group">
+                                                <input class="form-control"
+                                                    [class.is-invalid]="checkPaymentsFormArray.controls[index]?.hasError('paymentDateInvalid') && (checkPaymentsFormArray.controls[index]?.controls['paymentDate'].touched || formSubmitted)"
+                                                    dsFormControlValidator
+                                                    [matDatepicker]="paymentDate"
+                                                    mask="00/00/0000"
+                                                    formControlName="paymentDate"
+                                                    required />
+                                                <div class="input-group-append" >
+                                                    <span class="input-group-text date">
+                                                        <mat-datepicker-toggle matSuffix [for]="paymentDate">
+                                                            <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                                                        </mat-datepicker-toggle>
+                                                    </span>
+                                                </div>
+                                                <div class="invalid-feedback">
+                                                    Please enter a valid payment date.
+                                                </div>
+                                                <mat-datepicker #paymentDate></mat-datepicker>
+                                            </div>
+                                        </ng-template>
+                                    </td>`
+                                </ng-container>
+                                <ng-container matColumnDef="invoiceAmount">
+                                    <th mat-header-cell *matHeaderCellDef class="table-text-right">Amount</th>
+                                    <td mat-cell *matCellDef="let payment; let index = index" [formGroupName]="index" class="table-text-right">
+                                        {{payment.invoiceAmount | currency}}
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="prevPaidAmount">
+                                    <th mat-header-cell *matHeaderCellDef class="table-text-right">Prev Paid</th>
+                                    <td mat-cell *matCellDef="let payment; let index = index" [formGroupName]="index" class="table-text-right">
+                                        {{payment.prevPaidAmount | currency}}
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="paymentType">
+                                    <th mat-header-cell *matHeaderCellDef>Payment</th>
+                                    <td mat-cell *matCellDef="let payment; let index = index" [formGroupName]="index">
+                                        <div class="form-group">
+                                            <select class="form-control custom-select" formControlName="paymentType" (change)="paymentTypeChanged(index)">
+                                                <option [ngValue]="null"></option>
+                                                <option *ngFor="let paymentType of paymentTypeDropdownList" [ngValue]="paymentType.value">
+                                                    {{paymentType.designation}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="paymentAmount">
+                                    <th mat-header-cell *matHeaderCellDef class="table-text-right">Payment Amount</th>
+                                    <td mat-cell *matCellDef="let payment; let index = index" [formGroupName]="index" class="table-text-right">
+                                        <ng-container *ngIf="checkPaymentsFormArray.controls[index]?.controls['paymentAmount'].disabled, else currencyEnabled">
+                                            {{checkPaymentsFormArray.controls[index]?.controls['paymentAmount'].value | currency}}
+                                        </ng-container>
+                                        <ng-template #currencyEnabled>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend" [class.d-none]="checkPaymentsFormArray.controls[index]?.controls['paymentAmount'].disabled">
+                                                    <span class="input-group-text currency">$</span>
+                                                </div>
+                                                <input type="number" class="form-control"
+                                                    min="0" max="999999.99" mask="999999.99"
+                                                    formControlName="paymentAmount"
+                                                    [class.is-invalid]="(checkPaymentsFormArray.controls[index]?.hasError('paymentAmountInvalid') ||
+                                                        checkPaymentsFormArray.controls[index]?.hasError('paymentAmountExceededRemainingInvoiceAmount')) &&
+                                                        (checkPaymentsFormArray.controls[index]?.controls['paymentAmount'].touched || formSubmitted)">
+                                                <div class="invalid-feedback" *ngIf="checkPaymentsFormArray.controls[index]?.hasError('paymentAmountInvalid') && (checkPaymentsFormArray.controls[index]?.controls['paymentAmount'].touched || formSubmitted)">
+                                                    Please enter a valid payment amount.
+                                                </div>
+                                                <div class="invalid-feedback" *ngIf="checkPaymentsFormArray.controls[index]?.hasError('paymentAmountExceededRemainingInvoiceAmount') && (checkPaymentsFormArray.controls[index]?.controls['paymentAmount'].touched || formSubmitted)">
+                                                    Payment amount can't exceed the remaining invoice amount of ${{payment.invoiceAmount - payment.prevPaidAmount}}
+                                                </div>
+                                            </div>
+                                        </ng-template>
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="memo">
+                                    <th mat-header-cell *matHeaderCellDef>Memo</th>
+                                    <td mat-cell *matCellDef="let payment; let index = index" [formGroupName]="index">
+                                        <ng-container *ngIf="checkPaymentsFormArray.controls[index]?.controls['memo'].disabled, else memoEnabled">
+                                            {{payment.memo}}
+                                        </ng-container>
+                                        <ng-template #memoEnabled>
+                                            <input type="text" class="form-control" formControlName="memo">
+                                        </ng-template>
+                                    </td>
+                                </ng-container>
+                                <ng-container matColumnDef="isPaid">
+                                    <th mat-header-cell *matHeaderCellDef class="td-checkbox-width text-center">Paid</th>
+                                    <td mat-cell *matCellDef="let payment; let index = index" [formGroupName]="index" class="td-checkbox-width">
+                                        <div class="table-checkbox" [class.d-none]="checkPaymentsFormArray.controls[index]?.controls['isPaid'].disabled && (checkPaymentsFormArray.controls[index]?.controls['isPaid'].value == false)">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="isPaid_{{index}}" formControlName="isPaid">
+                                                <label class="custom-control-label" for="isPaid_{{index}}"></label>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </ng-container>
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="empty-state" *ngIf="arClientCheckPaymentsLoaded && arDominionCheckPayments.length < 1 && invoicesFiltered">There are no invoices to display.</div>
+                    <div *ngIf="!arClientCheckPaymentsLoaded">
+                        <ds-loading-message></ds-loading-message>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </ds-card-content>
+    <ds-card-footer *ngIf="arClientCheckPaymentsLoaded && arDominionCheckPayments.length">
+        <button class="btn btn-save" type="button" (click)="save()">Save</button>
+        <button class="btn btn-outline-primary" type="button" routerLink="/ar/deposits">Back</button>
+    </ds-card-footer>
+</ds-card>
+</ng-template>
+
+<ds-card mode="noheader" *ngIf="!(params$ | async); else pageContent">
+    <ds-card-content>
+        <ds-loading-message></ds-loading-message>
+    </ds-card-content>
+</ds-card>
+

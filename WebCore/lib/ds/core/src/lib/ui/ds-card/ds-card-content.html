@@ -1,0 +1,22 @@
+<ng-template #content>
+    <ng-content></ng-content>
+</ng-template>
+
+<ng-container *ngIf="collapse; else normalContent">
+    <ng-content select="ds-card-collapse-instruction-text, [ds-card-collapse-instruction-text], [dsCardCollapseInstructionText]"></ng-content>
+
+    <ds-expansion (opened)="handleOpened()" (closed)="handleClosed()" (destroyed)="handleDestroyed()" [expanded]="expanded">
+    
+        <ng-container [ngTemplateOutlet]="content"></ng-container>
+
+        <ng-content select="ds-card-footer, [ds-card-footer], [dsCardFooter]"></ng-content>
+    </ds-expansion>
+
+</ng-container>
+
+<ng-template #normalContent>
+  
+    <ng-container [ngTemplateOutlet]="content"></ng-container>
+
+    <ng-content select="ds-card-footer, [ds-card-footer], [dsCardFooter]"></ng-content>
+</ng-template>

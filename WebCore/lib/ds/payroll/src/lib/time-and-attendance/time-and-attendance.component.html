@@ -1,0 +1,60 @@
+<ds-card mode="nobody" border="top">
+  <div ds-card-header>
+    <ds-card-header-title>
+      Time Card Authorization
+    </ds-card-header-title>
+    <ds-card-title-action>
+      <button type="button" *ngIf="showPunchImportBtn" (click)="openImportPunchModal()" id="lnkImportPunch" class="btn btn-outline-primary">Import
+        Punches</button>
+    </ds-card-title-action>
+  </div>
+</ds-card>
+
+<div *ngIf="data$ | async as data">
+  <ds-emp-filter [payPeriods]="data.initData.clockPayrollList"
+    [approveHourOptions]="data.initData.clockEmployeeApproveHoursOptions" [filter1Values]="data.filterValues"
+    [clockFilters1]="data.initData.clockFilterCategory1" [clockFilters2]="data.initData.clockFilterCategory2"
+    (filterCategoryChanged)="loadFilterIds($event)" (filterCategory2Changed)="loadFilter2Options($event)"
+    (searchParamsUpdated)="searchEmps($event)"
+    [hideGrandTotals]="data.initData.clockEmployeeApproveHoursSettings[0]?.hideGrandTotals"
+    [hideDailyTotals]="data.initData?.clockEmployeeApproveHoursSettings[0]?.hideDailyTotals"
+    [hideWeeklyTotals]="data.initData?.clockEmployeeApproveHoursSettings[0]?.hideWeeklyTotals"
+    [employeesPerPage]="data.initData?.clockEmployeeApproveHoursSettings[0]?.employeesPerPage"
+    [defaultDaysFilter]="data.initData?.clockEmployeeApproveHoursSettings[0]?.defaultDaysFilter"
+    (persistedSearchSettingsChanged)="saveDisplaySettings($event)"
+    [clockEmployeeApproveHoursSettingsID]="data.initData?.clockEmployeeApproveHoursSettings[0]?.clockEmployeeApproveHoursSettingsID"
+    [setPage]="currentPage"
+    [initData]="data.initData">
+  </ds-emp-filter>
+
+  <ds-card mode="noheader" *ngIf="hasSearchedEmps && timeAndAttSvc.searchEmpsInFlight">
+    <ds-card-content>
+      <ds-loading-message></ds-loading-message>
+    </ds-card-content>
+  </ds-card>
+
+  <ds-card *ngIf="hasSearchedEmps && !timeAndAttSvc.searchEmpsInFlight">
+    <ds-card-header>
+        <ds-card-title-action>
+            <button id='saveBtn' type="button" class="btn btn-primary" (click)="imperativeHook.next(null)">Save Approved</button>
+        </ds-card-title-action>
+    </ds-card-header>
+    <ds-card-content>
+      <div class="row">
+        <div class="col-md-12">
+            <ds-table-container [noteOptions]="data.initData?.clientNotes" [tableData]="data.tableData"
+            (formValue)="childForm.next($event)" [hasSearchedEmps]="hasSearchedEmps"
+            (popUpClosed)="searchEmps(lastSearchVals)" (pageClicked)="loadPage($event)" 
+			[searchEmpsInFlight]="timeAndAttSvc.searchEmpsInFlight" 
+            ></ds-table-container>
+        </div>
+      </div>
+      <div class="row justify-content-end">
+        <div class="col-auto">
+            <button type="button" class="btn btn-primary" (click)="imperativeHook.next(null)">Save Approved</button>
+        </div>
+      </div>
+      </ds-card-content>
+  </ds-card>
+</div>
+

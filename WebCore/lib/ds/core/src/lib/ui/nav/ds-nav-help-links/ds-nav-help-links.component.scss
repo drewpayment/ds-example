@@ -1,0 +1,92 @@
+@import "../../../../../../../../Styles/scss/bootstrap-variables";
+
+.slow-opacity-transition {
+    opacity: 0;
+    fill-opacity: 0;
+    transition: opacity 0.2s ease-in-out, fill-opacity 0.2s ease-in-out;
+
+    &.slow-opacity {
+        opacity: 1;
+        fill-opacity: 1;
+    }
+}
+
+.mat-list-item {
+    font-size: 16px;
+    color: $nav-icon-color;
+    transition: $menu-text-color-transition, $menu-text-opacity-transition;
+
+    // All icons in navigation
+    .mat-icon {
+        color: $nav-icon-color;
+        transition: $menu-text-color-transition, $menu-text-opacity-transition;
+    }
+
+    .menu-spacer {
+        margin-left: 5px;
+        flex: 0 0 50px;
+    }
+
+    &:hover,
+    &:focus,
+    &:active,
+    &.active {
+        color: $white;
+
+        .icon,
+        .mat-icon {
+            color: $white;
+        }
+    }
+    &.active {
+        font-weight: bold;
+    }
+    .menu-label {
+        color: $nav-text-color;
+        transition: $menu-text-color-transition, $menu-text-opacity-transition;
+        flex: 1 0 160px;
+    }
+}
+
+.mat-list-item {
+    font-size: 16px;
+    color: $gray-200;
+    transition: $menu-text-color-transition, $menu-text-opacity-transition;
+
+    &:hover,
+    &.active {
+        color: $white;
+
+        .icon,
+        .mat-icon,
+        .mat-label {
+            color: $white;
+        }
+    }
+    &.active {
+        font-weight: bold;
+    }
+
+    &.btn-chat {
+
+        .icon {
+            background-color: #11908d;
+            color: #fff;
+            border-radius: 5rem;
+            font-size: 16px;
+            padding: 4px;
+            transition: background-color 0.2s ease-in-out;
+            box-sizing: border-box;
+        }
+        &:hover,
+        &:focus {
+            .icon {
+                background-color: #04b5b0;
+            }
+        }
+        
+    }
+}
+a:focus {
+    text-decoration: none;
+}

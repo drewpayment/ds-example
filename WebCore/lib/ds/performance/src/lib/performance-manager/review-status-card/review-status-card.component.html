@@ -1,0 +1,92 @@
+<ds-card mode="widget-nobody" [color]="color" border="top" class="hoverable clickable" hover="true"
+    (click)="viewSummary()">
+    <ds-card-precontent >
+        <div class="d-flex justify-content-between text-muted font-sm">
+            <div class="">
+                #{{ reviewStatus.employee.employeeNumber }}
+            </div>
+            <div class="" *ngIf="false">
+                <span class="badge badge-pill badge-danger">1</span> Payroll Request
+            </div>
+        </div>
+    </ds-card-precontent>
+    <ds-card-header x-align="center" y-align="center">
+        <!-- image -->
+        <ds-avatar
+          size="24"
+          resource="{{reviewStatus.review.reviewedEmployeeContact.profileImage.extraLarge.url}}"
+          firstName="{{ reviewStatus.review.reviewedEmployeeContact.firstName }}"
+          lastName="{{ reviewStatus.review.reviewedEmployeeContact.lastName }}">
+        </ds-avatar>
+        <ds-card-widget-title class="text-medium-dark">
+            {{ reviewStatus.review.reviewedEmployeeContact.firstName }} {{ reviewStatus.review.reviewedEmployeeContact.lastName }}
+        </ds-card-widget-title>
+        <ds-card-subtitle>
+            <div class="approval-section mb-4">
+                <div class="card-data centered instruction-text font-sm" *ngIf="supervisorEval  && !(supervisorEvalStatus.status == 5)">
+                    <div class="item text-truncate">
+                        Supervisor: {{ supervisorStatusText }}
+                    </div>
+                </div>
+                <div class="card-data centered instruction-text font-sm" *ngIf="supervisorEval && supervisorEvalStatus.status == 5">
+                    <div class="item text-truncate">
+                        Approval assigned to: {{ supervisorEval.currentAssignedUser.firstName }} {{ supervisorEval.currentAssignedUser.lastName }}
+                    </div>
+                </div>
+                <div class="card-data centered instruction-text font-sm" *ngIf="employeeEval">
+                    <div class="item text-truncate">
+                        Employee: {{ employeeStatusText }}
+                    </div>
+                </div>
+            </div>
+            <!-- I used the same style we have on Onboarding cards for status, same placement -->
+            <!-- Changed order of status to be "Object Status" for all -->
+            <ng-container *ngIf="!reviewStatus.review.reviewCompletedDate">
+                <div class="text-danger" *ngIf="!reviewStatus.employee.isActive, else altReviewStatus">
+                    <i class="material-icons">warning</i>
+                    Terminated - Close Review
+                </div>
+                <ng-template #altReviewStatus>
+                    <ng-container  *ngIf="reviewStatus.isSetupIncomplete, else evalOverdue">
+                        <div class="text-danger">
+                            <i class="material-icons">warning</i>
+                            Set Up Incomplete
+                        </div>
+                    </ng-container>
+                    <ng-template #evalOverdue>
+                        <ng-container *ngIf="supervisorEval &&
+                            (supervisorEvalStatus.status != 5 && supervisorEvalStatus.status != 6) && hasOverdueEval, else approvalOverdue">
+                            <div class="text-danger">
+                                <i class="material-icons">warning</i>
+                                Evaluation Overdue
+                            </div>
+                        </ng-container>
+                        <ng-template #approvalOverdue>
+                            <ng-container *ngIf="supervisorEval && (supervisorEvalStatus.status == 5) && hasOverdueEval">
+                                <div class="text-danger">
+                                    <i class="material-icons">warning</i>
+                                    Approval Overdue
+                                </div>
+                            </ng-container>
+                        </ng-template>
+                    </ng-template>
+                </ng-template>
+            </ng-container>
+
+        </ds-card-subtitle>
+        <ds-card-title-action (click)="$event.stopPropagation()">
+            <button *ngIf="canEdit(reviewStatus) || canClose(reviewStatus) || canReopen(reviewStatus)" type="button" class="btn btn-icon nested-cog hover-show" [matMenuTriggerFor]="rowMenu">
+                <i class="material-icons">more_vert</i>
+            </button>
+            <mat-menu #rowMenu="matMenu">
+                <button mat-menu-item *ngIf="false">Print</button>
+                <button mat-menu-item *ngIf="false">Send Reminders</button>
+                <button mat-menu-item type="button" (click)="openNoteModal(reviewStatus.review)">Add Note</button>
+                <button mat-menu-item (click)="viewSummary()">View Summary</button>
+                <button mat-menu-item *ngIf="canEdit(reviewStatus)" (click)="editReview()">Edit</button>
+                <ds-close-review [reviewStatus]="reviewStatus" (reviewClosed)="reviewChange.emit(reviewStatus.review)"></ds-close-review>
+                <button mat-menu-item *ngIf="canReopen(reviewStatus)" (click)="reopenReview()">Re-Open</button>
+            </mat-menu>
+        </ds-card-title-action>
+    </ds-card-header>
+</ds-card>

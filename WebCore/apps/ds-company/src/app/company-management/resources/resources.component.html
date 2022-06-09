@@ -1,0 +1,245 @@
+<ds-card border="top">
+    <ds-card-header>
+        <ds-card-header-title>
+            Company Resources
+        </ds-card-header-title>
+        <ds-card-title-action>
+            <button type="button" class="btn btn-outline-primary" [class.d-none]="showFiles"
+                (click)="popupFolderDialog(null)">
+                <i class="material-icons">add</i> Folder
+            </button>
+            <button type="button" class="btn btn-primary" (click)="popupResourceDialog(null)"
+                *ngIf="folders.length > 0">
+                <i class="material-icons">add</i> Resource
+            </button>
+        </ds-card-title-action>
+        <ds-card-subtitle *ngIf="showFiles">
+            <nav aria-label="breadcrumb" role="navigation">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript:;" (click)="backToFolders()">Folders</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{selectedFolder.description}}</li>
+                </ol>
+            </nav>
+        </ds-card-subtitle>
+    </ds-card-header>
+    <ds-card-content>
+        <ng-container *ngIf="!isLoading; else loading">
+            <div class="empty-state" [class.d-none]="folders.length > 0">
+                There are no folders to display. Click the <a href="javascript:;" (click)="popupFolderDialog()">Add
+                    Folder</a> button to add folders.
+            </div>
+            <div *ngIf="(!showFiles && folders.length > 0) || (showFiles)">
+                <div [class.d-none]="showFiles" class="overflow-list">
+                    <div class="row">
+                        <div class="col-6 col-md-4 col-lg-3 " *ngFor="let folder of folders">
+                            <ds-card hover="true" color="info" mode="object" x-align="center"
+                                (click)="folderClicked(folder)" [title]="folder.description"
+                                (mouseover)="makeHovered(folder)" (mouseleave)="folder.hovered=false">
+                                <ds-card-header>
+                                    <ds-card-title-action>
+                                        <div class="nested-cog" [class.hover-show]="!folder.hovered">
+                                            <button [matMenuTriggerFor]="menu" class="btn btn-icon" type="button"
+                                                (click)="$event.stopPropagation();cogClicked(folder)">
+                                                <i class="material-icons">more_vert</i>
+                                            </button>
+                                            <mat-menu #menu="matMenu">
+                                                <button type="button" mat-menu-item (click)="popupFolderDialog(folder)">Edit</button>
+                                                <button type="button" mat-menu-item (click)="deleteFolderDialog(folder)">Delete</button>
+                                            </mat-menu>
+                                        </div>
+                                    </ds-card-title-action>
+                                    <ds-card-subtitle>
+                                        <div class="split-content">
+                                            <div class="top">
+                                                <div class="object-card-avatar">
+                                                    <mat-icon class="avatar text-info">folder_open</mat-icon>
+                                                </div>
+                                                <div class="font-lg text-center mb-4">
+                                                    <div class="text-truncate" data-toggle="tooltip"
+                                                        [title]="folder.description">
+                                                        {{folder.description}}
+                                                    </div>
+                                                    <div class="text-muted font-xs">
+                                                        Resources: {{folder.resourceCount}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </ds-card-subtitle>
+                                </ds-card-header>
+                            </ds-card>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Documents -->
+                <h3 *ngIf="showFiles && (resources | filterResource : {type: 1, searchText: null}).length > 0" class="pt-2">Documents</h3>
+                <div *ngIf="showFiles && (resources | filterResource : {type: 1, searchText: null}).length > 0" class="overflow-list">
+                    <div class="row">
+                        <div class="col-6 col-md-4 col-lg-3 " *ngFor="let resource of resources | filterResource : {type: 1, searchText: null}"
+                            (click)="$event.stopPropagation()">
+                            <ds-card hover="true" color="info" mode="object" x-align="center"
+                                (click)="resourceClicked(resource)" [title]="resource.resourceName"
+                                (mouseover)="makeResourceHovered(resource)" (mouseleave)="resource.hovered=false">
+                                <ds-card-header>
+                                    <ds-card-title-action>
+                                        <div class="nested-cog" [class.hover-show]="!resource.hovered">
+                                            <button [matMenuTriggerFor]="menu" class="btn btn-icon" type="button"
+                                                (click)="$event.stopPropagation();cogResourceClicked(resource)">
+                                                <i class="material-icons">more_vert</i>
+                                            </button>
+                                            <mat-menu #menu="matMenu">
+                                                <button type="button" mat-menu-item
+                                                    (click)="popupResourceDialog(resource)">Edit</button>
+                                                <button type="button" mat-menu-item
+                                                    (click)="popupDeleteResourceDialog(resource)">Delete</button>
+                                                <button type="button" mat-menu-item (click)="download(resource)">Download</button>
+                                            </mat-menu>
+                                        </div>
+                                    </ds-card-title-action>
+                                    <ds-card-subtitle>
+                                        <div class="split-content">
+                                            <div class="top">
+                                                <div class="object-card-avatar">
+                                                    <img *ngIf="(resource.resourceFormat.toUpperCase() == '.DOC' || resource.resourceFormat.toUpperCase() == '.DOCX')"
+                                                        class="resource-img py-5"
+                                                        src="WebCore/Images/Resources/DOC.png" />
+                                                    <img *ngIf="resource.resourceFormat.toUpperCase() == '.PDF'"
+                                                        class="resource-img py-5"
+                                                        src="WebCore/Images/Resources/PDF.png" />
+                                                    <img *ngIf="(resource.resourceFormat.toUpperCase() == '.XLS' || resource.resourceFormat.toUpperCase() == '.XLSX')"
+                                                        class="resource-img py-5"
+                                                        src="WebCore/Images/Resources/XLS.png" />
+                                                    <img *ngIf="(resource.resourceFormat.toUpperCase() == '.TXT' || resource.resourceFormat.toUpperCase() == '.RTF')"
+                                                        class="resource-img py-5"
+                                                        src="WebCore/Images/Resources/TXT.png" />
+                                                </div>
+                                                <div class="font-lg text-center mb-4">
+                                                    <div class="text-truncate" data-toggle="tooltip"
+                                                        [title]="resource.resourceName">
+                                                        {{resource.resourceName}}
+                                                    </div>
+                                                    <div class="text-truncate text-muted font-xs"
+                                                        [title]="resource.modified | date:'MM/dd/yy h:mm a'">
+                                                        Uploaded: {{resource.modified | date:'MM/dd/yy h:mm a'}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </ds-card-subtitle>
+                                </ds-card-header>
+                            </ds-card>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Links -->
+                <h3 *ngIf="showFiles && (resources | filterResource : {type: 2, searchText: null}).length > 0" class="pt-5">Links</h3>
+                <div *ngIf="showFiles && (resources | filterResource : {type: 2, searchText: null}).length > 0" class="overflow-list">
+                    <div class="row">
+                        <div class="col-6 col-md-4 col-lg-3 " *ngFor="let resource of resources | filterResource : {type: 2, searchText: null}"
+                            (click)="$event.stopPropagation()">
+                            <ds-card hover="true" color="info" mode="object" x-align="center"
+                                (click)="resourceClicked(resource)" [title]="resource.resourceName"
+                                (mouseover)="makeResourceHovered(resource)" (mouseleave)="resource.hovered=false">
+                                <ds-card-header>
+                                    <ds-card-title-action>
+                                        <div class="nested-cog" [class.hover-show]="!resource.hovered">
+                                            <button [matMenuTriggerFor]="menu" class="btn btn-icon" type="button"
+                                                (click)="$event.stopPropagation();cogResourceClicked(resource)">
+                                                <i class="material-icons">more_vert</i>
+                                            </button>
+                                            <mat-menu #menu="matMenu">
+                                                <button type="button" mat-menu-item
+                                                    (click)="popupResourceDialog(resource)">Edit</button>
+                                                <button type="button" mat-menu-item
+                                                    (click)="popupDeleteResourceDialog(resource)">Delete</button>
+                                            </mat-menu>
+                                        </div>
+                                    </ds-card-title-action>
+                                    <ds-card-subtitle>
+                                        <div class="split-content">
+                                            <div class="top">
+                                                <div class="object-card-avatar">
+                                                    <img class="resource-img py-5"
+                                                        src="WebCore/Images/Resources/Link.png" />
+                                                </div>
+                                                <div class="font-lg text-center mb-4">
+                                                    <div class="text-truncate" data-toggle="tooltip"
+                                                        [title]="resource.resourceName">
+                                                        {{resource.resourceName}}
+                                                    </div>
+                                                    <div class="text-muted font-xs">
+                                                        Uploaded: {{resource.modified | date:'MM/dd/yy h:mm a'}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </ds-card-subtitle>
+                                </ds-card-header>
+                            </ds-card>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Videos -->
+                <h3 *ngIf="showFiles && (resources | filterResource : {type: 4, searchText: null}).length > 0" class="pt-5">Videos</h3>
+                <div *ngIf="showFiles && (resources | filterResource : {type: 4, searchText: null}).length > 0" class="overflow-list">
+                    <div class="row">
+                        <div class="col-6 col-md-4 col-lg-3 " *ngFor="let resource of resources | filterResource : {type: 4, searchText: null}"
+                            (click)=" $event.stopPropagation()">
+                            <ds-card hover="true" color="info" mode="object" x-align="center"
+                                (click)="resourceClicked(resource)" [title]="resource.resourceName"
+                                (mouseover)="makeResourceHovered(resource)" (mouseleave)="resource.hovered=false">
+                                <ds-card-header>
+                                    <ds-card-title-action>
+                                        <div class="nested-cog" [class.hover-show]="!resource.hovered">
+                                            <button [matMenuTriggerFor]="menu" class="btn btn-icon" type="button"
+                                                (click)="$event.stopPropagation();cogResourceClicked(resource)">
+                                                <i class="material-icons">more_vert</i>
+                                            </button>
+                                            <mat-menu #menu="matMenu">
+                                                <button type="button" mat-menu-item
+                                                    (click)="popupResourceDialog(resource)">Edit</button>
+                                                <button type="button" mat-menu-item
+                                                    (click)="popupDeleteResourceDialog(resource)">Delete</button>
+                                            </mat-menu>
+                                        </div>
+                                    </ds-card-title-action>
+                                    <ds-card-subtitle>
+                                        <div class="split-content">
+                                            <div class="top">
+                                                <div class="object-card-avatar">
+                                                    <img class="resource-img py-5"
+                                                        src="WebCore/Images/Resources/Vid.png" />
+                                                </div>
+                                                <div class="font-lg text-center mb-4">
+                                                    <div class="text-truncate" data-toggle="tooltip"
+                                                        [title]="resource.resourceName">
+                                                        {{resource.resourceName}}
+                                                    </div>
+                                                    <div class="text-muted font-xs">
+                                                        Uploaded: {{resource.modified | date:'MM/dd/yy h:mm a'}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </ds-card-subtitle>
+                                </ds-card-header>
+                            </ds-card>
+                        </div>
+                    </div>
+                </div>
+                <!-- No Resources-->
+                <div class="empty-state" *ngIf="showFiles && resources.length == 0">
+                    There are no resources in this folder. Click the <a href="javascript:;"
+                        (click)="popupResourceDialog(null)">Add Resource</a> button to add resources.
+                </div>
+            </div>
+        </ng-container>
+        <ng-template #loading>
+            <ds-loading-message>
+            </ds-loading-message>
+        </ng-template>
+    </ds-card-content>
+</ds-card>

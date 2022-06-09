@@ -1,0 +1,309 @@
+// Color Variables
+$bright:   rgba(4, 181, 176, 0.8);
+$base: rgba(213, 213, 213, 1);
+
+// Animation variables
+$loading-animation: color-change ease-in-out infinite;
+$animation-direction: alternate-reverse;
+$animation-duration: 4s;
+$animation-timing: linear;
+
+.dominion-arch-container {
+  margin: 1rem auto;
+  //width: 73px;
+}
+.dominion-arch {
+  height: 30px;
+  width: 73px;
+  margin: 0 auto;
+  position: relative;
+}
+.message {
+  // font-size: 1rem;
+  // font-style: italic;
+  // color: #129c98;
+  // color: #969799;
+  // margin-top: 0.5rem;
+  text-align: center;
+}
+.dominion-arch {
+    .circle {
+        width: 8px;
+        height: 8px;
+        border-radius: 1rem;
+        background: $base;
+        //position: relative;
+    }
+}
+
+// Set arch positions and animations
+.arch-1 {
+  position: absolute;
+  bottom: 0px;
+  left: 0px; //134px
+  animation-name: color-change;
+  animation-duration: $animation-duration;
+  animation-timing-function: $animation-timing;
+  animation-iteration-count: infinite;
+}
+.arch-2 {
+  position: absolute;
+  bottom: 14px;
+  left: 9px;
+  animation-name: color-change-2;
+  animation-duration: $animation-duration;
+  animation-timing-function: $animation-timing;
+  animation-iteration-count: infinite;
+}
+.arch-3 {
+  position: absolute;
+  bottom: 22px;
+  left: 23px;  //18px
+  animation-name: color-change-3;
+  animation-duration: $animation-duration;
+  animation-timing-function: $animation-timing;
+  animation-iteration-count: infinite;
+}
+.arch-4 {
+  position: absolute;
+  bottom: 22px;
+  left: 40px; // 33px
+  animation-name: color-change-4;
+  animation-duration: $animation-duration;
+  animation-timing-function: $animation-timing;
+  animation-iteration-count: infinite;
+}
+.arch-5 {
+  position: absolute;
+  bottom: 14px;
+  left: 55px; // 45px
+  animation-name: color-change-5;
+  animation-duration: $animation-duration;
+  animation-timing-function: $animation-timing;
+  animation-iteration-count: infinite;
+}
+.arch-6 {
+  position: absolute;
+  bottom: 0px;
+  left: 64px; // 51px
+  animation-name: color-change-6;
+  animation-duration: $animation-duration;
+  animation-timing-function: $animation-timing;
+  animation-iteration-count: infinite;
+}
+
+@keyframes color-change {
+  0% {
+    background: $bright;
+  }
+  10% {
+    background: $base;
+  }
+  20% {
+    background: $base;
+  }
+  30% {
+    background: $base;
+  }
+  40% {
+    background: $base;
+  }
+  50% {
+    background: $base;
+  }
+  60% {
+    background: $base;
+  }
+  70% {
+    background: $base;
+  }
+  80% {
+    background: $base;
+  }
+  90% {
+    background: $base;
+  }
+  100% {
+    background: $bright;
+  }
+}
+
+@keyframes color-change-2 {
+  0% {
+    background: $base;
+  }
+  10% {
+    background: $bright;
+  }
+  20% {
+    background: $base;
+  }
+  30% {
+    background: $base;
+  }
+  40% {
+    background: $base;
+  }
+  50% {
+    background: $base;
+  }
+  60% {
+    background: $base;
+  }
+  70% {
+    background: $base;
+  }
+  80% {
+    background: $base;
+  }
+  90% {
+    background: $bright;
+  }
+  100% {
+    background: $base;
+  }
+}
+
+@keyframes color-change-3 {
+  0% {
+    background: $base;
+  }
+  10% {
+    background: $base;
+  }
+  20% {
+    background: $bright;
+  }
+  30% {
+    background: $base;
+  }
+  40% {
+    background: $base;
+  }
+  50% {
+    background: $base;
+  }
+  60% {
+    background: $base;
+  }
+  70% {
+    background: $base;
+  }
+  80% {
+    background: $bright;
+  }
+  90% {
+    background: $base;
+  }
+  100% {
+    background: $base;
+  }
+}
+
+@keyframes color-change-4 {
+  0% {
+    background: $base;
+  }
+  10% {
+    background: $base;
+  }
+  20% {
+    background: $base;
+  }
+  30% {
+    background: $bright;
+  }
+  40% {
+    background: $base;
+  }
+  50% {
+    background: $base;
+  }
+  60% {
+    background: $base;
+  }
+  70% {
+    background: $bright;
+  }
+  80% {
+    background: $base;
+  }
+  90% {
+    background: $base;
+  }
+  100% {
+    background: $base;
+  }
+}
+
+@keyframes color-change-5 {
+  0% {
+    background: $base;
+  }
+  10% {
+    background: $base;
+  }
+  20% {
+    background: $base;
+  }
+  30% {
+    background: $base;
+  }
+  40% {
+    background: $bright;
+  }
+  50% {
+    background: $base;
+  }
+  60% {
+    background: $bright;
+  }
+  70% {
+    background: $base;
+  }
+  80% {
+    background: $base;
+  }
+  90% {
+    background: $base;
+  }
+  100% {
+    background: $base;
+  }
+}
+
+@keyframes color-change-6 {
+  0% {
+    background: $base;
+  }
+  10% {
+    background: $base;
+  }
+  20% {
+    background: $base;
+  }
+  30% {
+    background: $base;
+  }
+  40% {
+    background: $base;
+  }
+  50% {
+    background: $bright;
+  }
+  60% {
+    background: $base;
+  }
+  70% {
+    background: $base;
+  }
+  80% {
+    background: $base;
+  }
+  90% {
+    background: $base;
+  }
+  100% {
+    background: $base;
+  }
+}

@@ -1,0 +1,87 @@
+<ng-template #loading>
+  <ds-loading-message></ds-loading-message>
+</ng-template>
+
+<ds-card collapse="true" expanded="true">
+  <ds-card-header>
+    <ds-card-sub-header-title>
+      Eligibility
+    </ds-card-sub-header-title>
+  </ds-card-header>
+  <ds-card-content>
+    <ng-container *ngIf="(dropdownLists$ | async) as data; else loading">
+      <form [formGroup]="form" dsTrackFormChanges>
+        <div class="row" formGroupName="accrual">
+          <div class="col-sm-6 col-md-3">
+            <div class="form-group">
+              <label>Pay Type</label>
+              <select class="form-control custom-select" formControlName="employeeTypeId" dsFormControlValidator>
+                <option value=""></option>
+                <option *ngFor="let payType of data.employeePayTypes" [ngValue]="payType.payTypeId">
+                  {{payType.description}}</option>
+              </select>
+              <div class="invalid-feedback">
+                <span>Please select an employee type.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-6 col-md-3">
+            <div class="form-group">
+              <label>Employee Status</label>
+              <select class="form-control custom-select" formControlName="employeeStatusId" dsFormControlValidator>
+                <option value=""></option>
+                <option *ngFor="let planType of data.clientAccrualEmployeeStatuses" [ngValue]="planType.id">
+                  {{planType.description}}</option>
+              </select>
+              <div class="invalid-feedback">
+                <span>Please select an employee status.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-auto">
+            <div class="form-group">
+              <label class="form-control-label">Waiting Period <span class="form-help-text">Optional</span></label>
+              <div class="input-with-button-group">
+                <input type="number" class="form-control" formControlName="waitingPeriodValue" min="0" />
+                <mat-button-toggle-group formControlName="waitingPeriodTypeId">
+                  <mat-button-toggle [value]="0"> D </mat-button-toggle>
+                  <mat-button-toggle [value]="1"> W </mat-button-toggle>
+                  <!-- <mat-button-toggle [value]="2"> M </mat-button-toggle> -->
+                  <mat-button-toggle [value]="3"> Y </mat-button-toggle>
+                </mat-button-toggle-group>
+                <div class="invalid-feedback">
+                  <span>Please enter numbers only.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-6 col-md-3">
+            <div class="form-group">
+              <label>After</label>
+              <select class="form-control custom-select" formControlName="waitingPeriodReferencePoint">
+                <option value=""></option>
+                <option *ngFor="let planType of data.serviceReferencePointFrequencies" [ngValue]="planType.id">
+                  {{planType.description}}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-sm-6 col-md-3">
+            <div class="form-group">
+              <label>Auto Apply Option</label>
+              <select class="form-control custom-select" formControlName="autoApplyAccrualPolicyOptionId">
+                <option value=""></option>
+                <option *ngFor="let autoApply of data.autoApplyAccrualPolicyOptions" [ngValue]="autoApply.id">
+                  {{autoApply.description}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+      </form>
+    </ng-container>
+  </ds-card-content>
+</ds-card>

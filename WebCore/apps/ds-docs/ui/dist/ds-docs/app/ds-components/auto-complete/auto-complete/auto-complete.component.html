@@ -1,0 +1,27 @@
+<ds-card mode="noheader">
+  <ds-card-content>
+    <form [formGroup]="form">
+      <div class="row">
+          <div class="col-md-6">
+              <div class="form-group">
+                  <label>Favorite Bill Murray Movie</label>
+                  <input
+                    class="form-control"
+                    [formControl]="movieName"
+                    matInput
+                    [matAutocomplete]="auto"/>
+                  <mat-autocomplete 
+                    autoActiveFirstOption 
+                    #auto="matAutocomplete" >
+                    <mat-option 
+                      *ngFor="let m of filteredMovies | async"
+                      [value]="m.movie">
+                      {{m.movie}}
+                    </mat-option>
+                  </mat-autocomplete>
+              </div>
+          </div>
+      </div>
+    </form>
+  </ds-card-content>
+</ds-card>

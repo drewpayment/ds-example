@@ -1,0 +1,85 @@
+<form [formGroup]="form">
+<ds-card>
+  <ds-card-header>
+    <ds-card-header-title>Table</ds-card-header-title>
+    <ds-card-title-right-content>
+      <button mat-button class="btn btn-icon-outline-primary" (click)="editAll()">
+        <mat-icon *ngIf="!this.isGridEditView">edit</mat-icon>
+        <mat-icon *ngIf="this.isGridEditView">done</mat-icon>
+      </button>
+    </ds-card-title-right-content>
+    <ds-card-title-action>
+      <button 
+        [matMenuTriggerFor]="menu" 
+        class="btn btn-outline-primary dropdown-toggle">
+        Options
+      </button>
+      <mat-menu #menu="matMenu">
+          <button mat-menu-item >Action</button>
+          <button mat-menu-item >Another action</button>
+          <button mat-menu-item >Something else here</button>
+      </mat-menu>
+    </ds-card-title-action>
+  </ds-card-header>
+  <ds-card-content>
+    <div class="card card-table">
+        <div class="table-responsive">
+            <table mat-table formArrayName="items" [dataSource]="dataSource" matSort class="w-100 grid">
+              <ng-container matColumnDef="character">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Character </th>
+                <td mat-cell *matCellDef="let element, let i = index" class="grid-input-container" [formGroupName]="i"> 
+                  <ng-container *ngIf="!element.isEditView"> {{element.character}} </ng-container>
+                  <ng-container *ngIf="element.isEditView">
+                    <input type="text" class="grid-input form-control" formControlName="character"/>
+                  </ng-container>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="movie">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Movie </th>
+                <td mat-cell *matCellDef="let element, let i = index" class="grid-input-container" [formGroupName]="i"> 
+                  <ng-container *ngIf="!element.isEditView"> {{element.movie}} </ng-container> 
+                  <ng-container *ngIf="element.isEditView">
+                    <input type="text" class="grid-input form-control" formControlName="movie"/>
+                  </ng-container>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="year">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="table-text-right"> Year </th>
+                <td mat-cell *matCellDef="let element, let i = index" class="table-text-right grid-input-container" [formGroupName]="i"> 
+                  <ng-container *ngIf="!element.isEditView"> {{element.year}}  </ng-container> 
+                  <ng-container *ngIf="element.isEditView">
+                    <select class="grid-select custom-select" formControlName="year">
+                      <option *ngFor="let year of years" [ngValue]="year.id">{{ year.year }}</option>
+                    </select>
+                  </ng-container>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="edit">
+                <th mat-header-cell *matHeaderCellDef class="td-action-icon-width"></th>
+                <td mat-cell *matCellDef="let element, let i = index" class="td-action-icon-width">
+                  <button type="button" mat-button [matMenuTriggerFor]="menu" class="btn btn-icon">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                  <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="editSingle(element)">
+                      <ng-container *ngIf="!element.isEditView">Edit</ng-container>
+                      <ng-container *ngIf="element.isEditView">Done</ng-container>
+                    </button>
+                    <button mat-menu-item (click)="delete(element)">Delete</button>
+                  </mat-menu>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons></mat-paginator>
+        </div>
+    </div>
+  </ds-card-content>
+  <ds-card-footer>
+    <button class="btn btn-save" (click)="save()">Save</button>
+    <button class="btn btn-cancel">Cancel</button>
+  </ds-card-footer>
+</ds-card>
+
+</form>

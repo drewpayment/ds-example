@@ -1,0 +1,218 @@
+<div class="punch-employee-container mb-4">
+    <div class="card card-table" *ngIf="tableData?.table?.length; else emptyState">
+        <div class="table-responsive">
+            <table class="table calendar">
+                <thead>
+                    <tr class="table-header">
+                        <td>Day</td>
+                        <td></td>
+                        <td>Date</td>
+                        <td>In</td>
+                        <td>Out</td>
+                        <td>In</td>
+                        <td>Out</td>
+                        <td>Hours</td>
+                        <td>Schedule</td>
+                        <td class="exceptions">Exceptions</td>
+                        <td *ngIf='readRate'>Rate</td>
+                        <td>
+                            <div class="custom-control custom-checkbox d-inline-block">
+                                <input type="checkbox" class="custom-control-input"
+                                    (click)="ApproveAllCheckboxesControl.setValue(!ApproveAllCheckboxesControl.value)"
+                                    id="selectAll">
+                                <label class="custom-control-label text-white" for="selectAll">Approve</label>
+                            </div>
+                        </td>
+                        <td *ngIf="noteOptions?.length > 0" class="notes">Notes</td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody [formGroup]="approvedCheckboxes">
+                    <tr *ngFor="let row of tableData?.table; let i = index" class="cal-row"
+                        [class.employee-row]="'HEADER'.localeCompare(row?.header) == 0" #tcaRows>
+                        <td class="col-info">
+                            <!-- Day -->
+                            <span
+                                [ngStyle]="{'font-weight': (row.day | isTotalRow) || (row.date| isTotalRow) || (row.header?.localeCompare('HEADER') === 0) ? 'bold' : 'normal'}">{{row.day}}</span>
+                            <button type="button"
+                                (click)="openAddPunchModal(row.eventDate, row.employeeID, i, row.addPunchPopUp)"
+                                *ngIf="row.allowSuperAddPunches && !(row.day| isTotalRow) && !(row.date| isTotalRow) && !(row.header?.localeCompare('HEADER') === 0) && row.day != null && !row.isTotalRow"
+                                mat-button id="lnkAddPunch{{i}}" class="btn-punch">AP</button>
+                            <button type="button"
+                                (click)="openClockEmployeeBenefitEdit(row.eventDate, row.employeeID, i, row.addBenefitPopUp)"
+                                *ngIf="row.allowSuperAddBenefit && !(row.day| isTotalRow) && !(row.date| isTotalRow) && !(row.header?.localeCompare('HEADER') === 0) && row.day != null && !row.isTotalRow"
+                                mat-button id="lnkAddBenefit{{i}}" class="btn-punch" mat-button>AB</button>
+                            <button type="button" *ngIf="row.addAllocationVisible" mat-button id="lnkAddAllocation"
+                                class="btn-punch" ToolTip="Allocate Hours"
+                                (click)="openAllocateHours(row.eventDate, row.employeeID, i)">AL</button>
+                        </td>
+                        <td>
+                            <!-- Note Button -->
+                            <!-- Looks like this never shows? -->
+                            <button type="button" *ngIf="false" mat-icon-button id="" class="btn-punch">
+                                <mat-icon>insert_drive_file</mat-icon>
+                            </button>
+
+                            <!-- Clock button -->
+                            <button type="button" *ngIf="row.imgClockNameVisible" mat-icon-button class="btn-punch"
+                                (click)="alertUser(row.clockName)" [matTooltip]="row.clockName"
+                                matTooltipPosition="above">
+                                <mat-icon>access_time</mat-icon>
+                            </button>
+
+                            <!-- Geofencing button -->
+                            <button type="button" *ngIf="row.imgGeofencingVisible" mat-icon-button class="btn-punch"
+                                (click)="openPunchMapModal(row.employeeID, row.clientId)"
+                                matTooltip="View Location Data" matTooltipPosition="above">
+                                <mat-icon>info</mat-icon>
+                            </button>
+                        </td>
+                        <td
+                            [ngStyle]="{'font-weight': !(row.day| isTotalRow) && !(row.date| isTotalRow) && !(row.header?.localeCompare('HEADER') === 0) && row.day != null && !row.isTotalRow  ? 'normal' : 'bold'}">
+                            <!-- Date-->
+
+                            <div *ngIf="!row.lnkDateShowing; else datePopover">
+                                {{row.date}}
+                            </div>
+                            <ng-template #datePopover>
+                                <div>
+                                    <ds-date-with-popover (rowClickedEmitter)="selectedRow = $event" [row]="row">
+                                    </ds-date-with-popover>
+                                </div>
+                            </ng-template>
+                        </td>
+                        <td>
+                            <!-- In-->
+                            <button type="button" mat-button class="btn-punch"
+                                (click)="determinePunchModalMode(row.inEmployeePunchID, row.employeeID, row.in, row.eventDate, row.id)"><span
+                                    [ngClass]="(row.in| isExceptionRow : row.inClockClientLunchID : row.exceptionStyle : row.inToolTipContent : row.exceptions : 1 : row.inClass)"
+                                    [matTooltip]="row.inToolTipContent">{{row.in}}</span></button>
+                        </td>
+                        <td>
+                            <!-- Out-->
+                            <button type="button" mat-button class="btn-punch"
+                                (click)="determinePunchModalMode(row.outEmployeePunchID, row.employeeID, row.out, row.eventDate, row.id)"><span
+                                    [ngClass]="(row.out| isExceptionRow : row.outClockClientLunchID : row.exceptionStyle : row.outToolTipContent : row.exceptions : 2 : row.outClass)"
+                                    [matTooltip]="row.outToolTipContent">{{row.out}} </span></button>
+                        </td>
+                        <td>
+                            <!-- In-->
+                            <button type="button" mat-button class="btn-punch"
+                                (click)="determinePunchModalMode(row.in2EmployeePunchID, row.employeeID, row.in2, row.eventDate, row.id)"><span
+                                    [ngClass]="(row.in2| isExceptionRow : row.in2ClockClientLunchID : row.exceptionStyle : row.in2ToolTipContent : row.exceptions : 3 : row.in2Class)"
+                                    [matTooltip]="row.in2ToolTipContent">{{row.in2}}</span></button>
+                        </td>
+                        <td>
+                            <!-- Out -->
+                            <button type="button" mat-button class="btn-punch"
+                                (click)="determinePunchModalMode(row.out2EmployeePunchID, row.employeeID, row.out2, row.eventDate, row.id)"><span
+                                    [ngClass]="(row.out2| isExceptionRow : row.out2ClockClientLunchID : row.exceptionStyle : row.out2ToolTipContent : row.exceptions : 4 : row.out2Class)"
+                                    [matTooltip]="row.out2ToolTipContent">{{row.out2}}</span></button>
+                        </td>
+                        <td>
+                            <!-- Hours -->
+                            <span
+                                [ngStyle]="{'font-weight': !(row.day| isTotalRow) && !(row.date| isTotalRow) && !(row.header?.localeCompare('HEADER') === 0) && row.day != null && !row.isTotalRow  ? 'normal' : 'bold'}">{{row.hours}}</span>
+                        </td>
+                        <td>
+                            <!-- Schedule -->
+                            <div *ngIf="'HEADER'.localeCompare(row?.header) !== 0; else headerSchedule">
+                                <button type="button"
+                                    (click)="openEditScheduleModal(row.clockEmployeeScheduleID, row.eventDate, row.employeeID, i)"
+                                    mat-button class="btn-punch instruction-text">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="fill-medium" width="16" height="16"
+                                        viewBox="0 0 27 27" *ngIf="row.isScheduleReal">
+                                        <path fill="none" d="M0 0h24v24H0z" />
+                                        <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" /></svg>
+                                    {{row.schedule}}</button>
+                                <button type="button"
+                                    (click)="openEditScheduleModal(row.clockEmployeeScheduleID, row.eventDate, row.employeeID, i)"
+                                    mat-button class="btn-punch instruction-text" *ngIf="row.schedule2">
+                                    {{row.schedule2}}</button>
+                                <button type="button"
+                                    (click)="openEditScheduleModal(row.clockEmployeeScheduleID, row.eventDate, row.employeeID, i)"
+                                    mat-button class="btn-punch instruction-text" *ngIf="row.schedule3">
+                                    {{row.schedule3}}</button>
+                            </div>
+
+                            <ng-template #headerSchedule>
+                                <div class="btn-punch instruction-text">{{row.schedule}}</div>
+                            </ng-template>
+                        </td>
+                        <td>
+                            <!-- Exceptions-->
+                            <div [attr.class]="row.exceptionStyle ? row.exceptionStyle : 'exception'">
+                                {{ checkIsMissingPunch(row) ? row.exceptions : '' }}
+                                <span class="cost-center-mismatch"
+                                    [innerHtml]="getCostCentersDoNotMatchError(row)"></span>
+                            </div>
+                        </td>
+
+                        <td *ngIf='readRate'>
+                            <!-- Rates-->
+                            <ng-container *ngIf="row.employeeRate && row.employeeRate > 0">
+                                {{row.employeeRate | currency}}/hr</ng-container>
+                        </td>
+
+                        <td>
+                            <!-- Approve -->
+                            <div [formGroupName]="row.id" *ngIf="row.selectHoursShowing">
+                                <div class="custom-control custom-checkbox">
+                                    <input formControlName="isApproved" type="checkbox" class="custom-control-input"
+                                        id="approve{{row.id}}">
+                                    <label [matTooltip]="row.selectHoursTooltip" matTooltipPosition="above"
+                                        class="custom-control-label" for="approve{{row.id}}"></label>
+                                </div>
+                            </div>
+                        </td>
+                        <ng-container *ngIf="noteOptions?.length > 0">
+                            <td>
+                                <!-- Notes -->
+                                <div [formGroupName]="row.id"
+                                    *ngIf="!(row.header?.localeCompare('HEADER') === 0) && !row.isTotalRow && row.schedule">
+                                    <select class="form-control custom-select notes"
+                                        formControlName="clockclientNoteID">
+                                        <option value="0"></option>
+                                        <option *ngFor="let note of getOptions(noteOptions, row)"
+                                            [value]="note.clockClientNoteID">{{note.note}}</option>
+                                    </select>
+                                </div>
+                            </td>
+                        </ng-container>
+                        <td class="white-space-pre-wrap">{{row.notes}}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <nav aria-label="Time and attendance approval pagination">
+                <ul class="pagination">
+                    <button type="button" (click)="goToPreviousPage()" [disabled]="tableData?.currentPage == 0"
+                        mat-icon-button>
+                        <mat-icon>chevron_left</mat-icon>
+                    </button>
+                    <div class="pagination-repeat-wrapper">
+                        <div class="page-container">
+                            <li class="page-item" *ngFor="let nullItem of listOfPages; let i = index;">
+                                <button type="button"
+                                    [ngClass]="{'page-link': true, '': i !== tableData.currentPage, 'active': i === tableData.currentPage}"
+                                    (click)="loadPage(i)">{{i + 1}}</button>
+                            </li>
+                        </div>
+                    </div>
+
+                    <button type="button" (click)="goToNextPage()"
+                        [disabled]="!(tableData?.totalPages > tableData?.currentPage+1)" mat-icon-button>
+                        <mat-icon>chevron_right</mat-icon>
+                    </button>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<ng-template #emptyState>
+    <div class="empty-state">
+        There are no employees to display with the current filters selected.
+    </div>
+</ng-template>
+<ng-container *ngIf="changeListener$ | async"></ng-container>

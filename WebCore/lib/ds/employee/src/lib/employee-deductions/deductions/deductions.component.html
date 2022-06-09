@@ -1,0 +1,147 @@
+<ds-card>
+        <ds-card-header>
+            <ds-card-header-title>
+                Deductions                
+            </ds-card-header-title>
+
+            <ds-card-title-right-content class="mr-0">
+                <button *ngIf="userHasAccountWriteAccess || userHasAmountWriteAccess" type="button" (click)="vendorClicked()" class="btn btn-outline-primary text-nowrap mb-2" [disabled]="!userHasAccountWriteAccess">
+                    <mat-icon>settings</mat-icon> Vendors
+                </button>
+                <button *ngIf="userHasAccountWriteAccess || userHasAmountWriteAccess" type="button" (click)="addDeduction()" class="btn btn-outline-primary text-nowrap mb-2" [disabled]="reminderChecked == true || !userHasAccountWriteAccess">
+                    <mat-icon>add</mat-icon> Deduction
+                </button>
+            </ds-card-title-right-content>
+            <ds-card-subtitle *ngIf="dataSource.data.length != this.deductions.list.length">
+                <div class="instruction-text">
+                    Inactive items not shown by user preference
+                </div>
+            </ds-card-subtitle>
+        </ds-card-header>
+
+        <ds-card-content>
+            <div class="card card-table" [ngStyle]="{'display': dataSource.data.length != 0 ? 'block': 'none' }">
+                <div class="table-responsive">
+                    <table mat-table [dataSource]="dataSource" class="table">
+                        <!--- Note that these columns can be defined in any order.
+                                The actual rendered columns are set as a property on the row definition" -->
+
+                        <!-- Active Column -->
+                        <ng-container matColumnDef="isActive">
+                            <th mat-header-cell *matHeaderCellDef> Active </th>
+                            <td mat-cell *matCellDef="let deduction"><i *ngIf="deduction.isActive == true" class="material-icons">done</i></td>
+                        </ng-container>
+
+                        <!-- Code Column -->
+                        <ng-container matColumnDef="code">
+                            <th mat-header-cell *matHeaderCellDef class="table-text-right"> Code  </th>
+                            <td mat-cell *matCellDef="let deduction" class="table-text-right"> {{deduction.code}} </td>
+                        </ng-container>
+
+                        <!-- Deduction Column -->
+                        <ng-container matColumnDef="deduction">
+                            <th mat-header-cell *matHeaderCellDef> Deduction  </th>
+                            <td mat-cell *matCellDef="let deduction">
+
+                                <span *ngIf="!deduction.descriptionCode.includes('<br />')">{{deduction.descriptionCode}}</span>
+                                <span *ngIf="deduction.descriptionCode.includes('<br />')">{{deduction.descriptionCode.split("<")[0]}} </span>
+
+                                <ng-container *ngIf="deductionsThatAllowDDsList.indexOf(deduction.clientDeductionID) != -1 && deduction.descriptionCode.includes('<br />')">
+                                    <button *ngIf="userHasAccountWriteAccess || userHasAmountWriteAccess" class="btn btn-table btn-outline-primary mr-1" type="button" (click)="editDDforHSA(deduction)" [disabled]="!userHasAccountWriteAccess">
+                                        <mat-icon>edit</mat-icon> DD
+                                    </button>
+                                    {{ deduction.descriptionCode.split(' ')[deduction.descriptionCode.split(' ').length - 1].substr(2) }}
+                                </ng-container>
+
+                                <!-- <button class="btn btn-table btn-outline-primary" (click)="editDDforHSA(deduction)" type="button" *ngIf="deduction.deduction.includes('HSA') && deduction.descriptionCode.includes('<br />')">{{ deduction.descriptionCode.split(' ')[deduction.descriptionCode.split(' ').length - 1].substr(2) }}</button> -->
+                                <button *ngIf="(deductionsThatAllowDDsList.indexOf(deduction.clientDeductionID) != -1 && !deduction.descriptionCode.includes('<br />')) && userHasAccountWriteAccess" type="button" (click)="addDDforHSA(deduction)" [disabled]="reminderDate == true || !userHasAccountWriteAccess" class="btn btn-table btn-outline-primary">
+                                    <mat-icon>add</mat-icon> DD
+                                </button>
+                            </td>
+                        </ng-container>
+
+                        <!-- Amount Column -->
+                        <ng-container matColumnDef="amount">
+                            <th mat-header-cell *matHeaderCellDef class="table-text-right"> Amount </th>
+                            <td mat-cell *matCellDef="let deduction" class="table-text-right text-nowrap">
+                                <span *ngIf="deduction.numberPrefix == '$'; else amountPercent">${{deduction.amount | number: '1.4-4'}}</span>
+                                <ng-template #amountPercent>
+                                    <span *ngIf="deduction.numberPrefix == '%'; else amountNone">{{deduction.amount | number: '1.4-4'}}%</span>
+                                </ng-template>
+                                <ng-template #amountNone>
+                                    <span>{{deduction.amount | number: '1.4-4'}}</span>
+                                </ng-template>
+                            </td>
+                        </ng-container>
+
+                        <!-- Amount Type Column -->
+                        <ng-container matColumnDef="amountType">
+                            <th mat-header-cell *matHeaderCellDef> Amount Type </th>
+                            <td mat-cell *matCellDef="let deduction"> {{deduction.amountType}} </td>
+                        </ng-container>
+
+                        <!-- Max Per Payroll Column -->
+                        <ng-container matColumnDef="max">
+                            <th mat-header-cell *matHeaderCellDef class="table-text-right"> Max Per Payroll </th>
+                            <td mat-cell *matCellDef="let deduction" class="table-text-right"> {{deduction.max | number: '1.4-4'}} </td>
+                        </ng-container>
+
+                        <!-- May Type Column -->
+                        <ng-container matColumnDef="maxTypeDescription">
+                            <th mat-header-cell *matHeaderCellDef> Max Type </th>
+                            <td mat-cell *matCellDef="let deduction"> {{deduction.maxTypeDescription}} </td>
+                        </ng-container>
+
+                        <!-- Limit/Balance Column -->
+                        <ng-container matColumnDef="totalMax">
+                            <th mat-header-cell *matHeaderCellDef class="table-text-right"> Limit/Balance </th>
+                            <td mat-cell *matCellDef="let deduction" class="table-text-right"> {{deduction.totalMax | number: '1.4-4'}} </td>
+                        </ng-container>
+
+                        <!-- Vendor Column -->
+                        <ng-container matColumnDef="vendor">
+                            <th mat-header-cell *matHeaderCellDef> Vendor </th>
+                            <td mat-cell *matCellDef="let deduction"> {{deduction.vendor}} </td>
+                        </ng-container>
+
+                        <!-- Plan Column -->
+                        <ng-container matColumnDef="plan">
+                            <th mat-header-cell *matHeaderCellDef> Plan </th>
+                            <td mat-cell *matCellDef="let deduction"> {{deduction.plan}} </td>
+                        </ng-container>
+
+                        <!-- Add'l Info Column -->
+                        <ng-container matColumnDef="additionalInfo">
+                            <th mat-header-cell *matHeaderCellDef> Add'l Info </th>
+                            <td mat-cell *matCellDef="let deduction"> {{deduction.additionalInfo}} </td>
+                        </ng-container>
+
+                        <!-- Actions column-->
+                        <ng-container matColumnDef="actions">
+                            <th mat-header-cell *matHeaderCellDef></th>
+                            <td mat-cell *matCellDef="let deduction">
+                                <ng-container *ngIf="userHasAccountWriteAccess || userHasAmountWriteAccess">
+                                    <button type="button"  [matMenuTriggerFor]="deductionsMenu" class="btn btn-icon table-edit-icon">
+                                        <mat-icon>more_vert</mat-icon>
+                                    </button>
+                                    <mat-menu #deductionsMenu="matMenu">
+                                        <button mat-menu-item (click)="editDeduction(deduction)" [disabled]="invalidReminderDate == true || !userHasAccountWriteAccess">Edit</button>
+                                        <button mat-menu-item (click)="deleteDeduction(deduction)" [disabled]="invalidReminderDate == true || !userHasAccountWriteAccess">Delete</button>
+                                        <!-- <button *ngIf="deduction.deduction == 'HSA' && deduction.descriptionCode.includes('<br />')"mat-menu-item (click)="editDDforHSA(deduction)">Edit DD</button> -->
+                                        <button *ngIf="deductionsThatAllowDDsList.indexOf(deduction.clientDeductionID) != -1 && deduction.descriptionCode.includes('<br />')" mat-menu-item (click)="deleteDDforHSA(deduction)" [disabled]="invalidReminderDate == true || !userHasAccountWriteAccess">Delete DD</button>
+                                    </mat-menu>
+                                </ng-container>
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
+                </div>
+            </div>
+
+            <div *ngIf="!loading && dataSource.data.length == 0" class="empty-state">There are no deductions to display.</div> <!--Click the "+ Deduction" button to add one for this employee.-->
+            <div *ngIf="loading" class="loading-message">Loading...</div>
+
+        </ds-card-content>
+    </ds-card>

@@ -1,0 +1,47 @@
+.single-select {
+
+    .mat-chip-list {
+        .mat-chip {
+            background: transparent;
+            color: inherit;
+            min-height: 21px;
+            border: none;
+            padding-left: 0.75rem;
+        }
+        .mat-standard-chip {
+            &:focus {
+                box-shadow: none;
+            }
+        }
+    }
+    //removes selctor when in single view
+    .mat-input-element {
+        flex: 1 0;
+        width: 100%;
+        min-width: 0px;
+    }
+    //Originally set to inline-flex, the height breaks in Edge
+    .mat-form-field-flex {
+        display: flex;
+    }
+}
+
+ds-contact-autocomplete {
+    .form-control {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+    .mat-autocomplete-trigger {
+      padding: 0.375rem 0.75rem;
+    }
+}
+
+
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    // IE specific styles
+    .backspace .material-icons {
+        height: 18px; // represents height of icon, centering it vertically in IE
+    }
+}

@@ -1,0 +1,55 @@
+<ds-card>
+    <ds-card-header>
+        <ds-card-header-title>
+            Dependents
+        </ds-card-header-title>
+        <ds-card-title-action>
+            <div>
+                <button type="button"
+                        class="btn btn-outline-primary"
+                        (click)="showEditDependentsDialog(newEmployeeDependent)">
+                    <i class="material-icons">add</i> Dependent
+                </button>
+            </div>
+        </ds-card-title-action>
+    </ds-card-header>
+    
+    
+    <ds-card-content>
+        <div class="row justify-content-center" *ngIf="isLoading">
+            <div class="col"><ds-loading-message></ds-loading-message></div>
+        </div>
+        <div class="empty-state" *ngIf="(!employeeDependents?.length || !hasViewPermissions) && !isLoading">
+            There are currently no dependents to display. Add one by clicking the "+ Dependent" button.
+        </div>
+        <ng-container *ngIf="employeeDependents?.length && hasViewPermissions">
+            <div class="card card-table">
+                <table class="table">
+                    <thead class="table-header">
+                        <tr>
+                            <th class="W-30">Name</th>
+                            <th class="W-30">Relationship</th>
+                            <th class="W-30">Status</th>
+                            <th class="td-action-icon-width"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let dependent of employeeDependents">
+                            <td>{{ dependent.firstName + ' ' + dependent.lastName }}</td>
+                            <td>{{ dependent.relationship }}</td>
+                            <td>
+                                <span *ngIf="dependent.insertStatus == 1" class="badge badge-pill badge-success">Approved</span>
+                                <span *ngIf="dependent.insertStatus == 0" class="badge badge-pill badge-warning">Pending</span>
+                            </td>
+                            <td class="td-action-icon-width">
+                              <button type="button" class="btn btn-icon table-edit-icon" (click)="showEditDependentsDialog(dependent)">
+                                <i class="material-icons">mode_edit</i>
+                              </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </ng-container>
+    </ds-card-content>
+</ds-card>

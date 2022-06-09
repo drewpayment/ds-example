@@ -1,0 +1,467 @@
+<div ng-show="isLoading">Dependents Loading...</div>
+<div ng-show="isLoaded">
+    <div class="ess-container">
+        <div class="panel clearfix">
+            <div class="panel-body">
+                <form name="frmDependent">
+                    <div class="d-flex flex-wrap on-header">
+                        <div class="circle-sm on-pager">{{circleNumber}}</div>
+                        <div class="top-constant">
+                            <h1>Dependents</h1>
+                            <p class="text-muted">If you have any dependents, please add them to your profile. This information will be used for tax and benefits purposes.</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-1 text-muted mt-sm"><span style="font-size: medium;" class="text-right"></span></div>
+                        <div class="col-md-12">
+                            <div ng-repeat="dependent in EmployeeOnboardingDependentsList" class="listorEditDependents">
+                                <div ng-if="!(isEdit(dependent))" class="list-view form-group">
+                                    <div class="flex-row">
+                                        <div class="flex-column list-view-icon flex-0-0-auto">
+                                            <i class="fa fa-user fa-4x mt-sm" style="color: grey;"></i>
+                                        </div>
+                                        <div class="flex-column flex-1-1">
+                                            <div ng-if="dependent.middleInitial !== null">
+                                                <p class="long-and-truncated">
+                                                    <b>{{dependent.firstName + ' ' + dependent.middleInitial + '. ' + dependent.lastName}}</b>
+                                                    <input type="button" value="{{dependent.relationship}}" class="btn btn-xs btn-warning" />
+                                                    <a class="pull-right"><i class="fa fa-pencil fa-1x" style="color: orange;" ng-click="editContact(dependent)"></i></a>
+                                                </p>
+                                            </div>
+
+                                            <div ng-if="dependent.middleInitial === null">
+                                                <p class="long-and-truncated">
+                                                    <b>{{dependent.firstName + ' ' + dependent.lastName}}</b>
+                                                    <input type="button" value="{{dependent.relationship}}" class="btn remove-pointer-events btn-xs btn-warning" />
+                                                    <a class="pull-right"><i class="fa fa-pencil fa-1x" style="color: orange;" ng-click="editContact(dependent)"></i></a>
+                                                </p>
+                                            </div>
+
+                                            <div>
+                                                <span style="color:grey"><b>DOB:&nbsp;</b></span><span class="text-muted"> {{ dependent.birthDate | date }} </span> &nbsp;&nbsp; <span ng-hide="dependent.gender ==''" style="color:grey"><b>Gender:&nbsp;</b></span><span ng-hide="dependent.gender ==''" class="text-muted"> {{dependent.gender === "M" ? "Male" : "Female"}}</span>
+                                            </div>
+
+                                        </div>
+                                        <div class="flex-column flex-1-1">
+                                            <div class="Student">
+                                                <div ng-show="dependent.isAStudent">
+                                                    <p class="small"><i class="fa fa-check fa-1x" aria-hidden="true">&nbsp;</i><b>Student</b></p>
+                                                </div>
+                                                <div ng-hide="dependent.isAStudent">
+                                                    <p class="small"><i class="fa fa-times fa-1x" aria-hidden="true">&nbsp;</i>Not a Student</p>
+                                                </div>
+                                            </div>
+                                            <div class="Disability">
+                                                <div ng-show="dependent.hasADisability">
+                                                    <p class="small"><i class="fa fa-check fa-1x" aria-hidden="true">&nbsp;</i><b>Has Disabilities</b></p>
+                                                </div>
+                                                <div ng-hide="dependent.hasADisability">
+                                                    <p class="small"><i class="fa fa-times fa-1x" aria-hidden="true">&nbsp;</i>No Disabilities</p>
+                                                </div>
+                                            </div>
+                                            <div class="Tobacco pb-sm">
+                                                <div ng-show="dependent.tobaccoUser">
+                                                    <p class="small"><i class="fa fa-check fa-1x" aria-hidden="true">&nbsp;</i><b>Uses Tobacco</b></p>
+                                                </div>
+                                                <div ng-hide="dependent.tobaccoUser">
+                                                    <p class="small"><i class="fa fa-times fa-1x" aria-hidden="true">&nbsp;</i>No Tobacco Use</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div ng-if="(isEdit(dependent))" class="editView">
+                                    <div class="pt-sm pl-md pr-md" style="border: 1px solid #e2dfdf;">
+                                        <div class="row">
+                                            <div class="col-xs-9 col-sm-4 form-group">
+                                                <label>First Name</label>
+                                                <input name="EditFirstName"
+                                                       ng-model="selected.firstName"
+                                                       type="text" class="form-control capitalize" maxlength="25"
+                                                       ng-required="true"
+                                                       ng-class="{ 'mandatory-field' : frmDependent.EditFirstName.$invalid}" />
+                                            </div>
+                                            <div class="col-xs-3 col-sm-3 form-group">
+                                                <label>M.I.</label>
+                                                <input ng-model="selected.middleInitial"
+                                                       type="text" class="form-control capitalize" maxlength="1" />
+
+                                            </div>
+                                            <div class="col-xs-12 col-sm-4 form-group">
+                                                <label>Last Name</label>
+                                                <input name="EditLastName"
+                                                       ng-model="selected.lastName"
+                                                       type="text" class="form-control capitalize" maxlength="25"
+                                                       ng-required="true"
+                                                       ng-class="{ 'mandatory-field' : frmDependent.EditLastName.$invalid}" />
+                                            </div>
+                                            <div class="col-xs-12 col-sm-6 form-group">
+                                                <label>Gender</label>
+                                                <!--<select class="form-control" ng-model="selected.gender">
+                                                    <option value="M">Male</option>
+                                                    <option value="F">Female</option>
+                                                </select>-->
+
+                                                <select style="" class="form-control"
+                                                        data-ng-model="selected.gender"
+                                                        data-ng-options="elm.value as elm.desc for elm in gender"></select>
+                                            </div>
+
+                                            <div class="col-sm-1">
+                                            </div>
+                                        </div>
+                                        <hr style="border: 1px solid lightgrey;">
+                                        <div class="row">
+                                            <div class="col-sm-6 form-group">
+                                                <label>Relationship</label>
+                                                <select name="EditRelationship"
+                                                        class="form-control"
+                                                        ng-options="relationship.description as relationship.description for relationship in EmployeeDependentRelationshipsList | orderBy : 'description'"
+                                                        ng-model="selected.relationship"
+
+                                                        ng-required="true"
+                                                        ng-class="{ 'mandatory-field' : frmDependent.EditRelationship.$invalid}"></select>
+                                            </div>
+
+
+                                            <div class="col-sm-12">
+                                                <label>Date of Birth</label>
+                                                <div class="row">
+                                                    <div class="col-sm-4 form-group">
+                                                        <select class="form-control" ng-model="selected.DOBmonth" ng-change="changeMonthDays()"
+                                                                data-ng-options="elm.value as elm.desc  for elm in monthNames"></select>
+                                                    </div>
+                                                    <div class="col-sm-3 form-group">
+                                                        <select class="form-control" ng-model="selected.DOBday"
+                                                                data-ng-options="elm.value as elm.desc  for elm in monthDays"></select>
+                                                    </div>
+
+                                                    <div class="col-sm-4 form-group">
+                                                        <select class="form-control" ng-model="selected.DOByear" ng-change="changeMonthDays()"
+                                                                data-ng-options="elm.value as elm.desc  for elm in years"></select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <hr style="border: 1px solid lightgrey;">
+
+                                        <div class="row">
+                                            <div class="col-sm-12 form-group">
+                                                <label>Please tell us if any of the below statuses apply to your dependent</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-8 col-md-4 form-group">
+                                                <label><i>Is a student</i></label><br />
+                                                <input type="radio" id="Yes" ng-model="selected.isAStudent" ng-value="true" ng-checked="selected.isAStudent">
+                                                <label for="Yes" class="form-label">
+                                                    Yes&nbsp;&nbsp;&nbsp;
+                                                </label>
+
+                                                <input type="radio" id="No" ng-model="selected.isAStudent" ng-value="false" ng-checked="!selected.isAStudent">
+                                                <label for="No" class="form-label">
+                                                    No
+                                                </label>
+                                            </div>
+
+                                            <div class="col-sm-8 col-md-4 form-group">
+                                                <label><i>Has a disability</i></label><br />
+                                                <input id="DisabilityYes" type="radio" ng-model="selected.hasADisability" ng-value="true" ng-checked="selected.hasADisability">
+                                                <label for="DisabilityYes" class="form-label">
+                                                    Yes&nbsp;&nbsp;&nbsp;
+                                                </label>
+                                                <input id="DisabilityNo"  type="radio" ng-model="selected.hasADisability" ng-value="false" ng-checked="!selected.hasADisability">
+                                                <label for="DisabilityNo" class="form-label">
+                                                    No
+                                                </label>
+                                            </div>
+
+                                            <div class="col-sm-8 col-md-4 form-group">
+                                                <label><i>Uses tobacco products</i></label><br />
+                                                <input id="TobaccoYes" type="radio" ng-model="selected.tobaccoUser" ng-value="true" ng-checked="selected.tobaccoUser">
+                                                <label for="TobaccoYes" class="form-label">
+                                                    Yes&nbsp;&nbsp;&nbsp;
+                                                </label>
+                                                <input id="TobaccoNo" type="radio" ng-model="selected.tobaccoUser" ng-value="false" ng-checked="!selected.tobaccoUser">
+                                                <label for="TobaccoNo" class="form-label">
+                                                    No
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <hr style="border: 1px solid lightgrey;">
+
+                                        <div class="row pb-xs">
+                                            <div class="col-sm-5 form-group">
+                                                <label>Social Security Number</label>
+                                                <input name="EditSSN" id="EditSSN"
+                                                       ds-mask="000-00-0000" ng-disabled="ssnDisabled" masknopaste="true"
+                                                       ng-model="selected.unmaskedSocialSecurityNumber"
+                                                       type="text" class="form-control capitalize"
+                                                       ng-change="changeSSN()"
+                                                       ng-focus="isConfirmSSNValid=true"
+                                                       ng-required="!ssnDisabled"
+                                                       ng-class="{ 'mandatory-field' : frmDependent.EditSSN.$invalid  && (isHardStop || !hideSoftwarn)}"/>
+                                            </div>
+
+                                            <div class="col-sm-5 form-group">
+                                                <label>Confirm Social Security Number</label>
+                                                <input name="EditConfirmSSN" id="EditConfirmSSN"
+                                                       ds-mask="000-00-0000" ng-disabled="ssnDisabled" masknopaste="true"
+                                                       ng-model="selected.unmaskedConfirmSocialSecurityNumber"
+                                                       type="text" class="form-control capitalize"
+                                                       max="9"
+                                                       ng-change="changeSSN()"
+                                                       ng-focus="isConfirmSSNValid=true"
+                                                       ng-blur="isConfirmSSNValid=false"
+                                                       ng-required="!ssnDisabled && !frmDependent.EditSSN.$invalid"
+                                                       ng-class="{ 'mandatory-field' :selected.unmaskedSocialSecurityNumber.length>0 && selected.unmaskedSocialSecurityNumber!=selected.unmaskedConfirmSocialSecurityNumber && !isConfirmSSNValid}"/>
+                                            </div>
+
+                                            <div class="col-sm-12 form-group">
+                                                <div class="on-checkbox">
+                                                    <span><input id="ssn" type="checkbox" ng-model="ssnDisabled" ng-click="changeSSNDisables($event)"></span>
+                                                    <label for="ssn" class="form-label">
+                                                        This dependent does not have a Social Security number
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row text-right pb-md" ng-click="deleteContact()">
+                                            <div class="col-sm-12">
+
+                                                <i class="icon-trash icon-1x" style="color: red;"></i>
+                                                <b style="color: red;">Remove Dependent</b>
+
+                                            </div>
+
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="row pt-sm form-group">
+                                        <div class="col-sm-12">
+
+                                            <input type="button" ng-click="cancel()" value="Cancel" class="btn btn-default pull-left" />
+                                            <input type="button" ng-click="addOrUpdateNewContact()" value="Save Dependent" class="btn btn-primary pull-right" />
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+
+
+
+                            </div>
+                            <div class="displayAddContactButton" ng-if="(!((EmployeeOnboardingDependentsList).length) || !isAdding)">
+                                <div class="form-group">
+                                    <input type="button" ng-click="addContact()" value="Add Dependent" class="btn btn-primary" />
+                                </div>
+                                <label ng-if="!((EmployeeOnboardingDependentsList).length)" ng-class="{ 'required-field' : EmployeeOnboardingDependentsList.length==0 && !flagNoDependent && (isSoftWarned || !hideSoftwarn)}" class="form-label on-checkbox">
+                                    <span ng-if="!((EmployeeOnboardingDependentsList).length)">
+                                        <input name="chkNoDependents" type="checkbox" ng-model="flagNoDependent" ng-click="setFlagNoDependent()" />
+                                    </span>
+                                    I have no dependents I wish to add to my profile at this time.
+                                </label>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <br />
+                    <div class="row">
+
+                        <div id="myForm" class="form-group">
+
+                            <div class="col-sm-12">
+                                <!-- <div ng-if="!((EmployeeOnboardingDependentsList).length) || isAdding" class="editForAddingDependent">-->
+                                <div ng-if="isAdding" class="editForAddingDependent">
+                                    <div class="editViewForAddingDependent">
+
+                                        <div class="pt-sm pl-md pr-md" style="border: 1px solid #e2dfdf;">
+                                            <div class="row">
+                                                <div class="col-xs-9 col-sm-4 form-group">
+                                                    <label>First Name</label>
+                                                    <input name="AddFirstName" id="AddFirstName"
+                                                           ng-model="selected.firstName"
+                                                           type="text" class="form-control capitalize" maxlength="25"
+                                                           ng-required="true"
+                                                           ng-class="{ 'mandatory-field' : frmDependent.AddFirstName.$invalid && (isHardStop || !hideSoftwarn)}" />
+                                                </div>
+                                                <div class="col-xs-3 col-sm-3 form-group">
+                                                    <label>M.I.</label>
+                                                    <input ng-model="selected.middleInitial" type="text" class="form-control capitalize" maxlength="1" />
+
+                                                </div>
+                                                <div class="col-xs-12 col-sm-4 form-group">
+                                                    <label>Last Name</label>
+                                                    <input name="AddLastName" id="AddLastName"
+                                                           ng-model="selected.lastName"
+                                                           type="text" class="form-control capitalize" maxlength="25"
+                                                           ng-required="true"
+                                                           ng-class="{ 'mandatory-field' : frmDependent.AddLastName.$invalid && (isHardStop || !hideSoftwarn)}" />
+                                                </div>
+                                                <div class="col-xs-12 col-sm-6 form-group">
+                                                    <label>Gender</label>
+                                                    <select style="" class="form-control"
+                                                            data-ng-model="selected.gender"
+                                                            data-ng-options="elm.value as elm.desc for elm in gender"></select>
+                                                </div>
+
+                                                <div class="col-sm-1">
+                                                </div>
+                                            </div>
+                                            <hr style="border: 1px solid lightgrey;">
+                                            <div class="row">
+                                                <div class="col-sm-6 form-group">
+                                                    <label>Relationship</label>
+                                                    <select name="AddRelationship" id="AddRelationship"
+                                                            class="form-control"
+                                                            ng-options="relationship.description as relationship.description for relationship in EmployeeDependentRelationshipsList | orderBy : 'description'"
+                                                            ng-model="selected.relationship"
+                                                            ng-required="true"
+                                                            ng-class="{ 'mandatory-field' : frmDependent.AddRelationship.$invalid  && (isHardStop || !hideSoftwarn)}">
+                                                        <option value=" " class="text-muted">Select Relationship</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="col-sm-12">
+                                                    <label>Date of Birth</label>
+                                                    <div class="row">
+                                                        <div class="col-sm-4 form-group">
+                                                            <select class="form-control" ng-model="selected.DOBmonth" ng-change="changeMonthDays()"
+                                                                    data-ng-options="elm.value as elm.desc  for elm in monthNames"></select>
+                                                        </div>
+                                                        <div class="col-sm-3 form-group">
+                                                            <select class="form-control" ng-model="selected.DOBday"
+                                                                    data-ng-options="elm.value as elm.desc  for elm in monthDays"></select>
+                                                        </div>
+
+                                                        <div class="col-sm-4 form-group">
+                                                            <select class="form-control" ng-model="selected.DOByear" ng-change="changeMonthDays()"
+                                                                    data-ng-options="elm.value as elm.desc  for elm in years"></select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <hr style="border: 1px solid lightgrey;">
+
+                                            <div class="row">
+                                                <div class="col-sm-12 form-group">
+                                                    <label>Please tell us if any of the below statuses apply to your dependent.</label>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-sm-8 col-md-4 form-group">
+                                                    <label><i>Is a student</i></label><br />
+                                                    <input type="radio" id="YS" ng-model="selected.isAStudent" ng-value="true" ng-checked="selected.isAStudent">
+                                                    <label for="YS" class="form-label">
+                                                        Yes&nbsp;&nbsp;&nbsp;
+                                                    </label>
+
+                                                    <input type="radio" id="NS" ng-model="selected.isAStudent" ng-value="false" ng-checked="!selected.isAStudent">
+                                                    <label for="NS" class="form-label">
+                                                        No
+                                                    </label>
+                                                </div>
+
+                                                <div class="col-sm-8 col-md-4 form-group">
+                                                    <label><i>Has a disability</i></label><br />
+                                                    <input id="YD" type="radio" ng-model="selected.hasADisability" ng-value="true" ng-checked="selected.hasADisability">
+                                                    <label for="YD" class="form-label">
+                                                        Yes&nbsp;&nbsp;&nbsp;
+                                                    </label>
+                                                    <input id="ND"  type="radio" ng-model="selected.hasADisability" ng-value="false" ng-checked="!selected.hasADisability">
+                                                    <label for="ND" class="form-label">
+                                                        No
+                                                    </label>
+                                                </div>
+
+                                                <div class="col-sm-8 col-md-4 form-group">
+                                                    <label><i>Uses tobacco products</i></label><br />
+                                                    <input id="YT" type="radio" ng-model="selected.tobaccoUser" ng-value="true" ng-checked="selected.tobaccoUser">
+                                                    <label for="YT" class="form-label">
+                                                        Yes&nbsp;&nbsp;&nbsp;
+                                                    </label>
+                                                    <input id="NT" type="radio" ng-model="selected.tobaccoUser" ng-value="false" ng-checked="!selected.tobaccoUser">
+                                                    <label for="NT" class="form-label">
+                                                        No
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <hr style="border: 1px solid lightgrey;">
+                                            
+                                            <div class="row pb-xs">
+                                                <div class="col-sm-5 form-group">
+                                                    <label>Social Security Number</label>
+                                                    <input name="AddSSN" id="AddSSN"
+                                                           ds-mask="000-00-0000" ng-disabled="ssnDisabled" masknopaste="true"
+                                                           ng-model="selected.unmaskedSocialSecurityNumber"
+                                                           type="text" class="form-control capitalize"
+                                                           max="9"
+                                                           ng-change="changeSSN()"
+                                                           ng-focus="isConfirmSSNValid=true"
+                                                           ng-required="!ssnDisabled"
+                                                           ng-class="{ 'mandatory-field' : frmDependent.AddSSN.$invalid  && (isHardStop || !hideSoftwarn)}"/>
+                                                </div>
+                                                <div class="col-sm-5 form-group">
+                                                    <label>Confirm Social Security Number</label>
+                                                    <input name="AddConfirmSSN" id="AddConfirmSSN"
+                                                           ds-mask="000-00-0000" ng-disabled="ssnDisabled" masknopaste="true"
+                                                           ng-model="selected.unmaskedConfirmSocialSecurityNumber"
+                                                           type="text" class="form-control capitalize"
+                                                           max="9"
+                                                           ng-change="changeSSN()"
+                                                           ng-focus="isConfirmSSNValid=true"
+                                                           ng-blur="isConfirmSSNValid=false"
+                                                           ng-required="!ssnDisabled && !frmDependent.AddSSN.$invalid"
+                                                           ng-class="{ 'mandatory-field' : selected.unmaskedSocialSecurityNumber.length>0  && selected.unmaskedSocialSecurityNumber!=selected.unmaskedConfirmSocialSecurityNumber && !isConfirmSSNValid }"/>
+                                                </div>
+                                                <div class="col-sm-12 form-group">
+                                                    <div class="on-checkbox">
+                                                        <span>
+                                                            <input id="SSN" type="checkbox" ng-model="ssnDisabled" ng-click="changeSSNDisables($event)">
+                                                        </span>
+                                                        <label for="SSN" class="form-label">
+                                                            This dependent does not have a Social Security number
+                                                        </label>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12 pt-sm">
+
+                                                <input type="button" ng-click="cancel()" value="Cancel" class="btn btn-default pull-left" />
+                                                <input type="button" ng-click="addOrUpdateNewContact()" value="Save Dependent" class="btn btn-primary pull-right" />
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <hr style="height: 1px; border: none; color: lightgrey; background-color: lightgrey;" />
+
+                    <ds-nav-workflow-footer
+                        workflow-hide-next="false"
+                        workflow-hide-prev="false"
+                        my-workflow="myWorkflow"
+                        on-save="$ctrl.clickSavePageData($direction)"
+                    />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--col-md-9-->

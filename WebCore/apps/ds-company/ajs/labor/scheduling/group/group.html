@@ -1,0 +1,17 @@
+﻿<div class="card mt-4">
+    <div class="card-header header-bar border-top-primary d-print-none">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1>Group Scheduling</h1>
+            </div>
+            <div class="col-6">
+
+                <div class="menu float-right">
+                    <a class="btn" ng-class="{ 'btn-link': !isPlannerActive(), 'btn-primary': isPlannerActive() }" ui-sref=".plan" ng-show="access.isPlanner">Planner</a>
+                    <a class="btn" ng-class="{ 'btn-link': !isScheduleActive(), 'btn-primary': isScheduleActive() }" ui-sref=".schedule" ng-show="access.isScheduler">Scheduler</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div ui-view=""></div>

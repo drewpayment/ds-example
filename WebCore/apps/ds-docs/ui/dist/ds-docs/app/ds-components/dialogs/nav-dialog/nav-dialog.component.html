@@ -1,0 +1,22 @@
+<div mat-dialog-header>
+  <h2 class="dialog-title">        
+    Modal with Navigation Tabs
+  </h2>
+  <button type="button" class="close" (click)="close()">
+      <mat-icon>clear</mat-icon>
+  </button>
+  <div class="dialog-subtitle"> 
+    <div class="ds-modal-tabs">
+      <button class="tab" role="navigation" [class.active]="activeTab == 1" (click)="activeTab = 1">Tab 1</button>
+      <button class="tab" role="navigation" [class.active]="activeTab == 2" (click)="activeTab = 2">Tab 2</button>
+    </div>
+  </div>
+</div>
+<div mat-dialog-content>
+  <ng-container *ngIf="activeTab == 1">
+    <img src="https://www.fillmurray.com/300/360" />
+  </ng-container>
+  <ng-container *ngIf="activeTab == 2">
+    <img src="https://www.fillmurray.com/310/360" />
+  </ng-container>
+</div>

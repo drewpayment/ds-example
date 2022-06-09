@@ -1,0 +1,37 @@
+<div class="row"><div class="col-md-12 text-muted mr-3 font-xs font-italic print-make-text-grey">Date range {{headerData.startDate | date : "MM/dd/yyyy"}} - {{headerData.endDate | date : "MM/dd/yyyy"}}</div></div>
+<ng-container *ngIf="headerData.filtersApplied.length">
+    <div class="row mb-2"><div class="col-md-12"><span class="text-muted clickable hoverable mr-1 font-xs font-italic print-make-text-grey">Filters:</span>
+        <span *ngFor="let f of headerData.filtersApplied; let isLast = last;" 
+        class="text-muted mr-1 font-xs font-italic print-make-text-grey"
+    >
+    {{f.filterName}}<span *ngIf="!isLast" class="ml-1 print-make-text-grey">/</span>
+</span></div></div>
+</ng-container>
+<div class="print-page-header">
+    <div class="print-header">
+            <h1 class="d-inline-block" >{{headerData.reviewTemplateName}} Payroll
+                Requests</h1>
+            <span class="float-right">{{headerData?.noEmps || 0}} Employee{{headerData?.noEmps === 1 ? '' : 's'}}</span>
+        </div>
+</div>
+    <ul class="print-page-header-unordered-list">
+        <li>
+            <div class="title">
+                Monthly Cost based on Merit Increases: From {{headerData.monthlyCostFrom | payrollRequestReportCurrency}} to {{headerData.monthlyCostTo | payrollRequestReportCurrency}}
+            </div>
+            <div class="font-italic card-data bordered">
+                <div class="item">{{headerData.noMeritIncreasesAwarded}} Merit Increase{{headerData.noMeritIncreasesAwarded === 1 ? '' : 's'}} Awarded: {{headerData.noHourlyEmployeesMerit}} Hourly Employee{{headerData.noHourlyEmployeesMerit === 1 ? '' : 's'}}</div><div class="item">{{headerData.noSalaryEmployeesMerit}} Salary Employee{{headerData.noSalaryEmployeesMerit === 1 ? '' : 's'}}</div>
+            </div>
+            <div class="font-italic">
+                Monthly Cost based on Merit Increases for Hourly employees is based on a 40 hour work week and is an estimate. Actual Payout may vary for Hourly employees.
+            </div>
+        </li>
+        <li>
+            <div class="title">
+                Total Additional Earnings Payout: {{headerData.additionalEarningsPayout  | payrollRequestReportCurrency}}
+            </div>
+            <div class="font-italic card-data bordered">
+              <div class="item">{{headerData.additionalEarningsAwarded}} Additional Earning{{headerData.additionalEarningsAwarded === 1 ? '' : 's'}} Awarded: {{headerData.noHourlyEmployeesBonus}} Hourly Employee{{headerData.noHourlyEmployeesBonus === 1 ? '' : 's'}}</div><div class="item">{{headerData.noSalaryEmployeesBonus}} Salary Employee{{headerData.noSalaryEmployeesBonus === 1 ? '' : 's'}}</div>
+            </div>
+        </li>
+    </ul>

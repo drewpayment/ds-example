@@ -1,0 +1,141 @@
+<form [formGroup]="secondFormGroup">
+    <div class="instruction-text form-group" [hidden]="isLoading">
+        Use the list below to audit and edit Locations. Any changes made will save to each Location. To add a Location, use the "+ Location" button. Select "Continue" to go to Step 3: Validate Employees.
+    </div>
+
+    <!-- Show this if there are locations, but none are active -->
+    <div class="empty-state-cycle horizontal danger" *ngIf="this.clientCodesWithNoLocations?.length > 0 && dataSourceLength > 0" [hidden]="isLoading">
+        <i class="material-icons">warning</i>
+        <div>
+            <div class="title">
+                No active locations were found for <span
+                    *ngFor="let code of this.clientCodesWithNoLocations; let i=index">{{code}}<span
+                        *ngIf="i < this.clientCodesWithNoLocations.length - 1">, </span></span>
+            </div>
+            <p>Please add or enable a location to continue.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <div class="mt-1 mb-2">
+                <div class="custom-control custom-checkbox" [hidden]="isLoading || dataSourceLength == 0">
+                    <input type="checkbox" class="custom-control-input" id="showValidCheckbox" [checked]="!showValid"
+                        (click)="showValid = !showValid; filterByValidityStatus()">
+                    <label class="custom-control-label" for="showValidCheckbox">Show locations with errors
+                        only ({{invalidCount}})</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-auto" [hidden]="isLoading">
+            <div class="form-group">
+                <ds-eeoc-locations-trigger [fromVLPage]="true"></ds-eeoc-locations-trigger>
+            </div>
+        </div>
+    </div>
+
+    <div class="empty-state" *ngIf="dataSourceLength == 0">
+        There are no locations to display. Click the "+ Location" button to add one.
+    </div>
+    <div [hidden]="isLoading || dataSourceLength == 0">
+        <!--*ngIf="formInit|async as ds; else isLoading" [ngStyle]="{visibility: !isLoading ? 'visible' : 'hidden' }"-->
+        <div class="card card-table">
+            <div class="table-responsive">
+                <table class="table" mat-table [dataSource]="formInit|async" color="primary">
+                    <ng-container matColumnDef="isValidLocation">
+                        <th mat-header-cell *matHeaderCellDef class="text-center"> Errors </th>
+                        <td mat-cell *matCellDef="let location" class="text-center">
+                            <mat-icon *ngIf="location.isValidLocation == false" class="text-danger"
+                                [matTooltip]="location.tooltipError">
+                                warning
+                            </mat-icon>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="clientCode">
+                        <th mat-header-cell *matHeaderCellDef class="table-text-right"> Client Code </th>
+                        <td mat-cell *matCellDef="let location" class="table-text-right"> {{location.clientCode}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="eeocLocationDescription">
+                        <th mat-header-cell *matHeaderCellDef> Location Name </th>
+                        <td mat-cell *matCellDef="let location" class="table-text-left">
+                            {{location.eeocLocationDescription}}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="unitNumber">
+                        <th mat-header-cell *matHeaderCellDef class="table-text-right"> Unit Number </th>
+                        <td mat-cell *matCellDef="let location" class="table-text-right"> {{location.unitNumber}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="country">
+                        <th mat-header-cell *matHeaderCellDef> Country </th>
+                        <td mat-cell *matCellDef="let location"> {{location.country}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="address">
+                        <th mat-header-cell *matHeaderCellDef> Address </th>
+                        <td mat-cell *matCellDef="let location"> {{location.address}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="city">
+                        <th mat-header-cell *matHeaderCellDef> City </th>
+                        <td mat-cell *matCellDef="let location"> {{location.city}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="state">
+                        <th mat-header-cell *matHeaderCellDef> State </th>
+                        <td mat-cell *matCellDef="let location"> {{location.state}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="zipCode">
+                        <th mat-header-cell *matHeaderCellDef> Zip Code </th>
+                        <td mat-cell *matCellDef="let location"> {{location.zipCode}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="isActive">
+                        <th mat-header-cell *matHeaderCellDef class="text-center"> Active </th>
+                        <td mat-cell *matCellDef="let location" class="text-center">
+                            <i *ngIf="location.isActive" class="material-icons">done</i>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="actions">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td mat-cell *matCellDef="let location">
+                            <button type="button" [matMenuTriggerFor]="actionsMenu"
+                                class="btn btn-icon table-edit-icon">
+                                <mat-icon>more_vert</mat-icon>
+                            </button>
+                            <mat-menu #actionsMenu="matMenu">
+                                <button mat-menu-item (click)="editLocation(location)">Edit</button>
+                            </mat-menu>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hoverable"></tr>
+                </table>
+            </div>
+            <mat-paginator [length]="dataSourceLength" [pageSizeOptions]="[5, 10 , 25]"
+                [ngStyle]="{visibility: dataSourceLength > 0 ? 'visible' : 'hidden' }"></mat-paginator>
+        </div>
+    </div>
+    <ng-container *ngIf="isLoading">
+        <ds-loading-message></ds-loading-message>
+    </ng-container>
+    <div [hidden]="isLoading">
+        <div class="d-flex justify-content-between flex-row-reverse">
+            <div class="d-flex align-items-center">
+                <div class="text-danger mr-2" *ngIf="invalidCount != 0 && continueButtonClicked"> Please correct errors for all active locations.
+                </div>
+                <button mat-button matStepperNext class="btn btn-save" (click)="nextClick()">
+                    Continue
+                </button>
+            </div>
+            <button matStepperPrevious class="btn btn-cancel" (click)="backClick()">Back</button>
+        </div>
+    </div>
+</form>

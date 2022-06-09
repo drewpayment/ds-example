@@ -1,0 +1,72 @@
+<markdown ngPreserveWhitespaces>
+  # Progress
+  <p class="description">Show progress on tasks and loading</p>
+
+  ## Logo Animation
+  <p>Import `LoadingMessageModule`</p>
+</markdown>
+
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleLogo = !toggleLogo">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleLogo">
+  <div class="ui">
+    <div class="row">
+      <div class="col-auto">
+        <ds-loading-message></ds-loading-message>
+      </div>
+    </div>
+  </div>
+  <div class="example">
+    <ng-container>
+      <markdown src="app/ds-components/progress/progress-docs/loading-animation.component.html"></markdown>
+    </ng-container>
+  </div>
+</div>
+
+
+<markdown ngPreserveWhitespaces>
+  ## Progress Bar
+  <p>Import `DsProgressModule`</p>
+</markdown>
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleProgress = !toggleProgress">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleProgress">
+  <div class="ui">
+    <ds-progress-example></ds-progress-example>
+  </div>
+  <div class="example">
+    <ng-container>
+      <markdown src="app/ds-components/progress/progress/progress.component.html"></markdown>
+    </ng-container>
+  </div>
+</div>
+<!-- 
+<markdown ngPreserveWhitespacess>
+  ### Position
+  <p>Some layouts will require the label to stack above the progress bar, with the label centered.</p>
+</markdown>
+
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleProgressPosition = !toggleProgressPosition">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleProgressPosition">
+  <div class="ui">
+    <ds-progress-position></ds-progress-position>
+  </div>
+  <div class="example">
+    <ng-container>
+      <markdown src="app/ds-components/progress/progress-position/progress-position.component.html"></markdown>
+    </ng-container>
+  </div>
+</div> -->

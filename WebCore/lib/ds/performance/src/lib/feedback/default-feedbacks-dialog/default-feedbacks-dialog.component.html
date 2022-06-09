@@ -1,0 +1,55 @@
+<div mat-dialog-header>
+    <h2 class="dialog-title">Available Feedback</h2>
+    <button type="button" class="close" (click)="onNoClick()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</div>
+<div mat-dialog-content>
+    <ng-container *ngIf="hasFeedbacks; else noFeedbacks">
+        <div class="card card-table" >
+            <table class="table">
+                <thead class="table-header">
+                    <tr>
+                        <th width="40px">
+                            <div class="custom-control custom-checkbox">
+                                <input id="header-row-checkbox" type="checkbox" class="custom-control-input" (change)="selectAllFeedbacks($event)" />
+                                <label class="custom-control-label" for="header-row-checkbox"></label>
+                            </div>
+                        </th>
+                        <th>
+                            Feedback
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let c of feedbacks$ | async; let i = index">
+                        <td>
+                            <div class="custom-control custom-checkbox">
+                                <input 
+                                    [id]="'select_' + c.feedbackId" 
+                                    type="checkbox" class="custom-control-input" 
+                                    [(ngModel)]="c.selected"
+                                />
+                                <label class="custom-control-label" [for]="'select_' + c.feedbackId"></label>
+                            </div>
+                        </td>
+                        <td>
+                            {{c.body}}
+                            <span class="badge badge-pill badge-info " *ngIf="c.isSupervisor">Supervisor</span>
+                            <span class="badge badge-pill badge-success ml-1" *ngIf="c.isSelf">Employee</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </ng-container>
+    <ng-template #noFeedbacks>
+        <div class="empty-state">There are no feedback items to display.</div>
+    </ng-template>
+</div>
+<div mat-dialog-actions>
+    <div class="float-left">
+        <button type="button" class="btn btn-save" (click)="saveSelectedFeedbacks()">Save</button>
+    </div>
+    <button type="button" class="btn btn-delete" (click)="onNoClick()">Cancel</button>
+</div>

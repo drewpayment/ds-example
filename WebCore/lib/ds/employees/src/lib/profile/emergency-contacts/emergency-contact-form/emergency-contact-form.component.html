@@ -1,0 +1,129 @@
+<div mat-dialog-header>
+    <h2 class="dialog-title">
+        {{pageTitle}}
+    </h2>
+    <button type="button" class="close" (click)="onNoClick()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</div>
+<div mat-dialog-content>
+    <form [formGroup]="f">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="form-control-label">First Name</label>
+                    <input type="text"
+                           [class.is-invalid]="getFormControlError('firstName', ['required', 'maxlength'])"
+                           maxlength="25"
+                           class="form-control"
+                           formControlName="firstName"
+                           required cdkFocusInitial/>
+                    <div class="invalid-feedback" *ngIf="f.controls.firstName.errors?.required">
+                        Please enter a first name.
+                    </div>
+                    <div class="invalid-feedback" *ngIf="f.controls.firstName.errors?.maxlength">
+                        First name should be of max 25 characters.
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="form-control-label">Last Name</label>
+                    <input type="text"
+                           [class.is-invalid]="getFormControlError('lastName', ['required', 'maxlength'])"
+                           maxlength="25"
+                           class="form-control"
+                           formControlName="lastName"
+                           required />
+                    <div class="invalid-feedback" *ngIf="f.controls.lastName.errors?.required">
+                        Please enter a last name.
+                    </div>
+                    <div class="invalid-feedback" *ngIf="f.controls.lastName.errors?.maxlength">
+                        Last name should be of max 25 characters.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-control-label">Relationship</label>
+                    <input type="text"
+                           [class.is-invalid]="getFormControlError('relationship', ['required', 'maxlength'])"
+                           maxlength="20"
+                           class="form-control"
+                           formControlName="relationship"
+                           required />
+                    <div class="invalid-feedback" *ngIf="f.controls.relationship.errors?.required">
+                        Please enter a relationship.
+                    </div>
+                    <div class="invalid-feedback" *ngIf="f.controls.relationship.errors?.maxlength">
+                        Relationship should be of max 20 characters.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-control-label">Primary Phone</label>
+                    <input type="text"
+                           mask="000-000-0000" [dropSpecialCharacters]="false"
+                           [class.is-invalid]="getFormControlError('homePhone', ['required', 'pattern'])"
+                           class="form-control"
+                           formControlName="homePhone"
+                           required />
+                    <div class="form-text">Valid phone number format is xxx-xxx-xxxx</div>
+                    <div class="invalid-feedback" *ngIf="f.controls.homePhone.errors?.required">
+                        Please enter a primary phone number.
+                    </div>
+                    <div class="invalid-feedback" *ngIf="f.controls.homePhone.errors?.pattern">
+                        Please enter a valid primary phone number.
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-control-label">Secondary Phone <span class="form-help-text">Optional</span></label>
+                    <input type="text"
+                           mask="000-000-0000" [dropSpecialCharacters]="false"
+                           [class.is-invalid]="getFormControlError('cellPhone', ['pattern'])"
+                           class="form-control"
+                           formControlName="cellPhone" />
+                    <div class="form-text">Valid phone number format is xxx-xxx-xxxx</div>
+                    <div class="invalid-feedback" *ngIf="f.controls.cellPhone.errors?.pattern">
+                        Please enter a valid secondary phone.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-control-label">Email <span class="form-help-text">Optional</span></label>
+                    <input type="email"
+                           [class.is-invalid]="getFormControlError('emailAddress', [ 'pattern'])"
+                           class="form-control"
+                           formControlName="emailAddress"
+                           />
+                    <div class="invalid-feedback" *ngIf="f.controls.emailAddress.errors?.pattern">
+                        Please enter a valid email address.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div mat-dialog-actions>
+    <button type="button"
+            class="btn btn-primary"
+            [disabled]="f.hasError('required')"
+            (click)="saveEmergencyContact()">
+        {{hasEditPermissions ? 'Save' : 'Request Change'}}
+    </button>
+    <button type="button"
+            class="btn btn-cancel"
+            (click)="onNoClick()">
+        Cancel
+    </button>
+</div>

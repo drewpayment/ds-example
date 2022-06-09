@@ -1,0 +1,47 @@
+<ds-card border="top">
+    <ds-card-header>
+        <ds-card-header-title>EEOC Export</ds-card-header-title>
+    </ds-card-header>
+    <ds-card-content [formGroup]="eeocFormGroup">
+        <ng-container *ngIf="isLoading$ | async">
+            <ng-container *ngIf="w2Years.length, else noW2">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-control-label">Please select a W2 Year</label>
+                            <select class="form-control custom-select" [formControl]="selectedW2Year" [attr.disabled]="(disableYearList$ | async) ? '' : null">
+                                <option *ngFor="let w2Year of w2Years" [ngValue]="w2Year">{{w2Year}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <mat-horizontal-stepper linear="true" [disableRipple]="true">
+                    <mat-step [stepControl]="eeocFormGroup.get('companySelector')">
+                        <ng-template matStepLabel>Select Clients</ng-template>
+                        <ds-eeoc-company-select></ds-eeoc-company-select>
+                    </mat-step>
+                    <mat-step [stepControl]="eeocFormGroup.get('validateLocations')">
+                        <ng-template matStepLabel>Validate Locations</ng-template>
+                        <ds-eeoc-validate-locations></ds-eeoc-validate-locations>
+                    </mat-step>
+                    <mat-step [stepControl]="eeocFormGroup.get('validateEmployees')">
+                        <ng-template matStepLabel>Validate Employees</ng-template>
+                        <ds-eeoc-validate-employees></ds-eeoc-validate-employees>
+                    </mat-step>
+                    <mat-step [stepControl]="eeocFormGroup.get('createReport')">
+                        <ng-template matStepLabel>Create Report</ng-template>
+                        <ds-eeoc-create-report></ds-eeoc-create-report>
+                    </mat-step>
+                </mat-horizontal-stepper>
+            </ng-container>
+            <ng-template #noW2>
+                <div class="empty-state">
+                    There is no W2 information found.
+                </div>
+            </ng-template>
+        </ng-container>
+        <ng-container *ngIf="isLoading">
+            <ds-loading-message></ds-loading-message>
+        </ng-container>
+    </ds-card-content>
+</ds-card>

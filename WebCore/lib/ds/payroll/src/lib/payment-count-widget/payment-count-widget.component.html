@@ -1,0 +1,27 @@
+<ds-card class="card-height-fix-sm">
+    <ds-card-header y-align="top">
+        <ds-card-sub-header-title >Payments: {{paymentTotal}}</ds-card-sub-header-title>
+        <ds-card-title-right-content></ds-card-title-right-content>
+    </ds-card-header>
+    <ds-card-content>
+        <div #paymentCountLegend class="mb-0"></div>
+        <ng-container *ngIf="!isLoading">
+            <div class="" style="position: relative">
+                <!-- <canvas id="paymentInfoChart"></canvas> -->
+                <ng-template #chartDiv>
+                    <canvas
+                        baseChart
+                        [datasets]  ="chartData"
+                        [labels]    ="chartLabels"
+                        [chartType] ="chartType"
+                        [colors]    = "colors"
+                        [options]   ="chartOptions"
+                        #paymentInfoChart ="base-chart"
+                    ></canvas>
+                </ng-template>
+                <ng-container *ngIf="showChart" [ngTemplateOutlet]="chartDiv"></ng-container>
+            </div>
+        </ng-container>
+    </ds-card-content>
+</ds-card>
+

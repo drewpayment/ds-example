@@ -1,0 +1,127 @@
+<div class="card card-table">
+  <div class="table-responsive">
+    <table mat-table [dataSource]="datasource" class="grid">
+      <ng-container matColumnDef="select" sticky>
+        <th mat-header-cell *matHeaderCellDef class="td-checkbox">
+          <div class="table-checkbox">
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="customCheckSelectAll">
+              <label class="custom-control-label" for="customCheckSelectAll"></label>
+            </div>
+          </div>
+        </th>
+        <td mat-cell *matCellDef="let element" class="td-checkbox"> 
+          <div class="table-checkbox">
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="customCheck">
+              <label class="custom-control-label" for="customCheck"></label>
+            </div>
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="avatar" sticky>
+        <th mat-header-cell *matHeaderCellDef class="text-center"> <mat-icon>person</mat-icon> </th>
+        <td mat-cell *matCellDef="let element" class="text-center">
+          <mat-icon class="text-medium-dark">account_circle</mat-icon>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="name" sticky>
+        <th mat-header-cell *matHeaderCellDef class="name"> Name </th>
+        <td mat-cell *matCellDef="let element" class="name"> {{element.name}} </td>
+      </ng-container>
+      <ng-container matColumnDef="empno" sticky>
+        <th mat-header-cell *matHeaderCellDef class="table-text-right mat-table-sticky-border"> Number </th>
+        <td mat-cell *matCellDef="let element" class="table-text-right mat-table-sticky-border"> {{element.empno}} </td>
+      </ng-container>
+      <ng-container matColumnDef="award">
+        <th mat-header-cell *matHeaderCellDef> Award </th>
+        <td mat-cell *matCellDef="let element" class="grid-input-container">  
+            <select class="grid-select custom-select">
+              <option value="merit">Merit</option>
+              <option value="oneTime">One time</option>
+            </select>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="earning">
+        <th mat-header-cell *matHeaderCellDef> Earning </th>
+        <td mat-cell *matCellDef="let element" class="grid-input-container">
+          <select class="grid-select custom-select">
+            <option value="merit">Rate Name</option>
+            <option value="oneTime">Bonus</option>
+          </select>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef> Type </th>
+        <td mat-cell *matCellDef="let element" class="grid-input-container">
+          <select class="grid-select custom-select">
+            <option value="merit">Percent</option>
+            <option value="oneTime">Flat</option>
+          </select>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="amount">
+        <th mat-header-cell *matHeaderCellDef> Amount </th>
+        <td mat-cell *matCellDef="let element" class="grid-input-container"> 
+          <div class="grid-container d-flex">
+            <input type="text" class="form-control num" />
+            <input type="text" class="form-control " />
+          </div>
+          
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="effective">
+        <th mat-header-cell *matHeaderCellDef> Effective </th>
+        <td mat-cell *matCellDef="let element" class="grid-input-container">
+          <div class="grid-input-group form-control">
+            <input class="grid-input form-control" [matDatepicker]="dueDate" mask="00/00/0000" />
+            <div class="grid-append">
+              <mat-datepicker-toggle matSuffix [for]="dueDate">
+                <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+              </mat-datepicker-toggle>
+            </div>
+            <mat-datepicker #dueDate></mat-datepicker>
+          </div>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef> Status </th>
+        <td mat-cell *matCellDef="let element"> 
+          <button [matMenuTriggerFor]="menu" class="btn btn-warning text-nowrap dropdown-toggle">
+              Needs Approval
+          </button>
+          <mat-menu #menu="matMenu">
+              <button mat-menu-item>Approved</button>
+              <button mat-menu-item>Declined</button>
+          </mat-menu>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="payout">
+        <th mat-header-cell *matHeaderCellDef class="table-text-right"> Payout </th>
+        <td mat-cell *matCellDef="let element" class="table-text-right"> {{element.payout}} </td>
+      </ng-container>
+      <ng-container matColumnDef="rec">
+        <th mat-header-cell *matHeaderCellDef class="table-text-right"> Recommendation </th>
+        <td mat-cell *matCellDef="let element" class="table-text-right"> {{element.rec}} </td>
+      </ng-container>
+      <ng-container matColumnDef="sup">
+        <th mat-header-cell *matHeaderCellDef> Supervisor </th>
+        <td mat-cell *matCellDef="let element"> {{element.sup}} </td>
+      </ng-container>
+      <ng-container matColumnDef="jobTitle">
+          <th mat-header-cell *matHeaderCellDef> Job Title </th>
+          <td mat-cell *matCellDef="let element"> {{element.jobTitle}} </td>
+        </ng-container>
+      <ng-container matColumnDef="action" stickyEnd>
+        <th mat-header-cell *matHeaderCellDef class="td-action-icon-width mat-table-sticky-border-end"> </th>
+        <td mat-cell *matCellDef="let element" class="td-action-icon-width mat-table-sticky-border-end"> 
+          <button type="button" class="btn btn-icon hover-show">
+            <mat-icon>{{element.action}}</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hoverable"></tr>
+    </table>
+  </div>
+</div>

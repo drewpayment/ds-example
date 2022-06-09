@@ -1,0 +1,93 @@
+<ng-container *ngIf="formValidation$ | async"></ng-container>
+<ng-container *ngIf="updateParent$ | async"></ng-container>
+
+<form>
+  <div class="row">
+    <div class="col-md-4">
+      <ds-date-selector 
+      label="Start" 
+      helpText="After reference date"
+      [parentForm]="refDateForm"
+      durationControlName="startDuration"
+      unitTypeControlName="startUnitType"
+      [submitted]="Submitted"
+      ></ds-date-selector>
+    </div>
+    <div class="col-md-4">
+        <ds-date-selector 
+        label="Evaluate Previous"
+        [parentForm]="refDateForm"
+        durationControlName="evalPrevDuration"
+        unitTypeControlName="evalPrevUnitType"
+        [submitted]="Submitted"
+        ></ds-date-selector>
+    </div>
+    <div class="col-md-4">
+        <ds-date-selector 
+        label="Time to Complete Reviews"
+        [parentForm]="refDateForm"
+        durationControlName="timeCompleteDuration"
+        unitTypeControlName="timeCompleteUnitType"
+        [submitted]="Submitted"
+        ></ds-date-selector>
+    </div>
+  </div>
+  <ng-container *ngIf="supervisorDuration.enabled">
+  
+  <div class="row">
+      <div class="col-md-12">
+          <hr />
+          <div>
+              <h3 class="d-inline-block">Supervisor Evaluation</h3>
+          </div>
+      </div>
+  </div>
+  <div class="row">
+      <div class="col-md-4">
+      <ds-date-selector 
+      label="Time to Complete Evaluation"
+      [parentForm]="refDateForm"
+      durationControlName="supervisorDuration"
+      unitTypeControlName="supervisorUnitType"
+      [submitted]="Submitted"
+      ></ds-date-selector>
+      </div>
+  </div>
+</ng-container>
+<ng-container *ngIf="ReviewProfile?.includePayrollRequests === true">
+  <div class="row">
+      <div class="col-md-12">
+          <hr />
+          <div>
+              <h3 class="d-inline-block">Payroll Requests</h3>
+          </div>
+      </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+  The effective date for any rate change will need to be entered manually for each employee.
+    </div>
+  </div>
+</ng-container>
+  <ng-container *ngIf="employeeDuration.enabled">
+  <div class="row">
+      <div class="col-md-12">
+          <hr />
+          <div>
+              <h3 class="d-inline-block">Employee Self-Evaluation</h3>
+          </div>
+      </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4">
+      <ds-date-selector 
+      label="Time to Complete Evaluation"
+      [parentForm]="refDateForm"
+      durationControlName="employeeDuration"
+      unitTypeControlName="employeeUnitType"
+      [submitted]="Submitted"
+      ></ds-date-selector>
+    </div>
+  </div>
+</ng-container>
+</form>

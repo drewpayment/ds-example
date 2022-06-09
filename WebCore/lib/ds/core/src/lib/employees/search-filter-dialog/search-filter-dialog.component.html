@@ -1,0 +1,169 @@
+
+<div mat-dialog-header>
+    <h2 class="modal-title">
+        Filter Options
+    </h2>
+    <button type="button" class="close" (click)="onNoClick()">
+        <mat-icon>clear</mat-icon>
+    </button>
+    <div class="modal-subtitle">
+        <div class="instruction-text">
+            Use the fields below to filter down to a group of employees.
+        </div>
+    </div>
+</div>
+<div mat-dialog-content>
+    <form [formGroup]="form">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="form-control-label">Employee Status</label>
+                    <select class="form-control custom-select" formControlName="employeeStatus" cdkFocusInitial>
+                        <option value=""></option>
+                        <ng-container *ngFor="let o of employeeStatusOptions">
+                            <option [value]="o.id">{{o.name}}</option>
+                        </ng-container>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-6 form-inline">
+                <div class="form-group mr-6">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="active-only" formControlName="activeOnly" />
+                        <label class="custom-control-label" for="active-only">Active Only</label>
+                    </div>
+                </div>
+                <div class="form-group mr-6">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="exclude-temps" formControlName="excludeTemps" />
+                        <label class="custom-control-label" for="exclude-temps">Exclude Temps</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="form-control-label">Division</label>
+                    <select class="form-control custom-select" formControlName="division">
+                        <option value=""></option>
+                        <ng-container *ngFor="let o of divisionOptions">
+                            <option [value]="o.id">{{o.name}}</option>
+                        </ng-container>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="form-control-label">Department</label>
+                    <select class="form-control custom-select" formControlName="department">
+                        <option value=""></option>
+                        <ng-container *ngFor="let o of departmentOptions">
+                            <option [value]="o.id">{{o.name}}</option>
+                        </ng-container>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="form-control-label">Cost Center</label>
+                    <select class="form-control custom-select" formControlName="costCenter">
+                        <option value=""></option>
+                        <ng-container *ngFor="let o of costCenterOptions">
+                            <option [value]="o.id">{{o.name}}</option>
+                        </ng-container>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="form-control-label">Group</label>
+                    <select class="form-control custom-select" formControlName="group">
+                        <option value=""></option>
+                        <ng-container *ngFor="let o of groupOptions">
+                            <option [value]="o.id">{{o.name}}</option>
+                        </ng-container>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="form-control-label">Job Title</label>
+                    <select class="form-control custom-select" formControlName="jobTitle">
+                        <option value=""></option>
+                        <ng-container *ngFor="let o of jobTitleOptions">
+                            <option [value]="o.id">{{o.name}}</option>
+                        </ng-container>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="form-control-label">Supervisor</label>
+                    <select class="form-control custom-select" formControlName="supervisor">
+                        <option value=""></option>
+                        <ng-container *ngFor="let o of supervisorOptions">
+                            <option [value]="o.id">{{o.name}}</option>
+                        </ng-container>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="form-control-label">Shift</label>
+                    <select class="form-control custom-select" formControlName="shift">
+                        <option value=""></option>
+                        <ng-container *ngFor="let o of shiftOptions">
+                            <option [value]="o.id">{{o.name}}</option>
+                        </ng-container>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="form-control-label">Pay Type</label>
+                    <select class="form-control custom-select" formControlName="payType">
+                        <option value=""></option>
+                        <ng-container *ngFor="let o of payTypeOptions">
+                            <option [value]="o.id">{{o.name}}</option>
+                        </ng-container>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="form-control-label">Time Policy</label>
+                    <select class="form-control custom-select" formControlName="timePolicy">
+                        <option value=""></option>
+                        <ng-container *ngFor="let o of timePolicyOptions">
+                            <option [value]="o.id">{{o.name}}</option>
+                        </ng-container>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-6" *ngIf="showCompetencyModel">
+                <div class="form-group">
+                    <label class="form-control-label">Competency Model</label>
+                    <select class="form-control custom-select" formControlName="competencyModel">
+                        <option value=""></option>
+                        <option [value]="c.id" *ngFor="let c of competencyModelOptions">
+                            {{c.name}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <!-- <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="form-control-label">Length of Service</label>
+                    <select class="form-control custom-select" formControlName="serviceLength">
+                        <option value=""></option>
+                    </select>
+                </div>
+            </div> -->
+        </div>
+    </form>
+</div>
+<div mat-dialog-actions>
+    <button type="button" class="btn btn-save" (click)="saveFilters()">Filter</button>
+    <button type="button" class="btn btn-cancel" (click)="clearFilters()">Clear Filters</button>
+</div>

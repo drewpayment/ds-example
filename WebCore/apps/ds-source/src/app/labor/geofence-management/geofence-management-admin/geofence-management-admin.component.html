@@ -1,0 +1,18 @@
+<ng-container *ngIf="formInit|async as init">
+    <ng-container *ngIf="showGetStarted && !optedIn else stepperState">
+        <ds-geofence-get-started></ds-geofence-get-started>
+    </ng-container>
+    <ng-template #stepperState>
+        <ds-geofence-management-stepper></ds-geofence-management-stepper>
+    </ng-template>
+</ng-container>
+<ng-container *ngIf="isLoading">
+    <ds-card border="top">
+        <ds-card-header>
+            <ds-card-header-title>Geofence Manager</ds-card-header-title>
+        </ds-card-header>
+        <ds-card-content>
+            <ds-loading-message></ds-loading-message>
+        </ds-card-content>
+    </ds-card>
+</ng-container>

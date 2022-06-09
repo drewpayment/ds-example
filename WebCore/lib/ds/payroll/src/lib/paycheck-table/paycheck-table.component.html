@@ -1,0 +1,153 @@
+
+<!-- Currently, this is the only non-template part of this markup lol -->
+<ng-container *ngIf="isLoadingShowVoidChecksButton; then loading else theTableWrapper"></ng-container>
+
+<ng-template #theTableWrapper>
+    <ng-container *ngIf="showVoidChecksButton; then theTableWithVoidChecks else theTable"></ng-container>
+</ng-template>
+
+<ng-template #loading>
+  <ds-loading-message></ds-loading-message>
+</ng-template>
+
+<ng-template #loadedAndEmpty>
+    <div class="empty-state">{{ emptyStateMessage$ | async }}</div>
+</ng-template>
+
+<ng-template #noOpenPayroll>
+    <div class="empty-state-cycle warning">
+        <i class="material-icons">warning</i>
+        <div class="title">A payroll needs to be open to void a check</div>
+        <!-- <p><a href="YourNextPayroll.aspx">Go to the Payroll dashboard</a> to open one.</p> -->
+        <p><a href="SelectPayrollHistory.aspx">Go to the Payroll dashboard</a> to open one.</p>
+    </div>
+</ng-template>
+
+<ng-template #theTableWithVoidChecks>
+    <ng-container *ngIf="!isLoadingHasOpenPayrollResponse; else loading">
+        <ng-container *ngIf="hasOpenPayroll; then theTable else noOpenPayroll">
+        </ng-container>
+    </ng-container>
+</ng-template>
+
+<ng-template #theTable>
+<ng-container *ngIf="{
+    payrollPayCheckList: (payrollPayCheckList$ | async),
+    displayedColumns: (displayedColumns$ | async),
+    displaySummaryFooter: (displaySummaryFooter$ | async)
+} as data; else loading">
+<ng-container *ngIf="data.payrollPayCheckList && isArrayAndHasLength(data.displayedColumns); else loading">
+<ng-container *ngIf="isArrayAndHasLength(data.payrollPayCheckList); else loadedAndEmpty">
+    <div class="card card-xl-table">
+        <div class="table-xl-responsive">
+                <mat-table [dataSource]="payrollPayCheckMatList$ | async" matSort matSortActive="name" matSortDirection="asc" matSortDisableClear>
+
+                <ng-container matColumnDef="voidCheck">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="table-checkbox mat-td-checkbox-width"> Void </mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index" class="table-checkbox mat-td-checkbox-width">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" [class.is-invalid]="showVoidCheckboxesAsInvalid"
+                                   [id]="'voidCheck' + i" [(ngModel)]="element.voidCheck" (change)="processVoidChecksValidation(i)">
+                            <label class="custom-control-label" [for]="'voidCheck' + i"><span>Void</span></label>
+                        </div>
+                    </mat-cell>
+                    <ng-container *ngIf="data.displaySummaryFooter">
+                        <mat-footer-cell *matFooterCellDef class="table-checkbox mat-td-checkbox-width"></mat-footer-cell>
+                    </ng-container>
+                </ng-container>
+
+                <ng-container matColumnDef="profileImage">
+                    <mat-header-cell *matHeaderCellDef class="mat-td-profile-width"><i class="material-icons">person</i></mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="mat-td-profile-width">
+                            <ds-avatar 
+                              name="{{element.name}}"
+                              size="24"
+                              resource="{{element.isVendor ? '' : element.profileImage.extraLarge.url}}"
+                              vendor="{{element.isVendor}}">
+                            </ds-avatar>
+                    </mat-cell>
+                    <ng-container *ngIf="data.displaySummaryFooter">
+                        <mat-footer-cell *matFooterCellDef class="">
+                        </mat-footer-cell>
+                    </ng-container>
+                </ng-container>
+                <ng-container matColumnDef="name">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="">Name</mat-header-cell>
+                    <mat-cell *matCellDef="let element" data-label="Name">
+                        <button type="button" class="btn btn-anchor text-truncate white-space-nowrap" (click)="payrollCheckClicked(element)">{{element.name}}</button>
+                        <!-- <a class="text-truncate" href="javascript:;" (click)="payrollCheckClicked(element)">{{element.name}}</a> -->
+                    </mat-cell>
+                    <ng-container *ngIf="data.displaySummaryFooter">
+                        <mat-footer-cell *matFooterCellDef class="">
+                            <ng-container *ngIf="checkDateStart === checkDateEnd; else dateRange">
+                                {{checkDateStart | date:'MM/dd/yyyy'}} Totals
+                            </ng-container>
+                            <ng-template #dateRange>
+                                {{checkDateStart | date:'MM/dd/yyyy'}} &ndash; {{checkDateEnd | date:'MM/dd/yyyy'}} Totals
+                            </ng-template>
+                        </mat-footer-cell>
+                    </ng-container>
+                </ng-container>
+                <ng-container matColumnDef="checkDate">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="table-text-right">Check Date</mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="table-text-right" data-label="Check Date">
+                        <span class="text-truncate">{{element.checkDate | date:'MM/dd/yyyy'}}</span>
+                    </mat-cell>
+                    <ng-container *ngIf="data.displaySummaryFooter">
+                        <mat-footer-cell *matFooterCellDef class="table-text-right"></mat-footer-cell>
+                    </ng-container>
+                </ng-container>
+                <ng-container matColumnDef="checkNumber">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="table-text-right">Check Number</mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="table-text-right" data-label="Check Number">{{element.checkNumber}}</mat-cell>
+                    <ng-container *ngIf="data.displaySummaryFooter">
+                        <mat-footer-cell *matFooterCellDef class="table-text-right"></mat-footer-cell>
+                    </ng-container>
+                </ng-container>
+                <ng-container matColumnDef="subCheck">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="table-text-right">Sub Check</mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="table-text-right" data-label="Sub Check">{{element.subCheck}}</mat-cell>
+                    <ng-container *ngIf="data.displaySummaryFooter">
+                        <mat-footer-cell *matFooterCellDef class="table-text-right">
+                        </mat-footer-cell>
+                    </ng-container>
+                </ng-container>
+                <ng-container matColumnDef="grossPay">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="table-text-right">Gross</mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="table-text-right" data-label="Gross">{{element.grossPay | currency}}</mat-cell>
+                    <ng-container *ngIf="data.displaySummaryFooter">
+                        <mat-footer-cell *matFooterCellDef class="table-text-right">{{totalGrossPay$ | async | currency}}</mat-footer-cell>
+                    </ng-container>
+                </ng-container>
+                <ng-container matColumnDef="netPay">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="table-text-right">Net</mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="table-text-right" data-label="Net">{{element.netPay | currency}}</mat-cell>
+                    <ng-container *ngIf="data.displaySummaryFooter">
+                        <mat-footer-cell *matFooterCellDef class="table-text-right">{{totalNetPay$ | async | currency}}</mat-footer-cell>
+                    </ng-container>
+                </ng-container>
+                <ng-container matColumnDef="checkAmount">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="table-text-right">Check Amount</mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="table-text-right" data-label="Check Amount">{{element.checkAmount | currency}}</mat-cell>
+                    <ng-container *ngIf="data.displaySummaryFooter">
+                        <mat-footer-cell *matFooterCellDef class="table-text-right">{{totalCheckAmount$ | async | currency}}</mat-footer-cell>
+                    </ng-container>
+                </ng-container>
+                    <mat-header-row *matHeaderRowDef="data.displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: data.displayedColumns;"></mat-row>
+                    <ng-container *ngIf="data.displaySummaryFooter">
+                        <mat-footer-row *matFooterRowDef="data.displayedColumns"></mat-footer-row>
+                    </ng-container>
+            </mat-table>
+            <mat-paginator [pageSize]="10" [pageSizeOptions]="[10,25,50]" showFirstLastButtons></mat-paginator>
+        </div>
+    </div>
+
+    <div *ngIf="showVoidChecksButton && (isVoidCheckColumnVisible$ | async)" class="d-flex align-items-center justify-content-end">
+        <mat-error class="mr-2" *ngIf="showVoidCheckboxesAsInvalid">Please select a check to void.</mat-error>
+        <button type="button" class="btn btn-save" (click)="checkForOpenPayrollAndVoidSelectedChecks()">Submit</button>
+    </div>
+</ng-container>
+</ng-container>
+</ng-container>
+</ng-template>

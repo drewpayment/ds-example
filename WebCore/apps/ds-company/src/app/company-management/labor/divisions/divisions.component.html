@@ -1,0 +1,403 @@
+<form [formGroup]="form" *ngIf="loaded" dsTrackFormChanges [submitted]="isSubmitted">
+    <ds-card border="top" mode="nobody">
+      <ds-card-header>
+      <ds-card-header-title>
+          Division / Location
+      </ds-card-header-title>
+      <div ds-card-title-action>
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" formControlName="showInactiveCheck" id="showInactiveCheck">
+          <label class="custom-control-label" for="showInactiveCheck" (click)="showInactive()">Include Inactive</label>
+        </div>
+      </div>
+      </ds-card-header>
+    </ds-card>
+    <ds-card mode="noheader">
+      <ds-card-content>
+          <div class="row">
+              <div class="col-xl-8">
+                  <div class="row">
+                      <div class="col-sm-8">
+                          <div class="form-group">
+                              <label class="form-control-label">Division</label>
+                              <select class="form-control custom-select" 
+                                  formControlName="division"
+                                  (change)="changeDivision()" >
+                                  <option [value]="0" >-- Add Division/Location --</option>
+                                  <option *ngFor="let d of divisions" [ngValue]="d.clientDivisionId">{{d.isActive ? d.name :  d.name + ' -- inactive'}}</option>
+                              </select>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="col-sm-8">
+                          <div class="form-group">
+                              <label class="form-control-label">Name</label>
+                              <input type="text" 
+                                  class="form-control" 
+                                  formControlName="name"
+                                  maxlength="25"
+                                  dsFormControlValidator 
+                                  [dsFormControlSubmitted]="isSubmitted" />
+                              <div class="invalid-feedback">                            
+                                  Please enter a name.
+                              </div>
+                          </div>
+                      </div>
+                      <div class="col-sm-4">
+                          <div class="form-group">
+                              <label class="form-control-label">Location ID <span class="form-help-text">Optional</span></label>
+                              <input type="text" 
+                                  class="form-control" 
+                                  formControlName="locationId"
+                                  maxlength="11"
+                                  dsFormControlValidator 
+                                  [dsFormControlSubmitted]="isSubmitted"/>
+                              <div class="invalid-feedback">                            
+                                Please enter a Location ID.
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="col-sm-12">
+                          <div class="form-group">
+                              <label class="form-control-label">Country</label>
+                              <select class="form-control custom-select" 
+                                  formControlName="country"
+                                  (change)="changeCountry()" >
+                                  <option *ngFor="let c of countries" [ngValue]="c.countryId">{{c.name}}</option>
+                              </select>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="col-sm-12">
+                          <div class="form-group">
+                              <label class="form-control-label">Address</label>
+                              <input type="text" 
+                                  class="form-control" 
+                                  formControlName="addressLine1"
+                                  maxlength="50"
+                                  dsFormControlValidator 
+                                  [dsFormControlSubmitted]="isSubmitted" />
+                              <div class="invalid-feedback">                            
+                                  Please enter an address.
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="form-control-label sr-only">Address Line 2</label>
+                            <input type="text" 
+                                class="form-control" 
+                                formControlName="addressLine2"
+                                maxlength="50"/>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                      <div class="col-sm-4">
+                          <div class="form-group">
+                              <label class="form-control-label">City</label>
+                              <input type="text" 
+                                  class="form-control" 
+                                  formControlName="city"
+                                  maxLength="35"
+                                  dsFormControlValidator 
+                                  [dsFormControlSubmitted]="isSubmitted" />
+                              <div class="invalid-feedback">
+                                Please enter a city.
+                              </div>
+                          </div>
+                      </div>
+                      <div class="col-sm-4">
+                          <div class="form-group">
+                              <label class="form-control-label">State/Province</label>
+                              <select class="form-control custom-select"
+                                  dsFormControlValidator  
+                                  formControlName="state">
+                                  <option *ngFor="let s of states" [ngValue]="s.stateId">{{s.name}}</option>
+                              </select>
+                              <div class="invalid-feedback">
+                                Please select a state/province.
+                              </div>
+                          </div>
+                      </div>
+                      <div class="col-sm-4">
+                          <div class="form-group">
+                              <label class="form-control-label">Zip/Postal Code</label>
+                              <input type="text" 
+                                  class="form-control" 
+                                  formControlName="zip"
+                                  maxlength="50"
+                                  dsFormControlValidator 
+                                  [dsFormControlSubmitted]="isSubmitted" />
+                              <div class="invalid-feedback">
+                                <ng-container *ngIf="zip.hasError('required')">Please enter  a zip code.</ng-container>
+                                <ng-container *ngIf="zip.hasError('pattern')">Please enter a valid zip code.</ng-container>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="col-sm-4">
+                          <div class="form-group">
+                              <label class="form-control-label">Head Of Division</label>
+                              <select class="form-control custom-select" 
+                                  formControlName="headOfDivision">
+                                  <option *ngFor="let c of contacts" [ngValue]="c.clientContactId">{{c.lastName + ', ' + c.firstName}}</option>
+                              </select>
+                          </div>
+                      </div>
+                      <div class="col-sm-4">
+                          <div class="form-group">
+                              <label class="form-control-label">Send Correspondence To <span class="form-help-text">Optional</span></label>
+                              <select class="form-control custom-select" 
+                                  formControlName="sendCorrespondenceTo">
+                                  <option  [ngValue]="1">Head Of Department</option>
+                                  <option  [ngValue]="2">Company</option>
+                              </select>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="col-sm-4">
+                          <div class="form-group">
+                              <label class="form-control-label">Date Location Opened <span class="form-help-text">Optional</span></label>
+                              <div class="input-group">
+                                  <input matInput class="form-control"
+                                          [matDatepicker]="dateOpened"
+                                          formControlName="dateLocationOpened"
+                                          dsFormControlValidator 
+                                          [dsFormControlSubmitted]="isSubmitted" />
+                                  <div class="input-group-append">
+                                      <mat-datepicker-toggle matSuffix [for]="dateOpened" class="input-group-text date">
+                                          <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                                      </mat-datepicker-toggle>
+                                      <mat-datepicker #dateOpened></mat-datepicker>
+                                  </div>
+                                  <div class="invalid-feedback">
+                                      Please enter a valid date.
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="col-sm-4">
+                          <div class="form-group">
+                              <label class="form-control-label">Date Location Closed <span class="form-help-text">Optional</span></label>
+                              <div class="input-group">
+                                  <input matInput class="form-control"
+                                          [matDatepicker]="dateClosed"
+                                          formControlName="dateLocationClosed"
+                                          dsFormControlValidator 
+                                          [dsFormControlSubmitted]="isSubmitted" />
+                                  <div class="input-group-append">
+                                      <mat-datepicker-toggle matSuffix [for]="dateClosed" class="input-group-text date">
+                                          <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                                      </mat-datepicker-toggle>
+                                      <mat-datepicker #dateClosed></mat-datepicker>
+                                  </div>
+                                  <div class="invalid-feedback">
+                                      Please enter a valid date.
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="col-12">
+                          <div class="form-group">
+                              <div class="custom-control custom-checkbox">
+                                  <input type="checkbox" formControlName="active" class="custom-control-input" id="activeCheck">
+                                  <label class="custom-control-label" for="activeCheck">Active</label>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </ds-card-content>
+    </ds-card>
+
+    <ng-container *ngIf="showOptionsAndAddressCards">
+      <div class="row">
+        <div class="col-xl-12 col-2xl-4">
+          <ds-card matchHeight="true">
+            <ds-card-header>
+              <ds-card-sub-header-title>Delivery Address</ds-card-sub-header-title>
+              <ds-card-title-action>
+                <button type="button" 
+                  class="btn btn-outline-primary white-space-nowrap"
+                  (click)="openAddressDialog()">
+                  <mat-icon>add</mat-icon> Address
+                </button>
+              </ds-card-title-action>
+            </ds-card-header>
+            <ds-card-content>
+              <div class="empty-state" *ngIf="!divisionAddresses.length">There are no addresses to display.</div>
+              <div class="overflow-list" *ngIf="divisionAddresses.length">
+                <ds-card mode="callout" color="info" *ngFor="let a of divisionAddresses">
+                  <div ds-card-header>
+                    <ds-card-inline-content>
+                      <div class="ds-card-title-callout flex-1-0-100 mb-2">{{a.address1}} {{a.address2}}</div>
+                      <div class="text-color-fade flex-1-0-100">
+                        {{a.city}}, {{a.stateAbbreviation}} {{a.zip}}
+                    </div>
+                    </ds-card-inline-content>
+                    <ds-card-title-action>
+                      <button type="button" [matMenuTriggerFor]="menu" class="btn btn-icon hover-show">
+                        <mat-icon>more_vert</mat-icon>
+                      </button>
+                      <mat-menu #menu="matMenu">
+                        <button (click)="openAddressDialog(a)" mat-menu-item>Edit</button>
+                        <button (click)="deleteAddress(a)" mat-menu-item>Delete</button>
+                      </mat-menu>
+                    </ds-card-title-action>
+                  </div>
+                </ds-card>
+              </div>
+            </ds-card-content>
+          </ds-card>
+        </div>
+        <div class="col-xl-6 col-2xl-4">
+          <ds-card matchHeight="true">
+            <ds-card-header>
+              <ds-card-sub-header-title>Pay Stub Options</ds-card-sub-header-title>
+            </ds-card-header>
+            <ds-card-content>
+              <div class="form-group">
+                <div class="switch-setting">
+                  <label for="overrideAddress">Override Address on Pay Stubs</label>
+                  <label class="switch switch-default switch-pill switch-success float-right">
+                      <input 
+                        type="checkbox" 
+                        class="switch-input" 
+                        id="overrideAddress" 
+                        formControlName="isUseAsStubAddress"
+                        maxlength="50">
+                      <span class="switch-label" ></span>
+                      <span class="switch-handle"></span>
+                      <span class="ds-switch-off">Off</span>
+                      <span class="ds-switch-on" >On</span>
+                  </label>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="switch-setting">
+                  <label for="overrideAccount">Override Account / Routing Number</label>
+                  <label class="switch switch-default switch-pill switch-success float-right">
+                      <input 
+                        type="checkbox" 
+                        class="switch-input" 
+                        id="overrideAccount"
+                        (click)="addAccountValidation()" 
+                        formControlName="isUseSeparateAccountRoutingNumber">
+                      <span class="switch-label" ></span>
+                      <span class="switch-handle"></span>
+                      <span class="ds-switch-off">Off</span>
+                      <span class="ds-switch-on" >On</span>
+                  </label>
+                </div>
+                <div class="row mt-4" *ngIf="isUseSeparateAccountRoutingNumber.value">
+                  <div class="col-xl-6">
+                    <div class="form-group">
+                      <label>Account</label>
+                      <input type="text" class="form-control" formControlName="account" dsFormControlValidator maxlength="50"/>
+                      <div class="invalid-feedback">Please enter an account number.</div>
+                    </div>
+                  </div>
+                  <div class="col-xl-6">
+                    <div class="form-group">
+                      <label>Routing</label>
+                      <select type="text" class="form-control custom-select" formControlName="bank" dsFormControlValidator>
+                        <option *ngFor="let b of banks" [ngValue]="b.bankId">{{b.name}}</option>
+                      </select>
+                      <div class="invalid-feedback">Please select a routing number.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ds-card-content>
+          </ds-card>
+        </div>
+        <div class="col-xl-6 col-2xl-4">
+          <ds-card matchHeight="true">
+            <ds-card-header>
+              <ds-card-sub-header-title>Division Logo</ds-card-sub-header-title>
+              <ds-card-subtitle>
+                <div class="instruction-text">Optional; Accepted file format is BMP.<br />Max file size: {{maxLogoFileSizeBytes / 1000}} KB</div>
+              </ds-card-subtitle>
+            </ds-card-header>
+            <ds-card-content>
+              <input id="uploadDivisionLogo" accept=".BMP" type="file" class="d-none" (change)="inputLogo($event)"/>
+              <label for="uploadDivisionLogo" class="add-image sm" *ngIf="!divisionLogoSrc">
+                <mat-icon>add_a_photo</mat-icon>
+              </label>
+              <img *ngIf="divisionLogoSrc" [src]="divisionLogoSrc" class="division-logo" />
+            </ds-card-content>
+            <ds-card-footer *ngIf="divisionLogoSrc">
+              <label for="uploadDivisionLogo" class="btn btn-outline-primary clickable mr-3 mb-0" style="display: block;">Browse</label>
+              <button class="btn btn-delete" (click)="deleteLogo()" >Delete</button>
+            </ds-card-footer>
+          </ds-card>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Quick View -->
+    <ds-card>
+      <ds-card-header>
+          <ds-card-header-title>Preview: {{quickViewInformation.title}}</ds-card-header-title>
+      </ds-card-header>
+      <ds-card-content>
+          <div class="overflow-list">
+              <div class="row">
+                <div class="col-sm-6 col-md-4 col-lg-6 col-xl-4">
+                  <ds-widget mode="statistic" color="info" [loaded]="loaded">
+                      <ds-widget-header>
+                          <ds-widget-icon>apartment</ds-widget-icon> 
+                          <ds-widget-title-value>{{quickViewInformation.departments}}</ds-widget-title-value>
+                          <ds-widget-title truncate="true">
+                            Department<ng-container *ngIf="quickViewInformation.departments!= 1">s</ng-container>
+                          </ds-widget-title>
+                      </ds-widget-header>
+                  </ds-widget>
+                </div>
+                <div class="col-sm-6 col-md-4 col-lg-6 col-xl-4">
+                  <ds-widget mode="statistic" color="info" [loaded]="loaded">
+                      <ds-widget-header>
+                          <ds-widget-icon>people</ds-widget-icon> 
+                          <ds-widget-title-value>{{quickViewInformation.employees}}</ds-widget-title-value>
+                          <ds-widget-title truncate="true">
+                            Employee<ng-container *ngIf="quickViewInformation.employees != 1">s</ng-container>
+                          </ds-widget-title>
+                      </ds-widget-header>
+                  </ds-widget>
+                </div>
+                <div class="col-sm-6 col-md-4 col-lg-6 col-xl-4">
+                  <ds-widget mode="statistic" color="info" [loaded]="loaded">
+                      <ds-widget-header>
+                          <ds-widget-icon>people</ds-widget-icon> 
+                          <ds-widget-title-value>{{quickViewInformation.activeEmployees}}</ds-widget-title-value>
+                          <ds-widget-title truncate="true">
+                            Active Employee<ng-container *ngIf="quickViewInformation.activeEmployees != 1">s</ng-container>
+                          </ds-widget-title>
+                      </ds-widget-header>
+                  </ds-widget>
+                </div>
+              </div>
+          </div>
+      </ds-card-content>
+    </ds-card>
+   
+    <ds-card mode="footer">
+      <ds-card-footer>
+        <button class="btn btn-save" (click)="save()" >Save</button>
+        <button class="btn btn-delete" *ngIf="showDelete" (click)="deleteDivision()" >Delete</button>
+      </ds-card-footer>
+    </ds-card>
+    
+</form>

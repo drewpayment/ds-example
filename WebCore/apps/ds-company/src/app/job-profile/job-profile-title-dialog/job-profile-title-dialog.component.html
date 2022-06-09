@@ -1,0 +1,29 @@
+<mat-dialog-header>
+    <h2 class="dialog-title">
+        Edit Title
+    </h2> 
+    <button type="button" class="close" (click)="clear()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</mat-dialog-header>
+<mat-dialog-content [formGroup]="form" *ngIf="form">
+    <div class="form-group">
+        <label for="jobProfileTitle">Title</label>
+        <div class="input-group">
+            <input type="text" formControlName="jobProfileTitle" class="form-control" maxlength="50"
+            [class.is-invalid]="(form.controls.jobProfileTitle.touched || formSubmitted) && 
+            (form.controls.jobProfileTitle.errors?.required || 
+            form.controls.jobProfileTitle.errors?.maxlength)" />
+            <div class="invalid-feedback">
+                <span *ngIf="form.controls.jobProfileTitle.errors?.required">Please enter a title.</span>
+                <span *ngIf="form.controls.jobProfileTitle.errors?.maxlength">Please enter a title less than 50 characters.</span>
+            </div>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button type="button" class="btn btn-save"
+        (click)="save()" >Save</button>
+    <button type="button" class="btn btn-cancel" 
+        (click)="clear()" >Cancel</button>
+</mat-dialog-actions>

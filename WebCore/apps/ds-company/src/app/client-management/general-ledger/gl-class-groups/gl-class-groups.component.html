@@ -1,0 +1,75 @@
+<form [formGroup]="form" *ngIf="loaded" dsTrackFormChanges [submitted]="isSubmitted">
+    <ds-card border="top">
+        <ds-card-header>
+        <ds-card-header-title>
+            Class Groups
+        </ds-card-header-title>
+        </ds-card-header>
+        <ds-card-content>
+            <div class="row">
+                <div class="col-2xl-8">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="form-control-label">Class Group</label>
+                                <select class="form-control custom-select" 
+                                    formControlName="classGroup"
+                                    (change)="changeClassGroup()">
+                                    <option [value]="0" >-- Add Class Group --</option>
+                                    <option *ngFor="let cg of clientGLClassGroups" [ngValue]="cg.clientGLClassGroupId">{{cg.classGroupCode}} - {{cg.classGroupDesc}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="form-control-label">Name</label>
+                                <input type="text" 
+                                    class="form-control" 
+                                    formControlName="name"
+                                    maxlength="50"
+                                    dsFormControlValidator 
+                                    [dsFormControlSubmitted]="isSubmitted" />
+                                <div class="invalid-feedback">                            
+                                    Please enter a name.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="form-control-label">Code</label>
+                                <input type="text" 
+                                    class="form-control" 
+                                    formControlName="code"
+                                    maxlength="20"
+                                    dsFormControlValidator 
+                                    [dsFormControlSubmitted]="isSubmitted" />
+                                <div class="invalid-feedback">                            
+                                    Please enter a code.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ds-card-content>
+        <ds-card-footer>
+        <button class="btn btn-save" [disabled]="isSaving" (click)="save()">Save</button>
+        <button class="btn btn-delete" *ngIf="showDelete" (click)="delete()">Delete</button>
+        </ds-card-footer>
+    </ds-card>
+</form>
+
+<ng-container *ngIf="!loaded">
+  <ds-card border="top">
+    <ds-card-header>
+      <ds-card-header-title> Class Groups </ds-card-header-title>
+    </ds-card-header>
+    <ds-card-content>
+      <ds-loading-message></ds-loading-message>
+    </ds-card-content>
+  </ds-card>
+</ng-container>

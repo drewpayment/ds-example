@@ -1,0 +1,687 @@
+<ds-employee-header></ds-employee-header>
+
+<ds-card color="secondary" border="top" mode="nobody">
+  <div ds-card-header>
+    <ds-card-header-title>Taxes</ds-card-header-title>
+    <ds-card-bread-crumb>
+      <nav aria-label="breadcrumb" *ngIf="baseUrl">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a [href]="breadcrumb">Employee List</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">
+            Taxes
+          </li>
+        </ol>
+      </nav>
+    </ds-card-bread-crumb>
+    <ds-card-title-right-content *ngIf="taxInfoLoaded && !isSupervisorOnHimself">
+      <div class="d-flex flex-wrap align-items-baseline">
+        <form [formGroup]="reminderDateForm" class="reminder-date">
+          <div class="custom-control custom-checkbox mr-2 white-space-nowrap">
+            <input type="checkbox" class="custom-control-input" id="reminderDateCheckbox"
+              formControlName="isReminderDateChecked" (change)="reminderDate()" />
+            <label class="custom-control-label" for="reminderDateCheckbox">Reminder Date</label>
+            <a class="ds-tooltip ml-2" title="tip:https://dominionsystems.helpdocsonline.com/ID3644">
+              <i class="tooltip-icon material-icons">help</i>
+            </a>
+          </div>
+          <div class="input-group">
+            <input class="form-control" [matDatepicker]="deductionHeaderReminderDatePicker"
+              formControlName="reminderDate" dsFormControlValidator [min]="minDate"
+              [ngClass]="{'is-invalid': this.ReminderDate.value < this.minDate.valueOf() && this.reminderChecked}" />
+            <div class="input-group-append">
+              <mat-datepicker-toggle matSuffix [for]="deductionHeaderReminderDatePicker" class="input-group-text date">
+                <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+              </mat-datepicker-toggle>
+              <mat-datepicker #deductionHeaderReminderDatePicker [startAt]="minDate"></mat-datepicker>
+            </div>
+            <div *ngIf="this.ReminderDate.value < this.minDate.valueOf() && this.reminderChecked"
+              class="invalid-feedback">
+              Date can not be a past date.
+            </div>
+          </div>
+        </form>
+      </div>
+    </ds-card-title-right-content>
+  </div>
+</ds-card>
+<ds-card mode="noheader" *ngIf="!taxInfoLoaded && !hasError">
+  <ds-card-content>
+    <ds-loading-message></ds-loading-message>
+  </ds-card-content>
+</ds-card>
+
+<!-- ESS REDIRECT - SUPERVISOR VIEWING THEIR TAX INFO -->
+<ds-card *ngIf="taxInfoLoaded && !hasError && isSupervisorOnHimself">
+  <ds-card-content>
+    <div class="row justify-content-center">
+      <div class="col-auto">
+        <div class="empty-state-cycle warning">
+          <mat-icon class="material-icons">warning</mat-icon>
+          <div class="title">
+            Your taxes are only available in ESS
+          </div>
+          <p>
+            Go to Paycheck Settings in My ESS to view and edit your taxes.
+          </p>
+          <a type="button" class="btn btn-primary" [href]="essPay">
+            <mat-icon>account_circle</mat-icon>
+            My ESS
+          </a>
+        </div>
+      </div>
+    </div>
+  </ds-card-content>
+</ds-card>
+
+<ds-card *ngIf="taxInfoLoaded && empMustHaveEmpPaySetup">
+  <ds-card-content>
+    <div class="row justify-content-center">
+      <div class="col-auto">
+        <div class="empty-state-cycle danger">
+          <mat-icon class="material-icons">warning</mat-icon>
+          <div class="title">
+            Cannot Setup Employee Taxes - Missing Information
+          </div>
+          <p>
+            Employee Pay setup is required before you can setup taxes.
+          </p>
+          <a type="button" class="btn btn-primary" [href]="empPayUrl">
+            Employee Pay
+          </a>
+        </div>
+      </div>
+    </div>
+  </ds-card-content>
+</ds-card>
+
+<ng-container *ngIf="taxInfoLoaded && !isSupervisorOnHimself && !empMustHaveEmpPaySetup">
+  <ds-card *ngIf="!isSupervisorAccessing">
+    <div ds-card-header>
+      <ds-card-sub-header-title>General</ds-card-sub-header-title>
+    </div>
+    <ds-card-content>
+      <form *ngIf="taxInfoLoaded" [formGroup]="form" dsTrackFormChanges [submitted]="formSubmitted">
+        <div class="row align-items-baseline">
+          <div class="col-sm-6 col-md-4">
+            <div class="form-group" formGroupName="generalInfo">
+              <label class="form-control-label">SUTA State</label>
+              <select class="form-control custom-select" formControlName="sutaClientTaxId" required dsFormControlValidator
+                [dsFormControlSubmitted]="formSubmitted">
+                <option *ngFor="let sutaState of sutaStates" [value]="sutaState?.legacyTaxId">{{sutaState.name}}</option>
+              </select>
+              <div class="invalid-feedback">
+                Please select a SUTA state.
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-4" *ngIf="hasPennsylvaniaLocalTax">
+            <div class="form-group" formGroupName="generalInfo">
+              <label class="form-control-label">PSD Code</label>
+              <input type="text" class="form-control" formControlName="psdCode" maxlength="6" dsFormControlValidator />
+            </div>
+            <div class="invalid-feedback" *ngIf="PsdCode.hasError('pattern')">
+              Please use numbers only.
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-4">
+            <div class="form-group" formGroupName="generalInfo">
+              <label class="form-control-label">
+                Work Opportunity Tax Credit
+                <span class="form-help-text">Optional</span>
+              </label>
+              <select class="form-control custom-select" formControlName="wotcReasonId">
+                <option *ngFor="let wotcReason of wotcReasons" [value]="wotcReason.id">{{wotcReason.description}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-auto">
+            <div class="form-group" formGroupName="generalInfo">
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="chkDeferSocSecTax"
+                  formControlName="deferEmployeeSocSecTax">
+                <label class="custom-control-label" for="chkDeferSocSecTax">
+                  This employee elects to defer their Social Security tax
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr />
+        <h2>Exemptions</h2>
+        <div class="form-group instruction-text">
+          Exemptions selected will not be calculated for this employee.
+        </div>
+        <div class="row">
+          <div class="col-auto">
+            <div class="form-group" formGroupName="generalInfo">
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="chkIs1099Exempt" formControlName="is1099Exempt"
+                  (change)="independentContractor1099Changed()">
+                <label class="custom-control-label" for="chkIs1099Exempt">
+                  Independent Contractor (1099)
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="col-auto">
+            <div class="form-group" formGroupName="generalInfo">
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="chkIsFicaExempt" formControlName="isFicaExempt">
+                <label class="custom-control-label" for="chkIsFicaExempt">
+                  FICA
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="col-auto">
+            <div class="form-group" formGroupName="generalInfo">
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="chkIsFutaExempt" formControlName="isFutaExempt">
+                <label class="custom-control-label" for="chkIsFutaExempt">
+                  FUTA
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="col-auto">
+            <div class="form-group" formGroupName="generalInfo">
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="chkIsSutaExempt" formControlName="isSutaExempt">
+                <label class="custom-control-label" for="chkIsSutaExempt">
+                  SUTA
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="col-auto">
+            <div class="form-group" formGroupName="generalInfo">
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="chkIsSocSecExempt"
+                  formControlName="isSocSecExempt">
+                <label class="custom-control-label" for="chkIsSocSecExempt">
+                  Social Security
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="col-auto">
+            <div class="form-group" formGroupName="generalInfo">
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="chkIsStateTaxExempt"
+                  formControlName="isStateTaxExempt">
+                <label class="custom-control-label" for="chkIsStateTaxExempt">
+                  State Tax
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="col-auto" *ngIf="allowIncomeWageExemptOption">
+            <div class="form-group" formGroupName="generalInfo">
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="chkIsIncomeTaxExempt"
+                  formControlName="isIncomeTaxExempt">
+                <label class="custom-control-label" for="chkIsIncomeTaxExempt">
+                  Income Wage
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </ds-card-content>
+  </ds-card>
+
+  <!-- LEGACY FEDERAL TAX SETUP -->
+  <ds-card *ngIf="!Using2020FederalW4Setup.value">
+    <div ds-card-header>
+      <ds-card-sub-header-title>Federal Tax Withholdings</ds-card-sub-header-title>
+      <ds-card-title-action>
+        <button type="button" class="btn btn-outline-primary" (click)="toggleFederalW4Setup()">
+          Use 2022 W-4 Tax Set Up
+        </button>
+      </ds-card-title-action>
+    </div>
+    <ds-card-content>
+      <form [formGroup]="form" dsTrackFormChanges [submitted]="formSubmitted">
+        <div class="card card-table">
+          <div class="table-responsive">
+            <table mat-table [dataSource]="federalTaxDatasource" class="table legacy-tax">
+              <ng-container matColumnDef="filingStatus" formGroupName="federalTax">
+                <th mat-header-cell *matHeaderCellDef>
+                  Filing Status
+                </th>
+                <td mat-cell *matCellDef="let federalTax">
+                  <select class="form-control custom-select" formControlName="filingStatusId">
+                    <option *ngFor="let filingStatus of federalTax.filingStatuses" value="{{filingStatus.id}}"
+                      [selected]="filingStatus.id == federalTax.filingStatusId">
+                      {{filingStatus.description}}
+                    </option>
+                  </select>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="numberOfExemptions" formGroupName="federalTax">
+                <th mat-header-cell *matHeaderCellDef>
+                  Exemptions
+                </th>
+                <td mat-cell *matCellDef="let federalTax">
+                  <input type="text" class="form-control" formControlName="numberOfExemptions" dsFormControlValidator
+                    [dsFormControlSubmitted]="isSubmitted" />
+                  <div class="invalid-feedback">
+                    Please enter a valid number.
+                  </div>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="numberOfDependents" formGroupName="federalTax">
+                <th mat-header-cell *matHeaderCellDef>
+                  Dependents
+                </th>
+                <td mat-cell *matCellDef="let federalTax">
+                  <input type="text" class="form-control" formControlName="numberOfDependents" dsFormControlValidator
+                    [dsFormControlSubmitted]="isSubmitted" />
+                  <div class="invalid-feedback">
+                    Please enter a valid number.
+                  </div>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="withholdingOptions" formGroupName="federalTax">
+                <th mat-header-cell *matHeaderCellDef>
+                  Withholding Options
+                  <a class="ds-tooltip" title="tip:https://dominionsystems.helpdocsonline.com/ID9900">
+                    <i class="tooltip-icon material-icons">help</i>
+                  </a>
+                </th>
+                <td mat-cell *matCellDef="let federalTax">
+                  <select class="form-control custom-select"
+                    (change)="federalTaxWithholdingOptionChanged($event.target.value)"
+                    formControlName="additionalAmountTypeId">
+                    <option *ngFor="let option of federalTax.withholdingOptions" value="{{option.id}}"
+                      [selected]="option.id == federalTax.additionalAmountTypeId">
+                      {{option.description}}
+                    </option>
+                  </select>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="percent" formGroupName="federalTax">
+                <th mat-header-cell *matHeaderCellDef>
+                  Percent
+                </th>
+                <td mat-cell *matCellDef="let federalTax">
+                  <div class="input-group">
+                    <input type="text" class="form-control" formControlName="additionalPercent"
+                      [dsDecimalFormatter]="'percent'" dsFormControlValidator [dsFormControlSubmitted]="isSubmitted" />
+                    <div class="input-group-append">
+                      <span class="input-group-text percent">%</span>
+                    </div>
+                    <div class="invalid-feedback">
+                      Please enter a valid number.
+                    </div>
+                  </div>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="flat" formGroupName="federalTax">
+                <th mat-header-cell *matHeaderCellDef>
+                  Flat
+                </th>
+                <td mat-cell *matCellDef="let federalTax">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text currency">$</span>
+                    </div>
+                    <input type="text" class="form-control" formControlName="additionalAmount" dsDecimalFormatter
+                      dsFormControlValidator [dsFormControlSubmitted]="isSubmitted" />
+                    <div class="invalid-feedback">
+                      Please enter a valid number.
+                    </div>
+                  </div>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="oldFederalTaxDisplayColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: oldFederalTaxDisplayColumns;"></tr>
+            </table>
+          </div>
+        </div>
+      </form>
+    </ds-card-content>
+  </ds-card>
+
+  <!-- NEW FEDERAL TAX SETUP -->
+  <ds-card *ngIf="Using2020FederalW4Setup.value">
+    <div ds-card-header>
+      <ds-card-sub-header-title>Federal Tax Withholdings</ds-card-sub-header-title>
+    </div>
+    <ds-card-content>
+      <form [formGroup]="form" dsTrackFormChanges [submitted]="formSubmitted">
+        <div class="row">
+          <div class="form-group col-auto">
+            <div formGroupName="federalTax">
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="chkHasMultipleJobs"
+                  formControlName="hasMoreThanOneJob">
+                <label class="custom-control-label" for="chkHasMultipleJobs">
+                  This employee has more than one job
+                  <span class="form-help-text">Check this option if this employee has two jobs of equal pay.</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card card-table">
+          <div class="table-responsive">
+            <table mat-table [dataSource]="federalTaxDatasource" class="table new-tax">
+              <ng-container matColumnDef="filingStatus" formGroupName="federalTax">
+                <th mat-header-cell *matHeaderCellDef>
+                  Filing Status
+                </th>
+                <td mat-cell *matCellDef="let federalTax">
+                  <select class="form-control custom-select" formControlName="filingStatusId">
+                    <option *ngFor="let filingStatus of federalTax.filingStatuses" value="{{filingStatus.id}}"
+                      [selected]="filingStatus.id == federalTax.filingStatusId">
+                      {{filingStatus.description}}
+                    </option>
+                  </select>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="taxCredit" formGroupName="federalTax">
+                <th mat-header-cell *matHeaderCellDef>
+                  Dep. Tax Credit
+                </th>
+                <td mat-cell *matCellDef="let federalTax">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text currency">$</span>
+                    </div>
+                    <input type="text" class="form-control form-control" formControlName="taxCredit" dsDecimalFormatter
+                      dsFormControlValidator [dsFormControlSubmitted]="isSubmitted" />
+                    <div class="invalid-feedback">
+                      Please enter a valid number.
+                    </div>
+                  </div>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="otherIncome" formGroupName="federalTax">
+                <th mat-header-cell *matHeaderCellDef>
+                  Other Income
+                </th>
+                <td mat-cell *matCellDef="let federalTax">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text currency">$</span>
+                    </div>
+                    <input type="text" class="form-control form-control" formControlName="otherTaxableIncome"
+                      dsDecimalFormatter dsFormControlValidator [dsFormControlSubmitted]="isSubmitted" />
+                    <div class="invalid-feedback">
+                      Please enter a valid number.
+                    </div>
+                  </div>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="wageDeductions" formGroupName="federalTax">
+                <th mat-header-cell *matHeaderCellDef>
+                  Deductions
+                </th>
+                <td mat-cell *matCellDef="let federalTax">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text currency">$</span>
+                    </div>
+                    <input type="text" class="form-control form-control" formControlName="wageDeduction"
+                      dsDecimalFormatter dsFormControlValidator [dsFormControlSubmitted]="isSubmitted" />
+                    <div class="invalid-feedback">
+                      Please enter a valid number.
+                    </div>
+                  </div>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="withholdingOptions" formGroupName="federalTax">
+                <th mat-header-cell *matHeaderCellDef>
+                  Withholding Options
+                  <a class="ds-tooltip" title="tip:https://dominionsystems.helpdocsonline.com/ID9900">
+                    <i class="tooltip-icon material-icons">help</i>
+                  </a>
+                </th>
+                <td mat-cell *matCellDef="let federalTax">
+                  <select class="form-control custom-select"
+                    (change)="federalTaxWithholdingOptionChanged($event.target.value)"
+                    formControlName="additionalAmountTypeId">
+                    <option *ngFor="let option of federalTax.withholdingOptions" value="{{option.id}}"
+                      [selected]="option.id == federalTax.additionalAmountTypeId">
+                      {{option.description}}
+                    </option>
+                  </select>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="percent" formGroupName="federalTax">
+                <th mat-header-cell *matHeaderCellDef>
+                  Percent
+                </th>
+                <td mat-cell *matCellDef="let federalTax">
+                  <div class="input-group">
+                    <input type="text" class="form-control" formControlName="additionalPercent"
+                      [dsDecimalFormatter]="'percent'" dsFormControlValidator [dsFormControlSubmitted]="isSubmitted" />
+                    <div class="input-group-append">
+                      <span class="input-group-text percent">%</span>
+                    </div>
+                    <div class="invalid-feedback">
+                      Please enter a valid number.
+                    </div>
+                  </div>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="flat" formGroupName="federalTax">
+                <th mat-header-cell *matHeaderCellDef>
+                  Flat
+                </th>
+                <td mat-cell *matCellDef="let federalTax">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text currency">$</span>
+                    </div>
+                    <input type="text" class="form-control" formControlName="additionalAmount" dsDecimalFormatter
+                      dsFormControlValidator [dsFormControlSubmitted]="isSubmitted" />
+                    <div class="invalid-feedback">
+                      Please enter a valid number.
+                    </div>
+                  </div>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="newFederalTaxDisplayColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: newFederalTaxDisplayColumns;" class="hoverable"></tr>
+            </table>
+          </div>
+        </div>
+      </form>
+    </ds-card-content>
+  </ds-card>
+</ng-container>
+
+<!-- NON-FEDERAL TAX SETUP-->
+<ds-card [hidden]="!taxInfoLoaded || isSupervisorOnHimself || empMustHaveEmpPaySetup">
+  <div ds-card-header>
+    <ds-card-sub-header-title>Other Tax Withholdings</ds-card-sub-header-title>
+    <ds-card-title-right-content [hidden]="essViewOnly">
+      <!-- <button type="button" class="btn btn-outline-primary">
+                <mat-icon>add</mat-icon>
+                State
+            </button> -->
+    </ds-card-title-right-content>
+    <ds-card-title-action [hidden]="!taxInfoLoaded || essViewOnly || Is1099Exempt.value">
+      <button type="button" class="btn btn-primary" (click)="openAddTaxDialog()">
+        <mat-icon>add</mat-icon>
+        Tax
+      </button>
+    </ds-card-title-action>
+  </div>
+  <ds-card-content>
+    <form *ngIf="taxInfoLoaded" [formGroup]="form" dsTrackFormChanges [submitted]="formSubmitted">
+      <!-- <div class="row">
+                <div class="form-group col-auto">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="chkIsMultiState">
+                        <label class="custom-control-label" for="chkIsMultiState">
+                            Multi State Employee
+                            <span class="form-help-text">Check this option if this employee needs active taxes in multiple states.</span>
+                        </label>
+                    </div>
+                </div>
+            </div> -->
+      <div class="card card-table">
+        <div class="table-responsive">
+          <table mat-table [dataSource]="nonFederalTaxDatasource" formArrayName="nonFederalTaxes" class="table non-fed">
+            <ng-container matColumnDef="tax">
+              <th mat-header-cell *matHeaderCellDef>
+                Tax
+              </th>
+              <td mat-cell *matCellDef="let tax; let index = index" [formGroupName]="index">
+                <!-- EXISTING TAX -->
+                <div class="mt-2"> {{tax.description}} </div>
+                <!-- ADD TAX -->
+                <!-- <ng-container *ngIf="tax.isEditView">
+                                    <select class="custom-select" (change)="nonFederalTaxChange(index, $event)">
+                                        <option value="0" ></option>
+                                        <option *ngFor="let nft of tax.availableNonFederalTaxes" value="{{nft.clientTaxId}}" [selected]="nft.clientTaxId == tax.clientTaxId"> {{nft.description}} </option>
+                                    </select>
+                                </ng-container> -->
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="filingStatus">
+              <th mat-header-cell *matHeaderCellDef>
+                Filing Status
+              </th>
+              <td mat-cell *matCellDef="let tax; let index = index" [formGroupName]="index">
+                <select class="form-control custom-select" formControlName="filingStatusId">
+                  <option *ngFor="let filingStatus of tax.filingStatuses" value="{{filingStatus.id}}"
+                    [selected]="filingStatus.id == tax.filingStatusId">
+                    {{filingStatus.description}}
+                  </option>
+                </select>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="numberOfExemptions">
+              <th mat-header-cell *matHeaderCellDef>
+                Exemptions
+              </th>
+              <td mat-cell *matCellDef="let tax; let index = index" [formGroupName]="index">
+                <input type="text" class="form-control" formControlName="numberOfExemptions" dsFormControlValidator
+                  [dsFormControlSubmitted]="isSubmitted" />
+                <div class="invalid-feedback">
+                  Please enter a valid number.
+                </div>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="numberOfDependents">
+              <th mat-header-cell *matHeaderCellDef>
+                Dependents
+              </th>
+              <td mat-cell *matCellDef="let tax; let index = index" [formGroupName]="index">
+                <input type="text" class="form-control" formControlName="numberOfDependents" dsFormControlValidator
+                  [dsFormControlSubmitted]="isSubmitted" />
+                <div class="invalid-feedback">
+                  Please enter a valid number.
+                </div>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="withholdingOptions">
+              <th mat-header-cell *matHeaderCellDef>
+                Withholding Options
+                <a class="ds-tooltip" title="tip:https://dominionsystems.helpdocsonline.com/ID9900">
+                  <i class="tooltip-icon material-icons">help</i>
+                </a>
+              </th>
+              <td mat-cell *matCellDef="let tax; let index = index" [formGroupName]="index">
+                <select class="form-control custom-select"
+                  (change)="nonFederalTaxWithholdingOptionChanged(index, $event.target.value)"
+                  formControlName="additionalAmountTypeId">
+                  <option *ngFor="let option of tax.withholdingOptions" value="{{option.id}}"
+                    [selected]="option.id == tax.additionalAmountTypeId">
+                    {{option.description}}
+                  </option>
+                </select>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="percent">
+              <th mat-header-cell *matHeaderCellDef>
+                Percent
+              </th>
+              <td mat-cell *matCellDef="let tax; let index = index" [formGroupName]="index">
+                <div class="input-group">
+                  <input type="text" class="form-control" formControlName="additionalPercent" dsFormControlValidator
+                    [dsFormControlSubmitted]="isSubmitted" [dsDecimalFormatter]="'percent'" />
+                  <div class="input-group-append">
+                    <span class="input-group-text percent">%</span>
+                  </div>
+                  <div class="invalid-feedback">
+                    Please enter a valid number.
+                  </div>
+                </div>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="flat">
+              <th mat-header-cell *matHeaderCellDef>
+                Flat
+              </th>
+              <td mat-cell *matCellDef="let tax; let index = index" [formGroupName]="index">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text currency">$</span>
+                  </div>
+                  <input type="text" class="form-control" formControlName="additionalAmount" dsFormControlValidator
+                    [dsFormControlSubmitted]="isSubmitted" dsDecimalFormatter />
+                  <div class="invalid-feedback">
+                    Please enter a valid number.
+                  </div>
+                </div>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="reimburse">
+              <th mat-header-cell *matHeaderCellDef [hidden]="!showReimburseColumn">
+                Reimburse
+              </th>
+              <td mat-cell *matCellDef="let tax; let index = index" [formGroupName]="index" class="td-checkbox"
+                [hidden]="!showReimburseColumn">
+                <div class="table-checkbox" *ngIf="NonFederalTaxes.at(index)?.get('isReimbursable').value">
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" [id]="'chkReimburse_' + index"
+                      formControlName="reimburse">
+                    <label class="custom-control-label" [for]="'chkReimburse_' + index"></label>
+                  </div>
+                </div>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="edit">
+              <th mat-header-cell *matHeaderCellDef class="mat-td-action-icon-width"></th>
+              <td mat-cell *matCellDef="let tax; let index = index" class="mat-td-action-icon-width">
+                <button type="button" [matMenuTriggerFor]="actionsMenu" class="btn btn-icon table-edit-icon"
+                  *ngIf="!essViewOnly || (splitTaxesByCostCenter && NonFederalTaxes.at(index)?.get('localTaxId').value) > 0">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #actionsMenu="matMenu">
+                  <button *ngIf="NonFederalTaxes.at(index)?.get('localTaxId').value && splitTaxesByCostCenter"
+                    mat-menu-item (click)="openCostCenterDialog(index)">
+                    Configure Cost Center
+                  </button>
+                  <button *ngIf="!essViewOnly" mat-menu-item (click)="deleteEmployeeTax(index)">
+                    Delete
+                  </button>
+                </mat-menu>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="nonFederalTaxDisplayColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: nonFederalTaxDisplayColumns;" class="hoverable"></tr>
+          </table>
+        </div>
+      </div>
+    </form>
+  </ds-card-content>
+</ds-card>
+
+<ds-card [hidden]="!taxInfoLoaded || essViewOnly || isSupervisorOnHimself || empMustHaveEmpPaySetup">
+  <ds-card-footer>
+    <div>
+      <button class="btn btn-save" type="button" (click)="saveTaxInfo()">Save</button>
+    </div>
+  </ds-card-footer>
+</ds-card>

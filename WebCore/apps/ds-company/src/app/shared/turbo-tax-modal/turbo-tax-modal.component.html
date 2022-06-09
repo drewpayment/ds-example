@@ -1,0 +1,18 @@
+<mat-dialog-header>
+    <h2 class="dialog-title">
+        Dominion Systems integrates with TurboTax
+    </h2>
+    <button type="button" class="close" (click)="close()">
+        <i class="material-icons">clear</i>
+    </button>
+</mat-dialog-header>
+<mat-dialog-content>
+    Ready to file your (W2 Year) taxes? Dominion integrates your W2 information with TurboTax for your added convenience. Click the 'Go to TurboTax' button to see if your W2 information is ready.
+</mat-dialog-content>
+<mat-dialog-actions class="ds-dialog-footer">
+    <div>
+        <button type="button" class="btn btn-primary" cdkFocusInitial (click)="onLeanMoreClick()">Go To TurboTax</button>
+        <button type="button" class="btn btn-outline-primary" (click)="close()">Ask Me Later</button>
+    </div>
+    <button type="button" class="btn btn-cancel" (click)="onNoClick()">No, Thanks</button>
+</mat-dialog-actions>

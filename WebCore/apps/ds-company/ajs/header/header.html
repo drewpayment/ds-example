@@ -1,0 +1,38 @@
+﻿<div id="top-bar" class="legacy legacy-type">
+    <div id="logout">
+        <a target="_parent" href="Logout?directlogout" ng-click="clearLocalStorage()">Log out</a>
+    </div>
+    <div id="help-link">
+        <a target="_blank" href="http://dominionsystems.helpdocsonline.com/#home">Help</a>
+    </div>
+    <div id="change-stuff">
+        <ul>
+            <li class="clickable" ng-click="showReportQueue()"><i class="fa fa-external-link"></i> Report Queue</li>
+
+            <!--<li ng-show="user.clientName"><i class="fa fa-building-o"></i>{{ user.clientName }}</li>-->
+            <client-selector-trigger icon-class="fa fa-building-o"></client-selector-trigger>
+            <li><i class="fa fa-user"></i>{{ user.firstLastName }}</li>
+            <li>
+                <ds-menu-wrapper-toggle></ds-menu-wrapper-toggle>
+                <ajs-menu-toggle></ajs-menu-toggle>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div id="header" class="header">
+    <a id="logo" ng-href="{{legacyHomepageLink.url}}">
+        <img src="WebCore/Images/dominion_logo.png" />
+    </a>
+    <div id="mainNavigation" class="navigation">
+        <ul>
+            <li ng-repeat="link in legacyHeaderLinks">
+                <a ng-class="{'active': link.isActive}"
+                    ng-href="{{ link.url }}">{{ link.name }}</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="valCard" data-ds-msg="" data-route-key=""></div>
+<client-selector-modal></client-selector-modal>

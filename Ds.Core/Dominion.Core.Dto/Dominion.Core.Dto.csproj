@@ -1,0 +1,1278 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{918955AD-8918-4B6B-BF4D-56A3484079E1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Dominion.Core.Dto</RootNamespace>
+    <AssemblyName>Dominion.Core.Dto</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Staging|AnyCPU'">
+    <OutputPath>bin\Staging\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Staging|x86'">
+    <OutputPath>bin\x86\Staging\</OutputPath>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Staging|x64'">
+    <OutputPath>bin\x64\Staging\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EnhancementQA|AnyCPU'">
+    <OutputPath>bin\EnhancementQA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EnhancementQA|x86'">
+    <OutputPath>bin\x86\EnhancementQA\</OutputPath>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EnhancementQA|x64'">
+    <OutputPath>bin\x64\EnhancementQA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'MobileQA|AnyCPU'">
+    <OutputPath>bin\MobileQA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'MobileQA|x86'">
+    <OutputPath>bin\x86\MobileQA\</OutputPath>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'MobileQA|x64'">
+    <OutputPath>bin\x64\MobileQA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DumpExtensions, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\DumpExtensions.2.0.0\lib\net45\DumpExtensions.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NPOI.2.1.3.1\lib\net40\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NPOI, Version=2.1.3.1, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NPOI.2.1.3.1\lib\net40\NPOI.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OOXML, Version=2.1.3.1, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NPOI.2.1.3.1\lib\net40\NPOI.OOXML.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXml4Net, Version=2.1.3.1, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NPOI.2.1.3.1\lib\net40\NPOI.OpenXml4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXmlFormats, Version=2.1.3.1, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NPOI.2.1.3.1\lib\net40\NPOI.OpenXmlFormats.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Accounting\ClientGLInterfaceDto.cs" />
+    <Compile Include="Accounting\GeneralLedgerAccountDto.cs" />
+    <Compile Include="Accruals\AwardableEmployeeAccrualDto.cs" />
+    <Compile Include="Accruals\ClientAccrualAutoApplyOptionsType.cs" />
+    <Compile Include="Accruals\EmployeeAccrualInfo.cs" />
+    <Compile Include="Accruals\EmployeeAccrualSummaryDto.cs" />
+    <Compile Include="Accruals\EmployeePaycheckAccrualHistoryDto.cs" />
+    <Compile Include="Accruals\IHasServiceReferencePointDateInfo.cs" />
+    <Compile Include="Accruals\Legacy\AccrualPlanTypeType.cs" />
+    <Compile Include="Accruals\ServiceBeforeAfterType.cs" />
+    <Compile Include="Accruals\ServiceCarryOverFrequencyType.cs" />
+    <Compile Include="Accruals\ServiceCarryOverTillFrequencyType.cs" />
+    <Compile Include="Accruals\ServiceCarryOverWhenFrequencyType.cs" />
+    <Compile Include="Accruals\ServiceFrequencyType.cs" />
+    <Compile Include="Accruals\ServicePlanTypeType.cs" />
+    <Compile Include="Accruals\ServiceReferencePointDateInfo.cs" />
+    <Compile Include="Accruals\ServiceReferencePointType.cs" />
+    <Compile Include="Accruals\ServiceRenewFrequencyType.cs" />
+    <Compile Include="Accruals\ServiceRewardFrequencyType.cs" />
+    <Compile Include="Accruals\ServiceUnitType.cs" />
+    <Compile Include="Accruals\WaitingPeriodTypeType.cs" />
+    <Compile Include="App\ApplicationResourceDto.cs" />
+    <Compile Include="App\ApplicationResourceType.cs" />
+    <Compile Include="App\ApplicationSourceType.cs" />
+    <Compile Include="App\IMenuNode.cs" />
+    <Compile Include="App\MenuBasicDto.cs" />
+    <Compile Include="App\MenuItemDto.cs" />
+    <Compile Include="App\MenuItemRawDto.cs" />
+    <Compile Include="App\NavItemDto.cs" />
+    <Compile Include="AR\ClientCheckPaymentDto.cs" />
+    <Compile Include="AR\DominionCheckPaymentDto.cs" />
+    <Compile Include="AR\ArDepositDto.cs" />
+    <Compile Include="AR\ArDepositType.cs" />
+    <Compile Include="AR\ArManualInvoiceDetailDto.cs" />
+    <Compile Include="AR\ArManualInvoiceDto.cs" />
+    <Compile Include="AR\ArNsfPaymentDto.cs" />
+    <Compile Include="AR\ArPaymentDto.cs" />
+    <Compile Include="AR\ArReportDto.cs" />
+    <Compile Include="AR\ArReportPayrollDto.cs" />
+    <Compile Include="AR\ArUnpaidInvoiceDto.cs" />
+    <Compile Include="Banks\AchBankBasicInfoDto.cs" />
+    <Compile Include="Banks\BankAccountNextCheckDto.cs" />
+    <Compile Include="Banks\BankDto.cs" />
+    <Compile Include="Banks\BankHolidayDto.cs" />
+    <Compile Include="Banks\BankBasicDto.cs" />
+    <Compile Include="Benefits\AmountTypeDto.cs" />
+    <Compile Include="Benefits\MaxTypeDto.cs" />
+    <Compile Include="Benefits\BenefitResourceDto.cs" />
+    <Compile Include="Benefits\Packages\BenefitPackageDto.cs" />
+    <Compile Include="Benefits\Packages\IValidatablePackage.cs" />
+    <Compile Include="Benefits\PlanDeductionDto.cs" />
+    <Compile Include="Billing\AutomaticBillingDto.cs" />
+    <Compile Include="Billing\BillingFrequency.cs" />
+    <Compile Include="Billing\BillingHistoryDetailDto.cs" />
+    <Compile Include="Billing\BillingHistoryDto.cs" />
+    <Compile Include="Billing\BillingItemDescriptionDto.cs" />
+    <Compile Include="Billing\BillingItemDescriptionType.cs" />
+    <Compile Include="Billing\BillingItemDto.cs" />
+    <Compile Include="Billing\BillingPeriod.cs" />
+    <Compile Include="Billing\BillingPriceChartDto.cs" />
+    <Compile Include="Billing\BillingPriceChartItemDto.cs" />
+    <Compile Include="Billing\BillingPriceChartType.cs" />
+    <Compile Include="Billing\BillingWhatToCount.cs" />
+    <Compile Include="Billing\PendingBillingCreditDto.cs" />
+    <Compile Include="Billing\SystemBillingItemType.cs" />
+    <Compile Include="Client\AccountOptionItemDto.cs" />
+    <Compile Include="Client\CalendarPickupDto.cs" />
+    <Compile Include="Client\Client401KSetupDto.cs" />
+    <Compile Include="Client\ClientBankSetupInfoDto.cs" />
+    <Compile Include="Client\ClientDeductionDescriptionDto.cs" />
+    <Compile Include="Client\ClientDeductionInfoDto.cs" />
+    <Compile Include="Client\ClientDeductionMappingPlanDto.cs" />
+    <Compile Include="Client\ApplicantJobTitlesDto.cs" />
+    <Compile Include="Client\ClientAccountOptionSelectionDto.cs" />
+    <Compile Include="Client\ClientCostCenterRatePremiumDto.cs" />
+    <Compile Include="Client\ClientCostCenterSetupInfoDto.cs" />
+    <Compile Include="Client\ClientDepartmentInformationDto.cs" />
+    <Compile Include="Client\ClientDepartmentSetupInfoDto.cs" />
+    <Compile Include="Client\ClientDisciplineLevelDto.cs" />
+    <Compile Include="Client\ClientDivisionAddressDto.cs" />
+    <Compile Include="Client\ClientDivisionInformationDto.cs" />
+    <Compile Include="Client\ClientDivisionLogoDto.cs" />
+    <Compile Include="Client\ClientDuplicateOptionsDto.cs" />
+    <Compile Include="Client\ClientEarningCategoryDto.cs" />
+    <Compile Include="Client\ClientFeatureDto.cs" />
+    <Compile Include="Client\ClientFeaturesAgreementDto.cs" />
+    <Compile Include="Client\ClientFeaturesDto.cs" />
+    <Compile Include="Client\ClientNoteSubjectType.cs" />
+    <Compile Include="Client\ClientFeatureTrackingDto.cs" />
+    <Compile Include="Client\ClientGLMappingFliterOptionsDto.cs" />
+    <Compile Include="Client\ClientGLSubPayrollTransactionDto.cs" />
+    <Compile Include="Client\ClientOptionItem.cs" />
+    <Compile Include="Client\ClientPayrollRunDto.cs" />
+    <Compile Include="Client\ClientRelationDto.cs" />
+    <Compile Include="Client\GroupedClientSftpConfigurationDto.cs" />
+    <Compile Include="Client\ClientSftpConfigurationDto.cs" />
+    <Compile Include="Client\ClientGLAssignmentCustomDto.cs" />
+    <Compile Include="Client\ClientGLAssignmentDto.cs" />
+    <Compile Include="Client\ClientGLAssignmentFilterOptionsDto.cs" />
+    <Compile Include="Client\ClientGLClassGroupDto.cs" />
+    <Compile Include="Client\ClientGLControlDto.cs" />
+    <Compile Include="Client\ClientGLControlItemDto.cs" />
+    <Compile Include="Client\ClientGLCustomClassDto.cs" />
+    <Compile Include="Client\ClientGLSettingsDto.cs" />
+    <Compile Include="Client\ClientShiftInformationDto.cs" />
+    <Compile Include="Client\ClientShiftSelectedDto.cs" />
+    <Compile Include="Client\ClientSMTPSettingDto.cs" />
+    <Compile Include="Client\ClientTaxFileStatusDto.cs" />
+    <Compile Include="Client\ClientTurboTaxDto.cs" />
+    <Compile Include="Client\ClientTurboTaxFileStatus.cs" />
+    <Compile Include="Client\ClientTurboTaxStatusReportResponseDto.cs" />
+    <Compile Include="Client\ClientTurboTaxTrackingDto.cs" />
+    <Compile Include="Client\ClientTurboTaxTrackingStatus.cs" />
+    <Compile Include="Client\ClientTurboTaxUploadResponseDto.cs" />
+    <Compile Include="Client\ClientWorkNumberPolicyDto.cs" />
+    <Compile Include="Client\DisciplineLevelSetupDto.cs" />
+    <Compile Include="Client\TermsAndConditionsVersionsDto.cs" />
+    <Compile Include="Client\FeatureOptionDto.cs" />
+    <Compile Include="Client\VendorDto.cs" />
+    <Compile Include="Client\GeneralLedgerGroupHeaderDto.cs" />
+    <Compile Include="Client\GeneralLedgerTaxGridDto.cs" />
+    <Compile Include="Client\GeneralLedgerTypeEnum.cs" />
+    <Compile Include="Client\GeneralLedgerTypeDto.cs" />
+    <Compile Include="Common\KeyValueDto.cs" />
+    <Compile Include="Common\PointDirection.cs" />
+    <Compile Include="Client\ClientAccountFeatureDto.cs" />
+    <Compile Include="Client\ClientAccountOptionDto.cs" />
+    <Compile Include="Client\ClientAccountOptionBooleanDto.cs" />
+    <Compile Include="Client\ClientContactDto.cs" />
+    <Compile Include="Client\ClientFullDto.cs" />
+    <Compile Include="Client\ClientHRInfoDto.cs" />
+    <Compile Include="Client\ClientTaxDto.cs" />
+    <Compile Include="Client\ClientTaxInfoDto.cs" />
+    <Compile Include="Client\ClientTaxPaymentInfoDto.cs" />
+    <Compile Include="Config\ConfigSettingDto.cs" />
+    <Compile Include="Config\ConfigDto.cs" />
+    <Compile Include="Config\ConfigType.cs" />
+    <Compile Include="Contact\Search\ContactSearchOptions.cs" />
+    <Compile Include="Contact\Search\ContactSearchDto.cs" />
+    <Compile Include="Contact\Search\ContactSearchResult.cs" />
+    <Compile Include="Contact\Search\ContactUserRawQueryData.cs" />
+    <Compile Include="Contact\Search\ReviewContactSearchDto.cs" />
+    <Compile Include="Core\AlertDto.cs" />
+    <Compile Include="Core\ApplicantAzureDto.cs" />
+    <Compile Include="Core\AttachmentSecurity.cs" />
+    <Compile Include="Core\AzureAccountName.cs" />
+    <Compile Include="Core\AzureCloudBlobDto.cs" />
+    <Compile Include="Core\AzureDirectoryType.cs" />
+    <Compile Include="Core\AzureGuidDto.cs" />
+    <Compile Include="Core\AzureResourceDto.cs" />
+    <Compile Include="Core\AzureViewDto.cs" />
+    <Compile Include="Core\BasicEmployeeGoalDto.cs" />
+    <Compile Include="Core\BetaFeatureDto.cs" />
+    <Compile Include="Core\BetaFeatureType.cs" />
+    <Compile Include="Core\CompanyGoalDeleteDto.cs" />
+    <Compile Include="Core\ConvertToPdfDto.cs" />
+    <Compile Include="Core\CompletionStatusType.cs" />
+    <Compile Include="Core\DefaultPageSettingsDto.cs" />
+    <Compile Include="Core\DominionApp.cs" />
+    <Compile Include="Core\EmployeeAzureDto.cs" />
+    <Compile Include="Core\ClientAzureDto.cs" />
+    <Compile Include="Core\EmployeeImageDto.cs" />
+    <Compile Include="Core\EmployeeProfileImageDto.cs" />
+    <Compile Include="Core\FeatureOptionsGroupDto.cs" />
+    <Compile Include="Core\SystemFeedbackDto.cs" />
+    <Compile Include="Core\SystemFeedbackType.cs" />
+    <Compile Include="Core\FileFormat.cs" />
+    <Compile Include="Core\FileFormatDto.cs" />
+    <Compile Include="Core\FolderSecurity.cs" />
+    <Compile Include="Core\GoalPriority.cs" />
+    <Compile Include="Core\GroupDto.cs" />
+    <Compile Include="Core\IMeeting.cs" />
+    <Compile Include="Core\IMeetingAttendee.cs" />
+    <Compile Include="Core\MeetingAttendeeDto.cs" />
+    <Compile Include="Core\MeetingDto.cs" />
+    <Compile Include="Core\RemarkChangeHistoryDto.cs" />
+    <Compile Include="Core\Search\IHasPaginationPage.cs" />
+    <Compile Include="Core\Search\PaginationPage.cs" />
+    <Compile Include="Dashboard\DashboardFilterOptionDto.cs" />
+    <Compile Include="Dashboard\DashboardObjectDto.cs" />
+    <Compile Include="Dashboard\DashboardConfigDto.cs" />
+    <Compile Include="Dashboard\DashboardSessionDataDto.cs" />
+    <Compile Include="Dashboard\DashboardSessionDto.cs" />
+    <Compile Include="Dashboard\DashboardUserFilterDto.cs" />
+    <Compile Include="Dashboard\DashboardWidgetDto.cs" />
+    <Compile Include="Dashboard\DashboardWidgetsEnum.cs" />
+    <Compile Include="Dashboard\WidgetDto.cs" />
+    <Compile Include="DirectDeposit\Import\BranchDirectDepositImportLayout.cs" />
+    <Compile Include="DirectDeposit\Import\DailyPayDirectDepositUpdateLayout.cs" />
+    <Compile Include="EEOC\ClientPayroll.cs" />
+    <Compile Include="EEOC\EEO1\Comp1\Eeo1Comp1FlattenedExportRecordDto.cs" />
+    <Compile Include="EEOC\EEO1\Comp1\Eeo1Comp1LocationJobCategoryDemographicsDto.cs" />
+    <Compile Include="EEOC\EEO1\EEO1_Comp1_Flattened_Record.cs" />
+    <Compile Include="EEOC\EeocLocationsPerClientDto.cs" />
+    <Compile Include="EEOC\EEOCOrganizationDto.cs" />
+    <Compile Include="EEOC\ExportClientEEOCDto.cs" />
+    <Compile Include="EEOC\ExportEmployeeEEOCDto.cs" />
+    <Compile Include="EEOC\NewClientEeocDto.cs" />
+    <Compile Include="EEOC\PayPeriod.cs" />
+    <Compile Include="Employee\BasicEmployeeDto.cs" />
+    <Compile Include="Employee\EmployeePaySearchResultDto.cs" />
+    <Compile Include="Employee\EmployeeTerminationReasonEnum.cs" />
+    <Compile Include="Employee\ActiveEmployeeDto.cs" />
+    <Compile Include="Employee\ClockPunchNameDto.cs" />
+    <Compile Include="Employee\EmployeeAvatarDto.cs" />
+    <Compile Include="Employee\EmployeeDemographicDto.cs" />
+    <Compile Include="Employee\EmployeeClientRateCostCenterDto.cs" />
+    <Compile Include="Employee\EmployeeExitInterviewRequestDto.cs" />
+    <Compile Include="Employee\EmployeeGlobalChangePreviewDto.cs" />
+    <Compile Include="Employee\EmployeePayAndEmployeeStatusAndEmployeeWithReason.cs" />
+    <Compile Include="Employee\EmployeePointsDto.cs" />
+    <Compile Include="Employee\EmployeeReferenceDatesDto.cs" />
+    <Compile Include="Employee\FieldTypeDto.cs" />
+    <Compile Include="Employee\RehireEligibleType.cs" />
+    <Compile Include="Employee\ReviewRemarkDto.cs" />
+    <Compile Include="Employee\EmployeeHRInfoDto.cs" />
+    <Compile Include="Employee\EmployeeTerminationReasonDto.cs" />
+    <Compile Include="Employee\CompModelDropDownListDto.cs" />
+    <Compile Include="Employee\DdlDirSupItemDto.cs" />
+    <Compile Include="Employee\DeleteEmployeeBankDeductionDto.cs" />
+    <Compile Include="Employee\DeleteEmployeeDeductionDto.cs" />
+    <Compile Include="Employee\DominionShortcutDto.cs" />
+    <Compile Include="Employee\EmployeeChangesAcceptedDto.cs" />
+    <Compile Include="Employee\EmployeeAccrualDto.cs" />
+    <Compile Include="Employee\EmployeeChangesDto.cs" />
+    <Compile Include="Employee\EmployeeChangesFormattedDto.cs" />
+    <Compile Include="Employee\EmployeeChangesParametersDto.cs" />
+    <Compile Include="Employee\EmployeeDeductionAmountTypeInfoDto.cs" />
+    <Compile Include="Core\GoalDto.cs" />
+    <Compile Include="Employee\DirSupDropDownListDto.cs" />
+    <Compile Include="Core\ImageResourceDto.cs" />
+    <Compile Include="Core\ImageSizeTypeInfoDto.cs" />
+    <Compile Include="Core\ImageTypeInfoDto.cs" />
+    <Compile Include="Core\ResourceImageDto.cs" />
+    <Compile Include="Core\ResourceDto.cs" />
+    <Compile Include="Employee\EmployeeDeductionInfoDto.cs" />
+    <Compile Include="Employee\EmployeeEventDto.cs" />
+    <Compile Include="Employee\EmployeeNoteAttachmentsDto.cs" />
+    <Compile Include="Employee\EmployeeNotesActivityIdDto.cs" />
+    <Compile Include="Employee\EmployeeNoteTagsDto.cs" />
+    <Compile Include="Employee\EmployeeNotesDto.cs" />
+    <Compile Include="Employee\EmployeePayBasicDto.cs" />
+    <Compile Include="Employee\EmployeePayTypeInfoDto.cs" />
+    <Compile Include="Employee\EmployeeRateBasicDto.cs" />
+    <Compile Include="Employee\EmployeeTurnoverRateDto.cs" />
+    <Compile Include="Employee\InsertEffectiveDateDto.cs" />
+    <Compile Include="Employee\InsertEmployeeBankDeductionDto.cs" />
+    <Compile Include="Employee\InsertEmployeeBankDto.cs" />
+    <Compile Include="Employee\TerminatedEmployeeDto.cs" />
+    <Compile Include="Employee\UpdateEmployeeBankDto.cs" />
+    <Compile Include="Employee\UpdateEmployeeDeductionDto.cs" />
+    <Compile Include="Employee\EmployeeNotesActivityType.cs" />
+    <Compile Include="Employee\InsertEmployeeDeductionDto.cs" />
+    <Compile Include="Employee\Search\CompetencyModelOption.cs" />
+    <Compile Include="Employee\Search\NewHireOption.cs" />
+    <Compile Include="Employee\Search\DirectSupervisorOption.cs" />
+    <Compile Include="Employee\Search\EmployeeSelectionDto.cs" />
+    <Compile Include="Employee\Search\ReviewCycleReviewOption.cs" />
+    <Compile Include="Employee\Search\ReviewTemplateSearchDto.cs" />
+    <Compile Include="Employee\UserNameDto.cs" />
+    <Compile Include="Employee\EmployeeNumberValidationDto.cs" />
+    <Compile Include="Core\TimeZoneType.cs" />
+    <Compile Include="Core\RemarkDto.cs" />
+    <Compile Include="Core\TaskDto.cs" />
+    <Compile Include="Employee\EmployeePayAndEmployeeStatus.cs" />
+    <Compile Include="Employee\EmployeePayAndEmployeeStatusAndEmployee.cs" />
+    <Compile Include="Employee\EmployeePayStubOptionDto.cs" />
+    <Compile Include="Employee\EmployeePersonalInfoDto.cs" />
+    <Compile Include="Employee\EmployeeUserAccessInfoDto.cs" />
+    <Compile Include="Forms\FormDefinitionDto.cs" />
+    <Compile Include="Geofence\ClockClientGeofenceDto.cs" />
+    <Compile Include="Geofence\GeofenceBillingDto.cs" />
+    <Compile Include="Geofence\ClockEmployeePunchAttemptDto.cs" />
+    <Compile Include="Geofence\GeofenceOptInDto.cs" />
+    <Compile Include="Geofence\GeofenceOptionType.cs" />
+    <Compile Include="Geofence\GeofencePunchFilterDto.cs" />
+    <Compile Include="Geofence\RealTimePunchLocationDto.cs" />
+    <Compile Include="InstantPay\AccountOriginator.cs" />
+    <Compile Include="InstantPay\InstantPayDirectDepositChangeDto.cs" />
+    <Compile Include="InstantPay\InstantPayProvider.cs" />
+    <Compile Include="InterfaceFiles\PositivePay\HuntingtonAGA2Layout.cs" />
+    <Compile Include="InterfaceFiles\ClientMappedInterfaceEnum.cs" />
+    <Compile Include="InterfaceFiles\ClientMappedInterfaceTypeEnum.cs" />
+    <Compile Include="Interfaces\IIdAndDescription.cs" />
+    <Compile Include="LeaveManagement\AccrualBalanceOptionDto.cs" />
+    <Compile Include="LeaveManagement\AccrualCarryOverOptionDto.cs" />
+    <Compile Include="LeaveManagement\AccrualClearOptionDto.cs" />
+    <Compile Include="Internal\AuthTokenResult.cs" />
+    <Compile Include="Labor\ApplicantPostingOwnerDto.cs" />
+    <Compile Include="Client\ClientNotesDto.cs" />
+    <Compile Include="Labor\ClockClientRulesStartingDayOfWeekIdsDto.cs" />
+    <Compile Include="Labor\AutoApplyAccrualPolicyDto.cs" />
+    <Compile Include="LeaveManagement\ClientAccrualEmployeeStatusDto.cs" />
+    <Compile Include="LeaveManagement\ClientAccrualProratedScheduleDto.cs" />
+    <Compile Include="Labor\ClockEmployeeExceptionHistoryDto.cs" />
+    <Compile Include="Labor\EmployeeLeaveManagementBalanceDto.cs" />
+    <Compile Include="Labor\EmployeeLeaveManagementLastPayrollDto.cs" />
+    <Compile Include="Labor\ClockTimeCardDto.cs" />
+    <Compile Include="Labor\EmployeeWithLeaveManagementGridDto.cs" />
+    <Compile Include="Labor\GetLeaveManagementHolidaysResultDto.cs" />
+    <Compile Include="Labor\IHasClockClientRulesStartingDayOfWeekIds.cs" />
+    <Compile Include="Labor\InsertRequestTimeOffResultDto.cs" />
+    <Compile Include="Labor\ClockCalculateActivity.cs" />
+    <Compile Include="Labor\JobProfileOnboardingWorkflowDto.cs" />
+    <Compile Include="LeaveManagement\EmployeeActiveTimeOffEventsArgsDto.cs" />
+    <Compile Include="LeaveManagement\EmployeeTimeOffPolicyListArgsDto.cs" />
+    <Compile Include="LeaveManagement\GetActiveTimeOffEventsSprocDto.cs" />
+    <Compile Include="LeaveManagement\LeaveManagementPendingAwardDto.cs" />
+    <Compile Include="Labor\ServiceBeforeAfterDto.cs" />
+    <Compile Include="Labor\ServiceCarryOverFrequencyDto.cs" />
+    <Compile Include="Labor\ServiceCarryOverTillFrequencyDto.cs" />
+    <Compile Include="Labor\ServiceCarryOverWhenFrequencyDto.cs" />
+    <Compile Include="Labor\ServiceFrequencyDto.cs" />
+    <Compile Include="Labor\ServicePlanTypeDto.cs" />
+    <Compile Include="Labor\ServiceReferencePointFrequencyDto.cs" />
+    <Compile Include="Labor\ServiceRenewFrequencyDto.cs" />
+    <Compile Include="Labor\ServiceRewardFrequencyDto.cs" />
+    <Compile Include="Labor\ServiceStartEndFrequencyDto.cs" />
+    <Compile Include="Labor\ServiceTypeDto.cs" />
+    <Compile Include="Labor\ServiceUnitDto.cs" />
+    <Compile Include="Labor\TimeCardAuthorizationSaveArgs.cs" />
+    <Compile Include="Labor\WeeklyScheduleDto.cs" />
+    <Compile Include="Misc\AccountOptionUniqueConstraintDto.cs" />
+    <Compile Include="LeaveManagement\JobProfileAccrualsDto.cs" />
+    <Compile Include="LeaveManagement\ProratedAccrualWhenToAwardType.cs" />
+    <Compile Include="LeaveManagement\RequestTimeOffDetailsArgsDto.cs" />
+    <Compile Include="LeaveManagement\RequestTimeOffDetailsSprocDto.cs" />
+    <Compile Include="LeaveManagement\TimeOffAwardType.cs" />
+    <Compile Include="LeaveManagement\TimeOffDto.cs" />
+    <Compile Include="LeaveManagement\TimeOffEventDto.cs" />
+    <Compile Include="LeaveManagement\TimeOffEventSprocDto.cs" />
+    <Compile Include="LeaveManagement\TimeOffNewDto.cs" />
+    <Compile Include="LeaveManagement\TimeOffNotesDto.cs" />
+    <Compile Include="LeaveManagement\TimeOffPolicyDto.cs" />
+    <Compile Include="LeaveManagement\TimeOffStatusType.cs" />
+    <Compile Include="LeaveManagement\TimeOffUnitType.cs" />
+    <Compile Include="Misc\ApprovalOptions.cs" />
+    <Compile Include="Misc\AppVersionDto.cs" />
+    <Compile Include="Misc\DominionVendorOption.cs" />
+    <Compile Include="Notification\NewPendingBillingCreditCreatedNotificationDetailsDto.cs" />
+    <Compile Include="Nps\ResponseFilterDto.cs" />
+    <Compile Include="Nps\ResponseType.cs" />
+    <Compile Include="Nps\ScoreDto.cs" />
+    <Compile Include="Onboarding\Forms\I9Form2020Dto.cs" />
+    <Compile Include="Onboarding\Forms\W4FederalForm2022Dto.cs" />
+    <Compile Include="Onboarding\Forms\W4StateNJFormDto.cs" />
+    <Compile Include="Payroll\ClientEarningBreakdownByPaydateDto.cs" />
+    <Compile Include="Payroll\ClientEarningBreakdownInDateRangeDto.cs" />
+    <Compile Include="Payroll\PaycheckSutaHistoryDto.cs" />
+    <Compile Include="Payroll\PayrollPaycheckTaxTotalsDto.cs" />
+    <Compile Include="Onboarding\Forms\W4FederalForm2021Dto.cs" />
+    <Compile Include="Onboarding\Forms\W4StateAZFormDto.cs" />
+    <Compile Include="Onboarding\Forms\W4StateNCFormDto.cs" />
+    <Compile Include="Onboarding\Forms\W4StateALFormDto.cs" />
+    <Compile Include="Onboarding\Forms\W4StateNYFormDto.cs" />
+    <Compile Include="Payroll\EmergencyLeaveType.cs" />
+    <Compile Include="Payroll\EmployeePayDataValidateDto.cs" />
+    <Compile Include="Payroll\PaycheckTaxHistoryDto.cs" />
+    <Compile Include="Payroll\PayrollAdjustmentType.cs" />
+    <Compile Include="Payroll\PayrollPaycheckTaxDto.cs" />
+    <Compile Include="Payroll\PreviewWarningCategoryInfo.cs" />
+    <Compile Include="Payroll\PreviewWarningTypeInfo.cs" />
+    <Compile Include="Payroll\ReportsToEmailType.cs" />
+    <Compile Include="Payroll\StateId.cs" />
+    <Compile Include="Push\AttLogDto.cs" />
+    <Compile Include="Push\DeviceCmdDto.cs" />
+    <Compile Include="Push\MachineTemplateDto.cs" />
+    <Compile Include="Push\MachineTransactionDto.cs" />
+    <Compile Include="Push\MachineDto.cs" />
+    <Compile Include="Push\OpLogDto.cs" />
+    <Compile Include="Push\MachineUserDto.cs" />
+    <Compile Include="Push\SmsDto.cs" />
+    <Compile Include="Push\TemplateDto.cs" />
+    <Compile Include="Push\TransactionStatus.cs" />
+    <Compile Include="Push\TransactionVerifyMode.cs" />
+    <Compile Include="Push\UploadFileHistoryDto.cs" />
+    <Compile Include="Push\UserInfoDto.cs" />
+    <Compile Include="Push\UserPrivilege.cs" />
+    <Compile Include="Reporting\CreatedReportDto.cs" />
+    <Compile Include="Reporting\ReportQueueDto.cs" />
+    <Compile Include="Reporting\ReportQueueLogTypeEnum.cs" />
+    <Compile Include="Reporting\ScheduledReportDeliveryMethod.cs" />
+    <Compile Include="SftpConfiguration\SftpAuthenticationMethod.cs" />
+    <Compile Include="Payroll\PayrollPeriodRange.cs" />
+    <Compile Include="Reporting\ArReportEnum.cs" />
+    <Compile Include="SftpConfiguration\SftpType.cs" />
+    <Compile Include="SftpUpload\CsvTemplates\Branch\BranchDeductionLayout.cs" />
+    <Compile Include="SftpUpload\CsvTemplates\Branch\BranchFileType.cs" />
+    <Compile Include="SftpUpload\CsvTemplates\Branch\BranchLocationsLayout.cs" />
+    <Compile Include="SftpUpload\CsvTemplates\Branch\BranchTimeAndAttendanceLayout.cs" />
+    <Compile Include="SftpUpload\CsvTemplates\Branch\BranchUserRosterLayout.cs" />
+    <Compile Include="SftpUpload\CsvTemplates\ComPsychExport\ComPsychEmployeeDto.cs" />
+    <Compile Include="SftpUpload\CsvTemplates\ComPsychExport\ComPsychExportLayout.cs" />
+    <Compile Include="SftpUpload\CsvTemplates\ComPsychExport\ComPsychExportPayrollDto.cs" />
+    <Compile Include="SftpUpload\CsvTemplates\DailyPay\DailyPayFileType.cs" />
+    <Compile Include="SftpUpload\CsvTemplates\DailyPay\DailyPayGrossEarningsLayout.cs" />
+    <Compile Include="SftpUpload\CsvTemplates\DailyPay\DailyPayNetEarningsLayout.cs" />
+    <Compile Include="SftpUpload\CsvTemplates\DailyPay\DailyPayUserRosterLayout.cs" />
+    <Compile Include="Performance\EvaluationGroupEvaluationDto.cs" />
+    <Compile Include="Performance\ScoreGroup.cs" />
+    <Compile Include="Performance\WeightedScoreItem.cs" />
+    <Compile Include="Nps\QuestionDto.cs" />
+    <Compile Include="Nps\ResponseDto.cs" />
+    <Compile Include="Nps\UserTypeQuestionDto.cs" />
+    <Compile Include="SftpUpload\CsvTemplates\PayrollExportLayout.cs" />
+    <Compile Include="SftpUpload\CsvTemplates\ReliasEmployeeLayout.cs" />
+    <Compile Include="SftpUpload\CsvTemplates\Yardi\YardiLearningEmployeeDto.cs" />
+    <Compile Include="SftpUpload\CsvTemplates\Yardi\YardiLearningExportLayout.cs" />
+    <Compile Include="SftpUpload\CsvTemplates\Yardi\YardiLearningSupervisorInfoDto.cs" />
+    <Compile Include="Sprocs\GetClockClientNoteListArgsDto.cs" />
+    <Compile Include="Sprocs\GetClockEmployeeAllocatedHoursDifferenceArgsDto.cs" />
+    <Compile Include="Sprocs\GetClockEmployeeApproveDateArgsDto.cs" />
+    <Compile Include="Sprocs\GetClockEmployeeExceptionHistoryByEmployeeIDArgsDto.cs" />
+    <Compile Include="Sprocs\GetClockEmployeeExceptionHistoryByEmployeeIDListArgsDto.cs" />
+    <Compile Include="Sprocs\GetClockEmployeeHoursComparisonArgsDto.cs" />
+    <Compile Include="Sprocs\GetClockEmployeePunchListByDateAndFilterArgsDto.cs" />
+    <Compile Include="Sprocs\GetClockFilterIdsArgsDto.cs" />
+    <Compile Include="Sprocs\GetReportClockEmployeeOnSiteArgsDto.cs" />
+    <Compile Include="Sprocs\GetPayrollListByClientIDPayrollRunIDArgsDto.cs" />
+    <Compile Include="Sprocs\GetTimeClockCurrentPeriodArgsDto.cs" />
+    <Compile Include="Sprocs\TimeCardAuthorizationDataArgs.cs" />
+    <Compile Include="Labor\IHasPunchShiftDateInfo.cs" />
+    <Compile Include="Labor\IHasTimePolicyRuleShiftSettings.cs" />
+    <Compile Include="Labor\JobProfileBasicInfoDto.cs" />
+    <Compile Include="Employee\EmployeeWorkDto.cs" />
+    <Compile Include="Employee\NextEmployeeNumberDto.cs" />
+    <Compile Include="Employee\Search\ClientCostCenterOption.cs" />
+    <Compile Include="Employee\Search\ClientDepartmentOption.cs" />
+    <Compile Include="Employee\Search\ClientDivisionOption.cs" />
+    <Compile Include="Employee\Search\ClientGroupOption.cs" />
+    <Compile Include="Employee\Search\EmployeeNavInfo.cs" />
+    <Compile Include="Employee\Search\EmployeeSearchQueryOptions.cs" />
+    <Compile Include="Employee\Search\EmployeeSearchRawDto.cs" />
+    <Compile Include="Employee\Search\EmployeeSearchResult.cs" />
+    <Compile Include="Employee\Search\EmployeeSearchSettingDto.cs" />
+    <Compile Include="Employee\TerminateEmployeeDto.cs" />
+    <Compile Include="Employee\Search\LegacySearchCategoryType.cs" />
+    <Compile Include="Employee\Search\LegacySearchEmployeeActiveType.cs" />
+    <Compile Include="Employee\Search\SearchSortByType.cs" />
+    <Compile Include="Employee\Search\TimePolicyOption.cs" />
+    <Compile Include="Labor\AddApplicantDto.cs" />
+    <Compile Include="Labor\ApplicantPostingDetailDto.cs" />
+    <Compile Include="Employee\Search\EmployeeSearchDto.cs" />
+    <Compile Include="Employee\Search\EmployeeSearchFilter.cs" />
+    <Compile Include="Employee\Search\EmployeeSearchFilterType.cs" />
+    <Compile Include="Employee\Search\EmployeeStatusOption.cs" />
+    <Compile Include="Employee\Search\IEmployeeSearchFilterOption.cs" />
+    <Compile Include="Employee\Search\JobProfileOption.cs" />
+    <Compile Include="Employee\Search\PayTypeOption.cs" />
+    <Compile Include="Employee\Search\ShiftOption.cs" />
+    <Compile Include="Labor\BenefitPackagesDto.cs" />
+    <Compile Include="Labor\BenefitsDataListDto.cs" />
+    <Compile Include="Labor\ApplicationStatusType.cs" />
+    <Compile Include="Labor\ClientCostCenterDto.cs" />
+    <Compile Include="Labor\ClientExceptionDetailDto.cs" />
+    <Compile Include="Labor\ClockClientAddHoursDto.cs" />
+    <Compile Include="Labor\ClockClientAddHoursSelectedDto.cs" />
+    <Compile Include="Labor\ClockClientAddHoursViewDto.cs" />
+    <Compile Include="Labor\ClockClientLunchWithPaidOptionsDto.cs" />
+    <Compile Include="Labor\ClockClientDailyRulesDto.cs" />
+    <Compile Include="Labor\ClockClientExceptionDetailDto.cs" />
+    <Compile Include="Labor\ClockClientExceptionDto.cs" />
+    <Compile Include="Labor\ClockClientHistoryChangeHistoryDto.cs" />
+    <Compile Include="Labor\ClockCLientHolidayDetailDto.cs" />
+    <Compile Include="Labor\ClockClientHolidayDto.cs" />
+    <Compile Include="Labor\ClockClientLunchDto.cs" />
+    <Compile Include="Labor\ClockClientLunchPaidOptionDto.cs" />
+    <Compile Include="Labor\ClockClientLunchPaidOptionRulesDto.cs" />
+    <Compile Include="Labor\ClockClientLunchPaidOptionRulesType.cs" />
+    <Compile Include="Labor\ClockClientLunchSelectedDto.cs" />
+    <Compile Include="Labor\ClockClientLunchViewDto.cs" />
+    <Compile Include="Labor\ClockClientNoteDto.cs" />
+    <Compile Include="Labor\ClockClientOvertimeDto.cs" />
+    <Compile Include="Labor\ClockClientOvertimeSelectedDto.cs" />
+    <Compile Include="Labor\ClockClientRulesDto.cs" />
+    <Compile Include="Labor\ClockClientRulesSummaryDto.cs" />
+    <Compile Include="Labor\ClockClientScheduleDto.cs" />
+    <Compile Include="LeaveManagement\ClientAccrualDto.cs" />
+    <Compile Include="LeaveManagement\ClientAccrualEarningDto.cs" />
+    <Compile Include="LeaveManagement\ClientAccrualScheduleDto.cs" />
+    <Compile Include="Labor\ClockClientScheduleSelectedDto.cs" />
+    <Compile Include="Labor\ClockClientTimePolicyDtos.cs" />
+    <Compile Include="Labor\ClockClientTimePolicySearchLists.cs" />
+    <Compile Include="Labor\ClockCompanyRulesViewDto.cs" />
+    <Compile Include="Labor\ClockExceptionType.cs" />
+    <Compile Include="Labor\ClockExceptionTypeInfoDto.cs" />
+    <Compile Include="Labor\ClockOvertimeFrequencyDto.cs" />
+    <Compile Include="Labor\Enum\HasDegreeType.cs" />
+    <Compile Include="Labor\CompanyHolidayDto.cs" />
+    <Compile Include="Labor\CorrespondenceType.cs" />
+    <Compile Include="Labor\HolidayDateDto.cs" />
+    <Compile Include="Labor\HolidayDto.cs" />
+    <Compile Include="Labor\IHasClockClientExceptionDetailValidation.cs" />
+    <Compile Include="Labor\IHasClockClientExceptionValidation.cs" />
+    <Compile Include="Labor\IHasClockClientHolidayDetailValidation.cs" />
+    <Compile Include="Labor\IHasClockClientHolidayValidation.cs" />
+    <Compile Include="Labor\IHasClockClientNoteValidation.cs" />
+    <Compile Include="Labor\IHasClockClientOvertimeValidation.cs" />
+    <Compile Include="Labor\IValidatableJobProfile.cs" />
+    <Compile Include="Labor\JobProfileBasicDto.cs" />
+    <Compile Include="Labor\JobProfileClassificationsDto.cs" />
+    <Compile Include="Labor\ApplicantPostingCategoryDto.cs" />
+    <Compile Include="Labor\JobProfileCompensationDto.cs" />
+    <Compile Include="Core\Product.cs" />
+    <Compile Include="Employee\EmployeeSupervisor.cs" />
+    <Compile Include="Labor\JobProfileDataDiffWithEmployeeDto.cs" />
+    <Compile Include="Labor\JobProfileDto.cs" />
+    <Compile Include="Client\ClientOrganizationDto.cs" />
+    <Compile Include="Client\ClientOrganizationClientDto.cs" />
+    <Compile Include="Client\CoreClientCostCenterDto.cs" />
+    <Compile Include="Client\ClientDeductionDto.cs" />
+    <Compile Include="Client\CoreClientDepartmentDto.cs" />
+    <Compile Include="Client\ClientDivisionDto.cs" />
+    <Compile Include="Client\ClientCheckStockOrderHistoryDto.cs" />
+    <Compile Include="Client\ClientCodeAndNameDto.cs" />
+    <Compile Include="Client\ClientDto.cs" />
+    <Compile Include="Client\ClientBankInfoDto.cs" />
+    <Compile Include="Client\ClientEmploymentClassDto.cs" />
+    <Compile Include="Client\ClientEssOptionsDto.cs" />
+    <Compile Include="Client\ClientGroupDto.cs" />
+    <Compile Include="Client\ClientPayrollDto.cs" />
+    <Compile Include="Client\ClientShiftDto.cs" />
+    <Compile Include="Client\ClientWorkersCompDto.cs" />
+    <Compile Include="Client\CompanyResourceSecurityLevel.cs" />
+    <Compile Include="Client\CompanyResourceFolderDto.cs" />
+    <Compile Include="Client\CompanyResourceDto.cs" />
+    <Compile Include="Client\ClientStatusType.cs" />
+    <Compile Include="Client\ClientRateDto.cs" />
+    <Compile Include="Common\ChangeModeType.cs" />
+    <Compile Include="Common\InsertStatus.cs" />
+    <Compile Include="Common\MonthType.cs" />
+    <Compile Include="Contact\ContactAddressDto.cs" />
+    <Compile Include="Contact\ContactBusinessIdentifiersDto.cs" />
+    <Compile Include="Contact\ContactNameDto.cs" />
+    <Compile Include="Contact\ContactPersonalDto.cs" />
+    <Compile Include="Contact\ContactVariationsDto.cs" />
+    <Compile Include="Contact\DominionContactDto.cs" />
+    <Compile Include="Contact\Legacy\ContactNameDto.cs" />
+    <Compile Include="Contact\AddressDto.cs" />
+    <Compile Include="Contact\PersonDto.cs" />
+    <Compile Include="Contact\NameDto.cs" />
+    <Compile Include="Core\FieldType.cs" />
+    <Compile Include="Deduction\Import\LiazonDeductionImportDto.cs" />
+    <Compile Include="EEOC\EEOCJobCategoryDto.cs" />
+    <Compile Include="EEOC\EEO1\EEOCPayBandDto.cs" />
+    <Compile Include="Employee\EmployeeClientRateDto.cs" />
+    <Compile Include="Employee\EmployeeDeductionDto.cs" />
+    <Compile Include="Employee\EmployeeStatusDto.cs" />
+    <Compile Include="Core\EmployeeAttachmentDto.cs" />
+    <Compile Include="Core\EmployeeAttachmentFolderDto.cs" />
+    <Compile Include="Core\EmployeeFolderGroupType.cs" />
+    <Compile Include="Core\FileStreamDto.cs" />
+    <Compile Include="Core\FolderFilterOptions.cs" />
+    <Compile Include="Core\IResourceSourceIdentifiers.cs" />
+    <Compile Include="Core\LocalFileResourceInfoDto.cs" />
+    <Compile Include="Core\LocalityType.cs" />
+    <Compile Include="Core\ResourceAccessInfoDto.cs" />
+    <Compile Include="Core\ResourceSourceIdentifiers.cs" />
+    <Compile Include="Core\ResourceSourceType.cs" />
+    <Compile Include="Core\ResourceViewDto.cs" />
+    <Compile Include="EEOC\Enums\EEO1RecordStatus.cs" />
+    <Compile Include="EEOC\Enums\EEOCJobCategory.cs" />
+    <Compile Include="EEOC\EEOCLocationDto.cs" />
+    <Compile Include="EEOC\Enums\EEOCRace.cs" />
+    <Compile Include="EEOC\EEO1\EEOC_EEO1_ExportDto.cs" />
+    <Compile Include="EEOC\EmployeeEEOCDto.cs" />
+    <Compile Include="Employee\DependentDto.cs" />
+    <Compile Include="Employee\EmployeeContactCommonPropertiesDto.cs" />
+    <Compile Include="Employee\EmployeeContactDto.cs" />
+    <Compile Include="Employee\EmployeeContactInformationViewDto.cs" />
+    <Compile Include="Employee\EmployeeDependentDto.cs" />
+    <Compile Include="Employee\EmployeeDependentPcpDto.cs" />
+    <Compile Include="Employee\EmployeeDependentRelationship.cs" />
+    <Compile Include="Employee\EmployeeDto.cs" />
+    <Compile Include="Employee\EmployeeEmergencyContactDto.cs" />
+    <Compile Include="Employee\EmployeePayDto.cs" />
+    <Compile Include="Employee\EmployeePcpDto.cs" />
+    <Compile Include="Employee\EmployeeStatusType.cs" />
+    <Compile Include="Employee\MaritalStatus.cs" />
+    <Compile Include="Employee\PayType.cs" />
+    <Compile Include="Forms\FormDefinitionFieldsDto.cs" />
+    <Compile Include="Forms\FormDefinitionIdentifier.cs" />
+    <Compile Include="Forms\FormSignatureDefinitionIdentifiersDto.cs" />
+    <Compile Include="Forms\FormSignatureStatusDto.cs" />
+    <Compile Include="Forms\FormStatusDto.cs" />
+    <Compile Include="Forms\FormTypeIdentifier.cs" />
+    <Compile Include="Forms\SignatureDto.cs" />
+    <Compile Include="Forms\SystemFormType.cs" />
+    <Compile Include="Http\HttpRequestMessageDto.cs" />
+    <Compile Include="Interfaces\IContactNameDto.cs" />
+    <Compile Include="Interfaces\IEmployeePhoneNumbersDto.cs" />
+    <Compile Include="Interfaces\IHasFirstMiddleInitialLast.cs" />
+    <Compile Include="Interfaces\IPhoneNumbersDto.cs" />
+    <Compile Include="Labor\JobProfileInitDto.cs" />
+    <Compile Include="Labor\JobProfileSkillsDto.cs" />
+    <Compile Include="Labor\JobProfileResponsibilitiesDto.cs" />
+    <Compile Include="Labor\JobProfileSkillsPostDto.cs" />
+    <Compile Include="Labor\JobProfileResponsibilitiesPostDto.cs" />
+    <Compile Include="Labor\JobSkillsDto.cs" />
+    <Compile Include="Labor\JobResponsibilitiesDto.cs" />
+    <Compile Include="LeaveManagement\LeaveManagementMinimumHoursResultDto.cs" />
+    <Compile Include="LeaveManagement\LeaveManagementTimeOffRequestDto.cs" />
+    <Compile Include="Labor\PointParamsDto.cs" />
+    <Compile Include="Labor\PostingType.cs" />
+    <Compile Include="Labor\PunchOptionType.cs" />
+    <Compile Include="Labor\PunchRoundingType.cs" />
+    <Compile Include="Labor\PunchType.cs" />
+    <Compile Include="Labor\RecalcPointsResultDto.cs" />
+    <Compile Include="Labor\ResumeRequiredType.cs" />
+    <Compile Include="Labor\SalaryDeterminationMethodDto.cs" />
+    <Compile Include="LeaveManagement\TimeOffRequestDetailDto.cs" />
+    <Compile Include="LeaveManagement\TimeOffRequestDto.cs" />
+    <Compile Include="Labor\TcaSearchOptions.cs" />
+    <Compile Include="Labor\UpdateBalanceResultDto.cs" />
+    <Compile Include="Location\AddressBasicDto.cs" />
+    <Compile Include="Location\AddressExtendedDto.cs" />
+    <Compile Include="Location\CountryCodeFIPS.cs" />
+    <Compile Include="Location\CountryDto.cs" />
+    <Compile Include="Location\ReciprocalStateDto.cs" />
+    <Compile Include="Location\StateCodeUSPS.cs" />
+    <Compile Include="Location\StateDto.cs" />
+    <Compile Include="Misc\AccountFeatureEnum.cs" />
+    <Compile Include="Misc\AccountOption.cs" />
+    <Compile Include="Misc\AccountOptionCategory.cs" />
+    <Compile Include="Misc\AccountOptionDataType.cs" />
+    <Compile Include="Misc\AccountOptionInfoDto.cs" />
+    <Compile Include="Misc\AccountOptionItemDto.cs" />
+    <Compile Include="Client\ClientSubTopicDto.cs" />
+    <Compile Include="Client\ClientTopicDto.cs" />
+    <Compile Include="Misc\DateUnit.cs" />
+    <Compile Include="Misc\EffectiveDateDto.cs" />
+    <Compile Include="Misc\NoteSourceDto.cs" />
+    <Compile Include="Misc\NoteSourceType.cs" />
+    <Compile Include="Misc\TimeZoneDto.cs" />
+    <Compile Include="Notification\AnniversaryListNotificationDetailDto.cs" />
+    <Compile Include="Notification\ApprovalProcessNotificationDetailDto.cs" />
+    <Compile Include="Notification\BirthdayListNotificationDetailDto.cs" />
+    <Compile Include="Notification\CategorizedClientNotificationPreferencesDto.cs" />
+    <Compile Include="Notification\ClientNotificationPreferenceDto.cs" />
+    <Compile Include="Notification\CommentAddedToGoalNotificationDetailsDto.cs" />
+    <Compile Include="Notification\CompleteEvaluationNotificationDetailDto.cs" />
+    <Compile Include="Notification\ContactEmailAddressDto.cs" />
+    <Compile Include="Notification\ContactPhoneNumberDto.cs" />
+    <Compile Include="Notification\ContactPreferencesDto.cs" />
+    <Compile Include="Notification\DisciplineLevelReachedNotificationDetailDto.cs" />
+    <Compile Include="Notification\EmailDto.cs" />
+    <Compile Include="Notification\EmployeeAnniversaryDto.cs" />
+    <Compile Include="Notification\EmployeeBirthdayDto.cs" />
+    <Compile Include="Notification\EmployeeChangedW4NotificationDetailDto.cs" />
+    <Compile Include="Notification\EmployeeCompletedOnboardingNotificationDetailDto.cs" />
+    <Compile Include="Notification\EmployeeNinetyDayAnniversaryDto.cs" />
+    <Compile Include="Notification\EvaluationCompletedNotificationDetailDto.cs" />
+    <Compile Include="Notification\EvaluationSharedWithEmployeeNotificationDetailDto.cs" />
+    <Compile Include="Notification\I9ReadyToBeCertifiedNotificationDetailDto.cs" />
+    <Compile Include="Notification\NewEmployeeAddedToOnboardingNotificationDetailDto.cs" />
+    <Compile Include="Notification\ICIMSImportNotificationInfoDto.cs" />
+    <Compile Include="Notification\IHasNotificationType.cs" />
+    <Compile Include="Notification\INotificationData.cs" />
+    <Compile Include="Notification\INotificationRecipient.cs" />
+    <Compile Include="Notification\IRecipient.cs" />
+    <Compile Include="Notification\LeaveMgmtRequestStatusNotificationDetailDto.cs" />
+    <Compile Include="Notification\MeetingInviteNotificationDetailDto.cs" />
+    <Compile Include="Notification\NewCompanyAdminCreatedNotificationDetailDto.cs" />
+    <Compile Include="Notification\NewCompanyContactCreatedNotificationDetailDto.cs" />
+    <Compile Include="Notification\NewEmployeeAssignedToSupervisorNotificationDetailsDto.cs" />
+    <Compile Include="Notification\NewGoalAssignedNotificationDetailDto.cs" />
+    <Compile Include="Notification\NewSystemAdminCreatedNotificationDetailsDto.cs" />
+    <Compile Include="Notification\NinetyDayAnniversaryListNotificationDetailDto.cs" />
+    <Compile Include="Notification\NotificationContactDto.cs" />
+    <Compile Include="Notification\NotificationContactPreferences.cs" />
+    <Compile Include="Notification\NotificationContactPreferenceDto.cs" />
+    <Compile Include="Notification\NotificationContentBuilder.cs" />
+    <Compile Include="Notification\NotificationDeliveryMethod.cs" />
+    <Compile Include="Notification\NotificationDeletedDto.cs" />
+    <Compile Include="Notification\NotificationDeliveryDto.cs" />
+    <Compile Include="Notification\NotificationDto.cs" />
+    <Compile Include="Notification\NotificationPreferencesProductGroupDto.cs" />
+    <Compile Include="Notification\NotificationRecipient.cs" />
+    <Compile Include="Notification\NotificationType.cs" />
+    <Compile Include="Notification\NotificationTypeDto.cs" />
+    <Compile Include="Notification\NotificationTypeUserTypeDto.cs" />
+    <Compile Include="Notification\NotificationUserDto.cs" />
+    <Compile Include="Notification\ProductDto.cs" />
+    <Compile Include="Notification\RecipientDto.cs" />
+    <Compile Include="Notification\SmsDto.cs" />
+    <Compile Include="Notification\WelcomeToOnboardingNotificationDetailsDto.cs" />
+    <Compile Include="Onboarding\AlienAdmissionNumberType.cs" />
+    <Compile Include="Onboarding\EeocRaceEthnicCategoriesDto.cs" />
+    <Compile Include="Onboarding\ElectronicConsentsDto.cs" />
+    <Compile Include="Onboarding\Employee1095CConsentDto.cs" />
+    <Compile Include="Onboarding\EmployeeDependentRelationshipsDto.cs" />
+    <Compile Include="Onboarding\EmployeeOnboardingFieldDto.cs" />
+    <Compile Include="Onboarding\EmployeeOnboardingHireDto.cs" />
+    <Compile Include="Onboarding\EmployeeW2ConsentDto.cs" />
+    <Compile Include="Employee\AddEmployeeDto.cs" />
+    <Compile Include="Onboarding\EmployeeOnboardingTasksDto.cs" />
+    <Compile Include="Onboarding\EmployeeOnboardingDto.cs" />
+    <Compile Include="Onboarding\EmployeeOnboardingEmailDto.cs" />
+    <Compile Include="Onboarding\EmployeeOnboardingI9DocumentDto.cs" />
+    <Compile Include="Onboarding\EmployeeOnboardingMenuClient.cs" />
+    <Compile Include="Onboarding\EmployeeOnboardingMenuItems.cs" />
+    <Compile Include="Onboarding\EmployeeOnboardingI9Dto.cs" />
+    <Compile Include="Onboarding\EmergencyContactRelationshipDto.cs" />
+    <Compile Include="Onboarding\EmployeeOnboardingEmergencyContactDto.cs" />
+    <Compile Include="Onboarding\EmployeeOnboardingW4.cs" />
+    <Compile Include="Onboarding\EmployeeWorkFlowTreeDto.cs" />
+    <Compile Include="Onboarding\Forms\DE4StateCAFormDto.cs" />
+    <Compile Include="Onboarding\Forms\FederalW4FormDataDto.cs" />
+    <Compile Include="Onboarding\Forms\I9FormDocumentDto.cs" />
+    <Compile Include="Onboarding\Forms\I9FormDto.cs" />
+    <Compile Include="Onboarding\Forms\I9Form2017Dto.cs" />
+    <Compile Include="Onboarding\Forms\W4FederalForm2020Dto.cs" />
+    <Compile Include="Onboarding\Forms\W4FederalFormDto.cs" />
+    <Compile Include="Onboarding\Forms\W4StateGAFormDto.cs" />
+    <Compile Include="Onboarding\Forms\W4StateWVFormDto.cs" />
+    <Compile Include="Onboarding\Forms\W4StateKYFormDto.cs" />
+    <Compile Include="Onboarding\Forms\W4StateWIFormDto.cs" />
+    <Compile Include="Onboarding\OnboardingAdminTaskDto.cs" />
+    <Compile Include="Onboarding\OnboardingAdminTaskListDto.cs" />
+    <Compile Include="Onboarding\Forms\W4StateMOFormDto.cs" />
+    <Compile Include="Onboarding\Forms\W4StateVAFormDto.cs" />
+    <Compile Include="Onboarding\OnboardingWorkflowResourcesDto.cs" />
+    <Compile Include="Onboarding\OnboardingWorkflowTaskDto.cs" />
+    <Compile Include="Onboarding\OnboardingWorkflowDto.cs" />
+    <Compile Include="Onboarding\EmployeeOnboardingWorkflowDto.cs" />
+    <Compile Include="Onboarding\EmployeeOnboardingWorkflowEmpFlowDto.cs" />
+    <Compile Include="Onboarding\Forms\W4StateILFormDto.cs" />
+    <Compile Include="Onboarding\Forms\W4StateMIFormDto.cs" />
+    <Compile Include="Onboarding\Forms\W4StateOHFormDto.cs" />
+    <Compile Include="Onboarding\Forms\W4StateINFormDto.cs" />
+    <Compile Include="Onboarding\I9DocumentDto.cs" />
+    <Compile Include="Onboarding\EmployeeOnboardingW4AssistDto.cs" />
+    <Compile Include="Onboarding\I9EligibilityStatus.cs" />
+    <Compile Include="Onboarding\OnboardingField.cs" />
+    <Compile Include="Onboarding\OnboardingFieldDto.cs" />
+    <Compile Include="Onboarding\OnboardingWorkflowTaskItem.cs" />
+    <Compile Include="Onboarding\SchoolDistrictDto.cs" />
+    <Compile Include="Onboarding\TaxExemptReason.cs" />
+    <Compile Include="Onboarding\W4MaritalStatus.cs" />
+    <Compile Include="Payroll\AdditionalAmountType.cs" />
+    <Compile Include="Payroll\AdditionalAmountTypeInfoDto.cs" />
+    <Compile Include="Payroll\BankDepositCountInfoDto.cs" />
+    <Compile Include="Payroll\BankDepositInfoDto.cs" />
+    <Compile Include="Payroll\BasicPayrollHistoryDto.cs" />
+    <Compile Include="Payroll\CheckStockBillingDto.cs" />
+    <Compile Include="Payroll\CheckStockOrderDto.cs" />
+    <Compile Include="Payroll\CheckStockCostType.cs" />
+    <Compile Include="Payroll\CheckStubConfigurationDto.cs" />
+    <Compile Include="Payroll\ClientDeductionCategoryType.cs" />
+    <Compile Include="Payroll\ClientEarningCategory.cs" />
+    <Compile Include="Payroll\ClientEarningYearlyBreakdownDto.cs" />
+    <Compile Include="Payroll\ClientEarningDto.cs" />
+    <Compile Include="Payroll\ClientMatchDto.cs" />
+    <Compile Include="Payroll\ClientPayFrequencyDto.cs" />
+    <Compile Include="Payroll\ClientPlanCustomDto.cs" />
+    <Compile Include="Payroll\ClientPlanDto.cs" />
+    <Compile Include="Payroll\CurrentNormalPayrollDto.cs" />
+    <Compile Include="Payroll\CreatePayGradeDto.cs" />
+    <Compile Include="Payroll\DeductionFrequencyType.cs" />
+    <Compile Include="Payroll\DominionVendorDto.cs" />
+    <Compile Include="Payroll\EmployeeDeductionAmountType.cs" />
+    <Compile Include="Payroll\EmployeeDeductionMaxType.cs" />
+    <Compile Include="Payroll\OpenPayrollDetailDto.cs" />
+    <Compile Include="Payroll\PaycheckDeductionHistoryDto.cs" />
+    <Compile Include="Payroll\PaycheckEarningHistoryDto.cs" />
+    <Compile Include="Payroll\PayCheckHistoryDto.cs" />
+    <Compile Include="Payroll\PaycheckPayDataHistoryDto.cs" />
+    <Compile Include="Payroll\PayFrequencyDto.cs" />
+    <Compile Include="Payroll\PayFrequencyType.cs" />
+    <Compile Include="Payroll\PayGradeDto.cs" />
+    <Compile Include="Payroll\PayGradeType.cs" />
+    <!--<Complie Inclide="Payroll\PayrollEmailLogDto.cs" />-->
+    <Compile Include="Payroll\PayrollCheckSeqEnum.cs" />
+    <Compile Include="Payroll\PayrollCheckSeqDto.cs" />
+    <Compile Include="Payroll\PayrollControlTotalDto.cs" />
+    <Compile Include="Payroll\PayrollDirectDepositOptionType.cs" />
+    <Compile Include="Payroll\PayrollDto.cs" />
+    <Compile Include="Payroll\PayrollEmailLogDto.cs" />
+    <Compile Include="Payroll\PayrollHistoryDto.cs" />
+    <Compile Include="Payroll\PayrollNACHAOptDto.cs" />
+    <Compile Include="Payroll\PayrollNACHAOptType.cs" />
+    <Compile Include="Payroll\PayrollPaycheckListDto.cs" />
+    <Compile Include="Payroll\PayrollPayDataDetailDto.cs" />
+    <Compile Include="Payroll\PayrollPayDataDto.cs" />
+    <Compile Include="Payroll\PayrollRequestDto.cs" />
+    <Compile Include="Payroll\PayrollRequestsCustomDto.cs" />
+    <Compile Include="Payroll\PayrollRunDto.cs" />
+    <Compile Include="Payroll\PayrollRunType.cs" />
+    <Compile Include="Payroll\CheckDto.cs" />
+    <Compile Include="Payroll\RemoteCheckHistoryDto.cs" />
+    <Compile Include="Payroll\SelectPayrollHistoryDto.cs" />
+    <Compile Include="Payroll\TasksDueDto.cs" />
+    <Compile Include="Payroll\TaxFrequencyDto.cs" />
+    <Compile Include="Payroll\TaxPacketType.cs" />
+    <Compile Include="Payroll\ClientEarningMonthlyBreakdownDto.cs" />
+    <Compile Include="Payroll\TaxVendorDto.cs" />
+    <Compile Include="Payroll\TipUpEarningsDto.cs" />
+    <Compile Include="Payroll\VendorDto.cs" />
+    <Compile Include="Payroll\VendorPaymentHistoryDto.cs" />
+    <Compile Include="Performance\ApprovalProcess.cs" />
+    <Compile Include="Performance\ApprovalProcessStatus.cs" />
+    <Compile Include="Performance\ApprovalStatus.cs" />
+    <Compile Include="Performance\BasedOn.cs" />
+    <Compile Include="Performance\BasedOnDto.cs" />
+    <Compile Include="Performance\BooleanFeedbackResponseDto.cs" />
+    <Compile Include="Performance\ApprovalProcessHistoryDto.cs" />
+    <Compile Include="Performance\CompetencyOptionsDto.cs" />
+    <Compile Include="Performance\CompetencyRateCommentRequiredDto.cs" />
+    <Compile Include="Performance\GoalOptionsDto.cs" />
+    <Compile Include="Performance\GoalRateCommentRequiredDto.cs" />
+    <Compile Include="Performance\EvaluationReminderDto.cs" />
+    <Compile Include="Performance\IncreaseTypeDto.cs" />
+    <Compile Include="Performance\Measurement.cs" />
+    <Compile Include="Performance\MeasurementDto.cs" />
+    <Compile Include="Performance\OneTimeEarningDto.cs" />
+    <Compile Include="Performance\OneTimeEarningSettingsDto.cs" />
+    <Compile Include="Performance\MultiReviewDialogResultDto.cs" />
+    <Compile Include="Performance\RecommendedBonusDto.cs" />
+    <Compile Include="Performance\MultiSelectFeedbackResponseDto.cs" />
+    <Compile Include="Performance\ReferenceDate.cs" />
+    <Compile Include="Performance\ReferenceDateExtension.cs" />
+    <Compile Include="Performance\ReviewOwnerDto.cs" />
+    <Compile Include="Performance\ReviewTemplateReminderDto.cs" />
+    <Compile Include="Performance\ScoreModelEvalInfoDto.cs" />
+    <Compile Include="Performance\CompetencyEvaluationDto.cs" />
+    <Compile Include="Performance\CompetencyEvaluationGroupDto.cs" />
+    <Compile Include="Performance\CompetencyEvaluationJsonData.cs" />
+    <Compile Include="Performance\CompetencyGroupDto.cs" />
+    <Compile Include="Performance\CompetencyDto.cs" />
+    <Compile Include="Performance\CompetencyWithModelIdsRawDto.cs" />
+    <Compile Include="Performance\DateFeedbackResponseDto.cs" />
+    <Compile Include="Performance\EmployeeDirectSupervisorLinkDto.cs" />
+    <Compile Include="Performance\EvalDetailAndSyncContent.cs" />
+    <Compile Include="Performance\EvaluationDetailDto.cs" />
+    <Compile Include="Performance\EvaluationDto.cs" />
+    <Compile Include="Performance\EvaluationGroupDto.cs" />
+    <Compile Include="Performance\EvaluationJsonData.cs" />
+    <Compile Include="Performance\EvaluationSetupDto.cs" />
+    <Compile Include="Performance\EvaluationStatus.cs" />
+    <Compile Include="Performance\EvaluationStatusDto.cs" />
+    <Compile Include="Performance\EvaluationSyncOptions.cs" />
+    <Compile Include="Performance\FeedbackBasicDto.cs" />
+    <Compile Include="Performance\FeedbackItemDto.cs" />
+    <Compile Include="Performance\FeedbackResponseData.cs" />
+    <Compile Include="Performance\FeedbackResponseItemData.cs" />
+    <Compile Include="Performance\FeedbackResponseJsonData.cs" />
+    <Compile Include="Performance\FeedbackSetupDto.cs" />
+    <Compile Include="Performance\FeedbackWithOrder.cs" />
+    <Compile Include="Performance\GoalEvaluationDto.cs" />
+    <Compile Include="Performance\GoalEvaluationGroupDto.cs" />
+    <Compile Include="Performance\GoalEvaluationJsonData.cs" />
+    <Compile Include="Performance\GoalWeightDto.cs" />
+    <Compile Include="Performance\MeritIncreaseCurrentPayAndRatesDto.cs" />
+    <Compile Include="Performance\MeritIncreaseDto.cs" />
+    <Compile Include="Performance\IncreaseType.cs" />
+    <Compile Include="Performance\MeritIncreaseViewDto.cs" />
+    <Compile Include="Performance\MeritLimitDto.cs" />
+    <Compile Include="Performance\PerformanceCompetencyDto.cs" />
+    <Compile Include="Performance\PerformanceReviewRatingDto.cs" />
+    <Compile Include="Performance\IHasFeedbackResponseData.cs" />
+    <Compile Include="Performance\ISingleFeedbackResponse.cs" />
+    <Compile Include="Performance\ListItemFeedbackResponseDto.cs" />
+    <Compile Include="Performance\ProposalDto.cs" />
+    <Compile Include="Performance\ReviewTemplates\ReviewTemplateBaseDto.cs" />
+    <Compile Include="Performance\ReviewDto.cs" />
+    <Compile Include="Performance\ReviewGroupStatusDto.cs" />
+    <Compile Include="Performance\ReviewMeetingDto.cs" />
+    <Compile Include="Performance\CompetencyModelDto.cs" />
+    <Compile Include="Performance\CompetencyModelUpdateDto.cs" />
+    <Compile Include="Performance\EmployeePerformanceConfigurationDto.cs" />
+    <Compile Include="Performance\ReviewMeritIncreaseDto.cs" />
+    <Compile Include="Performance\ReviewProfileBasicDto.cs" />
+    <Compile Include="Performance\ReviewProfileBasicSetupDto.cs" />
+    <Compile Include="Performance\ReviewProfileEvaluationDto.cs" />
+    <Compile Include="Performance\ReviewProfileEvaluationFeedbackDto.cs" />
+    <Compile Include="Performance\ReviewProfileSetupDto.cs" />
+    <Compile Include="Performance\ReviewRatingDto.cs" />
+    <Compile Include="Performance\EvaluationRoleType.cs" />
+    <Compile Include="Performance\ReviewStatus.cs" />
+    <Compile Include="Performance\ScoreMethodTypeDto.cs" />
+    <Compile Include="Performance\ScoreModelDto.cs" />
+    <Compile Include="Performance\ScoreModelSettingsDto.cs" />
+    <Compile Include="Performance\ScoreRangeLimitDto.cs" />
+    <Compile Include="Performance\ReviewSearchOptionsDto.cs" />
+    <Compile Include="Performance\ReviewStatusDto.cs" />
+    <Compile Include="Performance\SingleFeedbackResponseDto.cs" />
+    <Compile Include="Performance\TextFeedbackResponseDto.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PunchImportTypeEnum.cs" />
+    <Compile Include="Reporting\EmailReportOptionsDto.cs" />
+    <Compile Include="Reporting\GenerateReportDto.cs" />
+    <Compile Include="Reporting\ReportType.cs" />
+    <Compile Include="Reporting\SavedReportCustomFieldDto.cs" />
+    <Compile Include="Reporting\SavedReportDto.cs" />
+    <Compile Include="Reporting\SavedReportFieldDto.cs" />
+    <Compile Include="Reporting\ScheduledReportEmailAddressChangeHistoryDto.cs" />
+    <Compile Include="Reporting\ScheduledReportSequenceDto.cs" />
+    <Compile Include="Reporting\ScheduledReportDeliveryOptions.cs" />
+    <Compile Include="Reporting\ScheduledReportDto.cs" />
+    <Compile Include="Reporting\ScheduledReportEmailAddressDto.cs" />
+    <Compile Include="Reporting\ScheduledReportFileFormat.cs" />
+    <Compile Include="Reporting\ScheduledReportFrequency.cs" />
+    <Compile Include="Reporting\ScheduledReportingCustomDto.cs" />
+    <Compile Include="Reporting\ScheduledReportVisibleDto.cs" />
+    <Compile Include="Reporting\StandardReport.cs" />
+    <Compile Include="Reporting\StandardReportDto.cs" />
+    <Compile Include="Security\IUserAccessEmployeeInfo.cs" />
+    <Compile Include="Security\LegacyAccessRightsDto.cs" />
+    <Compile Include="Security\PasswordRuleDto.cs" />
+    <Compile Include="Security\SecretQuestionDto.cs" />
+    <Compile Include="Security\SupervisorGroupDto.cs" />
+    <Compile Include="Security\SupervisorInfoDto.cs" />
+    <Compile Include="Security\UserActionSyncResultsDto.cs" />
+    <Compile Include="Security\UserSecurityGroupType.cs" />
+    <Compile Include="SftpUpload\CsvTemplates\NobscotWebExitExportLayout.cs" />
+    <Compile Include="SftpUpload\CsvTemplates\CensusRecordLayout.cs" />
+    <Compile Include="SftpUpload\CsvTemplates\ChristianCareOnShiftDemographicLayout.cs" />
+    <Compile Include="SftpUpload\CsvTemplates\HrPerformanceEmployee.cs" />
+    <Compile Include="SftpUpload\CsvTemplates\OnShiftDemographicLayout.cs" />
+    <Compile Include="SftpUpload\CsvTemplates\OnShiftBenefitsLayout.cs" />
+    <Compile Include="SftpUpload\CsvTemplates\OnShiftPunchesLayout.cs" />
+    <Compile Include="Sprocs\GetClientJobCostingInfoByClientIDArgsDto.cs" />
+    <Compile Include="SftpUpload\CsvTemplates\OnShiftScheduleLayout.cs" />
+    <Compile Include="Sprocs\ClockEmployeeBenefitHolidayArgsDto.cs" />
+    <Compile Include="Sprocs\ClockEmployeeBenefitHolidayDto.cs" />
+    <Compile Include="Sprocs\GetClockEmployeeApproveHoursOptionsArgsDto.cs" />
+    <Compile Include="Sprocs\GetClockFilterCategoryArgsDto.cs" />
+    <Compile Include="Sprocs\GetClockEmployeeApproveHoursSettingsArgsDto.cs" />
+    <Compile Include="Sprocs\GetClockPayrollListByClientIDPayrollRunIDArgsDto.cs" />
+    <Compile Include="Sprocs\InsertClockEmployeeApproveDateArgsDto.cs" />
+    <Compile Include="Sprocs\UserSiteArgsDto.cs" />
+    <Compile Include="Tax\ClientTaxCompleteDto.cs" />
+    <Compile Include="Tax\ClientTaxDeferralDto.cs" />
+    <Compile Include="Tax\EmployeeTaxAdmin\EmployeeNonFederalTaxDto.cs" />
+    <Compile Include="Tax\EmployeeTaxAdmin\EmployeeTaxAdminDto.cs" />
+    <Compile Include="Tax\EmployeeTaxAdmin\EmployeeTaxCostCenterConfigurationDto.cs" />
+    <Compile Include="Tax\EmployeeTaxAdmin\EmployeeTaxCostCenterDto.cs" />
+    <Compile Include="Tax\EmployeeTaxAdmin\EmployeeTaxGeneralInfoDto.cs" />
+    <Compile Include="Tax\EmployeeTaxAdmin\EmployeeTaxSetupDto.cs" />
+    <Compile Include="Tax\IClientTaxWithLegacyTaxes.cs" />
+    <Compile Include="Tax\ILegacyTaxIdAndType.cs" />
+    <Compile Include="Tax\ITaxEntityFilingStatus.cs" />
+    <Compile Include="Tax\LegacyDisabilityTaxDto.cs" />
+    <Compile Include="Tax\LegacyLocalTaxDto.cs" />
+    <Compile Include="Tax\LegacyTaxType.cs" />
+    <Compile Include="Tax\TaxEntityFilingStatusDto.cs" />
+    <Compile Include="Tax\WithholdingOption.cs" />
+    <Compile Include="TimeCard\ApprovalOptionType.cs" />
+    <Compile Include="TimeCard\ApprovalStatusDto.cs" />
+    <Compile Include="TimeCard\ApprovalStatusType.cs" />
+    <Compile Include="TimeCard\ApprovedDates.cs" />
+    <Compile Include="TimeCard\BenefitListByDate.cs" />
+    <Compile Include="TimeCard\ClientOption.cs" />
+    <Compile Include="TimeCard\DaysFilterType.cs" />
+    <Compile Include="TimeCard\EmployeeApproveHoursSettings.cs" />
+    <Compile Include="TimeCard\EmployeeDay.cs" />
+    <Compile Include="TimeCard\EmployeeDayApprovalStatus.cs" />
+    <Compile Include="TimeCard\EmployeeDayEarning.cs" />
+    <Compile Include="TimeCard\EmployeeDayException.cs" />
+    <Compile Include="TimeCard\EmployeeDayJobCostingInfo.cs" />
+    <Compile Include="TimeCard\EmployeeDayNotes.cs" />
+    <Compile Include="TimeCard\EmployeeDayPendingBenefit.cs" />
+    <Compile Include="TimeCard\EmployeeDayPunch.cs" />
+    <Compile Include="TimeCard\EmployeeDayRecord.cs" />
+    <Compile Include="TimeCard\EmployeeDaySchedule.cs" />
+    <Compile Include="TimeCard\EmployeeDayScheduleRange.cs" />
+    <Compile Include="TimeCard\EmployeeFilter.cs" />
+    <Compile Include="TimeCard\EmployeePointListByDate.cs" />
+    <Compile Include="TimeCard\EmployeeTimeCard.cs" />
+    <Compile Include="TimeCard\EmployeeTotals.cs" />
+    <Compile Include="TimeCard\ExceptionHistoryByEmployeeID.cs" />
+    <Compile Include="TimeCard\IControl.cs" />
+    <Compile Include="TimeCard\IHasCostCenterDivAndDep.cs" />
+    <Compile Include="TimeCard\ListByDate.cs" />
+    <Compile Include="TimeCard\ListByDateAndFilter.cs" />
+    <Compile Include="TimeCard\ListByStatusAndDate.cs" />
+    <Compile Include="TimeCard\PayPeriodEnded.cs" />
+    <Compile Include="TimeCard\PeriodData.cs" />
+    <Compile Include="TimeCard\PunchOptionType.cs" />
+    <Compile Include="TimeCard\RecurrenceOptionTypes.cs" />
+    <Compile Include="TimeCard\Result\TimeCardAuthorizationResult.cs" />
+    <Compile Include="TimeCard\RulesByEmployeeID.cs" />
+    <Compile Include="TimeCard\ScheduleListByDate.cs" />
+    <Compile Include="TimeCard\ScheduleListByEmployeeIDAndDate.cs" />
+    <Compile Include="TimeCard\SupervisorSecurityListByUserIDClientID.cs" />
+    <Compile Include="TimeCard\TimeCardAuthorizationFilterDropdown.cs" />
+    <Compile Include="TimeCard\TimeCardAuthorizationSearchOptions.cs" />
+    <Compile Include="TimeCard\TimeCardBenefitRow.cs" />
+    <Compile Include="TimeCard\TimeCardEarningRow.cs" />
+    <Compile Include="TimeCard\TimeCardPunch.cs" />
+    <Compile Include="TimeCard\TimeCardPunchRow.cs" />
+    <Compile Include="TimeCard\TimeCardRowDto.cs" />
+    <Compile Include="TimeCard\TimeClockEmp.cs" />
+    <Compile Include="TimeCard\TotalHours.cs" />
+    <Compile Include="TimeCard\Totals.cs" />
+    <Compile Include="TimeCard\TotalsFilters.cs" />
+    <Compile Include="TimeCard\TypeOfHoursType.cs" />
+    <Compile Include="TimeClock\CalendarDayOfWeekType.cs" />
+    <Compile Include="TimeClock\ClientMachineDto.cs" />
+    <Compile Include="TimeClock\ClockRoundingTypeDto.cs" />
+    <Compile Include="TimeClock\ClockTimeFormatDto.cs" />
+    <Compile Include="TimeClock\DayOfWeekType.cs" />
+    <Compile Include="User\AccessRuleDto.cs" />
+    <Compile Include="User\AccessRuleClaimDto.cs" />
+    <Compile Include="User\AccessRuleClaimSource.cs" />
+    <Compile Include="User\OtherAccessClaimType.cs" />
+    <Compile Include="User\AccessRuleSetConditionType.cs" />
+    <Compile Include="User\AccessRuleSetDto.cs" />
+    <Compile Include="User\AccountFeatureClaimTypeDto.cs" />
+    <Compile Include="User\ClaimTypeDto.cs" />
+    <Compile Include="User\ClientAccessInfo.cs" />
+    <Compile Include="User\OtherAccessClaimTypeDto.cs" />
+    <Compile Include="User\Search\UserSearchOptions.cs" />
+    <Compile Include="User\SupervisorSecurityListByUserIDClientID.cs" />
+    <Compile Include="User\TimeoutDto.cs" />
+    <Compile Include="User\UpdateUserLastClientIdDto.cs" />
+    <Compile Include="Tax\EmployeeTaxDto.cs" />
+    <Compile Include="Tax\FilingStatusDto.cs" />
+    <Compile Include="User\BasicUserProfileDto.cs" />
+    <Compile Include="User\UserAccessInfo.cs" />
+    <Compile Include="User\UserActionTypeClaimTypeDto.cs" />
+    <Compile Include="User\UserBetaFeatureDto.cs" />
+    <Compile Include="User\UserClientAccessDto.cs" />
+    <Compile Include="User\UserPerformanceDashboardEmployeeDto.cs" />
+    <Compile Include="User\UserPerformanceDashboardUserDto.cs" />
+    <Compile Include="User\UserDto.cs" />
+    <Compile Include="User\UserInfoDto.cs" />
+    <Compile Include="User\UserInfoWithNamesDto.cs" />
+    <Compile Include="User\UserPermissionsDto.cs" />
+    <Compile Include="User\UserSettingsDto.cs" />
+    <Compile Include="User\UserPinDto.cs" />
+    <Compile Include="User\UserPrincipalDto.cs" />
+    <Compile Include="User\UserSupervisorInfoDto.cs" />
+    <Compile Include="User\UserSupervisorAccessInfo.cs" />
+    <Compile Include="User\UserSettingsInputDto.cs" />
+    <Compile Include="User\UserType.cs" />
+    <Compile Include="User\UserTypeClaimTypeDto.cs" />
+    <Compile Include="User\UserUsernameDto.cs" />
+    <Compile Include="User\UserViewEmployeePayType.cs" />
+    <Compile Include="Utility\Extensions\NormalizerExtensions.cs" />
+    <Compile Include="Utility\ValueObjects\PersonName.cs" />
+    <Compile Include="W2\ClientW2OptionsDto.cs" />
+    <Compile Include="W2\ClientW2ProcessingNotesDto.cs" />
+    <Compile Include="W2\Employee1099CountDto.cs" />
+    <Compile Include="W2\W2ProcessingDto.cs" />
+    <Compile Include="W2\SummarizingW2Dto.cs" />
+    <Compile Include="W2\W2ProcessingSubmittedDto.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <Compile Include="Tax\LegacyStateTaxDto.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Ds.Authentication\Dominion.Authentication\Dominion.Authentication.csproj">
+      <Project>{ED5A134A-EE92-4158-8B72-F0915A7D6B84}</Project>
+      <Name>Dominion.Authentication</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Ds.Taxes\Dominion.Taxes.Dto\Dominion.Taxes.Dto.csproj">
+      <Project>{B4860B48-E16E-489C-A870-B750FD89309B}</Project>
+      <Name>Dominion.Taxes.Dto</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Ds.Utility\Dominion.Utility\Dominion.Utility.csproj">
+      <Project>{cc558777-0e1a-456b-a4e0-226bbe34f433}</Project>
+      <Name>Dominion.Utility</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Banks\Auth\" />
+    <Folder Include="bin\Debug\de\" />
+    <Folder Include="bin\Debug\es\" />
+    <Folder Include="bin\Debug\fr\" />
+    <Folder Include="bin\Debug\it\" />
+    <Folder Include="bin\Debug\nl\" />
+    <Folder Include="bin\Debug\pl\" />
+    <Folder Include="bin\Debug\pt\" />
+    <Folder Include="bin\Debug\ru\" />
+    <Folder Include="bin\Debug\sv\" />
+    <Folder Include="bin\Debug\tr\" />
+    <Folder Include="bin\EnhancementQA\" />
+    <Folder Include="bin\MobileQA\" />
+    <Folder Include="bin\Release\" />
+    <Folder Include="bin\Staging\" />
+    <Folder Include="bin\x64\Debug\" />
+    <Folder Include="bin\x64\EnhancementQA\" />
+    <Folder Include="bin\x64\MobileQA\" />
+    <Folder Include="bin\x64\Release\" />
+    <Folder Include="bin\x64\Staging\" />
+    <Folder Include="bin\x86\Debug\" />
+    <Folder Include="bin\x86\EnhancementQA\" />
+    <Folder Include="bin\x86\MobileQA\" />
+    <Folder Include="bin\x86\Staging\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Dashboard\PostDataDto.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

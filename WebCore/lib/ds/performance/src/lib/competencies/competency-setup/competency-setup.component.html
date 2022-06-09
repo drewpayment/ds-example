@@ -1,0 +1,63 @@
+<ds-card border="top">
+    <div ds-card-header>
+        <ds-card-header-title>Competency Library</ds-card-header-title>
+        <ds-card-title-right-content>
+          <div class="custom-control custom-checkbox mb-4 mr-2 d-inline-block">
+            <input type="checkbox" class="custom-control-input" id="archive-checkbox" (click)="toggleArchivedCompetencies()" [checked]="showArchivedCompetencies" />
+            <label class="custom-control-label" for="archive-checkbox">
+                Include Archive
+            </label>
+          </div>
+          <button class="btn btn-outline-primary white-space-nowrap"
+              type="button" 
+              color="primary"
+              (click)="openAvailableCompetenciesDialog()"
+          >Available Competencies</button>
+        </ds-card-title-right-content>
+        <ds-card-title-action>
+            <button class="btn btn-primary" 
+                type="button" 
+                (click)="showAddCompetencyDialog()"
+            >
+                <i class="material-icons">add</i> Competency
+            </button>
+        </ds-card-title-action>
+        <ds-card-subtitle>
+            <div class="instruction-text">
+                Click "+ Competency" to begin building your custom Competency Library. A starting list of competencies is also available for reference or use. Click the "Available Competencies" button to select competencies to add to your library. Competencies selected
+                from the list are editable once they are added to your Competency Library.
+            </div>
+        </ds-card-subtitle>
+    </div>
+    <div ds-card-content>
+        <ds-card [color]="comp.isArchived ? 'archive' : 'info'" mode="widget" [hover]=true class="hoverable" *ngFor="let comp of competencies$ | async; let i = index">
+            <div ds-card-icon>{{comp.isCore ? 'people' : 'assignment_ind'}}</div>
+            <div ds-card-header>
+                <ds-card-section-title>{{comp.name}}</ds-card-section-title>
+                <ds-card-title-right-content>
+                    <span *ngIf="comp.isArchived" class="badge badge-pill badge-disabled">Inactive</span>
+                    <span *ngIf="comp.competencyGroupId > 0" class="badge badge-pill badge-info ml-2">
+                        {{getCompetencyGroupName(comp.competencyGroupId)}}
+                    </span>
+                    <!-- <span *ngIf="comp.difficultyLevel != null && comp.difficultyLevel > 0" class="badge badge-pill badge-primary ml-2">Difficulty: {{comp.difficultyLevel}}</span> -->
+                </ds-card-title-right-content>
+                <ds-card-title-action>
+                    <mat-menu #toggleMenu="matMenu">
+                        <button mat-menu-item type="button" (click)="showEditCompetencyDialog(comp)">Edit</button>
+                        <!-- Show archive/delete based on if competency has been used on any past reviews -->
+                        <button mat-menu-item type="button" *ngIf="!comp.isArchived && !comp.canRemove" (click)="archiveCompetency(comp)">Archive</button>
+                        <button mat-menu-item type="button" *ngIf="comp.isArchived" (click)="archiveCompetency(comp, false)">Restore</button>
+                        <button mat-menu-item type="button" *ngIf="!comp.isArchived && comp.canRemove" (click)="confirmDeleteCompetency(comp)">Remove</button>
+                    </mat-menu>
+                    <button [matMenuTriggerFor]="toggleMenu" type="button" class="btn btn-icon hover-show pr-0">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+                </ds-card-title-action>
+            </div>
+            <div ds-card-content>
+                <hr class="mt-0 mb-2" />
+                <span class="instruction-text">{{comp.description}}</span>
+            </div>
+        </ds-card>
+    </div>
+</ds-card>

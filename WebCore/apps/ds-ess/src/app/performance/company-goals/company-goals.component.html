@@ -1,0 +1,31 @@
+<ds-card border="top" mode="nobody">
+    <ds-card-header>
+        <ds-card-header-title>Company Goals</ds-card-header-title>
+        <ds-card-title-action>
+            <!-- this will be implemented later
+            <button type="button" class="btn btn-outline-primary btn-xs">
+                <i class="material-icons">filter_list</i>
+            </button> -->
+        </ds-card-title-action>
+    </ds-card-header>
+    <ds-card-content>
+        <div class="empty-state" *ngIf="!hasGoals && !isLoading && canReadGoals; else noGoalTracking">There are no goals to display.</div>
+        <ng-template #noGoalTracking>
+            <div *ngIf="!canReadGoals" class="empty-card-state">
+                <div class="pr-2">
+                    <i class="material-icons md-48 text-warning">warning</i>
+                </div>
+                <div>
+                    <div class="font-xl">Company Goals are not enabled for your user profile.</div>
+                    <div class="text-muted font-italic font-sm mb-1">
+                        Please contact your company admin if you believe this is an error.
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </ds-card-content>
+</ds-card>
+
+<ng-container *ngIf="canReadGoals">
+    <ds-company-goals-list [isEssMode]="true"></ds-company-goals-list>
+</ng-container>

@@ -1,0 +1,38 @@
+<div mat-dialog-header class="pb-0">
+    <h2 class="modal-title">
+        Add Organization
+    </h2>
+    <button type="button" class="close" (click)="clear()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</div>
+<div mat-dialog-content>
+    <div class="row" [formGroup]="form1">
+        <div class="col-sm-12">
+            <div class="form-group mb-0">
+                <label class="form-control-label">Name</label>
+                <input id="txtOrgName" maxlength="25" formControlName="organizationName"
+                    class="form-control"
+                    [ngClass]="{'is-invalid':  formSubmitted && (form1.controls.organizationName.errors?.required ||
+                                                                    form1.controls.organizationName.errors?.duplicate) }" />
+                <div class="invalid-feedback">
+                    <span *ngIf="form1.controls.organizationName.errors?.required">Please enter a
+                        name.</span>
+                    <span *ngIf="form1.controls.organizationName.errors?.duplicate">Please enter a different
+                        organization
+                        name.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div mat-dialog-actions class="ds-dialog-footer">
+    <button 
+        type="button" 
+        class="btn btn-primary"
+        (click)="add()" >save</button>
+    <button 
+        type="button"
+        class="btn btn-cancel"
+        (click)="clear()" >Cancel</button>
+</div>

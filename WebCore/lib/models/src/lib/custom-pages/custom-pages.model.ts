@@ -1,0 +1,32 @@
+import { Moment } from 'moment';
+import { ICompanyResource } from '../resource.model';
+
+export interface IOnboardingWorkflowTask {
+    onboardingWorkflowTaskId: number,
+    mainTaskId?: number,
+    workflowTitle: string,
+    linkToState: string,
+    route: string,
+    route1: string,
+    isHeader?: boolean,
+    isRequired?: boolean,
+    sequence?: number,
+    formTypeId?: number,
+    description: string,
+    adminDescription: string,
+    adminMustSelect: boolean,
+    modifiedBy: number,
+    modified: Date,
+    formDefinitionId?: number,
+    signatureDescription: string,
+    clientId?: number,
+    isReferred: boolean,
+    hasActiveWorkflowReference: boolean,
+    requireWorkFlowTaskId: boolean,
+    uploadDescription: string,
+    userMustUpload: boolean,
+    resources: Array<ICompanyResource>,
+    userMustUploadResource: any,
+    userMustCheckAgreement: boolean,
+    isDeleted?: boolean,
+}

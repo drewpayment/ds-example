@@ -1,0 +1,23 @@
+
+.inline-select {
+  height: 30px;
+  margin-top: 1rem;
+}
+
+.inline-select-wrapper {
+  display: flex;
+
+  .inline-select-label {
+    flex: 0 0 auto;
+    margin-right: 0.5rem;
+  }
+
+  .custom-select {
+    width: 150px;
+    margin-top: -5px;
+  }
+
+  .invalid-feedback {
+    flex: 1 1 100%;
+  }
+}

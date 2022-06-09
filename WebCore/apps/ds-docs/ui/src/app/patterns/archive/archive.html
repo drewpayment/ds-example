@@ -1,0 +1,468 @@
+<h1 id="archive">Archive</h1>
+<h2 id="archiving-workflows">Archiving Workflows</h2>
+<p>A workflow is a task a user needs to complete. Once completed, the data is kept as a record. </p>
+<div class="button-bar">
+    <button class="btn btn-icon" ng-click="toggleArchive = !toggleArchive">
+        <i class="material-icons">code</i>
+        View Code
+    </button>
+</div>
+<div class="example-block" ng-class="{'open': toggleArchive}">
+    <div class="ui mb-4">
+        <div class="overflow-list">
+            <div class="ds-card">
+                <div class="ds-card-header header-bar border-top-primary">
+                    <div class="ds-card-header-row">
+                        <div class="ds-card-title">
+                            <h1>Card Header</h1>
+                        </div>
+                        <div class="ds-card-action">
+                            <button class="btn btn-outline-primary" ng-click="archive = !archive">
+                                <span ng-if="!archive">View History</span>
+                                <span ng-if="archive">View Active</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="ds-card-body">
+                    <div class="ds-card-content">
+                        <div class="overflow-list">
+                            <div class="row" ng-if="!archive">
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="ds-card ds-card-widget ds-object card-height-fix-sm clickable actionable info">
+                                        <div class="ds-card-container"> 
+                                            <div class="ds-card-header d-block align-y-top">
+                                                <div class="ds-card-subtitle">
+                                                    <div  class="split-content">
+                                                        <div class="top">
+                                                            <div class="object-card-avatar">
+                                                                <mat-icon class="avatar mat-icon material-icons"  role="img" aria-hidden="true">description</mat-icon>
+                                                            </div>
+                                                            <div class="font-lg text-center mb-4">Workflow</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="ds-card ds-card-widget ds-object card-height-fix-sm clickable actionable info">
+                                        <div class="ds-card-container"> 
+                                            <div class="ds-card-header d-block align-y-top">
+                                                <div class="ds-card-subtitle">
+                                                    <div  class="split-content">
+                                                        <div class="top">
+                                                            <div class="object-card-avatar">
+                                                                <mat-icon class="avatar mat-icon material-icons"  role="img" aria-hidden="true">description</mat-icon>
+                                                            </div>
+                                                            <div class="font-lg text-center mb-4">Workflow 2</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" ng-if="archive">
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="ds-card ds-card-widget ds-object card-height-fix-sm clickable actionable info">
+                                        <div class="ds-card-container"> 
+                                            <div class="ds-card-header d-block align-y-top">
+                                                <div class="ds-card-subtitle">
+                                                    <div  class="split-content">
+                                                        <div class="top">
+                                                            <div class="object-card-avatar">
+                                                                <mat-icon class="avatar mat-icon material-icons"  role="img" aria-hidden="true">description</mat-icon>
+                                                            </div>
+                                                            <div class="font-lg text-center mb-4">Archived Workflow</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<pre><code class="hljs html">&lt;!<span class="hljs-comment">-- Angular --&gt;</span>
+&lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"overflow-list"</span>&gt;
+    &lt;ds-card border=<span class="hljs-string">"top"</span>&gt;
+        &lt;ds-card-header&gt;
+            &lt;ds-card-header-title&gt;Card Header&lt;/ds-card-header-title&gt;
+            &lt;ds-card-title-action&gt;
+                &lt;button <span class="hljs-built_in">class</span>=<span class="hljs-string">"btn btn-outline-primary"</span> ng-click=<span class="hljs-string">"archive = !archive"</span>&gt;
+                    &lt;span ng-<span class="hljs-keyword">if</span>=<span class="hljs-string">"!archive"</span>&gt;View History&lt;/span&gt;
+                    &lt;span ng-<span class="hljs-keyword">if</span>=<span class="hljs-string">"archive"</span>&gt;View Active&lt;/span&gt;
+                &lt;/button&gt;
+            &lt;/ds-card-title-action&gt;
+        &lt;/ds-card-header&gt;
+        &lt;ds-card-content&gt;
+            &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"overflow-list"</span>&gt;
+                &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"row"</span> ng-<span class="hljs-keyword">if</span>=<span class="hljs-string">"!archive"</span>&gt;
+                    &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"col-sm-6 col-md-3"</span>&gt;
+                        &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"ds-card ds-card-widget ds-object card-height-fix-sm clickable actionable info"</span>&gt;
+                            &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"ds-card-container"</span>&gt; 
+                                &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"ds-card-header d-block align-y-top"</span>&gt;
+                                    &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"ds-card-subtitle"</span>&gt;
+                                        &lt;<span class="hljs-keyword">div</span>  <span class="hljs-built_in">class</span>=<span class="hljs-string">"split-content"</span>&gt;
+                                            &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"top"</span>&gt;
+                                                &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"object-card-avatar"</span>&gt;
+                                                    &lt;mat-icon <span class="hljs-built_in">class</span>=<span class="hljs-string">"avatar mat-icon material-icons"</span>  role=<span class="hljs-string">"img"</span> aria-hidden=<span class="hljs-string">"true"</span>&gt;description&lt;/mat-icon&gt;
+                                                &lt;/<span class="hljs-keyword">div</span>&gt;
+                                                &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"font-lg text-center mb-4"</span>&gt;Workflow&lt;/<span class="hljs-keyword">div</span>&gt;
+                                            &lt;/<span class="hljs-keyword">div</span>&gt;
+                                        &lt;/<span class="hljs-keyword">div</span>&gt;
+                                    &lt;/<span class="hljs-keyword">div</span>&gt;
+                                &lt;/<span class="hljs-keyword">div</span>&gt;
+                            &lt;/<span class="hljs-keyword">div</span>&gt;
+                        &lt;/<span class="hljs-keyword">div</span>&gt;
+                    &lt;/<span class="hljs-keyword">div</span>&gt;
+                    &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"col-sm-6 col-md-3"</span>&gt;
+                        &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"ds-card ds-card-widget ds-object card-height-fix-sm clickable actionable info"</span>&gt;
+                            &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"ds-card-container"</span>&gt; 
+                                &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"ds-card-header d-block align-y-top"</span>&gt;
+                                    &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"ds-card-subtitle"</span>&gt;
+                                        &lt;<span class="hljs-keyword">div</span>  <span class="hljs-built_in">class</span>=<span class="hljs-string">"split-content"</span>&gt;
+                                            &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"top"</span>&gt;
+                                                &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"object-card-avatar"</span>&gt;
+                                                    &lt;mat-icon <span class="hljs-built_in">class</span>=<span class="hljs-string">"avatar mat-icon material-icons"</span>  role=<span class="hljs-string">"img"</span> aria-hidden=<span class="hljs-string">"true"</span>&gt;description&lt;/mat-icon&gt;
+                                                &lt;/<span class="hljs-keyword">div</span>&gt;
+                                                &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"font-lg text-center mb-4"</span>&gt;Workflow <span class="hljs-number">2</span>&lt;/<span class="hljs-keyword">div</span>&gt;
+                                            &lt;/<span class="hljs-keyword">div</span>&gt;
+                                        &lt;/<span class="hljs-keyword">div</span>&gt;
+                                    &lt;/<span class="hljs-keyword">div</span>&gt;
+                                &lt;/<span class="hljs-keyword">div</span>&gt;
+                            &lt;/<span class="hljs-keyword">div</span>&gt;
+                        &lt;/<span class="hljs-keyword">div</span>&gt;
+                    &lt;/<span class="hljs-keyword">div</span>&gt;
+                &lt;/<span class="hljs-keyword">div</span>&gt;
+                &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"row"</span> ng-<span class="hljs-keyword">if</span>=<span class="hljs-string">"archive"</span>&gt;
+                    &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"col-sm-6 col-md-3"</span>&gt;
+                        &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"ds-card ds-card-widget ds-object card-height-fix-sm clickable actionable info"</span>&gt;
+                            &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"ds-card-container"</span>&gt; 
+                                &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"ds-card-header d-block align-y-top"</span>&gt;
+                                    &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"ds-card-subtitle"</span>&gt;
+                                        &lt;<span class="hljs-keyword">div</span>  <span class="hljs-built_in">class</span>=<span class="hljs-string">"split-content"</span>&gt;
+                                            &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"top"</span>&gt;
+                                                &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"object-card-avatar"</span>&gt;
+                                                    &lt;mat-icon <span class="hljs-built_in">class</span>=<span class="hljs-string">"avatar mat-icon material-icons"</span>  role=<span class="hljs-string">"img"</span> aria-hidden=<span class="hljs-string">"true"</span>&gt;description&lt;/mat-icon&gt;
+                                                &lt;/<span class="hljs-keyword">div</span>&gt;
+                                                &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"font-lg text-center mb-4"</span>&gt;Archived Workflow&lt;/<span class="hljs-keyword">div</span>&gt;
+                                            &lt;/<span class="hljs-keyword">div</span>&gt;
+                                        &lt;/<span class="hljs-keyword">div</span>&gt;
+                                    &lt;/<span class="hljs-keyword">div</span>&gt;
+                                &lt;/<span class="hljs-keyword">div</span>&gt;
+                            &lt;/<span class="hljs-keyword">div</span>&gt;
+                        &lt;/<span class="hljs-keyword">div</span>&gt;
+                    &lt;/<span class="hljs-keyword">div</span>&gt;
+                &lt;/<span class="hljs-keyword">div</span>&gt;
+            &lt;/ds-card-content&gt;
+        &lt;/ds-card&gt;
+    &lt;/<span class="hljs-keyword">div</span>&gt;
+&lt;/<span class="hljs-keyword">div</span>&gt;
+
+&lt;!<span class="hljs-comment">-- Legacy --&gt;</span>
+&lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"overflow-list"</span>&gt;
+    &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"ds-card"</span>&gt;
+        &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"ds-card-header header-bar border-top-primary"</span>&gt;
+            &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"ds-card-header-row"</span>&gt;
+                &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"ds-card-title"</span>&gt;
+                    &lt;h1&gt;Card Header&lt;/h1&gt;
+                &lt;/<span class="hljs-keyword">div</span>&gt;
+                &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"ds-card-action"</span>&gt;
+                    &lt;button <span class="hljs-built_in">class</span>=<span class="hljs-string">"btn btn-outline-primary"</span> ng-click=<span class="hljs-string">"archive = !archive"</span>&gt;
+                        &lt;span ng-<span class="hljs-keyword">if</span>=<span class="hljs-string">"!archive"</span>&gt;View History&lt;/span&gt;
+                        &lt;span ng-<span class="hljs-keyword">if</span>=<span class="hljs-string">"archive"</span>&gt;View Active&lt;/span&gt;
+                    &lt;/button&gt;
+                &lt;/<span class="hljs-keyword">div</span>&gt;
+            &lt;/<span class="hljs-keyword">div</span>&gt;
+        &lt;/<span class="hljs-keyword">div</span>&gt;
+        &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"ds-card-body"</span>&gt;
+            &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"ds-card-content"</span>&gt;
+                &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"overflow-list"</span>&gt;
+                    &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"row"</span> ng-<span class="hljs-keyword">if</span>=<span class="hljs-string">"!archive"</span>&gt;
+                        &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"col-sm-6 col-md-3"</span>&gt;
+                            &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"ds-card ds-card-widget ds-object card-height-fix-sm clickable actionable info"</span>&gt;
+                                &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"ds-card-container"</span>&gt; 
+                                    &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"ds-card-header d-block align-y-top"</span>&gt;
+                                        &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"ds-card-subtitle"</span>&gt;
+                                            &lt;<span class="hljs-keyword">div</span>  <span class="hljs-built_in">class</span>=<span class="hljs-string">"split-content"</span>&gt;
+                                                &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"top"</span>&gt;
+                                                    &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"object-card-avatar"</span>&gt;
+                                                        &lt;mat-icon <span class="hljs-built_in">class</span>=<span class="hljs-string">"avatar mat-icon material-icons"</span>  role=<span class="hljs-string">"img"</span> aria-hidden=<span class="hljs-string">"true"</span>&gt;description&lt;/mat-icon&gt;
+                                                    &lt;/<span class="hljs-keyword">div</span>&gt;
+                                                    &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"font-lg text-center mb-4"</span>&gt;Workflow&lt;/<span class="hljs-keyword">div</span>&gt;
+                                                &lt;/<span class="hljs-keyword">div</span>&gt;
+                                            &lt;/<span class="hljs-keyword">div</span>&gt;
+                                        &lt;/<span class="hljs-keyword">div</span>&gt;
+                                    &lt;/<span class="hljs-keyword">div</span>&gt;
+                                &lt;/<span class="hljs-keyword">div</span>&gt;
+                            &lt;/<span class="hljs-keyword">div</span>&gt;
+                        &lt;/<span class="hljs-keyword">div</span>&gt;
+                        &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"col-sm-6 col-md-3"</span>&gt;
+                            &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"ds-card ds-card-widget ds-object card-height-fix-sm clickable actionable info"</span>&gt;
+                                &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"ds-card-container"</span>&gt; 
+                                    &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"ds-card-header d-block align-y-top"</span>&gt;
+                                        &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"ds-card-subtitle"</span>&gt;
+                                            &lt;<span class="hljs-keyword">div</span>  <span class="hljs-built_in">class</span>=<span class="hljs-string">"split-content"</span>&gt;
+                                                &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"top"</span>&gt;
+                                                    &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"object-card-avatar"</span>&gt;
+                                                        &lt;mat-icon <span class="hljs-built_in">class</span>=<span class="hljs-string">"avatar mat-icon material-icons"</span>  role=<span class="hljs-string">"img"</span> aria-hidden=<span class="hljs-string">"true"</span>&gt;description&lt;/mat-icon&gt;
+                                                    &lt;/<span class="hljs-keyword">div</span>&gt;
+                                                    &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"font-lg text-center mb-4"</span>&gt;Workflow <span class="hljs-number">2</span>&lt;/<span class="hljs-keyword">div</span>&gt;
+                                                &lt;/<span class="hljs-keyword">div</span>&gt;
+                                            &lt;/<span class="hljs-keyword">div</span>&gt;
+                                        &lt;/<span class="hljs-keyword">div</span>&gt;
+                                    &lt;/<span class="hljs-keyword">div</span>&gt;
+                                &lt;/<span class="hljs-keyword">div</span>&gt;
+                            &lt;/<span class="hljs-keyword">div</span>&gt;
+                        &lt;/<span class="hljs-keyword">div</span>&gt;
+                    &lt;/<span class="hljs-keyword">div</span>&gt;
+                    &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"row"</span> ng-<span class="hljs-keyword">if</span>=<span class="hljs-string">"archive"</span>&gt;
+                        &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"col-sm-6 col-md-3"</span>&gt;
+                            &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"ds-card ds-card-widget ds-object card-height-fix-sm clickable actionable info"</span>&gt;
+                                &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"ds-card-container"</span>&gt; 
+                                    &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"ds-card-header d-block align-y-top"</span>&gt;
+                                        &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"ds-card-subtitle"</span>&gt;
+                                            &lt;<span class="hljs-keyword">div</span>  <span class="hljs-built_in">class</span>=<span class="hljs-string">"split-content"</span>&gt;
+                                                &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"top"</span>&gt;
+                                                    &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"object-card-avatar"</span>&gt;
+                                                        &lt;mat-icon <span class="hljs-built_in">class</span>=<span class="hljs-string">"avatar mat-icon material-icons"</span>  role=<span class="hljs-string">"img"</span> aria-hidden=<span class="hljs-string">"true"</span>&gt;description&lt;/mat-icon&gt;
+                                                    &lt;/<span class="hljs-keyword">div</span>&gt;
+                                                    &lt;<span class="hljs-keyword">div</span> <span class="hljs-built_in">class</span>=<span class="hljs-string">"font-lg text-center mb-4"</span>&gt;Archived Workflow&lt;/<span class="hljs-keyword">div</span>&gt;
+                                                &lt;/<span class="hljs-keyword">div</span>&gt;
+                                            &lt;/<span class="hljs-keyword">div</span>&gt;
+                                        &lt;/<span class="hljs-keyword">div</span>&gt;
+                                    &lt;/<span class="hljs-keyword">div</span>&gt;
+                                &lt;/<span class="hljs-keyword">div</span>&gt;
+                            &lt;/<span class="hljs-keyword">div</span>&gt;
+                        &lt;/<span class="hljs-keyword">div</span>&gt;
+                    &lt;/<span class="hljs-keyword">div</span>&gt;
+                &lt;/<span class="hljs-keyword">div</span>&gt;
+            &lt;/<span class="hljs-keyword">div</span>&gt;
+        &lt;/<span class="hljs-keyword">div</span>&gt;
+    &lt;/<span class="hljs-keyword">div</span>&gt;
+&lt;/<span class="hljs-keyword">div</span>&gt;</code></pre>
+</div>
+
+<h2 id="inactive-content">Inactive Content</h2>
+<p>When a content is no longer needed, but should still be kept in the site for reference. The user should still be able to view details on inactive content, but will not be edit until it&#39;s restored.  <br/>
+A badge should be added to all inactive onjects, and the color should be modifyed to set it apart from active objects. When <em>Include Inactive</em> is checked, inactive content is added back in, in the order already determined by the content.</p>
+<div class="button-bar">
+    <button class="btn btn-icon" ng-click="toggleInactive = !toggleInactive">
+        <i class="material-icons">code</i>
+        View Code
+    </button>
+</div>
+<div class="example-block" ng-class="{'open': toggleInactive}">
+    <div class="ui mb-4">
+        <div class="overflow-list">
+            <div class="ds-card">
+                <div class="ds-card-header header-bar border-top-primary">
+                    <div class="ds-card-header-row">
+                        <div class="ds-card-title">
+                            <h1>Card Header</h1>
+                        </div>
+                        <div class="ds-card-action">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="inactive" ng-model="inactive">
+                                <label class="custom-control-label" for="inactive">Include Inactive</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ds-card-body">
+                    <div class="ds-card-content">
+                        <div class="overflow-list">
+                            <div class="row">
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="ds-card ds-card-widget info">
+                                        <div class="ds-card-icon align-header">
+                                            <i class="material-icons">attach_money</i>
+                                        </div>
+                                        <div class="ds-card-container">
+                                            <div class="ds-card-header">
+                                                <div class="ds-card-header-row">
+                                                    <div class="ds-card-title">
+                                                        <div class="font-xl">Profile</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3" ng-if="inactive">
+                                    <div class="ds-card ds-card-widget archive">
+                                        <div class="ds-card-icon align-header">
+                                            <i class="material-icons">attach_money</i>
+                                        </div>
+                                        <div class="ds-card-container">
+                                            <div class="ds-card-header">
+                                                <div class="ds-card-header-row">
+                                                    <div class="ds-card-title">
+                                                        <div class="font-xl">Profile 2</div>
+                                                    </div>
+                                                    <div class="ds-card-right-content">
+                                                        <span class="badge badge-pill badge-inactive">Inactive</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3">
+                                    <div class="ds-card ds-card-widget info">
+                                        <div class="ds-card-icon align-header">
+                                            <i class="material-icons">attach_money</i>
+                                        </div>
+                                        <div class="ds-card-container">
+                                            <div class="ds-card-header">
+                                                <div class="ds-card-header-row">
+                                                    <div class="ds-card-title">
+                                                        <div class="font-xl">Profile 3</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<pre><code class="hljs html"><span class="hljs-comment">&lt;!-- Angular --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"overflow-list"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">ds-card</span> <span class="hljs-attr">border</span>=<span class="hljs-string">"top"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">ds-card-header</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">ds-card-header-title</span>&gt;</span>Card Header<span class="hljs-tag">&lt;/<span class="hljs-name">ds-card-header-title</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">ds-card-title-action</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"custom-control custom-checkbox"</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"checkbox"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"custom-control-input"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"inactive"</span> <span class="hljs-attr">ng-model</span>=<span class="hljs-string">"inactive"</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"custom-control-label"</span> <span class="hljs-attr">for</span>=<span class="hljs-string">"inactive"</span>&gt;</span>Include Inactive<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">ds-card-title-action</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">ds-card-header</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">ds-card-content</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"overflow-list"</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"row"</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"col-sm-6 col-md-3"</span>&gt;</span>
+                        <span class="hljs-tag">&lt;<span class="hljs-name">ds-card</span> <span class="hljs-attr">mode</span>=<span class="hljs-string">"widget-nobody"</span> <span class="hljs-attr">color</span>=<span class="hljs-string">"info"</span>&gt;</span>
+                            <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">ds-card-icon</span>&gt;</span>attach_money<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                            <span class="hljs-tag">&lt;<span class="hljs-name">ds-card-header</span>&gt;</span>
+                                <span class="hljs-tag">&lt;<span class="hljs-name">ds-card-widget-title</span>&gt;</span>Profile<span class="hljs-tag">&lt;/<span class="hljs-name">ds-card-widget-title</span>&gt;</span>
+                            <span class="hljs-tag">&lt;/<span class="hljs-name">ds-card-header</span>&gt;</span>
+                        <span class="hljs-tag">&lt;/<span class="hljs-name">ds-card</span>&gt;</span>
+                    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"col-sm-6 col-md-3"</span>&gt;</span>
+                        <span class="hljs-tag">&lt;<span class="hljs-name">ds-card</span> <span class="hljs-attr">mode</span>=<span class="hljs-string">"widget-nobody"</span> <span class="hljs-attr">color</span>=<span class="hljs-string">"inactive"</span>&gt;</span>
+                            <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">ds-card-icon</span>&gt;</span>attach_money<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                            <span class="hljs-tag">&lt;<span class="hljs-name">ds-card-header</span>&gt;</span>
+                                <span class="hljs-tag">&lt;<span class="hljs-name">ds-card-widget-title</span>&gt;</span>Profile 2<span class="hljs-tag">&lt;/<span class="hljs-name">ds-card-widget-title</span>&gt;</span>
+                                <span class="hljs-tag">&lt;<span class="hljs-name">ds-card-right-content</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">ds-card-right-content</span>&gt;</span>
+                            <span class="hljs-tag">&lt;/<span class="hljs-name">ds-card-header</span>&gt;</span>
+                        <span class="hljs-tag">&lt;/<span class="hljs-name">ds-card</span>&gt;</span>
+                    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"col-sm-6 col-md-3"</span>&gt;</span>
+                        <span class="hljs-tag">&lt;<span class="hljs-name">ds-card</span> <span class="hljs-attr">mode</span>=<span class="hljs-string">"widget-nobody"</span> <span class="hljs-attr">color</span>=<span class="hljs-string">"info"</span>&gt;</span>
+                            <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">ds-card-icon</span>&gt;</span>attach_money<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                            <span class="hljs-tag">&lt;<span class="hljs-name">ds-card-header</span>&gt;</span>
+                                <span class="hljs-tag">&lt;<span class="hljs-name">ds-card-widget-title</span>&gt;</span>Profile 3<span class="hljs-tag">&lt;/<span class="hljs-name">ds-card-widget-title</span>&gt;</span>
+                            <span class="hljs-tag">&lt;/<span class="hljs-name">ds-card-header</span>&gt;</span>
+                        <span class="hljs-tag">&lt;/<span class="hljs-name">ds-card</span>&gt;</span>
+                    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">ds-card-content</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">ds-card</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+<span class="hljs-comment">&lt;!-- Legacy --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"overflow-list"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ds-card"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ds-card-header header-bar border-top-primary"</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ds-card-header-row"</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ds-card-title"</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Card Header<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ds-card-action"</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"custom-control custom-checkbox"</span>&gt;</span>
+                        <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"checkbox"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"custom-control-input"</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"inactive"</span> <span class="hljs-attr">ng-model</span>=<span class="hljs-string">"inactive"</span>&gt;</span>
+                        <span class="hljs-tag">&lt;<span class="hljs-name">label</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"custom-control-label"</span> <span class="hljs-attr">for</span>=<span class="hljs-string">"inactive"</span>&gt;</span>Include Inactive<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+                    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ds-card-body"</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ds-card-content"</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"overflow-list"</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"row"</span>&gt;</span>
+                        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"col-sm-6 col-md-3"</span>&gt;</span>
+                            <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ds-card ds-card-widget info"</span>&gt;</span>
+                                <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ds-card-icon align-header"</span>&gt;</span>
+                                    <span class="hljs-tag">&lt;<span class="hljs-name">i</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"material-icons"</span>&gt;</span>attach_money<span class="hljs-tag">&lt;/<span class="hljs-name">i</span>&gt;</span>
+                                <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                                <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ds-card-container"</span>&gt;</span>
+                                    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ds-card-header"</span>&gt;</span>
+                                        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ds-card-header-row"</span>&gt;</span>
+                                            <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ds-card-title"</span>&gt;</span>
+                                                <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"font-xl"</span>&gt;</span>Profile<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                                            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                                        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                                    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                                <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"col-sm-6 col-md-3"</span> <span class="hljs-attr">ng-if</span>=<span class="hljs-string">"inactive"</span>&gt;</span>
+                            <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ds-card ds-card-widget archive"</span>&gt;</span>
+                                <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ds-card-icon align-header"</span>&gt;</span>
+                                    <span class="hljs-tag">&lt;<span class="hljs-name">i</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"material-icons"</span>&gt;</span>attach_money<span class="hljs-tag">&lt;/<span class="hljs-name">i</span>&gt;</span>
+                                <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                                <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ds-card-container"</span>&gt;</span>
+                                    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ds-card-header"</span>&gt;</span>
+                                        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ds-card-header-row"</span>&gt;</span>
+                                            <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ds-card-title"</span>&gt;</span>
+                                                <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"font-xl text-truncate"</span>&gt;</span>Profile 2<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                                            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                                            <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ds-card-right-content"</span>&gt;</span>
+                                                <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"badge badge-pill badge-inactive"</span>&gt;</span>Inactive<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+                                            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                                        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                                    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                                <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"col-sm-6 col-md-3"</span>&gt;</span>
+                            <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ds-card ds-card-widget info"</span>&gt;</span>
+                                <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ds-card-icon align-header"</span>&gt;</span>
+                                    <span class="hljs-tag">&lt;<span class="hljs-name">i</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"material-icons"</span>&gt;</span>attach_money<span class="hljs-tag">&lt;/<span class="hljs-name">i</span>&gt;</span>
+                                <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                                <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ds-card-container"</span>&gt;</span>
+                                    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ds-card-header"</span>&gt;</span>
+                                        <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ds-card-header-row"</span>&gt;</span>
+                                            <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ds-card-title"</span>&gt;</span>
+                                                <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"font-xl"</span>&gt;</span>Profile 3<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                                            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                                        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                                    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                                <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></code></pre>
+</div>

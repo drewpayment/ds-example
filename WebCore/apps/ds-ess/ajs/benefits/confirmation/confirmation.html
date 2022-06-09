@@ -1,0 +1,95 @@
+﻿<div class="benefits">  
+    <benefits-header active-step="3"></benefits-header>
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Finalize</h1>
+            <div class="panel benefit-panel">
+                <div class="panel-body">
+                    <div ng-show="hasExistingSignedRecord" class="validation-summary">This employee open enrollment has already been confirmed on: {{ existingSignedRecordDate | date:'medium'}}</div>
+                    <div ng-show="hasSuccess" class="alert alert-success">The confirmation was successfully submitted.</div>
+
+        
+                    <h3>By submitting this form:</h3>
+                    <ul class="benefit-terms">
+                        <li>
+                            I acknowledge my intent to submit this request for consideration.
+                        </li>
+                        <li>
+                            I verify that the information entered within this request is accurate.
+                        </li>
+                        <li>
+                            I confirm that requests processed by this system are legally binding.
+                        </li>
+                        <li>
+                            I understand that the elections I have made may not be changed during the plan year unless I have a qualified change in status. I also understand that I am responsible for notifying {{currentUser.clientName}} via the exchange or in writing of any change in my status within 31 days of the change or I lose my right to make changes and may disqualify myself and my dependents from coverage.
+                        </li>
+                        <li>
+                            I authorize my employer to reduce my wages by any amount required to pay for the elections I have made and to deduct any missed premiums from my future pay as needed to prevent a lapse in coverage.
+                        </li>
+                        <li>
+                            I acknowledge that I have read and understand this information.
+                        </li>
+                    </ul>
+                
+                    
+                </div>
+                <div class="panel-footer cf">
+                    <div class="row">
+                        <div class="col-md-2 col-lg-1">
+                            <button 
+                                class="btn btn-default pull-left" id="cancel" 
+                                ng-click="cancelEdit()"
+                                >Back
+                            </button>
+                        </div>
+                        <div class="col-md-10 col-lg-11 ">
+
+
+                            <form class="form-inline pull-right mt-0 " role="form" id="frm" name="frm">
+                                <div class="checkbox mr-5" ng-show="!hasExistingSignedRecord && !hasSuccess">
+                                    <input 
+                                        type="checkbox"
+                                        name="agreeChk"
+                                        ng-model="confirmationAcknowledgement"
+                                    > 
+                                    <label>
+                                        I agree
+                                    </label>
+                                </div>
+                
+                            
+                                <ds-inline-validated-input ng-show="!hasExistingSignedRecord && !hasSuccess"
+                                                        input-type="password"
+                                                        label-class="sr-only"
+                                                        input-place-holder-text="Enter Password..."
+                                                        input-div-class="benefit-password-input"
+                                                        frm-obj="frm"
+                                                        ds-required="1"
+                                                        ds-max-length="50"
+                                                        ds-keyup-delayed-validation
+                                                        label-text="Current Password:"
+                                                        input-name="inputPasswordOld"
+                                                        ds-custom-validation-rule-promise="checkCurrentPassword"
+                                                        ds-model="password.current">
+                                </ds-inline-validated-input>
+                        
+                                <button
+                                    class="btn btn-primary ml-5"
+                                    type="submit"
+                                    id="submit"
+                                    value="Submit"
+                                    ng-disabled="!password.currentPasswordValid || !confirmationAcknowledgement || hasExistingSignedRecord "
+                                    ng-show="!hasExistingSignedRecord && !hasSuccess"
+                                    ng-click="validateThenSubmit('frm')">
+                                    Confirm Benefit Selections
+
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+            
+                </div>
+            </div>
+        </div>   
+    </div>
+</div>

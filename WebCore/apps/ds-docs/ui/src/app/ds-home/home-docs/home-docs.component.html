@@ -1,0 +1,72 @@
+<markdown ngPreserveWhitespaces>
+# Standards
+
+## Quick Rules for UI
+
+**Preventing Errors and Frustration**
+1. Validation is handled as much as possible client-side.
+2. Required fields use proper required validation. They turn red when incorrect and a message describing the rule is displayed.
+3. Optional fields are marked as optional by the field label or section title
+4. input content validation is used when necessary
+  1. Masks
+  2. Regex
+  3. Ect.
+5. Success messages are shown when save is successful.
+6. Deleting or removing data has a confirm message attached.
+7. Change track is added to the page
+  1. Angular - TODO
+  2. AngularJS - https://www.notion.so/dominionsystems/ds-beforeunload-1cce8b957d364c2c9affa997e17f83a2
+  3. Legacy - https://www.notion.so/dominionsystems/Change-Tracking-3e7599d5132948949409c1dca4e9d440
+8. Pages break gracefully when the browser size shrinks.
+
+## Permissions
+If the user doesn't have permission to see a page, hide the mene items. If the user enters a URL to a page they do not have access to, redirect them to logout.
+
+## Layout Breakpoints
+The site layout will respond once device width reaches a breakpoint, improving usability. Our foundational grid integrates these breakpoints, and most custom styles incorporate them in.
+
+```
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px
+```
+
+## Testing Guidelines
+Listed in order of user preference, rounded to the nearest percent.
+<div class="instruction-text">Updated April 28, 2021</div>
+
+<b>Devices</b>
+- Desktop (78%)
+- Mobile (15%)
+- Mac (5%)
+- Chrome OS, Linux (2%)
+
+<b>Browsers</b>
+- Chrome (70%)
+- Edge (14.5%)
+- Safari (10%)
+- Firefox (3%)
+- Samsung Internet (1%)
+- Amazon Silk (0.07%)
+
+<b>Screen Resolution</b>
+- 1920x1080 (34%)
+- 1366x768 (10%)
+- 1536x864 (7%)
+- 1600x900 (6%)
+- 1440x900 (6%)
+- 1280x1024 (4%)
+- 1280x720 (4%)
+- 414x896 (3.5%)
+- 1680x1050 (3%)
+- 375x667 (1%)
+
+## Running the Doc Site Locally
+New and rewritten features are done on seperate branches and may not be merged into `Docs | Default`. In order to see the UI, You'll have to run the doc site locally.
+
+1. In a terminal pointed to your local **WebCore** folder run `npm run serve:ds-docs`
+2. Go to http://localhost:4200/ to see docs
+
+</markdown>

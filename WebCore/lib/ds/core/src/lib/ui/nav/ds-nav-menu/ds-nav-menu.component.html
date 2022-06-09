@@ -1,0 +1,298 @@
+<mat-sidenav-container class="sidenav-container" autosize>
+  <mat-sidenav #drawer id="navSideNav" class="sidenav d-print-none hidden-print"
+    [class.closed]="(selectedItem?.items?.length > 0 || !isSidenavOpen)" fixedInViewport="false"
+    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'" [opened]="!(isHandset$ | async)"
+    [mode]="!(isHandset$ | async) ? 'side' : 'over'" [class.full]="!(isHandset$ | async)" [disableClose]="!(isHandset$ | async) ? true : false">
+
+    <div class="menu-panel" [@mainNavExpander]="isSidenavOpen" (@mainNavExpander.done)="mainNavExpanderEnd($event)">
+      <ng-container *ngIf="isLoaded">
+        <div class="main-nav" [@innerNavExpanderMain]="isSideNavDrilled && !isSideNavDrilledNoAnimation"
+          [class.sidenav-drilled-no-animation]="isSideNavDrilled && isSideNavDrilledNoAnimation">
+          <div class="top-zone">
+            <mat-nav-list>
+              <mat-list-item aria-label="Toggle sidenav" *ngIf="!(isHandset$ | async)" (click)="desktopMenuCollapse()"
+                class="collapse">
+                <div class="menu-spacer">
+                  <mat-icon showTooltipOnLoad [matTooltipDisabled]="hideMenuWrapperTooltip$|async"
+                    matTooltip="Expand and collapse the menu" class="icon" aria-label="Side nav toggle icon">menu
+                  </mat-icon>
+                </div>
+                <!-- <button type="button"
+                                  class="menu-label menu-label-btn slow-opacity-transition"
+                                  [class.slow-opacity]="isSidenavOpen && !isSideNavDrilled">
+                                  <span class="menu-label text-truncate">Menu</span>
+                                </button> -->
+                <span class="menu-label menu-label-btn slow-opacity-transition text-truncate"
+                  [class.slow-opacity]="isSidenavOpen && !isSideNavDrilled">
+                  Menu
+                </span>
+              </mat-list-item>
+              <mat-list-item aria-label="Toggle sidenav" *ngIf="(isHandset$ | async)" (click)="drawer.toggle()"
+                class="collapse">
+                <div class="menu-spacer">
+                  <mat-icon class="icon" aria-label="Side nav toggle icon">menu</mat-icon>
+                </div>
+                <span class="menu-label menu-label-btn slow-opacity-transition text-truncate"
+                  [class.slow-opacity]="isSidenavOpen && !isSideNavDrilled">
+                  <span class="mat-label">Menu</span>
+                </span>
+              </mat-list-item>
+            </mat-nav-list>
+          </div>
+          <div class="scroll-zone ds-scroll-vertical">
+            <mat-nav-list class="ds-main-nav-list">
+              <!-- Main Menu -->
+              <ng-container *ngIf="{
+                                mainMenuId: mainMenuId$|async
+                            } as data">
+                <a mat-list-item [href]="homeLink$|async" [class.active]="!data.mainMenuId" (click)="goHome()">
+                  <div class="menu-spacer">
+                    <mat-icon class="icon" matTooltip="Home">home</mat-icon>
+                  </div>
+                  <span class="menu-label text-truncate slow-opacity-transition"
+                    [class.slow-opacity]="isSidenavOpen && !isSideNavDrilled">Home</span>
+                </a>
+              </ng-container>
+              <ng-container *ngFor="let item of (mainMenuItems|async) as items; let i = index">
+
+                <ng-container *ngIf="{
+                                    menuId: mainMenuId$|async,
+                                    navHistory: navigationHistory | async
+                                } as data">
+                  <mat-list-item (click)="selectMainMenuItem(item)" [class.active]="data?.menuId === item.menuItemId"
+                    *ngIf="item?.resource && item?.resource?.applicationSourceType == applicationSource.sourceWeb
+                                            && item?.items && item?.items?.length">
+                    <div class="menu-spacer">
+                      <mat-icon class="icon" [matTooltip]="item.title" [innerHTML]="item?.menuIcon"></mat-icon>
+                    </div>
+                    <button type="button" [attr.data-mid]="item?.menuItemId"
+                      class="menu-label menu-label-btn text-truncate slow-opacity-transition"
+                      [class.slow-opacity]="isSidenavOpen && !isSideNavDrilled">
+                      <span class="mat-label" [innerText]="item?.title"></span>
+                      <mat-icon *ngIf="item?.resource && item?.items?.length > 0">keyboard_arrow_right</mat-icon>
+                    </button>
+                  </mat-list-item>
+
+                  <mat-list-item (click)="selectMainMenuItem(item)" [class.active]="data?.menuId === item.menuItemId"
+                    *ngIf="item?.resource && item?.resource?.applicationSourceType == applicationSource.essWeb &&
+                                            item?.items && item?.items?.length && item.resource.routeUrl == null">
+                    <div class="menu-spacer">
+                      <mat-icon class="icon" [matTooltip]="item.title" [innerHTML]="item?.menuIcon"></mat-icon>
+                    </div>
+                    <button type="button" [attr.data-mid]="item?.menuItemId"
+                      class="menu-label menu-label-btn text-truncate slow-opacity-transition"
+                      [class.slow-opacity]="isSidenavOpen && !isSideNavDrilled">
+                      <span class="mat-label" [innerText]="item?.title"></span>
+                      <mat-icon *ngIf="item?.resource && item?.items?.length > 0">keyboard_arrow_right</mat-icon>
+                    </button>
+                  </mat-list-item>
+
+                  <!-- ONLY ON ESS -->
+                  <a mat-list-item [dsNavMenuItem]="item" (click)="selectMainMenuItem(item)" *ngIf="item?.resource && item?.resource?.applicationSourceType == applicationSource.essWeb &&
+                                            item?.resource?.routeUrl && isEss">
+                    <div class="menu-spacer">
+                      <mat-icon class="icon" [matTooltip]="item.title" [innerHTML]="item?.menuIcon"></mat-icon>
+                    </div>
+                    <div class="menu-label menu-label-anchor text-truncate slow-opacity-transition"
+                      [class.slow-opacity]="isSidenavOpen && !isSideNavDrilled">
+                      <span class="menu-label text-truncate" [innerText]="item?.title"></span>
+                      <mat-icon *ngIf="item?.resource && item?.items?.length > 0">keyboard_arrow_right</mat-icon>
+                    </div>
+                  </a>
+
+                  <!-- ONLY ON PAYROLL/COMPANY -->
+                  <a mat-list-item (click)="selectMainMenuItem(item)" [attr.data-mid]="item?.menuItemId"
+                    [class.active]="data?.menuId === item.menuItemId" *ngIf="item?.resource && item?.resource?.applicationSourceType == applicationSource.essWeb &&
+                                            item?.resource?.routeUrl && (isPayroll || isCompany)"
+                    [href]="item.resource.routeUrl">
+                    <div class="menu-spacer">
+                      <mat-icon class="icon" [matTooltip]="item.title" [innerHTML]="item?.menuIcon"></mat-icon>
+                    </div>
+                    <div class="menu-label menu-label-anchor text-truncate slow-opacity-transition"
+                      [class.slow-opacity]="isSidenavOpen && !isSideNavDrilled">
+                      <span class="menu-label text-truncate" [innerText]="item?.title"></span>
+                      <mat-icon *ngIf="item?.resource && item?.items?.length > 0">keyboard_arrow_right</mat-icon>
+                    </div>
+                  </a>
+
+                  <!-- BUILD LINKS WHEN USER IS ON ESS -->
+                  <mat-list-item
+                    *ngIf="item?.resource && item?.resource?.applicationSourceType == applicationSource.sourceWeb
+                                            && (!item?.items || !item?.items?.length) && isEss
+                                            && item?.resource?.routeUrl?.toLowerCase()?.includes('submenu.aspx?submenu=benefits')">
+                    <ng-container matLine>
+                      <a [dsNavMenuItem]="item" (click)="selectMainMenuItem(item)">
+                        <div class="menu-spacer">
+                          <mat-icon class="icon" [matTooltip]="item.title" [innerHTML]="item?.menuIcon"></mat-icon>
+                        </div>
+                        <span class="menu-label text-truncate" [class.slow-opacity]="isSidenavOpen && !isSideNavDrilled"
+                          [innerText]="item?.title"></span>
+                      </a>
+                    </ng-container>
+                  </mat-list-item>
+
+                </ng-container>
+              </ng-container>
+            </mat-nav-list>
+          </div>
+          <div class="bottom-zone">
+            <ds-nav-help-links [isSidenavOpen]="isSidenavOpen" [isSideNavDrilled]="isSideNavDrilled">
+            </ds-nav-help-links>
+            <!-- Dominion Logo -->
+            <div class="logo-container">
+              <a href="https://www.dominionsystems.com/" target="_blank">
+                <span class="logo-full-container logo-transition"
+                  [class.pointer-events-none]="(isSideNavDrilled || !isSidenavOpen)"
+                  [class.slow-opacity]="!isSideNavDrilled && isSidenavOpen" matTooltip="Visit Dominion Systems Website">
+                  <ng-container *ngTemplateOutlet="logo"></ng-container>
+                </span>
+                <span class="logo-icon-container logo-transition"
+                  [class.pointer-events-none]="!isSideNavDrilled && isSidenavOpen"
+                  [class.slow-opacity]="(isSideNavDrilled || !isSidenavOpen)"
+                  matTooltip="Visit Dominion Systems Website">
+                  <ng-container *ngTemplateOutlet="logoIcon"></ng-container>
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="inner-nav">
+          <div class="top-zone">
+            <mat-nav-list>
+              <!-- Product Title -->
+              <ng-container *ngIf="{
+                                item: selectedItem$ | async,
+                                info: productInfo$ | async,
+                                menu: menu$ | async,
+                                displayItems: displayMenuItems | async,
+                                navHistory: navigationHistory|async
+                            } as data">
+                <mat-list-item aria-label="back to section" class="location" style="pointer-events: none" tabindex="-1">
+                  <mat-icon class="icon" aria-label="section icon" [innerHTML]="data.info?.productIcon"></mat-icon>
+                  <button type="button" class="menu-label menu-label-btn">
+                    <span class="menu-label bold" [innerText]="data.info?.productTitle"></span>
+                  </button>
+                </mat-list-item>
+                <mat-list-item aria-label="Up one level"
+                  (click)="goBack(data.navHistory, data.displayItems, data?.menu.items)" class="back">
+                  <mat-icon class="icon" aria-label="back icon">keyboard_backspace</mat-icon>
+                  <button type="button" class="menu-label menu-label-btn">
+                    <span class="menu-label">Back</span>
+                  </button>
+                </mat-list-item>
+              </ng-container>
+            </mat-nav-list>
+            <hr />
+          </div>
+          <div class="scroll-zone ds-scroll-vertical">
+            <mat-nav-list class="ds-main-nav sub-nav">
+              <ng-container *ngFor="let item of displayMenuItems|async; let i = index">
+                <ng-container *ngIf="{
+                                    urls: siteUrls$|async,
+                                    navHistory: navigationHistory|async,
+                                    menu: menu$|async,
+                                    selected: selectedItem$|async
+                                } as data">
+
+                  <mat-list-item *ngIf="item?.resource && item?.items?.length < 1"
+                    [class.active]="data?.selected?.menuItemId === item?.menuItemId" @navContentFadeIn>
+
+                    <ng-container matLine>
+                      <a [dsNavMenuItem]="item" (click)="selectItem(item, data?.selected, data.menu.items)"
+                        class="text-truncate">
+                        <span class="menu-label text-truncate" [innerText]="item?.title"></span>
+                      </a>
+                    </ng-container>
+
+                  </mat-list-item>
+                  <mat-list-item *ngIf="item?.items && item?.items?.length"
+                    [class.active]="data?.navHistory|checkActiveState:item.menuItemId" @navContentFadeIn>
+                    <button type="button" id="none-page" class="menu-label menu-label-btn text-truncate"
+                      [attr.data-mid]="item?.menuItemId" (click)="selectItem(item, selectedItem, data?.menu.items);">
+                      <span class="menu-label" [innerText]="item?.title"></span>
+                      <mat-icon>keyboard_arrow_right</mat-icon>
+                    </button>
+                  </mat-list-item>
+                </ng-container>
+              </ng-container>
+            </mat-nav-list>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </mat-sidenav>
+
+  <mat-sidenav-content [@mainNavContentMargin]="isSidenavOpen && !(isHandset$ | async)">
+    <div class="main-container" fxLayout="column" fxLayoutGap="0px">
+      <mat-toolbar color="primary" class="d-print-none hidden-print">
+        <button type="button" aria-label="Toggle sidenav" mat-icon-button id="navTrigger" *ngIf="(isHandset$ | async)"
+          (click)="drawer.toggle()">
+          <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+        </button>
+        <div id="toolbar-content" class="toolbar-content">
+          <router-outlet name="header"></router-outlet>
+          <ng-content select="[header]"></ng-content>
+        </div>
+      </mat-toolbar>
+      <div id="main-content" class="main-content loading">
+        <div class="valCard" data-ds-msg="" data-route-key=""></div>
+        <!--Content gets projected here-->
+        <div ui-view></div>
+        <router-outlet></router-outlet>
+        <ng-content></ng-content>
+      </div>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+<ng-template #logo>
+  <svg class="logo-full" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 267.79 114.44"
+    style="enable-background:new 0 0 267.79 114.44;" xml:space="preserve">
+    <path class="st0" d="M29.79,44.53c13.42,0,19.15,8.05,19.15,17.9c0,9.84-5.73,17.9-19.15,17.9h-10.5V44.53H29.79z M45.54,62.43
+            c0-7.81-3.88-14.79-15.69-14.79h-7.28v29.59h7.28C41.66,77.22,45.54,70.24,45.54,62.43z" />
+    <path class="st0" d="M66.83,53.72c7.87,0,13.72,6.2,13.72,13.72S74.7,81.16,66.83,81.16s-13.72-6.2-13.72-13.72
+            S58.95,53.72,66.83,53.72z M66.83,56.58c-6.14,0-10.56,4.53-10.56,10.86c0,6.32,4.41,10.86,10.56,10.86
+            c6.14,0,10.56-4.53,10.56-10.86C77.39,61.11,72.97,56.58,66.83,56.58z" />
+    <path class="st0"
+      d="M98.74,56.82c-3.76,0-9.19,3.52-9.19,8.05v15.45h-3.16V54.79l2.62-0.54l0.36,5.25
+            c1.91-2.92,5.67-5.67,9.72-5.67c4.89,0,7.28,2.8,8.05,5.73c2.57-3.52,6.08-5.73,10.14-5.73c6.56,0,8.65,4.77,8.65,10.56v15.93h-3.16
+            V64.57c0-5.67-2.39-7.76-5.85-7.76c-3.76,0-9.19,3.52-9.19,8.05v15.45h-3.16V64.57C104.59,58.91,102.2,56.82,98.74,56.82z" />
+    <path class="st0" d="M136.68,54.19v26.13h-3.16V54.79L136.68,54.19z" />
+    <path class="st0" d="M144.31,54.79l2.62-0.54l0.36,5.25c1.91-2.92,6.03-5.67,10.38-5.67c6.86,0,9.31,4.77,9.31,10.56v15.93h-3.16
+            V64.57c0-5.67-2.74-7.76-6.5-7.76c-4.06,0-9.84,3.52-9.84,8.05v15.45h-3.16V54.79z" />
+    <path class="st0" d="M177.72,54.19v26.13h-3.16V54.79L177.72,54.19z" />
+    <path class="st0" d="M197.28,53.72c7.87,0,13.72,6.2,13.72,13.72s-5.85,13.72-13.72,13.72c-7.87,0-13.72-6.2-13.72-13.72
+            S189.41,53.72,197.28,53.72z M197.28,56.58c-6.14,0-10.56,4.53-10.56,10.86c0,6.32,4.41,10.86,10.56,10.86
+            c6.14,0,10.56-4.53,10.56-10.86C207.84,61.11,203.43,56.58,197.28,56.58z" />
+    <path class="st0" d="M216.85,54.79l2.62-0.54l0.36,5.25c1.91-2.92,6.03-5.67,10.38-5.67c6.86,0,9.31,4.77,9.31,10.56v15.93h-3.16
+            V64.57c0-5.67-2.74-7.76-6.5-7.76c-4.06,0-9.84,3.52-9.84,8.05v15.45h-3.16V54.79z" />
+    <circle class="st0" cx="135.14" cy="47.78" r="1.58" />
+    <circle class="st0" cx="176.11" cy="47.78" r="1.58" />
+    <circle class="st0" cx="140.76" cy="39.21" r="1.58" />
+    <circle class="st0" cx="170.19" cy="39.21" r="1.58" />
+    <circle class="st0" cx="149.87" cy="34.68" r="1.58" />
+    <circle class="st0" cx="161.17" cy="34.68" r="1.58" />
+  </svg>
+</ng-template>
+<ng-template #logoIcon>
+  <div class="logo-svg-container">
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%"
+      viewBox="0 0 20 20" version="1.1">
+      <g id="Desktop-Mock-Ups" stroke="none" stroke-width="1" fill="none">
+        <g id="Submenu-Drawer-Open-B-Pinned" fill="#FFFFFF" class="logo-svg">
+          <g id="icon-menu">
+            <g id="menu-item-icons">
+              <g id="ds-icon">
+                <path
+                  d="M8.98260368,17.3007284 C4.17238166,17.3007284 0.272926258,13.4278284 0.272926258,8.6503642 C0.272926258,3.87289997 4.17238166,0 8.98260368,0 C13.7928257,0 17.6922811,3.87289997 17.6922811,8.6503642 C17.6922811,13.4278284 13.7928257,17.3007284 8.98260368,17.3007284 Z M3.18777877,5.17693199 C3.6454761,5.11258715 3.95051972,4.69071685 3.88777598,4.24775513 C3.82343114,3.7900578 3.4115901,3.4546755 2.95439415,3.5187758 C2.49694137,3.58362202 2.16527494,4.02344241 2.22961978,4.48113974 C2.29422146,4.93809114 2.71609176,5.24313477 3.18777877,5.17693199 Z M6.28121532,5.49011081 C6.71232027,5.65565676 7.18415691,5.43514689 7.34470668,5.01734029 C7.51050332,4.58611306 7.3135287,4.09317727 6.88255217,3.92725836 C6.45157564,3.76133945 5.94814611,3.98515533 5.7822272,4.41613186 C5.61630829,4.84710839 5.83694658,5.31857207 6.28121532,5.49011081 Z M8.85603405,7.28886802 C9.15996881,7.63715747 9.68016155,7.66149838 10.0171267,7.36743147 C10.3647925,7.06349056 10.4212707,6.53538166 10.1168346,6.18733676 C9.81314435,5.83954871 9.26313894,5.80243935 8.91535088,6.10612957 C8.5676851,6.41007048 8.54272053,6.93025706 8.85603405,7.28886802 Z M10.2020379,10.0574926 C10.2891282,10.5109234 10.7261755,10.7949102 11.1656044,10.7109251 C11.618913,10.6235841 11.933373,10.1955694 11.847157,9.74202246 C11.7598159,9.28871387 11.3034367,8.9790886 10.8498836,9.06592827 C10.3964527,9.15301863 10.1123436,9.58981521 10.2020379,10.0574926 Z M10.0279023,13.1935908 C9.89343481,13.6356055 10.1469202,14.0904279 10.5746338,14.2203883 C11.0165201,14.3552287 11.4948325,14.1231815 11.6295445,13.6816682 C11.7642565,13.2401549 11.5048421,12.7540879 11.0632003,12.6197489 C10.6210695,12.484407 10.16662,12.7380208 10.0279023,13.1935908 Z M8.3638589,15.82001 C8.03136786,16.1410658 8.03271929,16.6617614 8.34278217,16.9831665 C8.6640825,17.3161589 9.19444913,17.3460889 9.52643878,17.0252777 C9.85892982,16.7042219 9.8687327,16.1529492 9.54779919,15.8207089 C9.22698795,15.4887193 8.70679373,15.4898261 8.3638589,15.82001 Z"
+                  id="Combined-Shape" />
+              </g>
+            </g>
+          </g>
+        </g>
+      </g>
+    </svg>
+  </div>
+</ng-template>

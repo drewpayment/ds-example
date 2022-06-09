@@ -1,0 +1,168 @@
+<div mat-dialog-header class="pb-0">
+    <h2 class="modal-title">
+        {{dialogTitle}}
+    </h2>
+    <button type="button" class="close" (click)="clear()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</div>
+<div mat-dialog-content [formGroup]="form1">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label class="form-control-label">Alert Type</label>
+                <div class="form-group inline-radio">
+                    <div class="custom-control custom-radio custom-control-bg primary">
+                        <input type="radio" formControlName="alertCategory" id="option2" value="2" checked="checked" class="custom-control-input"
+                            (change)="setAlertCategory()">
+                        <label class="custom-control-label" for="option2">Memo</label>
+                        <div class="custom-bg"></div>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-bg primary">
+                        <input type="radio" formControlName="alertCategory" id="option1" value="1" class="custom-control-input"
+                            (change)="setAlertCategory()">
+                        <label class="custom-control-label" for="option1">Attachment</label>
+                        <div class="custom-bg"></div>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-bg primary">
+                        <input type="radio" formControlName="alertCategory" id="option3" value="3" class="custom-control-input"
+                            (change)="setAlertCategory()">
+                        <label class="custom-control-label" for="option3">Link</label>
+                        <div class="custom-bg"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label class="form-control-label">Title</label>
+                <input type="text" formControlName="title" class="form-control" maxlength="250" required
+						[class.is-invalid]="formSubmitted && (form1?.controls?.title?.errors?.required)" >
+                <div class="invalid-feedback">
+					<span *ngIf="form1?.controls?.title?.errors?.required">Please enter a title.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label class="form-control-label">Message</label>
+                <textarea rows="5" formControlName="message" class="form-control" maxlength="1000" required
+                    [class.is-invalid]="formSubmitted && (form1?.controls?.message?.errors?.required)"></textarea>
+                <div class="invalid-feedback">
+					<span *ngIf="form1?.controls?.message?.errors?.required">Please enter a message.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" *ngIf="currentAlert.alertCategoryId == 3">
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label class="form-control-label">URL</label>
+                <input type="text" formControlName="alertURL"  class="form-control"
+                        [class.is-invalid]=" (form1.controls.alertURL.touched || formSubmitted) && 
+                            (form1.controls.alertURL.errors?.required || form1.controls.alertURL.errors?.pattern)" >
+                <div class="invalid-feedback">
+                    <span *ngIf="form1.controls?.alertURL?.errors?.required">Please enter a URL.</span>
+                    <span *ngIf="form1.controls?.alertURL?.errors?.pattern">Please enter a valid URL.</span>
+                </div>
+            </div>
+        </div>
+    </div>  
+	<div class="row"  *ngIf="currentAlert.alertCategoryId == 1">
+        <div class="col-sm-12">
+            <div class="form-group" [class.custom-validation]="formSubmitted && (!alertFile||alertFileTypeError)" >
+				<label class="form-control-label" [class.d-none]="!alertFile" >Attachment : {{ (!alertFile) ? '': alertFile.name }}</label>
+                <div class="file-input">
+                    <button type="button" class="btn btn-outline-primary" (click)="browseClicked()" >{{ (!alertFile) ? 'Browse': 'Change'}}</button>
+                    <input name="alert"
+                        class="d-none" id="alertAdded" type="file" (change)="onChange($event)"> 
+                    <div class="form-help-text" >Accepted file types include .pdf, .doc, .docx, .txt, .rtf<br/>
+                        Max file size: 3mb</div>
+                </div>
+                <div class="help-block with-errors form-control-feedback">
+                    <span *ngIf="!alertFile && formSubmitted">Please select an attachment.</span>
+                    <span *ngIf="alertFile && formSubmitted && alertFileTypeError">The selected file type is not supported. Accepted file types include .pdf, .doc, .docx, .xlsx, .xls, .txt, .rtf</span>
+                </div>                
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label class="form-control-label">Display From</label>
+                <div class="input-group">
+                <input matInput [matDatepicker]="startDatepicker" class="form-control" class="form-control"
+                    formControlName="startDate"
+                    [max]="endDateCtrl?.value"
+                    [ngClass]="{'is-invalid': (formSubmitted || startDateCtrl.touched) && startDateCtrl.errors}"
+                    />
+                <div class="input-group-append">
+                    <mat-datepicker-toggle matSuffix [for]="startDatepicker" class="input-group-text date">
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #startDatepicker></mat-datepicker>
+                </div>
+                <div *ngIf="startDateCtrl?.errors" class="invalid-feedback">
+                    <div *ngIf="startDateCtrl?.errors?.required">
+                        Please enter a from date.
+                    </div>
+                    <div *ngIf="startDateCtrl?.errors?.maxDateError">
+                        Please enter a date on or before to date.										
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label class="form-control-label">To</label>
+                <div class="input-group">
+                <input matInput [matDatepicker]="endDatepicker" class="form-control" class="form-control"
+                    formControlName="endDate"
+                    [min]="startDateCtrl?.value"
+                    [ngClass]="{'is-invalid': (formSubmitted || endDateCtrl.touched) && endDateCtrl.errors}"
+                    />
+                <div class="input-group-append">
+                    <mat-datepicker-toggle matSuffix [for]="endDatepicker" class="input-group-text date">
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #endDatepicker></mat-datepicker>
+                </div>
+                <div *ngIf="endDateCtrl?.errors" class="invalid-feedback">
+                    <div *ngIf="endDateCtrl?.errors?.required">
+                        Please enter an end date.
+                    </div>
+                    <div *ngIf="endDateCtrl?.errors?.minDateError">
+                        Please enter a date on or before from date.
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	<div class="row">
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label class="form-control-label">Security Level</label>
+                <select class="form-control custom-select"
+                        formControlName="securityLevel"
+						(change)="setSecurityLevel()"
+                        required>
+                    <option *ngFor="let securityLvl of securityLevels" [value]="securityLvl.id">
+                        {{securityLvl.desc}}
+                    </option>
+                </select>
+            </div>
+        </div>
+    </div>
+    
+</div>
+<div mat-dialog-actions class="ds-dialog-footer">
+        <button type="button" class="btn btn-primary"
+            (click)="save()" >Save</button>
+        <button type="button" class="btn btn-cancel" 
+            (click)="clear()" >Cancel</button>
+</div>

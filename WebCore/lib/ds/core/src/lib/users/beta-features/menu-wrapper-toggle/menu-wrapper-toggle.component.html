@@ -1,0 +1,32 @@
+
+<ng-container *ngIf="user$|async as u">
+    <ng-container *ngIf="(showCheckDate$|async) && checkDate?.isValid() && !this.isEmployeeOrApplicant && !this.isSupervisor">
+        <button type="button" class="btn btn-menu-toolbar" disabled>
+            Check Date: {{ checkDate | date: 'shortDate' }}
+        </button>
+    </ng-container>
+
+    <!-- name of selected in user. Shows for SA, CA and Sup -->
+    <ng-container *ngIf="(isShowEmployeeSelector$|async) && !this.isEmployeeOrApplicant">
+        <button type="button" class="btn btn-icon" (click)="showEmployeeSelector()" matTooltip="Select Employee">
+            <mat-icon>account_circle</mat-icon>
+        </button>
+        <button type="button" class="btn btn-menu-toolbar" (click)="showPersonnelReportViewer()"
+            matTooltip="View Personnel Report"
+            *ngIf="user?.lastEmployeeLastName && user?.lastEmployeeFirstName"
+            [innerText]="user?.lastEmployeeLastName + ', ' + user?.lastEmployeeFirstName">
+        </button>
+    </ng-container>
+
+    <!-- static name of logged in user. Shows for Employee or Applicant types -->
+    <button type="button" class="btn btn-menu-toolbar" disabled
+        *ngIf="this.user.firstName && this.user.firstName && this.isEmployeeOrApplicant" >
+        {{ this.user.lastName }}, {{ this.user.firstName  }}
+    </button>
+
+    <button type="button" class="btn btn-menu-toolbar" (click)="showReportQueue()" *ngIf="!this.isEmployeeOrApplicant">
+        <mat-icon>launch</mat-icon>
+        <span>Report Queue</span>
+    </button>
+
+</ng-container>

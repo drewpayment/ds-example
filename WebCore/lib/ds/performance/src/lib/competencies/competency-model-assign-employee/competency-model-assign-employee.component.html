@@ -1,0 +1,132 @@
+<ds-card *ngIf="showAdditionalEarning && !(CAAndSupervisorIsViewingOwnRecord && !hasAdditionalEarnings)">
+    <div ds-card-header>
+        <ds-card-sub-header-title>Additional Earnings</ds-card-sub-header-title>
+        <ds-card-inline-content>
+            <div class="switch-setting" *ngIf="!CAAndSupervisorIsViewingOwnRecord">
+                <label class="switch switch-default switch-pill switch-success">
+                    <input type="checkbox" class="switch-input" aria-describedby="additionalEarnings"
+                           id="additionalEarnings" [(ngModel)]="hasAdditionalEarnings">
+                    <span class="switch-label"></span>
+                    <span class="switch-handle"></span>
+                    <span class="ds-switch-off">Off</span>
+                    <span class="ds-switch-on">On</span>
+                </label>
+            </div>
+        </ds-card-inline-content>
+        <ds-card-subtitle>
+            <div class="instruction-text" *ngIf="!CAAndSupervisorIsViewingOwnRecord">
+                Turn this section on to make this employee eligible to receive earnings such as bonus. This feature creates an "Additional Earnings" section on reviews for that employee and allows the supervisor to enter a payroll request.
+            </div>
+        </ds-card-subtitle>
+    </div>
+    <ds-card-content *ngIf="hasAdditionalEarnings">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-control-label">Name</label>
+                    <input type="text" class="form-control" [(ngModel)]="oneTimeEarningSettings.name" [disabled]="CAAndSupervisorIsViewingOwnRecord" />
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-2">
+                <div class="form-group">
+                    <label class="form-control-label">Type</label>
+                    <select class="custom-select" [(ngModel)]="oneTimeEarningSettings.increaseType" [disabled]="CAAndSupervisorIsViewingOwnRecord">
+                        <option *ngFor="let key of increaseTypeKeys" [ngValue]="key" [label]="increaseType[key]"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-6  col-md-2">
+                <div class="form-group">
+                    <label class="form-control-label">Amount</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend" *ngIf="oneTimeEarningSettings.increaseType!=1">
+                            <span class="input-group-text currency">$</span>
+                        </div>
+                        <input type="number" class="form-control" [(ngModel)]="oneTimeEarningSettings.increaseAmount" [disabled]="CAAndSupervisorIsViewingOwnRecord"/>
+                        <div class="input-group-append" *ngIf="oneTimeEarningSettings.increaseType==1">
+                            <span class="input-group-text percent">%</span>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-2" *ngIf="oneTimeEarningSettings.increaseType !== increaseType.Flat">
+                <div class="form-group">
+                    <label class="form-control-label">Based On</label>
+                    <select class="custom-select" [(ngModel)]="oneTimeEarningSettings.basedOn" disabled>
+                        <option *ngFor="let key of basedOnKeys" [ngValue]="key" [label]="getBasedOnLabel(key)"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="form-group">
+                    <label class="form-control-label">Measurement</label>
+                    <select class="custom-select" [(ngModel)]="oneTimeEarningSettings.measurement" disabled>
+                        <option *ngFor="let key of measurementKeys" [ngValue]="key" [label]="measurement[key]"></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row" *ngIf="!CAAndSupervisorIsViewingOwnRecord">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="displaysettings" [(ngModel)]="oneTimeEarningSettings.displayInEss">
+                        <label class="custom-control-label" for="displaysettings">Display settings in ESS</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ds-card-content>
+</ds-card>
+<div class="card">
+    <div class="card-header">
+        <h2>Competencies</h2>
+    </div>
+  <div class="card-body">
+    <div *ngIf="(data$ | async) as data; else loading">
+      <div class="row">
+        <div class="col-md-5">
+          <div class="form-group">
+            <label class="form-control-label">Competency Model</label>
+            <input type="text" class="form-control-plaintext" value="{{ selectedCompName }}" readonly *ngIf="!canEditModelSelection; else modelSelector" />
+            <ng-template #modelSelector>
+                <select class="form-control custom-select" [(ngModel)]="selectedComp">
+                  <option [ngValue]="compModel" *ngFor="let compModel of data[0]">{{compModel.name}}</option>
+                </select>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+      <div *ngFor="let nonCoreComp of selectedComp == null ? [] : selectedComp.competencies">
+          <ng-container *ngTemplateOutlet="widget; context: {$implicit: nonCoreComp}"></ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="card" [class.d-none]="!canEditModelSelection">
+  <div class="card-body">
+    <button #saveBtn class="btn btn-primary float-right" type="button">Save</button>
+  </div>
+</div>
+<ng-template #widget let-comp>
+    <ds-card mode="widget" color="info">
+        <div ds-card-icon>{{comp.isCore ? 'people' : 'assignment_ind'}}</div>
+        <div ds-card-header>
+          <ds-card-section-title>{{comp.name}}</ds-card-section-title>
+          <ds-card-title-right-content>
+            <span *ngIf="null != comp.competencyGroup" class="badge badge-pill badge-info mr-2">{{comp.competencyGroup.name}}</span>
+            <!-- Hiding difficulty for now TPR-147
+              <span *ngIf="null != comp.difficultyLevel" class="badge badge-pill badge-primary">Difficulty:
+              {{comp.difficultyLevel}}</span> -->
+          </ds-card-title-right-content>
+        </div>
+        <div ds-card-content>
+          <hr class="mt-0 mb-2" />
+          <span class="instruction-text">{{comp.description}}</span>
+        </div>
+      </ds-card>
+</ng-template>
+<ng-template #loading>
+  <div class="loading-message">Loading...</div>
+</ng-template>

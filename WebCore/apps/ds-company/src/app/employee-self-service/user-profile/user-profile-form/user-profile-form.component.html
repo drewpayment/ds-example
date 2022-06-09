@@ -1,0 +1,657 @@
+<div [formGroup]="form">
+  <ds-card>
+    <ds-card-header>
+      <ds-card-sub-header-title>
+        Information
+      </ds-card-sub-header-title>
+      <ds-card-title-action>
+        <ng-container *ngIf="notSelfView()">
+          <button *ngIf="!!lastUserProfile && !isUserDisabled
+            && viewerUserTypes(ut.ee, [ut.sa, ut.ca])" type="button" class="btn btn-outline-danger"
+            (click)="disableUser()">Disable User</button>
+
+          <button *ngIf="isUserDisabled && !isLoading
+            && viewerUserTypes(ut.ee, [ut.sa, ut.ca])" type="button" class="btn btn-outline-success"
+            (click)="disableUser()">Enable
+            User</button>
+
+          <button *ngIf="viewerUserTypes(ut.ca, [ut.sa], true)" class="btn btn-outline-primary"
+            (click)="openCompanyAccessDialog()">
+            Company Access
+          </button>
+        </ng-container>
+      </ds-card-title-action>
+    </ds-card-header>
+    <ds-card-content>
+      <div class="row">
+        <div class="col-md-6" *ngIf="!isAddUserView" formGroupName="ui">
+          <div class="form-group">
+            <label class="form-control-label">User</label>
+            <div class="input-group" [class.loading]="isLoadingUser">
+              <input #userSelectInput class="form-control rounded-right" formControlName="user" matInput
+                [matAutocomplete]="userAc" (focus)="focusOnAutocomplete()" (blur)="focusOffAutocomplete()"
+                (keyup.enter)="preventEnterKey($event)"
+                [placeholder]="formValueCache?.user?.displayName || '-- Select User --'" />
+              <mat-autocomplete #userAc="matAutocomplete" [displayWith]="selectedUserDisplay"
+                (optionSelected)="userSelectInput.blur()">
+                <mat-option *ngFor="let u of availableUsers$|async" [value]="u">
+                  <div class="d-flex justify-content-between">
+                    <span class="mr-3">{{ u.displayName }}</span>
+                    <div>
+                      <span class="help-text">{{u?.username}}</span>
+                      <div class="badge badge-pill badge-danger ml-2" *ngIf="u?.isUserDisabled">Inactive</div>
+                    </div>
+                  </div>
+                </mat-option>
+              </mat-autocomplete>
+              <div class="input-group-append" *ngIf="isLoadingUser">
+                <span class="input-group-text">
+                  <mat-spinner diameter="24"></mat-spinner>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6" *ngIf="!isAddUserView">&nbsp;</div>
+
+        <ng-container formGroupName="inputs" *ngIf="lastUserProfile || isAddUserView">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="form-control-label">First Name</label>
+              <input type="text" class="form-control" formControlName="firstName"
+                dsFormControlValidator [dsFormControlSubmitted]="frmSubmitted" />
+              <div class="invalid-feedback" *ngIf="inputForm('firstName')?.invalid">
+                <ng-container *ngFor="let validation of validationMessages.firstName">
+                  <span *ngIf="inputForm('firstName')?.hasError(validation.type)">{{ validation.message }}</span>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="form-control-label">Last Name</label>
+              <input type="text" class="form-control" formControlName="lastName"
+                dsFormControlValidator [dsFormControlSubmitted]="frmSubmitted" />
+              <div class="invalid-feedback" *ngIf="inputForm('lastName')?.invalid">
+                <ng-container *ngFor="let validation of validationMessages.lastName">
+                  <span *ngIf="inputForm('lastName')?.hasError(validation.type)">{{ validation.message }}</span>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6" *ngIf="notSupSelfView() && viewerUserTypes(ut.ee, [ut.sa, ut.ca])">
+            <div class="form-group">
+              <label class="form-control-label">User Type</label>
+              <select class="form-control custom-select" formControlName="userType"
+                dsFormControlValidator [dsFormControlSubmitted]="frmSubmitted">
+                <ng-container *ngFor="let option of userTypeOptions">
+                  <option [value]="option?.value" *ngIf="!option.hidden">{{option?.key}}</option>
+                </ng-container>
+              </select>
+              <div class="invalid-feedback" *ngIf="userTypeControl?.invalid">
+                Please select a user type.
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-container *not="!isAddUserView || (selectedUserUserTypeIs(ut.ee) && isUserTypeViewingSelf(ut.sup) && !viewerUserTypes(ut.ee, [ut.sa, ut.ca]))">
+          <ng-container *ngIf="isAddUserView || !isUserDisabled; disabledEmployeeSelect">
+            <div class="col-md-6" *ngIf="!!lastUserProfile || isAddUserView" formGroupName="ui">
+              <div class="form-group">
+                <label class="form-control-label">Employee Profile</label>
+                <div class="input-group">
+                  <input matInput type="text" [matAutocomplete]="empAc" formControlName="employee" class="form-control"
+                    placeholder="Not Assigned" (focus)="focusOnEmpAc()" (blur)="focusOffEmpAc()"
+                    (keyup.enter)="preventEnterKey($event)" #empSelectInput
+                    dsFormControlValidator [dsFormControlSubmitted]="frmSubmitted"
+                    [placeholder]="formValueCache?.employee ? formValueCache?.employee?.firstName + ' ' + formValueCache?.employee?.lastName : 'Not Assigned'" />
+                  <mat-autocomplete #empAc="matAutocomplete" [displayWith]="selectedEmployeeDisplay"
+                    (optionSelected)="empSelectInput.blur()">
+                    <mat-option *ngFor="let e of availableEmployees$|async" [value]="e">
+                      {{ e.firstName }} {{ e.lastName }}
+                    </mat-option>
+                  </mat-autocomplete>
+                  <div class="input-group-append" *ngIf="isObject(employeeControl?.value)">
+                    <span class="input-group-text time">
+                      <button class="btn btn-icon" (click)="employeeControl.setValue(null)">
+                        <mat-icon>clear</mat-icon>
+                      </button>
+                    </span>
+                  </div>
+                  <div class="invalid-feedback" *ngIf="employeeControl?.invalid">
+                    <ng-container *ngFor="let validation of validationMessages.employee">
+                      <span *ngIf="employeeControl?.hasError(validation.type)">{{ validation.message }}</span>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+
+          <ng-template #disabledEmployeeSelect>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-control-label">Assigned Employee</label>
+                <div class="form-control disabled">
+                  Not Assigned
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </ng-container>
+
+        <div class="col-md-6" *ngIf="isObject(employeeControl?.value) &&
+            form?.get('inputs.employeeStatusType')?.value > 0 &&
+            selectedUserUserTypeIsNot(ut.sa) && !selectedUserIsMe() &&
+            viewerUserTypes(ut.ee, [ut.sa, ut.ca])">
+          <div class="form-group">
+            <label class="form-control-label">Employee Status</label>
+            <div class="form-control disabled">{{ form?.get('inputs.employeeStatusType')?.value | employeeStatusType }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </ds-card-content>
+  </ds-card>
+
+  <ng-container formGroupName="inputs" *ngIf="lastUserProfile || isAddUserView">
+    <ds-card>
+      <ds-card-header>
+        <ds-card-sub-header-title>Account Settings</ds-card-sub-header-title>
+
+        <ds-card-title-right-content>
+          <span class="help-text" *ngIf="notSupSelfView() && !!lastUserProfile && !isUserDisabled && meResetPws()"
+            class="align-self-center">
+            This button will send a reset password email to the user.
+          </span>
+        </ds-card-title-right-content>
+        <ds-card-title-action>
+          <button type="button" class="btn btn-outline-primary" (click)="resetPassword()"
+            *ngIf="notSupSelfView() && !!lastUserProfile && !isUserDisabled && meResetPws()">Reset Password</button>
+
+          <button *ngIf="notSelfView() && !!lastUserProfile && !isAccountEnabled?.value && !isUserDisabled"
+            type="button" class="btn btn-primary" (click)="unlockAccount()">Unlock Account</button>
+        </ds-card-title-action>
+      </ds-card-header>
+      <ds-card-content>
+        <div class="row align-items-end" *ngIf="notSelfView(); else selfView">
+          <ng-container *ngIf="!isAddUserView && usernameControl?.value != null; else addingUsername">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-control-label">
+                  <div>Username</div>
+                  <span class="form-help-text">
+                    Must be unique amongst Dominion users, is not case sensitive, must contain 4-15 characters. The
+                    special characters permitted are underscores and periods.
+                  </span>
+                </label>
+                <div class="form-control disabled">
+                  {{ usernameControl?.value }}
+                </div>
+              </div>
+            </div>
+          </ng-container>
+          <ng-template #addingUsername>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-control-label">
+                  <div>Username</div>
+                  <span class="form-help-text">
+                    Must be unique amongst Dominion users, is not case sensitive, must contain 4-15 characters. The
+                    special characters permitted are underscores and periods.
+                  </span>
+                </label>
+                <div class="input-group" [class.loading]="isCheckingUsername">
+                  <input type="text" class="form-control" [class.is-invalid]="usernameControl?.invalid && (usernameControl?.dirty || usernameControl?.touched)" formControlName="username" />
+                  <div class="input-group-addon" *ngIf="isCheckingUsername">
+                    <span class="input-group-text">
+                      <mat-spinner diameter="24"></mat-spinner>
+                    </span>
+                  </div>
+                  <div class="invalid-feedback" *ngIf="usernameControl?.invalid">
+                    <ng-container *ngFor="let validation of validationMessages.username">
+                      <span *ngIf="usernameControl?.hasError(validation.type)">{{ validation.message }}</span>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+
+          <div class="col-md-6">&nbsp;</div>
+
+          <ng-container *ngIf="viewerUserTypes(ut.ee, [ut.sa, ut.ca])">
+            <div class="col-md-6">
+              <div class="form-group" formGroupName="passwords">
+                <label class="form-control-label">
+                  <div>Password</div>
+                  <span class="form-help-text">
+                    Password may be 8-50 characters, must contain one uppercase letter, one lowercase letter, and one
+                    numerical character, and are case sensitive.
+                  </span>
+                </label>
+                <input matInput type="password" class="form-control" formControlName="password"
+                  dsFormControlValidator [dsFormControlSubmitted]="frmSubmitted" (change)="onPasswordChange($event, 'password')" />
+                <div class="invalid-feedback" *ngIf="inputForm('passwords.password')?.invalid">
+                  <ng-container *ngFor="let validation of validationMessages.password">
+                    <div *ngIf="inputForm('passwords.password')?.hasError(validation.type)">
+                      {{ validation?.message }}
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group" formGroupName="passwords">
+                <label class="form-control-label">Verify Password</label>
+                <input matInput type="password" class="form-control" formControlName="verifyPassword" (change)="onPasswordChange($event, 'verifyPassword')"
+                  [class.is-invalid]="(inputForm('passwords')?.invalid && inputForm('passwords')?.touched) || (inputForm('passwords.verifyPassword')?.invalid && inputForm('passwords.verifyPassword')?.touched)" />
+                <div class="invalid-feedback" *ngIf="inputForm('passwords')?.invalid || inputForm('passwords.verifyPassword')?.invalid">
+                  <ng-container *ngFor="let validation of validationMessages.verifyPassword">
+                    <div *ngIf="inputForm('passwords.verifyPassword')?.hasError(validation.type)">
+                      {{ validation?.message }}
+                    </div>
+                  </ng-container>
+                  <ng-container *ngIf="inputForm('passwords')?.errors?.areEqual">
+                    <div>Passwords do not match. Please try again.</div>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-12">
+              <div class="form-group">
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" formControlName="forceUserPasswordReset"
+                    id="forceUserPasswordReset" dsFormControlValidator [dsFormControlSubmitted]="frmSubmitted" />
+                  <label for="forceUserPasswordReset" class="custom-control-label">
+                    Force the user to change password on next login
+                  </label>
+                </div>
+                <div class="invalid-feedback" *ngIf="confirmPasswordControl?.invalid">
+                  <ng-container *ngFor="let validation of validationMessages.confirmPassword">
+                    <span *ngIf="confirmPasswordControl?.hasError(validation.type) && confirmPasswordControl?.dirty && confirmPasswordControl?.touched">
+                      {{ validation?.message }}
+                    </span>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="form-control-label">
+                  Email
+                  <span class="form-help-text">Optional</span>
+                </label>
+                <input matInput type="text" class="form-control" formControlName="email" />
+              </div>
+            </div>
+
+            <ng-container *ngIf="!isUserDisabled && selectedUserUserTypeIsNot(ut.sa) && isAccountEnabled">
+              <div class="col-md-12">
+                <hr />
+              </div>
+
+              <div class="col-md-12">
+                <h3>Account Access</h3>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <div class="switch-setting">
+                        <label for="hasTempAccess">Temporary Access</label>
+                        <label class="switch switch-default switch-pill switch-success">
+                          <input type="checkbox" class="switch-input" formControlName="hasTempAccess"
+                            id="hasTempAccess" />
+                          <span class="switch-label"></span>
+                          <span class="switch-handle"></span>
+                          <span class="ds-switch-off">Off</span>
+                          <span class="ds-switch-on">On</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6" *ngIf="inputsForm.get('hasTempAccess')?.value">
+                    <mat-form-field class="form-group" [floatLabel]="'always'" formGroupName="tempAccess">
+                      <mat-label class="form-control-label">Select temporary access dates</mat-label>
+                      <div class="input-group">
+                        <mat-date-range-input [rangePicker]="picker" class="form-control" [class.is-invalid]="(tempAccess.get('fromDate')?.invalid || tempAccess.get('toDate')?.invalid) && (tempAccess.touched || frmSubmitted)">
+                          <input matStartDate placeholder="Start Date" formControlName="fromDate" />
+                          <input matEndDate placeholder="End Date" formControlName="toDate" />
+                        </mat-date-range-input>
+                        <div class="input-group-append">
+                          <mat-datepicker-toggle matSuffix [for]="picker" class="input-group-text date"></mat-datepicker-toggle>
+                          <mat-date-range-picker #picker></mat-date-range-picker>
+                        </div>
+                        <div class="invalid-feedback" *ngIf="(tempAccess.get('fromDate')?.invalid || tempAccess.get('toDate')?.invalid) && (tempAccess.touched || frmSubmitted)">
+                          <div *ngIf="tempAccess.get('fromDate')?.hasError('required')">
+                            Start date is required
+                          </div>
+                          <div *ngIf="tempAccess.get('toDate')?.hasError('required')">
+                            End date is required
+                          </div>
+                        </div>
+                      </div>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </ng-container>
+        </div>
+        <ng-template #selfView>
+          <div class="row align-items-end" *ngIf="siteConfiguration$|async as config">
+            <div class="col-md-12">
+              <a class="btn btn-outline-primary mb-3" target="_blank"
+                [href]="config?.authRootUrl + '/mods/questions-email'">
+                <mat-icon>open_in_new</mat-icon>
+                <span>Questions & Email</span>
+              </a>
+              <span class="help-text">
+                Update your security questions and account email
+              </span>
+            </div>
+            <div class="col-md-12">
+              <a class="btn btn-outline-primary mb-3" target="_blank"
+                [href]="config?.authRootUrl + '/mods/update-pass'">
+                <mat-icon>open_in_new</mat-icon>
+                <span>Reset Password</span>
+              </a>
+              <span class="help-text">
+                Change your current password
+              </span>
+            </div>
+            <div class="col-md-12">
+              <a class="btn btn-outline-primary mb-3" target="_blank"
+                [href]="config?.authRootUrl + '/mods/multi-factor'">
+                <mat-icon>open_in_new</mat-icon>
+                <span>2-Factor Authentication</span>
+              </a>
+              <span class="help-text">
+                Modify your 2-factor method or phone number
+              </span>
+            </div>
+          </div>
+        </ng-template>
+      </ds-card-content>
+    </ds-card>
+
+    <ng-container *ngIf="viewerUserTypes(ut.ee, [ut.sa, ut.ca]) && !isUserDisabled
+      && notSupSelfView() && notCASelfView()">
+      <ds-card>
+        <ds-card-header>
+          <ds-card-sub-header-title>Application Settings</ds-card-sub-header-title>
+        </ds-card-header>
+        <ds-card-content>
+          <div class="row">
+            <div class="col-md-6" *ngIf="selectedUserUserTypeIsNot(ut.sa)">
+              <div class="form-group">
+                <label class="form-control-label">Session Timeout</label>
+                <select class="form-control custom-select" formControlName="sessionTimeout">
+                  <ng-container *ngFor="let timeout of timeoutOptions">
+                    <option [value]="timeout?.value">{{ timeout?.key }} {{ timeout?.units }}</option>
+                  </ng-container>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-md-2" *ngIf="selectedUserUserTypeIs(ut.ca)">
+              <div class="form-group">
+                <label class="form-control-label">
+                  <span>PIN</span>
+                  <span class="form-help-text">Optional</span>
+                </label>
+                <input type="text" matInput class="form-control" formControlName="userPin" />
+              </div>
+            </div>
+
+            <ng-container *ngIf="selectedUserUserTypeIsNot(ut.sa, ut.ee)">
+              <div class="col-md-12">
+                <div class="form-group inline-radio">
+                  <label class="form-control-label">View Employees</label>
+                  <div class="custom-control custom-radio custom-control-bg primary">
+                    <input type="radio" id="viewEmployeesHourly" name="viewEmployeesType" value="1"
+                      formControlName="viewEmployeesType" class="custom-control-input">
+                    <label for="viewEmployeesHourly" class="custom-control-label">Hourly</label>
+                    <div class="custom-bg"></div>
+                  </div>
+                  <div class="custom-control custom-radio custom-control-bg primary">
+                    <input type="radio" name="viewEmployeesType" id="viewEmployeesSalary" value="2"
+                      formControlName="viewEmployeesType" class="custom-control-input">
+                    <label for="viewEmployeesSalary" class="custom-control-label">Salary</label>
+                    <div class="custom-bg"></div>
+                  </div>
+                  <div class="custom-control custom-radio custom-control-bg primary">
+                    <input type="radio" name="viewEmployeesType" id="viewEmployessAll" value="3"
+                      formControlName="viewEmployeesType" class="custom-control-input">
+                    <label for="viewEmployessAll" class="custom-control-label">All</label>
+                    <div class="custom-bg"></div>
+                  </div>
+                  <div class="custom-control custom-radio custom-control-bg primary">
+                    <input type="radio" name="viewEmployeesType" id="viewEmployeesNone" value="4"
+                      formControlName="viewEmployeesType" class="custom-control-input">
+                    <label for="viewEmployeesNone" class="custom-control-label">None</label>
+                    <div class="custom-bg"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-12">
+                <div class="form-group inline-radio">
+                  <label class="form-control-label">View Rates</label>
+                  <div class="custom-control custom-radio custom-control-bg primary">
+                    <input type="radio" name="viewRatesType" formControlName="viewRatesType" id="viewRatesHourly"
+                      value="1" class="custom-control-input">
+                    <label for="viewRatesHourly" class="custom-control-label">Hourly</label>
+                    <div class="custom-bg"></div>
+                  </div>
+                  <div class="custom-control custom-radio custom-control-bg primary">
+                    <input type="radio" name="viewRatesType" formControlName="viewRatesType" id="viewRatesSalary"
+                      value="2" class="custom-control-input">
+                    <label for="viewRatesSalary" class="custom-control-label">Salary</label>
+                    <div class="custom-bg"></div>
+                  </div>
+                  <div class="custom-control custom-radio custom-control-bg primary">
+                    <input type="radio" name="viewRatesType" formControlName="viewRatesType" id="viewRatesBoth"
+                      value="3" class="custom-control-input">
+                    <label for="viewRatesBoth" class="custom-control-label">All</label>
+                    <div class="custom-bg"></div>
+                  </div>
+                  <div class="custom-control custom-radio custom-control-bg primary">
+                    <input type="radio" name="viewRatesType" formControlName="viewRatesType" id="viewRatesNone"
+                      value="4" class="custom-control-input">
+                    <label for="viewRatesNone" class="custom-control-label">None</label>
+                    <div class="custom-bg"></div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6" *ngIf="selectedUserUserTypeIsNot(ut.ee)">
+              <div class="form-group" [matToolTip]="'Restricts user to only being able to view employee data.'">
+                <div class="switch-setting">
+                  <label>ESS View Only</label>
+                  <label class="switch switch-default switch-pill switch-success">
+                    <input type="checkbox" class="switch-input" formControlName="isEssViewOnly" />
+                    <span class="switch-label"></span>
+                    <span class="switch-handle"></span>
+                    <span class="ds-switch-off">Off</span>
+                    <span class="ds-switch-on">On</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6" *ngIf="selectedUserUserTypeIsNot(ut.sa, ut.ee)">
+              <div class="form-group">
+                <div class="switch-setting">
+                  <label>Block HR</label>
+                  <label class="switch switch-default switch-pill switch-success">
+                    <input type="checkbox" class="switch-input" formControlName="blockHr">
+                    <span class="switch-label"></span>
+                    <span class="switch-handle"></span>
+                    <span class="ds-switch-off">Off</span>
+                    <span class="ds-switch-on">On</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6" *ngIf="selectedUserUserTypeIsNot(ut.sa, ut.ee)">
+              <div class="form-group">
+                <div class="switch-setting">
+                  <label>Employee Self Service</label>
+                  <label class="switch switch-default switch-pill switch-success">
+                    <input type="checkbox" class="switch-input" formControlName="hasEssSelfService">
+                    <span class="switch-label"></span>
+                    <span class="switch-handle"></span>
+                    <span class="ds-switch-off">Off</span>
+                    <span class="ds-switch-on">On</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6" *ngIf="selectedUserUserTypeIsNot(ut.sa, ut.ee)">
+              <div class="form-group">
+                <div class="switch-setting">
+                  <label>Employee Access Only</label>
+                  <label class="switch switch-default switch-pill switch-success">
+                    <input type="checkbox" class="switch-input" formControlName="hasEmployeeAccess">
+                    <span class="switch-label"></span>
+                    <span class="switch-handle"></span>
+                    <span class="ds-switch-off">Off</span>
+                    <span class="ds-switch-on">On</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6" *ngIf="selectedUserUserTypeIs(ut.ca)">
+              <div class="form-group">
+                <div class="switch-setting">
+                  <label>Reporting Access Only</label>
+                  <label class="switch switch-default switch-pill switch-success">
+                    <input type="checkbox" class="switch-input" formControlName="isReportingAccessOnly">
+                    <span class="switch-label"></span>
+                    <span class="switch-handle"></span>
+                    <span class="ds-switch-off">Off</span>
+                    <span class="ds-switch-on">On</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6" *ngIf="selectedUserUserTypeIs(ut.ca)">
+              <div class="form-group">
+                <div class="switch-setting">
+                  <label>GL Access</label>
+                  <label class="switch switch-default switch-pill switch-success">
+                    <input type="checkbox" class="switch-input" formControlName="hasGLAccess">
+                    <span class="switch-label"></span>
+                    <span class="switch-handle"></span>
+                    <span class="ds-switch-off">Off</span>
+                    <span class="ds-switch-on">On</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6" *ngIf="selectedUserUserTypeIsNot(ut.sa, ut.ee)">
+              <div class="form-group">
+                <div class="switch-setting">
+                  <label>Block Payroll Access</label>
+                  <label class="switch switch-default switch-pill switch-success">
+                    <input type="checkbox" class="switch-input" formControlName="blockPayrollAccess">
+                    <span class="switch-label"></span>
+                    <span class="switch-handle"></span>
+                    <span class="ds-switch-off">Off</span>
+                    <span class="ds-switch-on">On</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6" *ngIf="selectedUserUserTypeIs(ut.ca)">
+              <div class="form-group">
+                <div class="switch-setting">
+                  <label>Access Tax Packets</label>
+                  <label class="switch switch-default switch-pill switch-success">
+                    <input type="checkbox" class="switch-input" formControlName="hasTaxPacketsAccess">
+                    <span class="switch-label"></span>
+                    <span class="switch-handle"></span>
+                    <span class="ds-switch-off">Off</span>
+                    <span class="ds-switch-on">On</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6" *ngIf="showAppTracking && selectedUserUserTypeIsNot(ut.sa)">
+              <div class="form-group">
+                <div class="switch-setting">
+                  <label>Applicant Tracking Admin</label>
+                  <label class="switch switch-default switch-pill switch-success">
+                    <input type="checkbox" class="switch-input" formControlName="isApplicantTrackingAdmin" />
+                    <span class="switch-label"></span>
+                    <span class="switch-handle"></span>
+                    <span class="ds-switch-off">Off</span>
+                    <span class="ds-switch-on">On</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6" *ngIf="selectedUserUserTypeIs(ut.ee)">&nbsp;</div>
+
+            <ng-container *ngIf="showTimeAtt && selectedUserUserTypeIsNot(ut.sa, ut.ee)">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <div class="switch-setting">
+                    <label>Time & Attendance Access</label>
+                    <label class="switch switch-default switch-pill switch-success">
+                      <input type="checkbox" class="switch-input" formControlName="hasTimeAndAttAccess">
+                      <span class="switch-label"></span>
+                      <span class="switch-handle"></span>
+                      <span class="ds-switch-off">Off</span>
+                      <span class="ds-switch-on">On</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <div class="switch-setting">
+                    <label>Timeclock App Only</label>
+                    <label class="switch switch-default switch-pill switch-success">
+                      <input type="checkbox" class="switch-input" formControlName="isTimeclockAppOnly">
+                      <span class="switch-label"></span>
+                      <span class="switch-handle"></span>
+                      <span class="ds-switch-off">Off</span>
+                      <span class="ds-switch-on">On</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </ds-card-content>
+      </ds-card>
+    </ng-container>
+    <ds-card mode="noheader" *ngIf="isAddUserView || form?.get('inputs')?.dirty">
+      <ds-card-content class="d-flex" [ngClass]="isAddUserView ? 'justify-content-between' : 'justify-content-end'">
+        <button class="btn btn-cancel" *ngIf="isAddUserView" (click)="cancel()">Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="saveForm()">Save</button>
+      </ds-card-content>
+    </ds-card>
+  </ng-container>
+</div>

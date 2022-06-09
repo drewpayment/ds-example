@@ -1,0 +1,198 @@
+
+<ng-container *ngIf="policy$|async as policy" >
+
+    <!-- HEADER -->
+    <ds-card mode="nobody" border="top">
+        <div ds-card-header>
+            <ds-card-header-title>
+                {{ policy?.policyName }}
+            </ds-card-header-title>
+            <ds-card-bread-crumb>
+              <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a routerLink="/timeoff">
+                            <span>Time Off</span>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="Time Off Activity">
+                        {{ policy?.policyName }}
+                    </li>
+                </ol>
+              </nav>
+            </ds-card-bread-crumb>
+            <ds-card-title-right-content *ngIf="hasMultiplePolicies$ | async">
+                <div class="form-group row" *ngIf="selectedPolicy$ | async as selectedPolicy">
+                    <label class="col-md-auto col-form-label pr-0">Switch Policies</label>
+                    <div class="col-md-auto">
+                        <mat-form-field>
+                            <select matNativeControl
+                                class="form-control custom-select"
+                                (change)="changeSelectedPolicy($event)" >
+                                <option *ngFor="let p of policies$|async" [value]="p.policyName" [selected]="p == selectedPolicy">
+                                    {{ p.policyName }}
+                                </option>
+                            </select>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </ds-card-title-right-content>
+            <div ds-card-title-action>
+                <button type="button" class="btn btn-save" (click)="requestNew()">
+                    <mat-icon>add</mat-icon>
+                    <span>Request</span>
+                </button>
+            </div>
+        </div>
+    </ds-card>
+
+    <!-- HOURS AVAILABLE & PENDING CARDS -->
+    <ds-card mode="noheader">
+        <ds-card-content>
+            <div class="overflow-list">
+                <div class="row">
+                    <div class="col-sm-6 col-md-12 col-lg-6">
+                        <!-- todo: policy color classes from ess.css -->
+                        <!-- ng-class="'policy-' + (($ctrl.timeOff.getPolicyIndex($ctrl.policy) % 4) + 1)" -->
+                        <ds-card mode="callout" color="info" >
+                            <div ds-card-icon size="lg">schedule</div>
+                            <div ds-card-header>
+                                <ds-card-inline-content>
+                                    <div class="text-color-fade flex-1-0-100">
+                                        {{ policy.timeOffUnitType | timeOffUnitName }} Available
+                                    </div>
+                                    <div class="ds-card-title-callout flex-1-0-100">
+                                        {{ policy.unitsAvailable }}
+                                    </div>
+                                </ds-card-inline-content>
+                                <ds-card-subtitle>
+                                    <div class="card-data bordered">
+                                        <div class="item" *ngIf="policy?.nextAwardDate != null">
+                                            <label>Next Award Date:</label>
+                                            {{ policy?.nextAwardDate | date: 'MMM dd, yyyy' }}
+                                        </div>
+                                        <div class="item" *ngIf="policy?.nextAwardDate == null && policy?.timeOffUnitType == 1">
+                                            <label>No. of {{ policy?.unitsPerDay == null ? '8.0' : policy?.unitsPerDay }} hour Days:</label>
+                                            {{ (policy?.unitsAvailable == null ? '0' : policy?.unitsAvailable) / (policy?.unitsPerDay == null ? '8.0' : policy?.unitsPerDay) | number: '1.0-0'  }}
+                                        </div>
+                                        <div class="item" *ngIf="!policy?.nextAwardDate != null && policy.timeOffUnitType === 2">
+                                            <label>No. of Hours ({{ (policy?.unitsPerDay == null ? '8.0' : policy?.unitsPerDay) }} hours/day):</label>
+                                            {{ (policy?.unitsAvailable == null ? '0' : policy?.unitsAvailable) * (policy?.unitsPerDay == null ? '8.0' : policy?.unitsPerDay) | number: '1.0-0' }} hours
+                                        </div>
+                                    </div>
+                                </ds-card-subtitle>
+                            </div>
+                        </ds-card>
+                    </div>
+
+                    <div class="col-sm-6 col-md-12 col-lg-6">
+                        <!-- todo: policy color classes from ess.css -->
+                        <!-- ng-class="'policy-' + (($ctrl.timeOff.getPolicyIndex($ctrl.policy) % 4) + 1)" -->
+                        <ds-card mode="callout" color="info" >
+                            <div ds-card-icon size="lg">event</div>
+                            <div ds-card-header>
+                                <ds-card-inline-content>
+                                    <div class="text-color-fade flex-1-0-100">
+                                        Requested Hours
+                                    </div>
+                                    <div class="ds-card-title-callout flex-1-0-100">
+                                        {{ policy?.pendingUnits }}
+                                    </div>
+                                </ds-card-inline-content>
+                                <ds-card-subtitle>
+                                    <div class="card-data bordered">
+                                        <div class="item">
+                                            <label>Pending Requests:</label>
+                                            {{ policy?.pendingRequest }}
+                                        </div>
+                                    </div>
+                                </ds-card-subtitle>
+                            </div>
+                        </ds-card>
+                    </div>
+                </div>
+            </div>
+        </ds-card-content>
+    </ds-card>
+
+
+    <!-- PTO ACTIVITY TABLE -->
+    <ds-card>
+        <ds-card-header>
+          <ds-card-sub-header-title>
+            {{ policy?.policyName }} Activity
+          </ds-card-sub-header-title>
+          <ds-card-title-action>
+            <mat-menu #downloadMenu="matMenu">
+                <a mat-menu-item target="_parent" [href]="goToReport(1)">
+                    Request History
+                </a>
+                <a mat-menu-item target="_parent" [href]="goToReport(2)">
+                    Benefits History
+                </a>
+            </mat-menu>
+            <button type="button" class="btn btn-outline-primary dropdown-toggle" [matMenuTriggerFor]="downloadMenu">
+                <i class="material-icons mr-1">get_app</i>
+                Download Activity
+            </button>
+          </ds-card-title-action>
+        </ds-card-header>
+        <ds-card-content>
+            <div class="card card-table" *ngIf="policy?.activity?.length > 0">
+                <table class="table">
+                    <thead class="table-header">
+                        <tr>
+                            <th>Request Dates</th>
+                            <th>Request Type</th>
+                            <th>Status</th>
+                            <th class="table-text-right">Amount</th>
+                            <th class="table-text-right">Balance After</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let event of policy?.activity">
+                            <td [class.clickable]="isRequestEvent(event)">
+                                <button type="button" class="btn btn-anchor text-left" *ngIf="isRequestEvent(event)"
+                                    (click)="editTimeOffEvent(event)">
+                                    {{ friendlyDuration(event) }}
+                                </button>
+                                <span
+                                    *ngIf="!isRequestEvent(event)">{{ friendlyDuration(event) }}</span>
+                                <button class="btn btn-icon" *ngIf="isRequestEvent(event) && canRequestTimeOff && event?.notes?.requestorNotes != null"
+                                    [matTooltip]="event?.notes?.requestorNotes">
+                                    <mat-icon>feedback</mat-icon>
+                                </button>
+                            </td>
+                            <td>
+                                {{ getEventType(event)?.name }}
+                            </td>
+                            <td>
+                                <span class="badge badge-pill"
+                                    [ngClass]="{'badge-warning': isPending(event),
+                                        'badge-danger': isRejected(event),
+                                        'badge-disabled': isCancelled(event),
+                                        'badge-success': isApproved(event),
+                                        'badge-info': isProjected(event) }">
+                                    {{ getEventStatusType(event)?.name }}
+                                </span>
+                                <button class="btn btn-icon" *ngIf="isRequestEvent(event) && event?.notes?.approverNotes != null"
+                                    [matTooltip]="event?.notes?.approverNotes">
+                                    <mat-icon>feedback</mat-icon>
+                                </button>
+                            </td>
+                            <td class="table-text-right"
+                                [ngClass]="{'text-negative': isNegativeAward(event), 'text-positive': isPositiveAward(event)}">
+                                {{ event?.amount | number }}
+                            </td>
+                            <td class="table-text-right">{{ event?.balanceAfter | number }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="empty-state" *ngIf="!policy?.activity || !policy?.activity?.length">
+                There is no upcoming activity to display.
+            </div>
+        </ds-card-content>
+    </ds-card>
+</ng-container>

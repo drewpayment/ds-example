@@ -1,0 +1,83 @@
+<ds-card color="primary" border="top">
+     <div ds-card-header>
+        <ds-card-header-title>
+            Review Profiles
+        </ds-card-header-title>
+        <ds-card-title-right-content>
+          <button type="button" class="btn btn-outline-primary" (click)="viewArchived()" *ngIf="!isArchivedView">
+              View Archive
+          </button>   
+        </ds-card-title-right-content>
+        <ds-card-title-action>
+          <button type="button" class="btn btn-outline-primary" (click)="viewCurrent()" *ngIf="isArchivedView">
+              View Active
+          </button>
+          <button type="button" class="btn btn-primary" (click)="addProfile()" *ngIf="!isArchivedView">
+              <i class="material-icons">add</i>
+              Profile
+          </button>
+        </ds-card-title-action>
+        <ds-card-subtitle>
+          <div class="instructional-title-text">
+              A Review Profile is a template that contains employee and supervisor evaluations, pay requests, and scoring. 
+              Each section on the Review Profile is adaptable to fit your company's needs. Review Profiles are then applied to a Review Cycle.
+          </div>
+      </ds-card-subtitle>
+     </div>
+     <div ds-card-content>
+        <div *ngIf="hasReviewProfiles || isLoading; else noProfiles">
+            <div class="row">
+                <div class="col-md-3" *ngFor="let profile of reviewProfiles">
+                    <ds-card hover="true" 
+                        mode="widget-nobody" x-align="center" 
+                        class="hoverable card-height-fix-sm clickable"
+                        (click)="editProfile(profile)"
+                        (mouseover)="profile.hovered = true" 
+                        (mouseout)="profile.hovered = false"
+                    >
+                        <div ds-card-header>
+                            <ds-card-subtitle>
+                                <div class="split-content">
+                                    <div class="top">
+                                        <div class="object-card-avatar">
+                                            <mat-icon class="avatar" [class.text-info]="profile.hovered">description</mat-icon>
+                                        </div>
+                                        <div class="font-lg text-center mb-4">
+                                            {{ profile.name }}
+                                        </div>
+                                    </div>
+                                </div>                        
+                            </ds-card-subtitle>
+                            <ds-card-title-action (click)="$event.stopPropagation()">
+                                <mat-menu #toggleMenu="matMenu">
+                                    <button mat-menu-item type="button" (click)="editProfile(profile)">Edit</button>
+                                    <button *ngIf="!isArchivedView; else restoreProfile" mat-menu-item type="button" (click)="archive(profile)">Archive</button>
+                                    <ng-template #restoreProfile>
+                                        <button mat-menu-item type="button" (click)="restore(profile)">Restore</button>
+                                    </ng-template>
+                                </mat-menu>
+                                <button [matMenuTriggerFor]="toggleMenu" type="button" class="btn btn-icon nested-cog hover-show">
+                                    <mat-icon>more_vert</mat-icon>
+                                </button>
+                            </ds-card-title-action>
+                        </div>
+                    </ds-card>
+                </div>
+            </div>
+        </div>
+        <ng-template #noProfiles>
+            <ng-container *ngIf="!isArchivedView, else noArchivedProfiles">
+                <div class="empty-state">
+                    There are no review profiles to display.  Click the "+ Profile" button to add one.
+                </div>
+            </ng-container>
+        </ng-template>       
+        <ng-template #noArchivedProfiles>
+            <div class="empty-state-cycle warning">
+                <i class="material-icons">info</i>
+                <div class="title">No review history found.</div>
+                <p>Archived profiles will show up here once archived.</p>
+            </div>
+        </ng-template> 
+     </div>
+</ds-card>

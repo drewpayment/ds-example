@@ -1,0 +1,456 @@
+﻿<div ng-show="isLoading">I9 Loading...</div>
+<div ng-show="isLoaded">
+    <div class="ess-container">
+        <!--White box background-->
+        <div class="panel clearfix">
+            <div class="panel-body">
+                <!--  Header-->
+                <div class="d-flex flex-wrap on-header">
+                    <div class="circle-sm on-pager">{{circleNumber}}</div>
+                        <div class="top-constant">
+                            <div>
+                                <h1 class="display-inline">
+                                    I-9 Employment Eligibility Status
+                                </h1>
+                            </div>
+                            <p class="text-muted">
+                                Select the status that best describes your current employment eligibility status.
+                            </p>
+                        </div>
+                </div>
+
+                <form name="frmi9" novalidate>
+                    <div>
+                        <!--Image options with text Status:All-->
+
+                        <div>
+                            <p>
+                                <b>I am aware that federal law provides for imprisonment and/or fines for 
+                                false statements or use of false documents in connection with the completion of this form.</b>
+                              </p>
+                            <p>
+                                <b>I attest, under penalty of perjury, that I am (select one of the following) </b>
+                            </p>
+                        </div>
+
+                        <div class="row">
+
+
+                             <!--ng-class="{ 'required-field' : employeeI9.i9EligibilityStatusId == 0 && (isSoftWarned || !isCompleted)}"-->
+
+                            <div class="col-sm-3 text-center clickable" ng-click="setEligStatus(1);">
+                                <img width="40px" ng-hide="employeeI9.i9EligibilityStatusId == 1" src="Images/I9-US.png" />
+                                <img width="40px" ng-show="employeeI9.i9EligibilityStatusId == 1" src="Images/I9-US_selected.png" />
+                                <p class="text-center">A citizen in the United States</p>
+                            </div>
+                            <div class="col-sm-3 text-center clickable" ng-click="setEligStatus(2);">
+                                <img width="40px" ng-hide="employeeI9.i9EligibilityStatusId == 2" src="Images/I9-National.png" />
+                                <img width="40px" ng-show="employeeI9.i9EligibilityStatusId == 2" src="Images/I9-National_selected.png" />
+                                <p>A noncitizen national of the U.S. </p>
+                            </div>
+                            <div class="col-sm-3 text-center clickable" ng-click="setEligStatus(3);">
+                                <img width="40px" ng-hide="employeeI9.i9EligibilityStatusId == 3" src="Images/I9-Resident.png" />
+                                <img width="40px" ng-show="employeeI9.i9EligibilityStatusId == 3" src="Images/I9-Resident_selected.png" />
+                                <p>A lawful permanent resident </p>
+                            </div>
+                            <div class="col-sm-3 text-center clickable" ng-click="setEligStatus(4);">
+                                <img width="40px" ng-hide="employeeI9.i9EligibilityStatusId == 4" src="Images/I9-Alien.png" />
+                                <img width="40px" ng-show="employeeI9.i9EligibilityStatusId == 4" src="Images/I9-Alien_selected.png" />
+                                <p>An alien authorized to work </p>
+                            </div>
+                        </div>
+                        <div ng-show="employeeI9.i9EligibilityStatusId >0">
+                            <div class="alert alert-info col-sm-12">
+                               <p ng-show="employeeI9.i9EligibilityStatusId ==1">
+                                   <i class="icon-info-sign"></i> A person born or naturalized in the United States
+                                </p>
+                                <p ng-show="employeeI9.i9EligibilityStatusId ==2">
+                                    <i class="icon-info-sign"></i> Noncitizen nationals of the United States are persons born in American Samoa, certain former citizens of the former Trust Territory of the Pacific
+                                    Islands, and certain children of noncitizen nationals born abroad.
+                                </p>
+                                <p ng-show="employeeI9.i9EligibilityStatusId ==3">
+                                    <i class="icon-info-sign"></i> A lawful permanent resident is any person who is not a U.S. citizen and who resides in the United States under legally recognized and lawfully recorded permanent
+                                    residence as an immigrant. The term "lawful permanent resident" includes conditional residents.
+                                </p>
+                                <div ng-show="employeeI9.i9EligibilityStatusId ==4">
+                                    <p><i class="icon-info-sign"></i> If you are not a citizen or national of the United States or a lawful permanent resident, but are authorized to work in the United States.</p>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" >
+                            <div class="col-sm-6">
+                                <label>Please supply other last names used (if any).</label>
+                            </div>
+                            <div class="col-sm-6 form-group">
+                                <input name="otherName" type="text"
+                                       class="form-control" maxlength="25" placeholder="{{lblOtherNameNA}}"
+                                       ng-model="employeeI9.otherName" />
+                            </div>
+                        </div>
+                        <div ng-show="employeeI9.i9EligibilityStatusId ==4" class="row">
+                            <div class="col-sm-6">
+                                <label ng-show="employeeI9.i9EligibilityStatusId ==4">I am authorized to work until</label>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div id="WorkUntilDate" class="input-group date" ng-model="employeeI9.authorizedWorkDate" ng-disabled="employeeI9.authorizationDoesNotExpire" ds-datepicker>
+                                    <input name="AuthorizedWorkDate" type="text"
+                                           class="form-control"
+                                           size="10"
+                                           ng-model="employeeI9.authorizedWorkDate"
+                                           placeholder="mm/dd/yyyy"
+                                           ds-mask="00/00/0000"
+                                           ng-class="{ 'required-field' : frmi9.AuthorizedWorkDate.$invalid && (isSoftWarned || !isCompleted)}"
+                                           ng-required="employeeI9.i9EligibilityStatusId ==4 && !employeeI9.authorizationDoesNotExpire">
+                                    <span class="input-group-addon add-on" ng-disabled="employeeI9.authorizationDoesNotExpire">
+                                        <i data-time-icon="icon-time" class="fa fa-calendar icon-calendar"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div ng-show="employeeI9.i9EligibilityStatusId ==4" class="row">
+                            <div class="col-sm-10 form-group">
+                                <div class="on-checkbox" ng-class="{ 'required-field' : frmi9.AuthorizationDoesNotExpire.$invalid && (isSoftWarned || !isCompleted)}">
+                                    <input name="AuthorizationDoesNotExpire" type="checkbox"
+                                        id="workExpires" class="form-control-static"
+                                        ng-model="employeeI9.authorizationDoesNotExpire" />
+                                    <label class="form-control-static form-label">
+                                        My employment authorization does not expire
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Alien Registratrion # Status:Perm Resident-->
+                        <div ng-show="employeeI9.i9EligibilityStatusId == 3" class="row">
+                            <div class="col-sm-6">
+                                <label>Alien Registration Number/USCIS Number</label>
+                            </div>
+                            <div class="col-sm-6 form-group">
+                                <input name="USCISNumber" type="text"
+                                       class="form-control" ds-mask="000000000" maxlength="9" placeholder=""
+                                       ng-model="employeeI9.permResidentUscisNumber"
+                                       ng-class="{ 'required-field' : frmi9.USCISNumber.$invalid && (isSoftWarned || !isCompleted)}"
+                                       ng-required="employeeI9.i9EligibilityStatusId ==3">
+                            </div>
+                        </div>
+
+                        <!--Alien Registratrion # Status:Alien-->
+                        <div ng-show="employeeI9.i9EligibilityStatusId == 4" class="row">
+                            <div class="col-sm-12">
+                                <label>Registration or Admission Number</label>
+                            </div>
+                        </div>
+
+                        <div ng-show="employeeI9.i9EligibilityStatusId ==4" class="row">
+                            <div class="col-sm-8 form-group">
+                                <select name="AlienAdmissionNumberType"
+                                        class="form-control"
+                                        ng-model="employeeI9.alienAdmissionNumberType"
+                                        data-ng-options="elm.id as elm.desc for elm in alienAdmissionNumberTypes"
+                                        ng-required="employeeI9.i9EligibilityStatusId ==4"
+                                        ng-class="{ 'required-field' : frmi9.AlienAdmissionNumberType.$invalid && (isSoftWarned || !isCompleted)}">
+                                    <!--<option value="1"> Alien Registration Number/USCIS Number </option>
+                                    <option value="2"> I-94 Admission Number </option>
+                                    <option value="3"> Foreign Passport Number </option>-->
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+                                <input type="text"
+                                       name="AlienAdmissionNumber"
+                                       class="form-control" ds-mask="00000000000"
+                                       maxlength="11" placeholder=""
+                                       ng-model="employeeI9.alienAdmissionNumber"
+                                       ng-required="employeeI9.i9EligibilityStatusId ==4 && employeeI9.alienAdmissionNumberType != 3"
+                                       ng-class="{ 'required-field' : frmi9.AlienAdmissionNumber.$invalid && (isSoftWarned || !isCompleted)}"
+                                       ng-hide="employeeI9.alienAdmissionNumberType == 3">
+                            </div>
+                        </div>
+
+                        <!-- Admission # from customs  Status: Alien-->
+                        <!--<div ng-show="employeeI9.i9EligibilityStatusId ==4 && employeeI9.alienAdmissionNumberType == 2" class="row pt-sm">
+                            <div class="col-sm-8">
+                                <p>
+                                    <b>Did you receive your admission number from the U.S. Customs and Border Protection (CBP) in connection with your arrival in the United States? </b>
+                                </p>
+                                <ds-inline-validated-radio label-class="display: none"
+                                                           input-div-class="col-sm-5"
+                                                           frm-obj="frmi9"
+                                                           label-text=""
+                                                           input-name="inputAdimissionnumber"
+                                                           ds-radio-options="YesNoPairs"
+                                                           ds-model="employeeI9.admissionNumberFromCBP"></ds-inline-validated-radio>
+                            </div>
+                        </div>-->
+                        <div ng-show="employeeI9.i9EligibilityStatusId ==4 && employeeI9.alienAdmissionNumberType == 3 &&  employeeI9.alienAdmissionNumberType == 3" class="row">
+                            <div class="col-sm-6">
+                                <p>
+                                    <b>Foreign Passport Number</b>
+                                </p>
+
+                                <div class="form-group">
+                                    <input name="ForeignPassportNumber" type="text"
+                                           class="form-control" ng-model="employeeI9.foreignPassportNumber"
+                                           ds-mask="AAAAAAAAAAAA" maxlength="12"
+                                           ng-class="{ 'required-field' : frmi9.ForeignPassportNumber.$invalid && (isSoftWarned || !isCompleted)}"
+                                           ng-required="employeeI9.i9EligibilityStatusId ==4 && employeeI9.alienAdmissionNumberType == 3"
+                                           id="passportNumber">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <p>
+                                    <b>Issuing Country</b>
+                                </p>
+
+                                <div>
+                                    <select name="PassportCountryId" class="form-control"
+                                            data-ng-model="employeeI9.passportCountryId"
+                                            data-ng-options="elm.countryId as elm.name for elm in countries"
+                                            ng-class="{ 'required-field' : frmi9.PassportCountryId.$invalid && (isSoftWarned || !isCompleted)}"
+                                            ng-required="employeeI9.i9EligibilityStatusId ==4 && employeeI9.alienAdmissionNumberType == 3"></select>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+
+
+
+
+                        <!--Translator Yes/No Status:All-->
+                        <div class="row pt-sm">
+                            <div class="col-sm-12">
+                                <p>
+                                    <b>Did a preparer or a translator assist you with completing your I-9 information? </b>
+                                </p>
+                                <ds-inline-validated-radio label-class="d-none"
+                                                           input-div-class=""
+                                                           frm-obj="frmi9"
+                                                           label-text=""
+                                                           input-name="inputPreparer"
+                                                           ds-radio-options="YesNoPairs"
+                                                           ds-model="employeeI9.usedATranslator"></ds-inline-validated-radio>
+                            </div>
+                        </div>
+                        <div ng-if="employeeI9.usedATranslator">
+                            <div class="row">
+                                <hr class="col-sm-8" />
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-7 text-justify">
+                                    <h2><b>Translator Information</b></h2>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="on-checkbox form-group">
+                                        <span>
+                                            <input type="checkbox" id="chkTranslatorAccuracy" ng-model="employeeI9.translatorSigned" class="form-control-static" />
+                                        </span>
+                                        <label for="chkTranslatorAccuracy">
+                                            I attest, under penalty of perjury, that I have assisted in the completion of this form and that to the best of my knowledge the information is true and correct.
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 col-sm-6 form-group">
+                                    <label class="">First Name</label>
+                                    <input type="text"
+                                           name="FirstName"
+                                           class="form-control capitalize" maxlength="25" placeholder="First Name"
+                                           ng-model="employeeI9.translator.firstName"
+                                           ng-class="{ 'required-field' : frmi9.FirstName.$invalid && (isSoftWarned || !isCompleted)}"
+                                           ng-required="employeeI9.usedATranslator">
+                                </div>
+                                <div class="col-lg-4 col-sm-6 form-group">
+                                    <label class="">Last Name</label>
+                                    <input type="text"
+                                           name="LastName"
+                                           class="form-control capitalize" maxlength="25"
+                                           placeholder="Last Name"
+                                           ng-model="employeeI9.translator.lastName"
+                                           ng-class="{ 'required-field' : frmi9.LastName.$invalid && (isSoftWarned || !isCompleted)}"
+                                           ng-required="employeeI9.usedATranslator">
+                                </div>
+                                <div class="col-lg-4 col-sm-6 form-group">
+                                    <label class="">Date</label>
+                                    <div id="Div1" class="input-group" ng-model="employeeI9.translatedDate" ds-datepicker>
+                                        <input type="text"
+                                                name="TranslatedDate"
+                                                class="form-control" ng-model="employeeI9.translatedDate"
+                                                placeholder="mm/dd/yyyy"
+                                                ng-class="{ 'required-field' : frmi9.TranslatedDate.$invalid && (isSoftWarned || !isCompleted)}"
+                                                ng-required="employeeI9.usedATranslator">
+                                        <span class="input-group-addon add-on">
+                                            <i data-time-icon="icon-time" class="fa fa-calendar icon-calendar"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 col-sm-12 form-group">
+                                    <label class="pt-xs">Home Address</label>
+                                    <input type="text"
+                                           name="HomeAddress"
+                                           class="form-control capitalize" maxlength="50"
+                                           ng-model="employeeI9.translatorAddress.addressLine1"
+                                           placeholder="Address"
+                                           ng-class="{ 'required-field' : frmi9.HomeAddress.$invalid && (isSoftWarned || !isCompleted)}"
+                                           ng-required="employeeI9.usedATranslator">
+                                </div>
+                            </div>
+
+                            <div class= "row">
+                                <div class="col-lg-4 col-sm-4 form-group">
+                                    <label class="pt-xs">City</label>
+                                    <input type="text"
+                                           name="City"
+                                           class="form-control capitalize" maxlength="25" placeholder="City"
+                                           ng-model="employeeI9.translatorAddress.city"
+                                           ng-class="{ 'required-field' : frmi9.City.$invalid && (isSoftWarned || !isCompleted)}"
+                                           ng-required="employeeI9.usedATranslator">
+
+                                </div>
+
+
+
+                                <div class="col-lg-4 col-sm-4 form-group">
+                                    <label class="pt-xs">State</label>
+                                    <select name="State" class="form-control"
+                                            ng-disabled="stateDisabled"
+                                            data-ng-model="employeeI9.translatorAddress.stateId"
+
+                                            data-ng-options="elm.stateId as elm.name for elm in translatorStates"
+                                            ng-class="{ 'required-field' : frmi9.State.$invalid && (isSoftWarned || !isCompleted)}"
+                                            ng-required="employeeI9.usedATranslator  && translatorNonUs"></select>
+
+                                </div>
+                                <div class="col-lg-4 col-sm-4 form-group">
+                                    <label class="pt-xs">Zip/Postal</label>
+
+                                    <input name="ZipWithMask"
+                                           type="text"
+                                           ng-if="!translatorNonUs"
+                                           class="form-control" ds-mask="00000-0000" placeholder="Zip"
+                                           ng-model="employeeI9.translatorAddress.zipCode"
+                                           ng-required="true"
+                                           ng-class="{ 'required-field' : frmi9.ZipWithMask.$invalid && (isSoftWarned || !isCompleted)}">
+                                    <input name="Zip"
+                                           type="text" maxlength="10"
+                                           ng-if="translatorNonUs"
+                                           class="form-control" placeholder="Zip"
+                                           ng-model="employeeI9.translatorAddress.zipCode"
+                                           ng-required="true"
+                                           ng-class="{ 'required-field' : frmi9.Zip.$invalid && (isSoftWarned || !isCompleted)}">
+
+                                    <!--<input type="text" name="Zip" class="form-control"
+                                           ds-mask="00000-0000"
+                                           ng-model="employeeI9.translatorAddress.zipCode"
+                                           placeholder="Zip/Postal"
+                                           ng-class="{ 'required-field' : frmi9.Zip.$invalid && (isSoftWarned || !isCompleted)}"
+                                           ng-required="employeeI9.usedATranslator">-->
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 col-sm-8">
+                                    <div ng-show="translatorNonUs" class="form-group">
+                                        <label class="pt-xs">
+                                            Country
+                                        </label>
+                                        <select name="Country" class="form-control"
+                                                data-ng-model="employeeI9.translatorAddress.countryId"
+                                                ng-change="loadTranslatorStates()"
+                                                data-ng-options="elm.countryId as elm.name for elm in countries"
+                                                ng-class="{ 'required-field' : frmi9.Country.$invalid && (isSoftWarned || !isCompleted)}"
+                                                ng-required="employeeI9.usedATranslator && translatorNonUs">
+
+                                        </select>
+
+                                    </div>
+                                    <div class="on-checkbox">
+                                        <span>
+                                            <input type="checkbox" id="chkTranslatorNonUS" class="form-control-static" ng-click="toggleTranslatorAddress()" ng-model="translatorNonUs" /><!--//need Model-->
+                                        </span>
+                                        <label for="chkTranslatorNonUS">
+                                            I do not live in the United States.
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        <!--Blue information box Status:All-->
+                        <!--<div class="row col-sm-8">
+                            <div class="alert alert-info ">
+                                <p>
+                                    <i class="icon-info-sign"></i>
+                                    To verify your I-9 employment eligibility status, please bring at least <b>1 document from list A, or 2 documents from lists B and C on your first day.</b>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- List A documents Status:ALL
+                        <div class="row col-sm-8">
+                            <p>
+                                <b>Commonly Used List A Documents</b>
+                            </p>
+                            <p class="text-muted">U.S. Passport or U.S. Passport Card, Permanent Resident Card, or Alien Registration Receipt Card (Form I-551), Foreign passport that contains a temporary I-551 stamp.</p>
+                            <p class="text-primary" ng-click="showListA =!showListA">
+                                Show More List A Documents <i class="icon-caret-down"></i>
+                            </p> <ul class="col-lg-offset-1" style="list-style-type: disc" ng-show="showListA">
+                                <div ng-repeat="doc in I9DocumentList  | filter:{category:'A'}">
+
+                                    <li>{{doc.name}}</li>
+
+                                </div> </ul>
+                        </div>
+                        <hr class="col-sm-8" />
+                        <!-- List B documents Status:ALL
+                        <div class="row col-sm-8">
+                            <p><b>Commonly Used List B Documents</b></p>
+                            <p class="text-muted">Driver's license or ID card with photo or identifying info, School ID card with a photo, Voter's registration card.</p>
+                            <p class="text-primary" ng-click="showListB =!showListB">Show More List B Documents <i class="icon-caret-down"></i>
+                            </p>
+                            <ul class="col-lg-offset-1" style="list-style-type: disc" ng-show="showListB">
+                                <div ng-repeat="doc in I9DocumentList  | filter:{category:'B'}">
+
+                                    <li>{{doc.name}}</li>
+
+                                </div> </ul>
+                            <br/>
+                        </div>
+
+                        <!-- List B documents Status:ALL
+                        <div class="row col-sm-8">
+                            <p>
+                                <b>Commonly Used List C Documents</b>
+                            </p>
+                            <p class="text-muted">Social Security Account Number card, Original or certified copy of birth certificate issued by a state, county, municipal authority, or territory of the United States.</p>
+                            <p class="text-primary" ng-click="showListC =!showListC">
+                                Show More List C Documents <i class="icon-caret-down"></i>
+                            </p>
+                            <ul class="col-lg-offset-1" style="list-style-type: disc" ng-show="showListC">
+                                <div ng-repeat="doc in I9DocumentList  | filter:{category:'C'}">
+
+                                    <li>{{doc.name}}</li>
+
+                                </div> </ul>
+                        </div>-->
+                    </div>
+                </form>
+                <!--Footer with buttons-->
+                <hr class="col-sm-12" />
+
+                <ds-nav-workflow-footer workflow-Hide-Next="false" workflow-Hide-Prev="false"
+                    my-Workflow="myWorkflow"
+                    on-save="$ctrl.clickSavePageData($direction)" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--col-md-9-->

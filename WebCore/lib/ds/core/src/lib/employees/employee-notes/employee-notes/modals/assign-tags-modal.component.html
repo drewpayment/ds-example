@@ -1,0 +1,35 @@
+<div mat-dialog-header class="ds-dialog-header">
+  <h2 class="dialog-title">Assign Tag</h2>
+  <button type="button" class="close" (click)="close()">
+      <i class="material-icons">clear</i>
+  </button>
+</div>
+<div mat-dialog-content>
+  <div class="form-group" [formGroup]="tagsFormGroup">
+      <label class="form-control-label">Tags <span class="instruction-text">Press enter to add a new tag.</span></label>
+      <mat-form-field class="form-control">
+        <mat-chip-list #chipList>
+          <mat-chip *ngFor="let tag of selectedNoteTags" [removable]="true" (removed)="removeNoteTag(tag)">{{tag.tagName}}<mat-icon
+            matChipRemove>clear</mat-icon>
+          </mat-chip>
+          <input type="text" #noteTagsInput
+            [matChipInputFor]="chipList"
+            [matAutocomplete]="auto"
+            formControlName="clientNoteTags"
+            (keyup.enter)="addNewTag()"
+            maxlength="25"
+			cdkFocusInitial
+            >
+        </mat-chip-list>
+      </mat-form-field>
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="addNoteTag($event)">
+        <mat-option *ngFor="let tag of filteredNoteTags | async" [value]="tag">
+          {{tag.tagName}}
+        </mat-option>
+      </mat-autocomplete>
+  </div>
+</div>
+<div mat-dialog-actions>
+  <button type="button" class="btn btn-primary" (click)="saveTags()">Save</button>
+  <button type="button" class="btn btn-cancel" (click)="close()">Cancel</button>
+</div>

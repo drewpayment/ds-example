@@ -1,0 +1,64 @@
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600&display=swap');
+@import '~@angular/material/theming';
+@import './ds-mobile-variables';
+@import './ds-mobile-typography';
+@import './ds-mobile-layout';
+@import './ds-mobile-components';
+@import './ds-mobile-utilities';
+@import './ds-mobile-dialog';
+
+@include                    mat-core($ds-typography);
+$ds-mobile-app-primary:     mat-palette($ds-mobile-primary);
+$ds-mobile-app-accent:      mat-palette($ds-mobile-teal);
+$ds-mobile-app-warn:        mat-palette($ds-mobile-red);
+$ds-mobile-app-success:     mat-palette($ds-mobile-green);
+$ds-mobile-app-theme:       mat-light-theme($ds-mobile-app-primary, $ds-mobile-app-accent, $ds-mobile-app-warn);
+
+//   Standard Component Import
+     @include mat-core-theme($ds-mobile-app-theme);
+
+//   Available
+    @include mat-autocomplete-theme($ds-mobile-app-theme);
+//   @include mat-badge-theme($ds-mobile-app-theme);
+//   @include mat-bottom-sheet-theme($ds-mobile-app-theme);
+     @include mat-button-theme($ds-mobile-app-theme);
+     @include mat-button-toggle-theme($ds-mobile-app-theme);
+     @include mat-card-theme($ds-mobile-app-theme);
+     @include mat-checkbox-theme($ds-mobile-app-theme);
+     @include mat-chips-theme($ds-mobile-app-theme);
+     @include mat-datepicker-theme($ds-mobile-app-theme);
+     @include mat-dialog-theme($ds-mobile-app-theme); //Included in a custom mixin
+//   @include mat-divider-theme($ds-mobile-app-theme);
+//   @include mat-expansion-panel-theme($ds-mobile-app-theme);
+     @include mat-form-field-theme($ds-mobile-app-theme);
+//   @include mat-grid-list-theme($ds-mobile-app-theme);
+     @include mat-icon-theme($ds-mobile-app-theme);
+     @include mat-input-theme($ds-mobile-app-theme);
+     @include mat-list-theme($ds-mobile-app-theme);
+//   @include mat-menu-theme($ds-mobile-app-theme);
+//   @include mat-paginator-theme($ds-mobile-app-theme);
+     @include mat-progress-bar-theme($ds-mobile-app-theme);
+     @include mat-progress-spinner-theme($ds-mobile-app-theme);
+     @include mat-radio-theme($ds-mobile-app-theme);
+     @include mat-select-theme($ds-mobile-app-theme);
+     @include mat-sidenav-theme($ds-mobile-app-theme);
+//   @include mat-slide-toggle-theme($ds-mobile-app-theme);
+//   @include mat-slider-theme($ds-mobile-app-theme);
+     @include mat-stepper-theme($ds-mobile-app-theme);
+//   @include mat-sort-theme($ds-mobile-app-theme);
+//   @include mat-tabs-theme($ds-mobile-app-theme);
+     @include mat-toolbar-theme($ds-mobile-app-theme);
+//   @include mat-tooltip-theme($ds-mobile-app-theme);
+//   @include mat-tree-theme($ds-mobile-app-theme);
+     @include mat-snack-bar-theme($ds-mobile-app-theme);
+
+//   Custom
+     @include ds-mobile-mat-card-theme($ds-mobile-app-theme);
+     @include ds-mobile-mat-list-theme($ds-mobile-app-theme);
+     @include ds-mobile-mat-button-theme($ds-mobile-app-theme);
+     @include ds-mobile-mat-button-toggle-theme($ds-mobile-app-theme);
+     @include ds-mobile-table-theme($ds-mobile-app-theme);
+     @include ds-mobile-checkbox-theme($ds-mobile-app-theme);
+     @include ds-mobile-dialog-theme($ds-mobile-app-theme);
+     @include ds-mobile-radio-theme($ds-mobile-app-theme);
+

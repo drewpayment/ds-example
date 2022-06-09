@@ -1,0 +1,87 @@
+﻿<div ng-show="!isFinalized" id="main-sidebar">
+    <ul id="profile-side-menu" class="onboarding-menu" style="width: auto">
+         <li ng-repeat="item in items">
+             <a ng-if="item.subMenus.length == 0 && !isFinalized" ui-sref="{{ item.getLinkToState() }}" ng-click="workflowMenuItemClicked(item)">
+                 <!-- Single Menu Item -->
+                 <div ng-switch="item.icon">
+                     <div ng-switch-when="CHECK" class="profile-side-menu__icon is-finished"><i class="fa fa-check"></i>
+                     </div>
+                     <div ng-switch-when="PAUSE" class="profile-side-menu__icon is-paused"><i class="fa fa-pencil"></i>
+                     </div>
+                     <div ng-switch-when="CIRCLE" class="profile-side-menu__icon is-unstarted"><i class="fa fa-ellipsis-h"></i>
+                     </div>
+                     <div ng-switch-default class="profile-side-menu__icon is-unstarted"><i class="fa fa-ellipsis-h"></i>
+                     </div>
+                     &nbsp;&nbsp;<span style="white-space:pre-wrap; word-wrap: break-word;">{{item.title}}</span>
+                 </div>
+             </a>
+
+             <!--<a ng-if="item.subMenus.length == 0 && isFinalized">
+                 
+                 <div class="profile-side-menu__icon is-finished">
+                     <i class="fa fa-check"></i>
+                 </div>
+                 &nbsp&nbsp{{item.title}}
+             </a>-->
+
+
+             <a ng-if="item.subMenus.length > 0 && !isFinalized" title="Contact Information | Emergency Contact | Dependents " ng-click="workflowItemSelect(item)">
+                 <!-- Master Menu Item -->
+                 <div style="display: flex;" ng-switch on="item.icon">
+                     <div ng-switch-when="CHECK" class="profile-side-menu__icon is-finished"><i class="fa fa-check"></i>
+                     </div>
+                     <div ng-switch-when="PAUSE" class="profile-side-menu__icon is-paused"><i class="fa fa-pencil"></i>
+                     </div>
+                     <div ng-switch-when="CIRCLE" class="profile-side-menu__icon is-unstarted"><i class="fa fa-ellipsis-h"></i>
+                     </div>
+                     <div ng-switch-default class="profile-side-menu__icon is-unstarted"><i class="fa fa-ellipsis-h"></i>
+                     </div>
+                     <div style="float: left; line-height: 2em; white-space:pre-wrap; word-wrap: break-word;">&nbsp&nbsp{{item.title}} </div>
+                     <div>
+                         &nbsp;<span class="caret" style="margin-top: 5px;"></span>
+                     </div>
+                 </div>
+             </a>
+
+             <!--<a ng-if="item.subMenus.length > 0 && isFinalized">
+                  Master Menu Item 
+                 <div style="display: flex;" ng-switch on="item.icon">
+                     <div class="profile-side-menu__icon is-finished">
+                         <i class="fa fa-check"></i>
+                     </div>
+                     <div style="float: left; line-height: 2em">&nbsp&nbsp{{item.title}} </div>
+                     <div>
+                         &nbsp;<span class="caret" style="margin-top: 5px;"></span>
+                     </div>
+                 </div>
+             </a>-->
+
+             <div ng-show="item.toggleState" style="background-color: #eeeeee;">
+                 <!-- Sub Menu Item -->
+                 <ul ng-if="item.subMenus  && !isFinalized" style="list-style-type: none; padding-top: 5px; padding-bottom: 5px">
+                     <li ng-repeat="submenu in item.subMenus" style="background-color: white;">
+                         <div style="display: flex; text-align: justify" ng-switch on="submenu.icon">
+                             <div ng-switch-when="CHECK" class="profile-side-menu__sub is-finished"><a style="font-weight: normal; white-space:pre-wrap; word-wrap: break-word;" ui-sref="{{ submenu.getLinkToState() }}" ng-click="workflowMenuItemClicked(item)">{{submenu.title}}</a>
+                             </div>
+                             <div ng-switch-when="PAUSE" class="profile-side-menu__sub is-paused"><a style="font-weight: normal; white-space:pre-wrap; word-wrap: break-word;" ui-sref="{{ submenu.getLinkToState() }}" ng-click="workflowMenuItemClicked(item)">{{submenu.title}}</a>
+                             </div>
+                             <div ng-switch-when="CIRCLE" class="profile-side-menu__sub is-unstarted"><a style="font-weight: normal; white-space:pre-wrap; word-wrap: break-word;" ui-sref="{{ submenu.getLinkToState() }}" ng-click="workflowMenuItemClicked(item)">{{submenu.title}}</a>
+                             </div>
+                             <div ng-switch-default class="profile-side-menu__sub is-unstarted"><a style="font-weight: normal; white-space:pre-wrap; word-wrap: break-word;" ui-sref="{{ submenu.getLinkToState() }}" ng-click="workflowMenuItemClicked(item)">{{submenu.title}}</a>
+                             </div>
+                         </div>
+                     </li>
+                 </ul>
+                 <!--<ul ng-if="item.subMenus  && isFinalized" style="list-style-type: none; padding-top: 5px; padding-bottom: 5px">
+                     <li ng-repeat="submenu in item.subMenus" style="background-color: white;">
+                         <div style="display: flex; text-align: justify" ng-switch on="submenu.icon">
+                             <div ng-switch-when="CIRCLE" class="profile-side-menu__sub is-unstarted">{{submenu.title}}</div>
+                         </div>
+                     </li>
+                 </ul>-->
+             </div>
+        </li>
+    </ul>
+</div>
+
+

@@ -1,0 +1,32 @@
+<h2 class="schedule-title">
+    <div class="empty-state" *ngIf="isLoading.hoursWorked">
+        <mat-spinner></mat-spinner>
+    </div>
+    <ng-container *ngIf="!isLoading.hoursWorked">
+        <!-- <span class="bold">Daily total: {{ scheduleDetailsDay.getHoursWorked().toFixed(2) }}</span> -->
+        <span class="bold">Daily total: {{ scheduleDetailsDay?.hoursWorked | number:'1.2-2' }}</span>
+        <span class="daily-total">hours</span>
+    </ng-container>
+</h2>
+
+<div class="empty-state" *ngIf="isLoading.inOutPunchPairs">
+    <mat-spinner></mat-spinner>
+</div>
+<mat-list class="mobile-nav-list no-padding" *ngIf="!isLoading.inOutPunchPairs">
+    <ng-container *ngFor="let pair of scheduleDetailsDay.getInOutPunchPairs()">
+        <mat-list-item>
+            <div class="in-out-punch-pair">
+                <div class="punch">
+                    <div class="badge success">in</div>
+                    <span class="time">{{ getPunchTimeString(pair[0]?.modifiedPunch) }}</span>
+                </div>
+                <div class="punch">
+                    <ng-container *ngIf="punchExists(pair[1])">
+                        <div class="badge success">out</div>
+                        <span class="time">{{ getPunchTimeString(pair[1]?.modifiedPunch) }}</span>
+                    </ng-container>
+                </div>
+            </div>
+        </mat-list-item>
+    </ng-container>
+</mat-list>

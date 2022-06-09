@@ -1,0 +1,74 @@
+<mat-dialog-header>
+    <h2 class="dialog-title">
+        Add {{routeText}}
+    </h2>
+    <button type="button" class="close" (click)="clear()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</mat-dialog-header>
+<mat-dialog-content [formGroup]="form">    
+    <div class="form-group" *ngIf="currentResource.resourceTypeId != 1">
+        <label class="form-control-label">URL</label>
+        <input type="text" formControlName="resourceURL"  class="form-control"
+                [class.is-invalid]=" (form.controls.resourceURL.touched || formSubmitted) && 
+                    (form.controls.resourceURL.errors?.required || form.controls.resourceURL.errors?.pattern)" >
+        <div class="invalid-feedback">
+            <span *ngIf="form.controls.resourceURL.errors?.required">Please enter a URL.</span>
+            <span *ngIf="form.controls.resourceURL.errors?.pattern">Please enter a valid URL.</span>
+        </div>
+    </div> 
+	<div class="form-group" *ngIf="currentResource.resourceTypeId == 1" [class.custom-validation]="formSubmitted && (!resourceFile||resourceFileTypeError)" >
+        <div class="file-input flex-nowrap">
+            <button type="button" class="btn btn-outline-primary" (click)="browseClicked()" >Browse</button>
+            <input name="resource"
+                class="d-none" id="resourceAdded" type="file" (change)="onChange($event)"> 
+            <div class="form-help-text" *ngIf="!resourceFile">Accepted file types include .pdf, .doc, .docx, .xlsx, .xls, .txt, .rtf<br/>
+                Max file size: 3mb</div>
+            <label class="form-control-label" *ngIf="resourceFile" >{{ (!resourceFile) ? '': resourceFile.name }}</label>
+        </div>
+        <div class="invalid-feedback">
+            <span *ngIf="!resourceFile && formSubmitted">Please select a resource.</span>
+            <span *ngIf="resourceFile && formSubmitted && resourceFileTypeError">The selected file type is not supported. Accepted file types include .pdf, .doc, .docx, .xlsx, .xls, .txt, .rtf</span>
+        </div>                
+    </div>
+    <div class="form-group">
+        <label class="form-control-label">Name</label>
+        <input type="text" formControlName="resourceName" class="form-control" maxlength="250" required
+                [class.is-invalid]="formSubmitted && (form.controls.resourceName.errors?.required)" >
+        <div class="invalid-feedback">
+            <span *ngIf="form.controls.resourceName.errors?.required">Please enter a name.</span>
+        </div>
+    </div>
+	<div class="form-group">
+        <label class="form-control-label">Security Level</label>
+        <select class="form-control custom-select"
+                formControlName="securityLevel"
+                (change)="setSecurityLevel()"
+                required>
+            <option *ngFor="let securityLvl of securityLevels" [value]="securityLvl.id">
+                {{securityLvl.desc}}
+            </option>
+        </select>
+    </div>
+    <div class="form-group" *ngIf="folders.length > 0">
+        <label class="form-control-label">Folder</label>
+        <select [class.is-invalid]="formSubmitted && (form.controls.destinationFolder.errors?.required)"
+                class="form-control custom-select"
+                formControlName="destinationFolder"
+                required>
+            <option class="text-muted" value=""></option>
+            <option *ngFor="let folder of folders" [value]="folder.companyResourceFolderId">
+                {{folder.description}}
+            </option>
+        </select>
+        <div class="invalid-feedback">
+            <span *ngIf="form.controls.destinationFolder.errors?.required">Please select a folder.</span>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+        <button type="button" class="btn btn-save"
+            (click)="save()" >Save</button>
+        <button type="button" class="btn btn-cancel" 
+            (click)="clear()" >Cancel</button>
+</mat-dialog-actions>

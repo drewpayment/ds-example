@@ -1,0 +1,137 @@
+<ds-employee-header (employeeNavigated)="switchEmployee()"></ds-employee-header>
+
+<ds-card color="secondary" border="top" mode="nobody">
+  <ds-card-header>
+    <ds-card-header-title>Dependents</ds-card-header-title>
+    <ds-card-subtitle>
+      <nav aria-label="breadcrumb" *ngIf="baseUrl">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a [href]="employeeListUrl">Employee List</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">
+            Dependents
+          </li>
+        </ol>
+      </nav>
+    </ds-card-subtitle>
+  </ds-card-header>
+</ds-card>
+<ds-card mode="noheader">
+  <ds-card-content>
+    <ng-container *ngIf="!isSupervisorOnHimself; else onHimself">
+      <ng-container *ngIf="!isLoading; else loadingScreen">
+        <mat-drawer-container hasBackdrop="true" (backdropClick)="clearDrawer()" [@changeDrawerHeightOnOpen]="activeId != 0">
+          <mat-drawer-content>  
+            <ds-card mode="widget-nobody" color="add" (click)="addDependent()" hover="true">
+              <div ds-card-icon>add</div>
+              <ds-card-header>
+                  <ds-card-widget-title>Add Dependent</ds-card-widget-title>
+              </ds-card-header>
+            </ds-card>	
+            <ng-container *ngFor="let dependent of dependentsList; let i = index;">
+              <ds-card *ngIf="dependent.employeeDependentId > 0" mode="widget-nobody" color="{{!dependent.isInactive ? 'info' : 'disabled'}}" (click)="toggleActiveDependent(dependent.employeeDependentId)" hover="true">
+                <div ds-card-icon>person</div>
+                <ds-card-header>
+                  <ds-card-widget-title>{{dependent.firstName}} {{dependent.lastName}} | <span class="widget-title-detail text-capitalize">{{(dependent.relationship ? dependent.relationship : 'Other')}}</span></ds-card-widget-title>
+                  <ds-card-title-right-content>
+                    <span class="badge badge-pill badge-disabled d-inline-block" *ngIf="!!dependent.isInactive">Inactive</span>
+                  </ds-card-title-right-content>
+                  <ds-card-title-action>
+                    <button [matMenuTriggerFor]="menu" class="btn btn-icon" type="button"
+                      (click)="$event.stopPropagation();cogClicked(dependent)">
+                      <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu" xPosition="before">
+                      <button type="button" mat-menu-item (click)="toggleActiveDependent(dependent.employeeDependentId)">Edit</button>
+                      <button type="button" mat-menu-item (click)="deleteDependentDialog(dependent)">Delete</button>
+                    </mat-menu>
+                  </ds-card-title-action>
+                  <ds-card-subtitle>
+                    <div class="row bordered-sm-layout">
+                      <div class="col-sm-6 col-xl-4 col-2xl-3 ds-border">
+                        <div class="card-data-grid">
+                          <ng-container *ngIf="showSSN && dependent.unmaskedSocialSecurityNumber">
+                            <div class="label">SSN</div>
+                            <div class="value">{{dependent.unmaskedSocialSecurityNumber}}</div>
+                          </ng-container>
+                          <ng-container *ngIf="dependent.birthDate">
+                            <div class="label">Birth Date</div>
+                            <div class="value">{{dependent.birthDate | date:'MM/dd/yyyy'}}</div>
+                          </ng-container>
+                          <ng-container>
+                            <div class="label">Gender</div> 
+                            <div class="value">{{(dependent.gender == '' || dependent.gender == ' ') ? 'Not Specified' : dependent.gender == 'M' ? 'Male' : 'Female' }}</div>
+                          </ng-container>
+                        </div>
+                      </div>
+                      <div class="col-auto">
+                        <div class="card-data-grid">
+                          <ng-container>
+                            <div class="label">Student</div>
+                            <div class="value">{{dependent.isAStudent ? 'Yes' : 'No'}}</div>
+                          </ng-container>
+                          <ng-container>
+                            <div class="label">Disability</div>
+                            <div class="value">{{dependent.hasADisability ? 'Yes' : 'No'}}</div>
+                          </ng-container>
+                          <ng-container>
+                            <div class="label">Tobacco Use</div> 
+                            <div class="value">{{dependent.tobaccoUser ? 'Yes' : 'No'}}</div>
+                          </ng-container>
+                        </div>
+                      </div>
+                    </div>    
+                    <ng-container *ngIf="dependent.comments">
+                      <hr/>
+                      <p class="mb-0">{{dependent.comments}}</p>
+                    </ng-container>                
+                  </ds-card-subtitle>
+                </ds-card-header>
+              </ds-card>
+            </ng-container>
+          </mat-drawer-content>
+          <mat-drawer (keydown.escape)="clearDrawer()" #drawer [mode]="over" position="end" [opened]="activeId != 0" [class.open]="activeId != 0" >
+            <ng-container *ngIf="activeDependent != null; else loadingScreen">
+              <ng-container *ngTemplateOutlet="cardDrawerContent;"></ng-container>
+            </ng-container>
+          </mat-drawer>
+        </mat-drawer-container>
+      </ng-container>
+    </ng-container>
+    <ng-template #cardDrawerContent>
+      <ds-employee-dependent-form [user]="userinfo" 
+          [employeeDependent]="activeDependent" 
+          (statusChange)="refresh($event)" 
+          [pageSubmitted]="submitted"
+          [isAdding]="isAdding"
+          class="h-100">
+      </ds-employee-dependent-form>
+    </ng-template>
+  </ds-card-content>
+</ds-card>
+
+<ng-template #loadingScreen>
+  <ds-loading-message></ds-loading-message>
+</ng-template>
+  
+<ng-template #onHimself>
+  <!-- ESS REDIRECT - SUPERVISOR VIEWING THEIR DEPENDENT INFO, isSupervisorOnHimself -->
+  <div class="row justify-content-center">
+    <div class="col-auto">
+      <div class="empty-state-cycle warning">
+        <mat-icon class="material-icons">warning</mat-icon>
+        <div class="title">
+          Your dependents are only available in ESS
+        </div>
+        <p>
+          Go to your ESS Profile to view and edit your dependents.
+        </p>
+        <a type="button" class="btn btn-primary" [href]="essProfile">
+          <mat-icon>account_circle</mat-icon>
+          My ESS
+        </a>
+      </div>
+    </div>
+  </div>
+</ng-template>

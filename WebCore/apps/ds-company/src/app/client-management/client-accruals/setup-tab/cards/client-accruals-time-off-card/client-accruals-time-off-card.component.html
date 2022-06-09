@@ -1,0 +1,168 @@
+<ng-template #loading>
+  <ds-loading-message></ds-loading-message>
+</ng-template>
+
+<!-- <ng-container *ngIf="!isLoading; else loading"> -->
+<ng-container *ngIf="{ dropdownLists: dropdownLists$|async } as data; else loading">
+  <ng-container [formGroup]="form">
+    <ng-container formGroupName="accrual">
+      <ds-card collapse="true" mode="card" [expanded]="form.get('accrual.isLeaveManagment')?.value">
+
+        <div ds-card-header>
+          <ds-card-sub-header-title>Time Off</ds-card-sub-header-title>
+          <ds-card-title-right-content>
+            <div class="form-group">
+              <label class="switch switch-default switch-pill switch-success switch-sm">
+                <input type="checkbox" class="switch-input" formControlName="isLeaveManagment" />
+                <span class="switch-label"></span>
+                <span class="switch-handle"></span>
+                <span class="ds-switch-off">Off</span>
+                <span class="ds-switch-on">On</span>
+              </label>
+            </div>
+          </ds-card-title-right-content>
+        </div>
+        <div ds-card-content>
+          <h3 class="form-group">Request Parameters</h3>
+          <!-- <ng-container *ngIf="{ dropdownLists: dropdownLists$|async } as data; else loading"> -->
+          <ng-container *ngIf="data?.dropdownLists?.companyAdmins != null; else loading">
+            <div class="row">
+              <div class="col-md-6 col-xl-3">
+                <div class="form-group">
+                  <label>Hours In Day</label>
+                  <input class="form-control" formControlName="hoursInDay" type="number" dsFormControlValidator />
+                  <div class="invalid-feedback">
+                    <span>Please enter a valid number.</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6 col-xl-3">
+                <label>Work Week</label>
+                <div class="form-group">
+                  <div class="form-group inline-radio">
+                    <div class="custom-control custom-radio custom-control-bg primary">
+                      <input id="allowWeekdaysInfoButton" type="radio" [value]="false" checked="checked"
+                        class="custom-control-input" formControlName="allowAllDays">
+                      <label class="custom-control-label" for="allowWeekdaysInfoButton">Weekdays</label>
+                      <div class="custom-bg"></div>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-bg primary">
+                      <input id="allowAllDaysInfoButton" type="radio" [value]="true" class="custom-control-input"
+                        formControlName="allowAllDays">
+                      <label class="custom-control-label" for="allowAllDaysInfoButton">All Days</label>
+                      <div class="custom-bg"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-4 col-xl-2">
+                <div class="form-group">
+                  <label>Minimum</label>
+                  <input class="form-control" formControlName="requestMinimum" type="number" />
+                </div>
+              </div>
+
+              <div class="col-md-4 col-xl-2">
+                <div class="form-group">
+                  <label>Maximum</label>
+                  <input class="form-control" formControlName="requestMaximum" type="number" />
+                </div>
+              </div>
+
+              <div class="col-md-4 col-xl-2">
+                <div class="form-group">
+                  <label>Increment</label>
+                  <input class="form-control" formControlName="requestIncrement" type="number" />
+                </div>
+              </div>
+
+              <div class="col-md-auto">
+                <div class="form-group">
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="enforceBalanceOption"
+                      formControlName="isLeaveManagementUseBalanceOption">
+                    <label class="custom-control-label" for="enforceBalanceOption">Enforce Balance Option</label>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <h3 class="form-group">Notifications <span class="form-help-text text-initial">Optional</span></h3>
+                <div class="row">
+                  <div class="col-lg-12 col-xl-8">
+                    <div class="form-group">
+                      <label>Administrator</label>
+                      <select class="form-control custom-select" formControlName="leaveManagmentAdministrator">
+                        <option value=""></option>
+                        <option *ngFor="let userType of data.dropdownLists.companyAdmins" [ngValue]="userType.userId">
+                          {{userType.lastName}}, {{userType.firstName}}</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="col-md-auto">
+                    <div class="form-group inline-xl-control">
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="emailSupervisorOnRequest"
+                          formControlName="isEmailSupervisorRequests">
+                        <label class="custom-control-label" for="emailSupervisorOnRequest">Email Supervisor On
+                          Request</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="row justify-content-between">
+                  <div class="col-auto">
+                    <h3 class="form-group">Real Time</h3>
+                  </div>
+                  <div class="col-auto">
+                    <label class="switch switch-default switch-pill switch-success switch-sm">
+                      <input type="checkbox" class="switch-input" aria-describedby="MyLabelName"
+                        formControlName='isRealTimeAccruals' />
+                      <span class="switch-label"></span>
+                      <span class="switch-handle"></span>
+                      <span class="ds-switch-off">Off</span>
+                      <span class="ds-switch-on">On</span>
+                    </label>
+                  </div>
+                </div>
+                <ng-container *ngIf="form.get('accrual.isRealTimeAccruals')?.value">
+                  <div class="row justify-content-between align-items-end">
+                    <div class="col-md-auto">
+                      <div class="form-group">
+                        <label class="form-control-label">Project Real Time Awards</label>
+                        <div class="input-with-button-group">
+                          <input type="number" class="form-control" formControlName="projectAmount">
+                          <mat-button-toggle-group formControlName="projectAmountType">
+                            <mat-button-toggle [value]='1'>M</mat-button-toggle>
+                            <mat-button-toggle [value]='2'>Y</mat-button-toggle>
+                          </mat-button-toggle-group>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-auto">
+                      <div class="form-group inline-md-control">
+                        <button type="button" class="btn btn-delete" (click)="deleteClientAccrualLeaveManagementPendingAwards()">Delete Pending Awards</button>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+
+
+      </ds-card>
+    </ng-container>
+
+  </ng-container>
+</ng-container>

@@ -1,0 +1,42 @@
+<ng-container *ngIf="data$ | async as data; else loading;">
+    <ng-container *ngIf="data?.empSections?.length > 0; else noData">
+        <div class="print-page">
+            <ds-payroll-request-report-header [headerData]="data.headerData"></ds-payroll-request-report-header>
+            <div *ngFor="let section of data.empSections">
+                <ds-payroll-request-emp-section [section]="section" [isScoringEnabled]="data.isScoringEnabled"></ds-payroll-request-emp-section>
+            </div>
+            <div class="print-header">
+                <div class="d-flex align-items-center justify-content-between">
+                    <h3>Total Payout
+                    </h3>
+                </div>
+            </div>
+            <div class="print-page-section-group">
+                <div class="row">
+                    <div class="col-md-12">
+                        <table>
+                            <tr>
+                                <td><span class="bold">Current monthly Base Pay</span></td>
+                                <td class="pl-1">: {{data.headerData.monthlyCostFrom | payrollRequestReportCurrency}}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="bold">New monthly Base Pay</span></td>
+                                <td class="pl-1">: {{data.headerData.monthlyCostTo | payrollRequestReportCurrency}}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="bold">Total Additional Earning Payout</span></td>
+                                <td class="pl-1">: {{data.headerData.additionalEarningsPayout  | payrollRequestReportCurrency}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+</ng-container>
+<ng-template #noData>
+    <div class="empty-state">No employees found that match filter criteria.</div>
+</ng-template>
+<ng-template #loading>
+    <div class="loading-message">Loading...</div>
+</ng-template>

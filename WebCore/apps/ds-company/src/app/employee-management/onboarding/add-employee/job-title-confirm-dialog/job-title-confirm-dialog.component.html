@@ -1,0 +1,51 @@
+<mat-dialog-header>
+    <h2 class="dialog-title"></h2> 
+    <button type="button" class="close" (click)="clear()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</mat-dialog-header>
+<mat-dialog-content [formGroup]="form" *ngIf="form">
+    <ng-container *ngIf="!isLoading; else loading">
+        <div class="row" *ngIf="profileData.length > 0; else emptyState">
+            <div class="col-12">
+                <div class="pb-4 text-center">
+                    <div class="mb-2">
+                        <i class="material-icons md-36 text-warning pr-2">warning</i>
+                        <span class="font-xl align-bottom">The Job Title selected changes values in this record</span>
+                    </div>
+                    <div class="mb-1">
+                        Would you like to apply the changes below to match the Job Profile?
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-10 mx-auto">
+                <div class="row">
+                    <ul class="col-6 ds-ul" *ngFor="let item of profileData; let i = index">
+                        <li class="ds-li">
+                            <div class="py-1">{{item.label}} <strong>{{item.description}}</strong></div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </ng-container>    
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button type="button" class="btn btn-save"
+        (click)="save()" >Apply</button>
+    <button type="button" class="btn btn-cancel" 
+        (click)="clear()" >Cancel</button>
+</mat-dialog-actions>
+<ng-template #loading>
+    <ds-loading-message>
+    </ds-loading-message>
+</ng-template>
+<ng-template #emptyState>
+    <div class="empty-state">
+        <ng-container>
+            <span><b>No changes applied.</b></span>
+        </ng-container>
+    </div>
+</ng-template>

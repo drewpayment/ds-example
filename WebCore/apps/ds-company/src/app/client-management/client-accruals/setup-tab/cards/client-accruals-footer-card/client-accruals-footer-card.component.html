@@ -1,0 +1,11 @@
+<ds-card>
+  <ds-card-footer>
+    <button class="btn btn-save" (click)="onSubmit()">
+      Save
+    </button>
+    <button class="btn btn-cancel" (click)="onCancelOrDeleteFn()"
+      [hidden]="isDisableCancelOrDeleteButton$ | async">
+      {{ cancelOrDelete$ | async }}
+    </button>
+  </ds-card-footer>
+</ds-card>

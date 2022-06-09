@@ -1,0 +1,16 @@
+<div mat-dialog-title class="text-center mb-2">
+    <ng-container *ngIf="data.title">{{data.title}}</ng-container>
+</div>
+<div mat-dialog-content class="text-center mb-4">
+    <p class="instruction-text" *ngIf="data.message">{{data.message}}</p>
+</div>
+<div mat-dialog-actions class="d-flex" [class]="(data.allowAction == null || data.allowAction == true) ? 'justify-content-between flex-row-reverse' : 'justify-content-center'">
+    <button type="button" class="btn btn-save" (click)="onConfirm()" *ngIf="data.allowAction == null || data.allowAction == true">
+        <ng-container *ngIf="data.confirm, else delete"> {{data.confirm}} </ng-container>
+    </button>
+    <button type="button" class="btn btn-cancel" (click)="onCancel()">
+        Cancel
+    </button>
+</div>
+
+<ng-template #delete> Delete </ng-template>

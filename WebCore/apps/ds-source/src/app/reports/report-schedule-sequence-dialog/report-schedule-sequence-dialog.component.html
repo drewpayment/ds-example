@@ -1,0 +1,25 @@
+<div mat-dialog-header>
+    <h2 class="modal-title">        
+        Change Scheduled Report Sequence
+    </h2>
+    <button type="button" class="close" (click)="cancel()">
+        <mat-icon>clear</mat-icon>
+    </button>
+    <div class="modal-subtitle">
+        <div class="instruction-text">  
+            Click and drag report to desired position.
+        </div>
+    </div>
+</div>
+<div mat-dialog-content>
+    <div cdkDropList (cdkDropListDropped)="reorderReports($event)">
+        <div *ngFor="let report of reports" class="bg-primary p-3 mb-1" style="cursor:move" cdkDrag>
+            {{ report.name }}
+        </div>
+    </div>
+</div>
+<div mat-dialog-actions>
+    <button type="button" class="btn btn-primary" (click)="save()">Save</button>
+    <button type="button" class="btn btn-cancel" (click)="cancel()">Cancel</button>
+</div>
+

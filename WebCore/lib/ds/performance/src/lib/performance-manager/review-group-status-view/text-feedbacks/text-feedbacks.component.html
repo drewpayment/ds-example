@@ -1,0 +1,31 @@
+<ds-card>
+  <ds-card-header>
+    <ds-card-inline-content>
+      <div class="font-lg bold">{{title}}</div>
+    </ds-card-inline-content>
+  </ds-card-header>
+  <ds-card-content>
+    <div class="card card-table table-overflow">
+      <table class="table">
+        <thead class="table-header">
+          <tr>
+            <th>E/S</th>
+            <th>Name</th>
+            <th>Response</th>
+          </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of responseList">
+              <td>
+                  {{item.evaluationRoleType == 1 ? 'S' : 'E'}}
+              </td>
+              <td>
+                  {{item.feedback.responseByContact.lastName}}, {{item.feedback.responseByContact.firstName}} 
+              </td>
+              <td >{{GetResponse(item.feedback)}}</td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+  </ds-card-content>
+</ds-card>

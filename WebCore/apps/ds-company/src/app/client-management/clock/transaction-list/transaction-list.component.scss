@@ -1,0 +1,32 @@
+
+.clockName {
+    flex: 1 1 200px;
+}
+.devSn {
+    flex: 0 1 135px;;
+}
+.ipAddress {
+    flex: 1 1 125px;
+}
+.pin {
+    flex: 0 0 70px;
+}
+.attTime {
+    flex: 1 0 120px;
+}
+.time {
+    flex: 1 1 190px;
+}
+.status {
+    flex: 0 1 90px;
+}
+.verification {
+    flex: 0 1 100px; 
+}
+.workCode {
+    flex: 0 1 100px;
+}
+.reserved1,
+.reserved2 {
+    flex: 0 0 100px;
+}

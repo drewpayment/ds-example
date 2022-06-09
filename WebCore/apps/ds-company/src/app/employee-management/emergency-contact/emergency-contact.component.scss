@@ -1,0 +1,77 @@
+// Align inputs when validation is triggered
+.legacy-tax,
+.new-tax {
+  td {
+    vertical-align: top;
+  }
+}
+
+.non-fed {
+  .mat-column-tax {
+    vertical-align: baseline;
+  }
+  .mat-column-filingStatus {
+    vertical-align: top;
+  }
+  td.mat-column-edit,
+  .mat-column-numberOfExemptions, 
+  .mat-column-numberOfDependents,
+  .mat-column-withholdingOptions,
+  .mat-column-percent,
+  .mat-column-flat,
+  .mat-column-reimburse {  
+    vertical-align: top;
+  }
+}
+
+.legacy-tax {
+  .mat-column-filingStatus,
+  .mat-column-withholdingOptions {
+    min-width: 150px; 
+  }
+  .mat-column-numberOfExemptions {
+    min-width: 90px;
+    max-width: 90px;
+  }
+  .mat-column-numberOfDependents {
+    min-width: 90px;
+    max-width: 90px;
+  }
+  .mat-column-percent,
+  .mat-column-flat {
+    min-width: 120px;
+    max-width: 120px;
+  }
+ 
+}
+
+.new-tax {
+  .mat-column-filingStatus {
+    min-width: 150px;
+    max-width: 150px;
+  }
+  .mat-column-taxCredit,
+  .mat-column-otherIncome,
+  .mat-column-wageDeductions,
+  .mat-column-percent,
+  .mat-column-flat {
+    min-width: 90px;
+    max-width: 90px;
+  }
+}
+
+.non-fed {
+  .mat-column-numberOfExemptions,
+  .mat-column-numberOfDependents {
+    min-width: 90px;
+    max-width: 90px;
+  }
+  .mat-column-taxCredit,
+  .mat-column-otherIncome,
+  .mat-column-wageDeductions,
+  .mat-column-percent,
+  .mat-column-flat {
+    min-width: 150px;
+    max-width: 150px;
+  }
+}

@@ -1,0 +1,162 @@
+<style>
+    #my-benefit-selections {
+        display: block;
+    }
+</style>
+<div class="benefits">
+    <benefits-header active-step="2" is-signed="isSigned" date-signed="dateSigned"></benefits-header>
+    <div class="row" ng-hide="isLoading">
+        <div class="col-lg-8 col-md-8 col-sm-7">
+
+            <h1>Available Benefits</h1>
+            <div class="row">
+                <div class="col-6 col-md-4" ng-repeat="cat in selectedOpenEnrollment.coverageTypes | filter: availableTypesFilter | orderBy:'sequence'">
+
+                    
+                        <div class="card-height-fix benefit-box {{cat.cssClass}}" ng-class="{'selected':cat.isSelected, 'incomplete':!cat.isSelected} ">
+
+                            <div ng-hide="cat.isSelected" style="min-height:170px">
+                                <h2>{{ cat.description }}</h2>
+
+                                <h3>{{cat.getPlanCount()}} Plan(s) Available </h3>
+                                <h4>&nbsp;</h4>
+                                <a class="btn btn-default mt-20" ng-click="editCoverage(cat)">Get Started<i class="icon-angle-right right-side"></i></a>
+                            </div>
+                            <div ng-show="cat.isSelected">
+                                <div class="row">
+                                    <div class="col-9 pr-0">
+                                        <h2 class="mt-sm">{{ cat.description }}</h2>
+                                    </div>
+                                    <div class="col-3 pl-xs">
+                                        <div class="selection-status">
+                                            <span class="icon-stack">
+                                            <i class="icon-circle icon-stack-base"></i>
+                                            <i class="icon-ok icon-light"></i>
+                                        </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style="min-height: 75px">
+                                    <div ng-repeat="p in cat.plans | filter:{isSelected:true}">
+                                        <h3>{{p.planName}}</h3>
+                                        <div class="row" ng-repeat="s in p.selections">
+                                            <div class="pr-0" ng-class="{'col-7':s.selectedBenefitAmount || s.selectedOption.isEmployeeElected, 'col-12':!s.selectedBenefitAmount && !s.selectedOption.isEmployeeElected}">
+                                                {{s.selectedOption.isEmployeeElected ? "Contribution" : s.selectedOption.name}}
+                                            </div>
+                                            <div class="col-5 text-right pl-0" ng-if="s.selectedBenefitAmount">
+                                                {{ s.selectedBenefitAmount.getFriendlyName(s.selectedOption, true) }}
+                                            </div>
+                                            <div class="col-5 text-right pl-0" ng-if="s.selectedOption.isEmployeeElected">
+                                                ${{ s.cost | number:2 }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <a class="btn btn-clear-white mt-20 mb-md" ng-click="selectBenefit(cat)">View</a>
+                            </div>
+                        </div>
+                    
+
+                    <span ng-show="hasError">Error getting categories.</span>
+                    <br />
+                </div>
+            </div>
+            <h1>Waived Benefits</h1>
+            <div class="row">
+                <div class="col-6 col-md-4" ng-repeat="cat in selectedOpenEnrollment.coverageTypes | filter: waivedTypesFilter | orderBy:'sequence'">
+                    
+                    <div class="card-height-fix benefit-box {{cat.cssClass}} selected">
+
+                        <div class="row">
+                            <div class="col-9 pr-0">
+                                <h2 class="mt-sm">{{ cat.description }}</h2>
+                            </div>
+                            <div class="col-3 pl-xs">
+                                <div class="selection-status">
+                                    <span class="icon-stack">
+                                        <i class="icon-circle icon-stack-base"></i>
+                                        <i class="icon-minus icon-light"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3>Waived</h3>
+
+                        <div style="min-height: 35px">
+                            &nbsp;
+                        </div>
+
+                        <a class="btn btn-clear-white mt-20 mb-md" ng-click="editCoverage(cat)">Edit</a>
+                    </div>
+                    <div ng-show="hasNoWaivedPlans"><em>You have no waived plans at this time.</em></div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-lg-4 col-sm-5">
+            <div id="my-benefit-selections" class="panel">
+                <h3>My Selections</h3>
+                <div class="list-group">
+                    <a class="list-group-item incomplete" ng-if="!selectedOpenEnrollment.hasEmployeeSelections">
+                        No benefits have been selected at this time.
+                    </a>
+                    <div class="d-grid list-group-item" ng-if="selectedOpenEnrollment.hasEmployeeSelections">
+                        <div>
+                            Plan
+                        </div>
+                        <div class="text-right">
+                            My Cost
+                        </div>
+                        <div class="text-right">
+                            Employer
+                        </div>
+                    </div>
+                    <hr class="mb-sm mt-sm" ng-if="selectedOpenEnrollment.hasEmployeeSelections" />
+                    <div ng-repeat="cat in selectedOpenEnrollment.coverageTypes | filter: availableTypesFilter | orderBy:['-isSelected', 'description']">
+                        <a class="d-grid list-group-item {{cat.cssClass}}" ng-if="cat.isSelected" ng-click="selectBenefit(cat)">
+                            <div class="text-truncate">
+                                <i class="icon-plus"></i> {{cat.description}}
+                                <em class="text-muted block">{{es.selectedOption.name}}</em>
+                            </div>
+                            <div class="text-right">
+                                ${{ cat.getTotalCost(false) | number : 2}}
+                            </div>
+                            <div class="text-right">
+                                ${{ cat.getTotalCost(true) | number : 2}}
+                            </div>
+                        </a>
+                        <a class="list-group-item {{cat.cssClass}} incomplete" ng-if="!cat.isSelected" ng-click="editCoverage(cat)">
+                            <i class="icon-plus"></i> {{cat.description}}
+                        </a>
+                    </div>
+                </div>
+                <div class="total-cost d-grid">
+                    <div>
+                        Total Employee Cost Per Pay:
+                    </div>
+                    <div class="text-right">
+                        ${{selectedOpenEnrollment.getTotalCost(false) | number : 2}}
+                    </div>
+                    <div class="text-right">
+                        ${{selectedOpenEnrollment.getTotalCost(true) | number : 2}}
+                    </div>
+                </div>
+
+                <div class="checkout-area panel-footer cf">
+
+                    <p><em>You must make selections for each category before continuing.</em></p>
+                    <div class="row">
+                        <div class="col-12">
+                            <button type="button" class="btn btn-primary float-right mt-10" ng-if="selectedOpenEnrollment.allCategoriesSelected" ng-click="moveToNextPage(openEnrollment)">Continue<i class="icon icon-angle-right right-side"></i></button>
+                            <button type="button" class="btn btn-primary float-right mt-10" disabled ng-if="!selectedOpenEnrollment.allCategoriesSelected" >Continue<i class="icon icon-angle-right right-side"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

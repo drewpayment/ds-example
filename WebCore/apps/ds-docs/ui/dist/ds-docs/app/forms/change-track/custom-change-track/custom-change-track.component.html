@@ -1,0 +1,20 @@
+<ds-card color="primary" border="top">
+    <ds-card-header>
+        <ds-card-section-title>
+            Custom Change Track
+        </ds-card-section-title>
+        <ds-card-title-action>
+            <a href="https://www.google.com"><i class="material-icons">link</i> Leave</a>
+        </ds-card-title-action>
+    </ds-card-header>
+    <ds-card-content>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>Type 'changed' in Input</label>
+                    <input class="form-control" #input dsTrackChanges [hasChanges]="input.value === 'changed'" />
+                </div>
+            </div>
+        </div>
+    </ds-card-content>
+</ds-card>

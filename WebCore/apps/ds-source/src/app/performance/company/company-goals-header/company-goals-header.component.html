@@ -1,0 +1,35 @@
+<ds-card border="top" mode="nobody">
+    <ds-card-header>
+        <ds-card-header-title>Company Goals</ds-card-header-title>
+        <ds-card-subtitle>
+            <nav aria-label="breadcrumb" *ngIf="false">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="performancereviews.aspx">Performance</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Company Goals</li>
+                </ol>
+            </nav>
+        </ds-card-subtitle>
+        <ds-card-title-right-content>
+          <button class="btn btn-outline-primary white-space-nowrap" type="button" (click)="swapDisplay()">{{archiveButtonText}}</button>
+        </ds-card-title-right-content>
+        <ds-card-title-action>
+          <button type="button" class="btn btn-primary" (click)="addCompanyGoal()" *ngIf="canAddGoals">
+              <i class="material-icons">add</i> Goal
+          </button>
+        </ds-card-title-action>
+    </ds-card-header>
+    <ds-card-content>
+        <div *ngIf="!hasGoals && !isLoading && !viewArchive; else noArchivedGoals" class="empty-state">There are no goals to display. Click the "+ Goal" button to add one.</div>
+        <ng-template #noArchivedGoals>
+            <div *ngIf="!isLoading && !hasGoals" class="empty-state-cycle warning">
+                <i class="material-icons">info</i>
+                <div class="title">No goal history found.</div>
+                <p>Goals will show up here when archived.</p>
+            </div>
+        </ng-template>
+    </ds-card-content>
+</ds-card>
+
+<div>
+    <ds-company-goals-list #companyGoalList></ds-company-goals-list>
+</div>

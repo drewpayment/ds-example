@@ -1,0 +1,130 @@
+<ds-dashboard-widget [cardType]="cardType" [loaded]="loaded" skeleton="table-view-skeleton">
+    <ds-dashboard-widget-header [title]="title">
+    </ds-dashboard-widget-header>
+    <ds-dashboard-widget-content>
+        <div *ngIf=emptyState>
+            <div class="empty-state">
+                No data available to display
+            </div>
+        </div>
+        <div [hidden]="emptyState" class="card card-table">
+            <div class="table-responsive">
+                <table mat-table [dataSource]="dataSource" class="table" matSort>
+                    <ng-container matColumnDef="firstName" sticky>
+                        <th mat-table-header *matHeaderCellDef mat-sort-header class="mat-column-firstName"> Name </th>
+                        <td mat-cell *matCellDef="let element">{{ element.lastName}}, {{element.firstName}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="userType" sticky>
+                        <th mat-table-header *matHeaderCellDef mat-sort-header class="mat-column-userType"> User Type </th>
+                        <td mat-cell *matCellDef="let element"> {{ element.userTypeId | ToUserTypeString }} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="username" sticky>
+                        <th mat-table-header *matHeaderCellDef mat-sort-header class="mat-column-username"> Username </th>
+                        <td mat-cell *matCellDef="let element">{{ element.username}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="login" sticky >
+                        <th mat-table-header *matHeaderCellDef mat-sort-header class="mat-table-sticky-border mat-column-login table-text-right"> Last Login </th>
+                        <td mat-cell *matCellDef="let element" class="mat-table-sticky-border table-text-right"> {{(element.lastLoginDate !== null ) ? (element.lastLoginDate | date:'MM/dd/yyyy') : ""}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="assignedEmployee">
+                        <th mat-table-header *matHeaderCellDef mat-sort-header> Assigned Employee </th>
+                        <td mat-cell *matCellDef="let element"> {{element.assignedEmployee}}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="supervisor">
+                        <th mat-table-header *matHeaderCellDef mat-sort-header> Direct Supervisor </th>
+                        <td mat-cell *matCellDef="let element"> {{element.supervisor}}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="email">
+                        <th mat-table-header *matHeaderCellDef mat-sort-header> Email Address </th>
+                        <td mat-cell *matCellDef="let element"> {{element.emailAddress}}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="enabled">
+                        <th mat-table-header *matHeaderCellDef mat-sort-header> Active </th>
+                        <td mat-cell *matCellDef="let element; let i = index" align="center">
+                            <ng-container *ngIf="element.isPasswordEnabled">
+                                <label class="circle-checkbox w-25" [for]="'account_status_' + i">
+                                    <input [id]="'account_status_'+i" type="checkbox" disabled="true" [checked]="element.isPasswordEnabled" />
+                                    <div class="svg">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="checked"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="enabled"><path d="M0 0h24v24H0z" fill="none"/><path d="M7 11v2h10v-2H7zm5-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                                    </div>
+                                </label>
+                            </ng-container>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="tempAccess">
+                        <th mat-table-header *matHeaderCellDef mat-sort-header> Temp Access </th>
+                        <td mat-cell *matCellDef="let element">{{element.tempEnableToDate}}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="payTypes">
+                        <th mat-table-header *matHeaderCellDef mat-sort-header> View EE Pay Types </th>
+                        <td mat-cell *matCellDef="let element">{{element.viewEmployeePayTypes}}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="payRates">
+                        <th mat-table-header *matHeaderCellDef mat-sort-header> View EE Pay Rates </th>
+                        <td mat-cell *matCellDef="let element">{{element.viewEmployeeRateTypes}}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="i9">
+                        <th mat-table-header *matHeaderCellDef mat-sort-header>Certify I9 </th>
+                        <td mat-cell *matCellDef="let element" align="center">
+                            <ng-container *ngIf="element.certifyI9; let i=index">
+                                <label class="circle-checkbox w-25" [for]="'certifyI9_' + i">
+                                    <input [id]="'certifyI9_'+i" type="checkbox" disabled="true" [checked]="element.certifyI9" />
+                                    <div class="svg">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="checked"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="enabled"><path d="M0 0h24v24H0z" fill="none"/><path d="M7 11v2h10v-2H7zm5-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                                    </div>
+                                </label>
+                            </ng-container>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="addEmployee">
+                        <th mat-table-header *matHeaderCellDef mat-sort-header>Add Employee </th>
+                        <td mat-cell *matCellDef="let element; let i=index" align="center">
+                            <ng-container *ngIf="element.addEmployee">
+                                <label class="circle-checkbox w-25" [for]="'add_employee_' + i">
+                                    <input [id]="'add_employee_'+i" type="checkbox" disabled="true" [checked]="element.addEmployee" />
+                                    <div class="svg">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="checked"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="enabled"><path d="M0 0h24v24H0z" fill="none"/><path d="M7 11v2h10v-2H7zm5-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                                    </div>
+                                </label>
+                            </ng-container>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="resetPassword">
+                        <th mat-table-header *matHeaderCellDef mat-sort-header>Reset Passwords </th>
+                        <td mat-cell *matCellDef="let element; let i=index" align="center">
+                            <ng-container *ngIf="element.resetPassword">
+                                <label class="circle-checkbox w-25" [for]="'reset_password_' + i">
+                                    <input [id]="'reset_password_'+i" type="checkbox" disabled="true" [checked]="element.resetPassword" />
+                                    <div class="svg">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="checked"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="enabled"><path d="M0 0h24v24H0z" fill="none"/><path d="M7 11v2h10v-2H7zm5-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                                    </div>
+                                </label>
+                            </ng-container>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="approveTimeCards">
+                        <th mat-table-header *matHeaderCellDef mat-sort-header>Approve Timecards </th>
+                        <td mat-cell *matCellDef="let element; let i=index" align="center">
+                            <ng-container *ngIf="element.approveTimeCards">
+                                <label class="circle-checkbox w-25" [for]="'approve_timecards_' + i">
+                                    <input [id]="'approve_timecards_'+i" type="checkbox" disabled="true" [checked]="element.approveTimeCards" />
+                                    <div class="svg">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="checked"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="enabled"><path d="M0 0h24v24H0z" fill="none"/><path d="M7 11v2h10v-2H7zm5-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                                    </div>
+                                </label>
+                            </ng-container>
+                        </td>
+                    </ng-container>
+                    <tr mat-header-row class="table-header" *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+                </table>
+            </div>
+            <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons></mat-paginator>
+        </div>
+    </ds-dashboard-widget-content>
+</ds-dashboard-widget>

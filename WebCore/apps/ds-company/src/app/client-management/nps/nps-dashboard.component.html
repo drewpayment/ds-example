@@ -1,0 +1,341 @@
+<!-- Filters -->
+<div [formGroup]="filterForm">
+  <ds-card border="top">
+    <ds-card-header>
+      <ds-card-header-title>NPS Statistics</ds-card-header-title>
+    </ds-card-header>
+    <ds-card-content>  
+      <div class="row">
+        <div class="col-sm-6 col-md-4 col-lg-3">
+          <div class="form-group">
+            <label class="form-control-label">Display From</label>
+            <div class="input-group">
+              <input matInput 
+                  [matDatepicker]="startDatepicker" 
+                  class="form-control" 
+                  formControlName="StartDate"
+                  [max]="EndDate.value" />
+              <div class="input-group-append">
+                <mat-datepicker-toggle matSuffix [for]="startDatepicker" class="input-group-text date">
+                  <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                </mat-datepicker-toggle>
+                <mat-datepicker #startDatepicker></mat-datepicker>
+              </div>
+              <div class="invalid-feedback" *ngIf="StartDate.hasError('maxDateError')">
+                Please enter a date on or before {{EndDate.value}}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-4 col-lg-3">
+          <div class="form-group">
+            <label class="form-control-label">To</label>
+            <div class="input-group">
+              <input matInput 
+                  [matDatepicker]="endDatepicker" 
+                  class="form-control"
+                  formControlName="EndDate" 
+                  [min]="StartDate.value" />
+              <div class="input-group-append">
+                <mat-datepicker-toggle matSuffix [for]="endDatepicker" class="input-group-text date">
+                  <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                </mat-datepicker-toggle>
+                <mat-datepicker #endDatepicker></mat-datepicker>
+              </div>
+              <div class="invalid-feedback" *ngIf="EndDate.hasError('minDateError')">
+                Please enter a date on or after {{StartDate.value}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row justify-content-between align-items-center">
+        <div class="col-8 col-sm-9">
+          <div class="d-flex align-items-center">          
+            <button class="btn p-1 btn-outline-primary" 
+              [ngClass]="{
+                'btn-outline-primary': isFiltersOff,
+                'btn-primary': !isFiltersOff
+              }" (click)="showFilters = !showFilters"><i class="material-icons md-24">filter_list</i></button>
+            <div class="d-inline-block text-muted ml-3 font-xs" *ngIf="isFiltersOff">Filters Off</div>
+            <div *ngIf="!isFiltersOff">
+              <div class="d-inline-block text-muted clickable hoverable ml-3 font-xs"
+                  *ngFor="let filter of enabledFilters;let i=index; let first=first ;let last=last; trackBy:identify;"  
+                  (click)="removeNpsFilter(filter)" id="breadcrumb">
+                  {{ filter.value }} <i class="material-icons md-12 text-muted hover-show">clear</i>
+                  {{ !last ? " /" : ""}}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12" *ngIf="showFilters">
+          <hr />
+          <div class="row">
+            <div class="col-sm-6 col-xl-4">
+              <div class="form-group">
+                <label class="form-control-label">Organization</label>
+                <ds-dropdown-item-selector [dropdownName]="clientOrganizationDropdownName" [dropdownItemSelectorFormGroup]="filterForm" [options]="clientOrganizations" [defaultOption]="defaultOption"></ds-dropdown-item-selector>
+              </div>
+            </div>
+            <div class="col-sm-6 col-xl-4">
+              <div class="form-group">
+                <label class="form-control-label">Client Code</label>
+                <ds-dropdown-item-selector [dropdownName]="clientDropdownName" [dropdownItemSelectorFormGroup]="filterForm" [options]="clients" [defaultOption]="defaultOption"></ds-dropdown-item-selector>
+              </div>
+            </div>
+            <div class="col-sm-6 col-xl-4">
+              <div class="form-group">
+                <label class="form-control-label">Client Status</label>
+                <select class="form-control custom-select"
+                        formControlName="ClientStatus"
+                        (change)="setFilters()">
+                    <option class="text-muted"  [ngValue]="null"></option>
+                    <option [ngValue]="clientStatus.id"
+                            *ngFor="let clientStatus of clientStatuses">
+                        {{ clientStatus.name }}
+                    </option>
+                </select>
+              </div>
+            </div>
+            <div class="col-sm-6 col-xl-4">
+              <div class="form-group">
+                <label class="form-control-label">Resolution Status</label>
+                <select class="form-control custom-select"
+                        formControlName="ResolutionStatus"
+                        (change)="setFilters()">
+                    <option class="text-muted"  [ngValue]="null"></option>
+                    <option [ngValue]="resolutionStatus.id"
+                            *ngFor="let resolutionStatus of resolutionStatuses">
+                        {{ resolutionStatus.name }}
+                    </option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6 col-xl-4">
+                <label class="form-control-label">User Type</label>
+                <div class="inline-form-elements">
+                  <div class="custom-control badge-checkbox primary">
+                    <input type="checkbox" id="UserTypeEmployee" formControlName="UserTypeEmployee" class="custom-control-input" (change)="setFilters();" />
+                    <label class="badge-checkbox-label" for="UserTypeEmployee">Employee</label>
+                  </div>
+                  <div class="custom-control badge-checkbox primary">
+                    <input type="checkbox" id="UserTypeSupervisor" formControlName="UserTypeSupervisor" class="custom-control-input" (change)="setFilters();" />
+                    <label class="badge-checkbox-label" for="UserTypeSupervisor">Supervisor</label>
+                  </div>
+                  <div class="custom-control badge-checkbox primary">
+                    <input type="checkbox" id="UserTypeCompanyAdmin" formControlName="UserTypeCompanyAdmin" class="custom-control-input" (change)="setFilters();" />
+                    <label class="badge-checkbox-label" for="UserTypeCompanyAdmin">Company Admin</label>
+                  </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xl-4">
+              <label class="form-control-label">Response Type</label>
+              <div class="inline-form-elements">
+                <div class="custom-control badge-checkbox primary">
+                  <input type="checkbox" id="ResponseTypeDetractor" formControlName="ResponseTypeDetractor" class="custom-control-input" (change)="setFilters()" />
+                  <label class="badge-checkbox-label" for="ResponseTypeDetractor">Detractor</label>
+                </div>
+                <div class="custom-control badge-checkbox primary">
+                  <input type="checkbox" id="ResponseTypePassive" formControlName="ResponseTypePassive" class="custom-control-input" (change)="setFilters()" />
+                  <label class="badge-checkbox-label" for="ResponseTypePassive">Passive</label>
+                </div>
+                <div class="custom-control badge-checkbox primary">
+                  <input type="checkbox" id="ResponseTypePromoter" formControlName="ResponseTypePromoter" class="custom-control-input" (change)="setFilters()" />
+                  <label class="badge-checkbox-label" for="ResponseTypePromoter">Promoter</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-auto" *ngIf="showFilters">
+          <button type="button" class="btn btn-cancel" aria-hidden="false" (click)="clearFilters()">Clear Filters</button>
+        </div>
+        <div class="col-auto">
+            <button type="button" class="btn btn-outline-primary float-right" (click)="applyFilters()">Filter</button>
+        </div>
+      </div>      
+    </ds-card-content>
+  </ds-card>
+
+  <!-- Widgets -->
+  <div class="row">
+      <div class="col-sm-6 col-md-12 col-lg-6 col-xl-3">
+          <ds-widget mode="statistic" color="{{npsAllScore.colorCode}}" [loaded]="scoresLoaded" skeleton="nps-card-skeleton">
+              <ds-widget-header>
+                  <ds-widget-icon>business</ds-widget-icon> 
+                  <ds-widget-title-value>{{npsAllScore.score | number: '1.2-2'}}</ds-widget-title-value>
+                  <ds-widget-title truncate="true">Overall Score</ds-widget-title>
+              </ds-widget-header>
+              <ds-widget-content>
+                  <ds-widget-detail>
+                      <div class="text-break">
+                          <div class="line">{{npsAllScore.numerator | number: '1.0-2'}} Response(s)</div> 
+                          <div class="line">out of</div> 
+                          <div class="line">{{npsAllScore.denominator | number: '1.0-2'}} Active Users </div>
+                      </div>
+                      </ds-widget-detail>
+                  <ds-widget-detail bold="true">{{npsAllScore.percentage | number: '1.0-2'}} Response Rate</ds-widget-detail>
+              </ds-widget-content>
+          </ds-widget>
+      </div>
+      <div class="col-sm-6 col-md-12 col-lg-6 col-xl-3">
+          <ds-widget mode="statistic" color="{{npsEmpScore.colorCode}}" [loaded]="scoresLoaded" skeleton="nps-card-skeleton">
+              <ds-widget-header>
+                  <ds-widget-icon>person</ds-widget-icon> 
+                  <ds-widget-title-value>{{ (npsEmpScore.numerator > 0) ? (npsEmpScore.score | number: '1.2-2') : "N/A"}}</ds-widget-title-value>
+                  <ds-widget-title truncate="true">Employee Score</ds-widget-title>
+              </ds-widget-header>
+              <ds-widget-content grow="true">
+                  <ds-widget-detail>
+                      <div class="text-break">
+                          <div class="line">{{npsEmpScore.numerator | number: '1.0-2'}} Response(s)</div>
+                          <div class="line">out of</div>
+                          <div class="line">{{npsEmpScore.denominator | number: '1.0-2'}} Total Response(s)</div>
+                      </div>
+                  </ds-widget-detail>
+                  <ds-widget-detail bold="true">{{npsEmpScore.percentage | number: '1.2-2'}}% Employees</ds-widget-detail>
+              </ds-widget-content>
+          </ds-widget>
+      </div>
+      <div class="col-sm-6 col-md-12 col-lg-6 col-xl-3" >
+          <ds-widget mode="statistic" color="{{npsSupScore.colorCode}}" [loaded]="scoresLoaded" skeleton="nps-card-skeleton">
+              <ds-widget-header>
+                  <ds-widget-icon>group</ds-widget-icon> 
+                  <ds-widget-title-value>{{ (npsSupScore.numerator > 0) ? (npsSupScore.score | number: '1.2-2') : "N/A" }}</ds-widget-title-value>
+                  <ds-widget-title truncate="true">Supervisor Score</ds-widget-title>
+              </ds-widget-header>
+              <ds-widget-content grow="true">
+                  <ds-widget-detail>
+                      <div class="text-break">
+                          <div class="line">{{npsSupScore.numerator | number: '1.0-2'}} Response(s)</div>
+                          <div class="line">out of</div>
+                          <div class="line">{{npsSupScore.denominator | number: '1.0-2'}} Total Response(s)</div>
+                      </div>
+                  </ds-widget-detail>
+                  <ds-widget-detail bold="true">{{npsSupScore.percentage | number: '1.2-2'}}% Supervisors</ds-widget-detail>
+              </ds-widget-content>
+          </ds-widget>
+      </div>
+      <div class="col-sm-6 col-md-12 col-lg-6 col-xl-3">
+          <ds-widget mode="statistic" color="{{npsCaScore.colorCode}}" [loaded]="scoresLoaded" skeleton="nps-card-skeleton">
+              <ds-widget-header>
+                  <ds-widget-icon>build</ds-widget-icon> 
+                  <ds-widget-title-value>{{ (npsCaScore.numerator > 0) ? (npsCaScore.score | number: '1.2-2') : "N/A" }}</ds-widget-title-value>
+                  <ds-widget-title truncate="true">Company Admin Score</ds-widget-title>
+              </ds-widget-header>
+              <ds-widget-content grow="true">
+                  <ds-widget-detail>
+                      <div class="text-break">
+                          <div class="line">{{npsCaScore.numerator | number: '1.0-2'}} Response(s)</div>
+                          <div class="line">out of</div>
+                          <div class="line">{{npsCaScore.denominator | number: '1.0-2'}} Total Response(s)</div>
+                      </div>
+                  </ds-widget-detail>
+                  <ds-widget-detail bold="true">{{npsCaScore.percentage | number: '1.2-2'}}% Company Admins</ds-widget-detail>
+              </ds-widget-content>
+          </ds-widget>
+      </div>
+  </div>
+
+  <!-- Grid -->
+  <ng-container *ngIf="!isLoading">
+    <ds-card>
+      <ds-card-header>
+        <ds-card-sub-header-title>
+          Client Responses
+        </ds-card-sub-header-title>
+      </ds-card-header>
+      <ds-card-content>
+        <div class="row justify-content-between align-items-center">
+          <div class="col-sm-auto">
+              <div class="form-group">
+                  <div class="custom-control custom-checkbox inline-sm-control">
+                      <input type="checkbox" formControlName="ShowResponsesWithoutFeedback" class="custom-control-input" id="ShowResponsesWithoutFeedback" (change)="applyFilters()">
+                      <label class="custom-control-label" for="ShowResponsesWithoutFeedback">Show Scores Without Feedback</label>
+                  </div>
+              </div>
+          </div>
+          <div class="col-sm-auto">          
+              <div class="search-container form-group">
+              <label class="instruction-text font-xs">Search Feedback</label>
+              <div class="input-group">
+                  <input type="search" formControlName="SearchFeedback" class="form-control" (keyup)="setFilters()" matInput #input />
+                  <div class="input-group-append">
+                      <button type="button" class="search" (click)="applyFilters()">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="24" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/><path d="M0 0h24v24H0z" fill="none"/></svg>
+                      </button>
+                  </div>
+              </div>
+          </div>
+          </div>
+      </div>
+        <div class="card card-table" *ngIf="npsResponseSource.data && npsResponseSource.data.length">
+          <div class="table-responsive">
+            <table mat-table [dataSource]="npsResponseSource" matSort class="table w-100">
+              <ng-container matColumnDef="isResolved" sticky>
+                <th mat-header-cell *matHeaderCellDef class="text-center" mat-sort-header> Resolved </th>
+                <td mat-cell *matCellDef="let element;" data-label="isResolved">
+                    <div class="flex-center position-relative">
+                      <div class="custom-control custom-checkbox">
+                          <input type="checkbox" class="custom-control-input" [id]="'isSelected' + element.responseId" [checked]="element.isResolved" (change)="markResolved(element, $event.target.checked)">
+                          <label class="custom-control-label" [for]="'isSelected' + element.responseId"></label>
+                      </div>
+
+                      <span [class.saved]="element.isResolved" matTooltip="Resolved By {{ element.resolvedByUserName + ' ' + (element.resolvedDate | date:'MM/dd/yyyy') }}" 
+                          class="ds-tooltip auto-save">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" class="tooltip-icon"><path d="M0 0h24v24H0z" fill="none"></path><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"></path></svg>
+                      </span>    
+                  </div>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="userTypeId" sticky>
+                <th mat-header-cell *matHeaderCellDef class="table-text-right" mat-sort-header> User Type </th>
+                <td mat-cell *matCellDef="let element;" class="table-text-right" data-label="userTypeId">
+                  {{ this.getUserTypeAcronym(element.userTypeId) }}</td>
+              </ng-container>
+              <ng-container matColumnDef="score" sticky>
+                <th mat-header-cell *matHeaderCellDef class="table-text-right mat-table-sticky-border" mat-sort-header> Rating </th>
+                <td mat-cell *matCellDef="let element;" class="table-text-right mat-table-sticky-border" data-label="score">
+                  {{element.score}}</td>
+              </ng-container>
+              <ng-container matColumnDef="responseDate">
+                <th mat-header-cell *matHeaderCellDef class="table-text-right" mat-sort-header> Response Date </th>
+                <td mat-cell *matCellDef="let element;" class="table-text-right" data-label="responseDate">
+                  {{element.responseDate | date:'MM/dd/yyyy'}}</td>
+              </ng-container>
+              <ng-container matColumnDef="clientCode">
+                <th mat-header-cell *matHeaderCellDef class="table-text-right" mat-sort-header> Client Code </th>
+                <td mat-cell *matCellDef="let element;" class="table-text-right" data-label="Client Code">{{ element.clientCode }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="employeeFirstName">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+                <td mat-cell *matCellDef="let element;" data-label="employeeFirstName">
+                  {{ (element.employeeFirstName != null) ? element.employeeFirstName + ' ' + element.employeeLastName : '' }}</td>
+              </ng-container>
+              <ng-container matColumnDef="feedback">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Feedback </th>
+                <td mat-cell *matCellDef="let element;" data-label="feedback">{{ element.feedback }}</td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="npsResponseColumns" class="table-header"></tr>
+              <tr mat-row *matRowDef="let row; columns: npsResponseColumns;"></tr>
+            </table>
+          </div>
+          <mat-paginator class="form-group" #npsResponsePaginator [pageSize]="10" [pageSizeOptions]="[10,25,50]" showFirstLastButtons>
+          </mat-paginator>
+        </div>
+        <ng-container *ngIf="npsResponseSource.data == null || !npsResponseSource.data.length">
+          <div class="empty-state">There are no nps responses to display.</div>
+        </ng-container>
+      </ds-card-content>
+    </ds-card>
+  </ng-container>
+</div>
+
+<ng-container *ngIf="isLoading">
+  <ds-card mode="noheader">
+    <ds-card-content>
+      <ds-loading-message></ds-loading-message>
+    </ds-card-content>
+  </ds-card>
+</ng-container>

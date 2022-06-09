@@ -1,0 +1,80 @@
+<markdown ngPreserveWhitespaces>
+    # Widget
+
+    Module: **DsWidgetModule**
+</markdown>
+
+<div class="button-bar">
+    <button class="btn btn-icon" (click)="toggleWidget = !toggleWidget">
+        <i class="material-icons">code</i>
+        View Code
+    </button>
+</div>
+<div class="example-block" [class.open]="toggleWidget">
+    <div class="ui">
+    <div class="overflow-list">
+        <div class="row">
+            <div class="col-sm-6 col-md-12 col-lg-6 col-xl-3">
+                <ds-widget-example></ds-widget-example>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div>
+        <markdown src="app/ds-components/widget/widget/widget.component.html"></markdown>
+    </div>
+</div>
+
+<b>dsWidget</b>
+<markdown ngPreserveWhitespaces>
+    |Input                | Type      | Options                                                                      |                                                        |
+    |---------------------|-----------|------------------------------------------------------------------------------|--------------------------------------------------------|
+    |`mode`               | String    | `statistic`                                                                  | Changes card type, adding type-specific CSS            |
+    |`color`              | String    | `primary, secondary, danger, warning, info, yellow, success, disabled, navy` | Adds color to icon                                     |
+    |`hover`              | Boolean   | `true, false`                                                                | Adds card hover state to communicate additional action |
+</markdown> 
+
+<b>dsWidgetHeader</b>
+<markdown ngPreserveWhitespaces>
+    |Input                | Type      | Options                                                                      |                                                                                                 |
+    |---------------------|-----------|------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|
+    |`grow`               | Boolean    | `true, false`                                                               | Gives extra space to dsWidgetHeader when used with dsWidgetContent. Can solve alignment issues. | 
+</markdown> 
+
+<b>dsWidgetTitle</b>
+<markdown ngPreserveWhitespaces>
+    |Input                | Type      | Options                                                                      |                  |
+    |---------------------|-----------|------------------------------------------------------------------------------|------------------|
+    |`truncate`           | Boolean   | `true, false`                                                                | Truncates title  | 
+</markdown> 
+
+<b>dsWidgetTitle</b>
+<markdown ngPreserveWhitespaces>
+    |Input                | Type      | Options                                                                      |                       |
+    |---------------------|-----------|------------------------------------------------------------------------------|-----------------------|
+    |`bold`               | Boolean   | `true, false`                                                                | Adds bold font-weight | 
+</markdown>
+
+<markdown ngPreserveWhitespaces>
+    ## Other Examples
+</markdown>
+<div class="button-bar">
+    <button class="btn btn-icon" (click)="toggleTopWidget = !toggleTopWidget">
+        <i class="material-icons">code</i>
+        View Code
+    </button>
+</div>
+<div class="example-block" [class.open]="toggleTopWidget">
+    <div class="ui">
+    <div class="overflow-list">
+        <div class="row">
+            <div class="col-sm-6 col-md-12 col-lg-6 col-xl-3">
+                <ds-widget-top></ds-widget-top>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div>
+        <markdown src="app/ds-components/widget/widget-top/widget-top.component.html"></markdown>
+    </div>
+</div>

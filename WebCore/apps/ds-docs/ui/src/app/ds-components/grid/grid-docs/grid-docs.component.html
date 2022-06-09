@@ -1,0 +1,29 @@
+<markdown ngPreserveWhitespaces>
+  # Grid
+
+  Anything sticky needs to have a set width. 
+</markdown>
+  
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleGrid = !toggleGrid">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleGrid">
+  <div class="ui">
+    <ds-grid></ds-grid>
+  </div>
+  <div class="example">
+    <div class="ds-tabs">
+        <button class="tab" role="navigation" [class.active]="TabExample == 1" (click)="TabExample = 1">HTML</button>
+        <button class="tab" role="navigation" [class.active]="TabExample == 2" (click)="TabExample = 2">CSS</button>
+     </div>
+     <ng-container *ngIf="TabExample == 1">
+        <markdown src="app/ds-components/grid/grid/grid.component.html"></markdown>
+    </ng-container>
+    <ng-container *ngIf="TabExample == 2">
+
+    </ng-container>
+  </div>
+</div>

@@ -1,0 +1,79 @@
+<mat-dialog-header>
+  <h2 class="dialog-title">Reporting Options</h2>
+  <button type="button" class="close" (click)="cancel()">
+    <i class="material-icons">clear</i>
+  </button>
+</mat-dialog-header>
+
+<mat-dialog-content>
+  
+  <form [formGroup]="form">
+    <ng-container *ngIf="!isSettingsLoading">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-control-label">2nd Grouping</label>
+            <select class="custom-select form-control" formControlName="secondGroup" cdkFocusInitial>
+              <option value=""></option>
+              <option value="1">Department</option>
+              <option value="2">Cost Center</option>
+              <option value="3">Groups</option>
+              <option value="4">Home Division</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-control-label">Type</label>
+            <select class="custom-select form-control" formControlName="secondType">
+              <option value=""></option>
+              <option value="1">Code</option>
+              <option value="2">Description</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-control-label">3rd Grouping</label>
+            <select class="custom-select form-control" formControlName="thirdGroup">
+              <option value=""></option>
+              <option value="1">Department</option>
+              <option value="2">Cost Center</option>
+              <option value="3">Groups</option>
+              <option value="4">Home Division</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-control-label">Type</label>
+            <select class="custom-select form-control" formControlName="thirdType">
+              <option value=""></option>
+              <option value="1">Code</option>
+              <option value="2">Description</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <div class="form-group">
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" formControlName="chkCustomClass" id="chkCustomClass">
+              <label class="custom-control-label" for="chkCustomClass">Custom Class</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="isSettingsLoading">
+      <ds-loading-message></ds-loading-message>
+    </ng-container>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions *ngIf="!isSettingsLoading">
+  <button type="submit" class="btn btn-save" [ngClass]="{'disabled' : ((form.invalid && formSubmitted) || isSaving)}" CausesValidation="True" (click)="save()">Save</button>
+  <button type="button" class="btn btn-cancel" (click)="cancel()">Cancel</button>
+</mat-dialog-actions>

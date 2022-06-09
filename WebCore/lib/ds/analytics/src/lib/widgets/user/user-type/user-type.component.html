@@ -1,0 +1,19 @@
+
+<ds-dashboard-widget [cardType]="cardType" [loaded]="loaded" skeleton="button-card-skeleton">
+    <ds-dashboard-widget-header [title]="title"></ds-dashboard-widget-header>
+    <ds-dashboard-widget-content>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-4">
+                    <button type="button" (click)="openComanyAdminDialog()" class="btn btn-pill btn-info w-100 text-truncate white-space-nowrap mb-4 mb-sm-0">{{companyAdmin}} Company Administrator<span *ngIf="companyAdmin == 1; else elseBlock1"></span><ng-template #elseBlock1>s</ng-template></button>
+                </div>
+                <div class="col-sm-4">
+                    <button type="button" (click)="openSupervisorDialog()" class="btn btn-pill btn-info w-100 text-truncate white-space-nowrap mb-4 mb-sm-0">{{supervisor}} Supervisor<span *ngIf="supervisor == 1; else elseBlock2"></span><ng-template #elseBlock2>s</ng-template></button>
+                </div>
+                <div class="col-sm-4">
+                    <button type="button" (click)="openEmployeeDialog()" class="btn btn-pill btn-info w-100 text-truncate white-space-nowrap mb-4 mb-sm-0">{{employee}} Employee<span *ngIf="employee == 1; else elseBlock3"></span><ng-template #elseBlock3>s</ng-template></button>
+                </div>
+            </div>
+        </div>
+    </ds-dashboard-widget-content>
+</ds-dashboard-widget>

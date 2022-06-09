@@ -1,0 +1,31 @@
+<div class="row">
+    <div *ngFor="let file of files" class="col-6 col-sm-4 col-md-3 col-xl-2">
+        <ds-card hover="true" color="primary" mode="object" x-align="center" class="hoverable" (click)="download(file)">
+            <div ds-card-header>
+                <ds-card-subtitle>
+                    <div class="split-content">
+                        <div class="top">
+                            <button mat-button [matMenuTriggerFor]="menu" class="btn btn-icon nested-cog hover-show" type="button" (click)="onEvent($event)">
+                                <mat-icon>more_vert</mat-icon>
+                            </button>
+                            <mat-menu #menu="matMenu">
+                                <button type="button" mat-menu-item (click)="editModal(file)">Edit</button>
+                            </mat-menu>
+                            <div class="object-card-avatar">
+                                <img class="resource-img" src="WebCore/Images/Resources/{{getMappedExtension(file.extension)}}.png" />
+                            </div>
+                            <div class="font-lg text-center mb-4">
+                                <div class="text-truncate" data-toggle="tooltip" title="{{ file.name }}">
+                                    <b>{{ file.name }}</b>
+                                </div>
+                                <div class="text-muted font-xs text-truncate" data-toggle="tooltip" title="Uploaded: {{file.addedDate | date:'MM/dd/yy h:mm a'}}">
+                                    Uploaded: {{file.addedDate | date:'MM/dd/yy h:mm a'}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ds-card-subtitle>
+            </div>
+        </ds-card>
+    </div>
+</div>

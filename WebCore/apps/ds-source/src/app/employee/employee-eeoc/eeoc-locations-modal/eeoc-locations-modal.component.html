@@ -1,0 +1,163 @@
+<div mat-dialog-header class="ds-dialog-header">
+    <h2 class="dialog-title"><span *ngIf="fromVLPage">{{this.option}} </span>EEOC Location</h2>
+    <button type="button" class="close" (click)="close()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</div>
+
+<div mat-dialog-content>
+    <form [formGroup]="locationFormGroup">
+        <div *ngIf="this.option == 'Add' && this.clientRelation.clients.length > 1 && fromVLPage " class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-control-label">Client</label>
+                    <select class="form-control custom-select" formControlName="client" id="client" required
+                        cdkFocusInitial
+                        [class.is-invalid]="(locationFormGroup.controls['client'].touched && locationFormGroup.controls['client'].invalid && option=='Add')">
+                        <option [ngValue]="null"></option>
+                        <option *ngFor="let clientInfo of clientRelation.clients" [ngValue]="clientInfo.clientId">
+                            {{clientInfo.clientName}} ({{clientInfo.clientCode}})
+                        </option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a client.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" *ngIf="!fromVLPage">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-control-label">Location</label>
+                    <select class="form-control custom-select" formControlName="location" id="location" cdkFocusInitial>
+                        <option [ngValue]="nullLocation" [selected]="this.option == 'Add'">-- Add Location --</option>
+                        <option *ngFor="let eeocLocation of eeocLocations" [ngValue]="eeocLocation">
+                            {{eeocLocation.eeocLocationDescription}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-control-label">Name</label>
+                    <input class="form-control" formControlName="name" maxlength="30" required cdkFocusInitial
+                        [class.is-invalid]="((locationFormGroup.controls['name'].touched && locationFormGroup.controls['name'].invalid) || (locationFormGroup.controls['name'].touched && locationFormGroup.hasError('nameErr') && locationFormGroup.controls['name'].value != ''))  && locationFormGroup.controls['isActive'].value" />
+                    <div *ngIf="locationFormGroup.hasError('nameErr') && locationFormGroup.controls['name'].value != '' " class="invalid-feedback">
+                        Please enter a name that is not the city.
+                    </div>
+                    <div *ngIf="locationFormGroup.get('name').getError('required')" class="invalid-feedback">
+                        Please enter a name.
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-control-label">Unit Number</label>
+                    <span class="form-help-text">Optional</span>
+                    <input class="form-control" formControlName="unitNumber" maxlength="7">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-control-label">Address</label>
+                    <input class="form-control" formControlName="address1" maxlength="50" required
+                        [class.is-invalid]="(locationFormGroup.controls['address1'].touched && locationFormGroup.controls['address1'].invalid) && locationFormGroup.controls['isActive'].value" />
+                    <div class="invalid-feedback">
+                        Please enter an address.
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input class="form-control" formControlName="address2" maxlength="50" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-control-label">Country</label>
+                    <select class="form-control custom-select" formControlName="country" (change)="updateStates()"
+                        [class.is-invalid]="(locationFormGroup.controls['country'].touched && locationFormGroup.controls['country'].invalid) && locationFormGroup.controls['isActive'].value">
+                        <option *ngFor="let country of countries" [ngValue]="country">
+                            {{country.name}}
+                        </option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a country.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-control-label">City</label>
+                    <input formControlName="city" class="form-control" maxlength="30" required
+                        [class.is-invalid]="(locationFormGroup.controls['city'].touched && locationFormGroup.controls['city'].invalid) && locationFormGroup.controls['isActive'].value" />
+                    <div class="invalid-feedback">
+                        Please enter a city.
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3" *ngIf="showStates">
+                <div class="form-group">
+                    <label class="form-control-label">State/Province</label>
+                    <select class="form-control custom-select" formControlName="state" (change)="updateCounty()"
+                        dsFormControlValidator required
+                        [class.is-invalid]="(locationFormGroup.controls['state'].touched && locationFormGroup.controls['state'].invalid) && locationFormGroup.controls['isActive'].value">
+                        <option [ngValue]="nullState"></option>
+                        <option *ngFor="let state of states" [ngValue]="state">{{state.name}}</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please enter a state/province.
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-control-label">Zip/Postal Code</label>
+                    <input formControlName="zip" class="form-control" maxlength="30" required
+                        [class.is-invalid]="(locationFormGroup.controls['zip'].touched && (locationFormGroup.hasError('zipRequired') || locationFormGroup.hasError('usZipError') || locationFormGroup.hasError('caZipError')))  && locationFormGroup.controls['isActive'].value" />
+                    <div class="invalid-feedback" *ngIf="locationFormGroup.hasError('zipRequired')">
+                        Please enter a zip/postal code.
+                    </div>
+                    <div class="invalid-feedback" *ngIf="locationFormGroup.hasError('usZipError')">
+                        Invalid USA Zip Code
+                    </div>
+                    <div class="invalid-feedback" *ngIf="locationFormGroup.hasError('caZipError')">
+                        Invalid CA Postal Code
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3" *ngIf="showCounties">
+                <div class="form-group">
+                    <label class="form-control-label">County</label>
+                    <select class="form-control custom-select" formControlName="county" dsFormControlValidator required
+                        [class.is-invalid]="(locationFormGroup.controls['county'].touched && locationFormGroup.controls['county'].invalid) && locationFormGroup.controls['isActive'].value">
+                        <option [ngValue]="nullCounty"></option>
+                        <option *ngFor="let county of counties" [ngValue]="county">{{county.name}}</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a county.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="customCheck1a" formControlName="isActive">
+                    <label class="custom-control-label" for="customCheck1a">Active</label>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div mat-dialog-actions class="ds-dialog-footer">
+    <button [disabled]="false" type="button" class="btn btn-save" (click)="saveForm()"
+        CausesValidation="True">Save</button>
+    <button type="button" class="btn btn-cancel" (click)="close()">Cancel</button>
+</div>

@@ -1,0 +1,68 @@
+<ds-card>
+    <ds-card-header>
+        <ds-card-header-title>Table</ds-card-header-title>
+        <ds-card-title-action>
+            <button 
+                class="btn btn-outline-primary" 
+                (click)="editForm()"
+                *ngIf="!isEdit">
+                Edit
+            </button>
+        </ds-card-title-action>
+    </ds-card-header>
+    <ds-card-content>
+        <form [formGroup]="form">
+            <ds-table-container [isEdit]="isEdit">
+                <table ds-table formArrayName="row" [dataSource]="dataSource" matSort (matSortChange)="sortData($event)" class="sticky">
+                    <ng-container dsColumnDef="character" sticky>
+                        <th ds-header-cell *dsHeaderCellDef mat-sort-header="character">
+                            Character </th>
+                        <td ds-cell *dsCellDef="let element, let i = index" [formGroupName]="i">
+                            <input type="text" class="form-control" formControlName="character" />
+                        </td>
+                    </ng-container>
+                    <ng-container dsColumnDef="movie" sticky>
+                        <th ds-header-cell *dsHeaderCellDef mat-sort-header="movie" class="ds-table-sticky-border"> Movie </th>
+                        <td ds-cell *dsCellDef="let element, let i = index" [formGroupName]="i" class="ds-table-sticky-border">
+                            <input type="text" class="form-control" formControlName="movie" />
+                        </td>
+                    </ng-container>
+                    <ng-container dsColumnDef="year">
+                        <th ds-header-cell *dsHeaderCellDef mat-sort-header="year"> Year </th>
+                        <td ds-cell *dsCellDef="let element, let i = index" [formGroupName]="i">
+                            <mat-select class="form-control custom-select" formControlName="year"
+                                [(value)]="element.selected">
+                                <mat-option *ngFor="let year of years" [value]="year.id">{{ year.year }}</mat-option>
+                            </mat-select>
+                        </td>
+                    </ng-container>
+                    <ng-container dsColumnDef="quote">
+                        <th ds-header-cell *dsHeaderCellDef mat-sort-header="quote"> Quote </th>
+                        <td ds-cell *dsCellDef="let element, let i = index" [formGroupName]="i">
+                            <textarea type="text" class="form-control" formControlName="quote"></textarea>
+                        </td>
+                    </ng-container>
+                    <ng-container dsColumnDef="action" stickyEnd>
+                        <th ds-header-cell *dsHeaderCellDef class="td-action-icon-width ds-table-sticky-border-end"> </th>
+                        <td ds-cell *dsCellDef="let element, let i = index" [formGroupName]="i" class="td-action-icon ds-table-sticky-border-end">
+                            <button type="button" mat-button [matMenuTriggerFor]="menu" class="btn btn-icon">
+                                <mat-icon>more_vert</mat-icon>
+                            </button>
+                            <mat-menu #menu="matMenu">
+                                <button mat-menu-item (click)="delete(element)">Delete</button>
+                            </mat-menu>
+                              
+                        </td>
+                    </ng-container>
+                    <tr ds-header-row *dsHeaderRowDef="displayedColumns, sticky: true" ></tr>
+                    <tr ds-row *dsRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+                <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons></mat-paginator>
+            </ds-table-container>
+        </form>
+
+    </ds-card-content>
+    <ds-card-footer>
+        <button class="btn btn-save" (click)="editForm()">Save</button>
+    </ds-card-footer>
+</ds-card>

@@ -1,0 +1,31 @@
+<ds-card [mode]="(isLoading || !hasData) ? 'nobody' : 'card'">
+    <div ds-card-content>
+        <ng-container *ngIf="isLoading; else hasDataView">
+            <div class="empty-state">Loading...</div>
+        </ng-container>
+    </div>
+</ds-card>
+<ng-template #hasDataView>
+    <ng-container *ngIf="hasData; else noData">
+        <div class="row mt-4" *ngIf="hasModels">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-control-label">Competency Model</label>
+                    <select class="form-control custom-select" [(ngModel)]="selectedModel" (ngModelChange)="selectedModelChanged($event)">
+                        <option value=""></option>
+                        <option [ngValue]="model" *ngFor="let model of models">{{model.name}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="selectedModel; else coreOnly">
+            <ds-competency *ngFor="let comp of selectedModel.competencies" [competency]="comp"></ds-competency>
+        </div>
+    </ng-container>    
+</ng-template>
+<ng-template #noData>    
+    <div class="empty-state">No competencies found</div>
+</ng-template>
+<ng-template #coreOnly>    
+    <ds-competency *ngFor="let comp of coreCompetencies" [competency]="comp"></ds-competency>
+</ng-template>

@@ -1,0 +1,265 @@
+<ds-card border="top" mode="nobody">
+  <ds-card-header>
+      <ds-card-header-title>
+          Paycheck Settings
+      </ds-card-header-title>
+  </ds-card-header>
+</ds-card>
+<!-- <ds-card *ngIf="allowDirectDeposits || accounts.length > 0"> -->
+<ds-card>
+  <ds-card-header>
+      <ds-card-header-title>
+          Payment Options
+      </ds-card-header-title>
+      <ds-card-subtitle *ngIf="allowDirectDeposits">
+          <!-- View only -->
+          <div class="instruction-text" *ngIf="accounts.length > 0 && !allowEmployeesToAddAccounts && !allowEmployeesToUpdateAmount">
+            Your take home pay distribution is displayed below. To make changes, please contact your HR or payroll department.
+          </div>
+
+        <!-- Edit only -->
+          <div class="instruction-text" *ngIf="accounts.length > 0 && !allowEmployeesToAddAccounts && allowEmployeesToUpdateAmount">
+            Your take home pay distribution is displayed below. You may adjust the amounts from each account using the "Amount" field below. To add accounts, please contact your HR or payroll department.
+          </div>
+
+          <!-- Can add and edit -->
+          <div class="instruction-text" *ngIf="allowEmployeesToAddAccounts">
+              If you would like to receive your take home pay as direct deposit, click the "+ Account" button to add your account information.
+              Once saved, enter "100%" in the amount fields if you have one direct deposit.
+              To add multiple accounts, add all of your accounts first, then enter the appropriate deposit amount for each account.
+              Any flat amounts entered will be deposited from your take home pay before any percentage amounts.
+              <ng-container *ngIf="maxAccountsCountAllowed > -1">Your company allows up to {{(maxAccountsCountAllowed)}} direct deposit account<span *ngIf="maxAccountsCountAllowed > 1">s</span>.</ng-container>
+          </div>
+      </ds-card-subtitle>
+      <ds-card-title-action>
+          <button type="button"
+                  *ngIf="allowDirectDeposits && allowEmployeesToAddAccounts"
+                  [disabled]="maxAccountsCountAllowed > 0 && accounts.length >= maxAccountsCountAllowed"
+                  class="btn btn-primary"
+                  (click)="showUpdateAccountDialog(null, 0)">
+              <i class="material-icons">add</i> Account
+          </button>
+      </ds-card-title-action>
+  </ds-card-header>
+  <ds-card-content>
+      <div class="empty-state" *ngIf="accounts.length <= 0 && !allowCheck">
+        There are no accounts to display. Click the "+ Account" button to add one.
+      </div>
+      <form [formGroup]="f">
+          <div class="overflow-list mb-5" *ngIf="flatAccounts.length > 0">
+              <div class="row">
+                  <div class="col-sm-10">
+                      <h3>Flat Amounts</h3>
+                  </div>
+                  <div class="col-sm-2">
+                      <h4>Amount</h4>
+                  </div>
+              </div>
+              <div class="row" formArrayName="flatAccountsArray" *ngFor="let account of f.controls.flatAccountsArray?.value; let i = index; trackBy: trackByFn">
+                  <ng-container [formGroupName]="i">
+                      <div class="col-md-9 col-xl-10">
+                          <div class="form-group">
+                              <ds-card mode="widget-nobody" color="{{(account.amount && account.amount > 0) ? (!account.isPrenote ? 'navy' : 'warning') : 'archive'}}">
+                                  <div ds-card-icon>
+                                      <ds-card-icon-label>
+                                          <span class="bold">{{i+1}}</span>
+                                      </ds-card-icon-label>
+                                  </div>
+                                  <ds-card-header y-align="center">
+                                      <ds-card-widget-title><strong>{{(account.accountName) ? account.accountName : 'Account ending in ' + (account.maskedAccountNumber)}}</strong></ds-card-widget-title>
+                                      <ds-card-inline-content>
+                                          <div class="card-data bordered">
+                                              <div class="item">
+                                                  <label>Type:</label> {{account.nickname}}
+                                              </div>
+                                              <div class="item">
+                                                  <label>Number:</label> {{(account.maskedAccountNumber)}}
+                                              </div>
+                                          </div>
+                                      </ds-card-inline-content>
+                                      <ds-card-title-right-content><div class="instruction-text">Deposited #{{i+1}} for flat amounts.</div></ds-card-title-right-content>
+                                      <ds-card-title-action>
+                                          <span *ngIf="account.isPrenote" class="badge badge-pill badge-warning ml-2">Pending Bank Approval</span>
+                                          <div *ngIf="allowDirectDeposits && allowEmployeesToAddAccounts">
+                                              <button type="button" class="btn btn-icon text-medium-dark" [matMenuTriggerFor]="flatDirectDepositsMoreMenu">
+                                                  <i class="material-icons">more_vert</i>
+                                              </button>
+                                              <mat-menu #flatDirectDepositsMoreMenu="matMenu">
+                                                  <button mat-menu-item (click)="showUpdateAccountDialog(account, account.employeeDeductionId)">Edit</button>
+                                              </mat-menu>
+                                          </div>
+                                      </ds-card-title-action>
+                                  </ds-card-header>
+                              </ds-card>
+                          </div>
+                      </div>
+                      <div class="col-md-3 col-xl-2">
+                          <div class="form-group card-height-fix-sm">
+                              <div class="input-group h-100">
+                                  <div class="input-group-prepend">
+                                      <span class="input-group-text currency">$</span>
+                                  </div>
+                                  <input type="hidden" formControlName="employeeDeductionId" />
+                                  <input type="number"
+                                         class="form-control"
+                                         [readonly]="!allowDirectDeposits || !allowEmployeesToUpdateAmount"
+                                         dsAccountAmount="dollar"
+                                         formControlName="amount" />
+                              </div>
+                          </div>
+                      </div>
+                  </ng-container>
+              </div>
+          </div>
+          <div class="overflow-list mb-5" *ngIf="percentAccounts.length > 0 || allowCheck">
+              <div class="row">
+                  <div class="col-md-9 col-xl-10">
+                      <h3>Percentage Amounts</h3>
+                  </div>
+                  <div class="col-md-3 col-xl-2">
+                      <h4>Amount</h4>
+                  </div>
+              </div>
+              <div class="row" formArrayName="percentAccountsArray" *ngFor="let account of f.controls.percentAccountsArray?.value; let i = index; trackBy: trackByFn">
+                  <ng-container [formGroupName]="i">
+                      <div class="col-md-9 col-xl-10 pr-md-0">
+                          <div class="form-group">
+                              <ds-card mode="widget-nobody" color="{{(account.amount && account.amount > 0) ? (!account.isPrenote ? 'info' : 'warning') : 'archive'}}">
+                                  <div ds-card-icon>
+                                      <ds-card-icon-label>
+                                          <span class="bold">{{i+1}}</span>
+                                      </ds-card-icon-label>
+                                  </div>
+                                  <ds-card-header y-align="center">
+                                      <ds-card-widget-title><strong>{{(account.accountName) ? account.accountName : 'Account ending in ' + (account.maskedAccountNumber)}}</strong></ds-card-widget-title>
+                                      <ds-card-inline-content>
+                                          <div class="card-data bordered">
+                                              <div class="item">
+                                                  <label>Type:</label> {{account.nickname}}
+                                              </div>
+                                              <div class="item">
+                                                  <label>Number:</label> {{(account.maskedAccountNumber)}}
+                                              </div>
+                                          </div>
+                                      </ds-card-inline-content>
+                                      <ds-card-title-right-content><div class="instruction-text">Deposited #{{i+1}} for percentage amounts.</div></ds-card-title-right-content>
+                                      <ds-card-title-action>
+                                          <span *ngIf="account.isPrenote" class="badge badge-pill badge-warning ml-2">Pending Bank Approval</span>
+                                          <div *ngIf="allowDirectDeposits && allowEmployeesToAddAccounts">
+                                              <button type="button" class="btn btn-icon text-medium-dark" [matMenuTriggerFor]="percentageDirectDepositsMoreMenu">
+                                                  <i class="material-icons">more_vert</i>
+                                              </button>
+                                              <mat-menu #percentageDirectDepositsMoreMenu="matMenu">
+                                                  <button mat-menu-item (click)="showUpdateAccountDialog(account, account.employeeDeductionId)">Edit</button>
+                                              </mat-menu>
+                                          </div>
+                                      </ds-card-title-action>
+                                  </ds-card-header>
+                              </ds-card>
+                          </div>
+                      </div>
+                      <div class="col-md-3 col-xl-2">
+                          <div class="form-group card-height-fix-sm">
+                              <div class="input-group h-100">
+                                  <input type="number"
+                                          class="form-control"
+                                          [readonly]="!allowDirectDeposits || !allowEmployeesToUpdateAmount"
+                                          formControlName="amount"
+                                          dsAccountAmount="percent"
+                                          (blur)="calculateAndValidateTotal()"/>
+                                  <input type="hidden" formControlName="employeeDeductionId" />
+                                  <div class="input-group-append">
+                                      <span class="input-group-text percent">%</span>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </ng-container>
+              </div>
+
+              <div class="row" [ngStyle]="!allowCheck && {'display': 'none'}">
+                  <div class="col-md-9 col-xl-10 pr-md-0">
+                      <div class="form-group">
+                          <ds-card mode="widget-nobody" color="{{percentCheckPay == 0 ? 'disabled' : 'primary'}}">
+                              <div ds-card-icon>
+                                  verified_user
+                              </div>
+                              <ds-card-header y-align="center">
+                                  <ds-card-widget-title><strong>Check</strong></ds-card-widget-title>
+                                  <ds-card-inline-content>
+
+                                  </ds-card-inline-content>
+                                  <ds-card-title-right-content>
+                                      <div class="instruction-text">{{checkPayNote}}</div>
+                                  </ds-card-title-right-content>
+                              </ds-card-header>
+                          </ds-card>
+                      </div>
+                  </div>
+                  <div class="col-md-3 col-xl-2">
+                      <div class="form-group card-height-fix-sm">
+                          <div class="input-group h-100">
+                              <input type="text"
+                                     class="form-control"
+                                     id="checkPayAmount"
+                                     [readonly]="true"
+                                     value="{{percentCheckPay}}" />
+
+                              <div class="input-group-append">
+                                  <span class="input-group-text percent">%</span>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="row">
+            <div class="col-xl-4 order-xl-1 text-right account-total">
+              <div class="form-group">
+                <div 
+                  class="font-weight-bold font-lg" 
+                  *ngIf="percentAccounts.length > 0"
+                  [class.text-danger]="percentAboveCap"> Total = {{sumOfPercent}}%</div>
+                <div 
+                  *ngIf="percentAboveCap || (sumOfPercent < 100 && !this.allowCheck)"
+                  class="form-group bold" [class.text-danger]="formSubmitted">Percentage Amounts must equal 100%</div>
+                <div class="instruction-text" 
+                  *ngIf="maxAccountsCountAllowed > 0" 
+                  [class.text-danger]="accountMaxLengthError"> 
+                    You have added {{accounts.length}} out of {{maxAccountsCountAllowed}} account<span *ngIf="maxAccountsCountAllowed > 1">s</span> available.
+                  </div>
+              </div>
+            </div>
+            <div class="col-xl-8 order-xl-0 agreement-checkbox">
+              <div class="form-group" *ngIf="allowDirectDeposits && allowEmployeesToUpdateAmount && accounts.length > 0">
+                <div class="custom-control custom-checkbox">
+                    <input 
+                      type="checkbox" 
+                      class="custom-control-input" 
+                      id="agreeDisclaimer" 
+                      formControlName="agreeDisclaimer" 
+                      [class.is-invalid]="(formSubmitted) && (f.controls.agreeDisclaimer?.errors?.unaccept)">
+                    <label class="custom-control-label" for="agreeDisclaimer">{{directDepositDisclaimerText}}</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-end" *ngIf="allowDirectDeposits && allowEmployeesToUpdateAmount && accounts.length > 0">
+              <div class="col-auto">
+                  <button type="button"
+                          class="btn btn-save"
+                          (click)="saveDirectDeposits()">
+                      Save
+                  </button>
+              </div>
+          </div>
+      </form>
+  </ds-card-content>
+</ds-card>
+<!-- <ds-card *ngIf="!allowDirectDeposits && accounts.length <= 0" mode="noheader">
+  <ds-card-content>
+      <div class="empty-state">
+          Your company has not enabled direct deposits yet. Please contact your company administrator.
+      </div>
+  </ds-card-content>
+</ds-card> -->

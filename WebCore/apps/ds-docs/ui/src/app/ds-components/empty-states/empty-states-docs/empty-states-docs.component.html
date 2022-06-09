@@ -1,0 +1,146 @@
+<markdown ngPreserveWhitespaces>
+# Empty States
+
+## Initial Empty States
+Once content is added, this will never show. 
+Wordsmith the empty text to tell the user that there is nothing to display, and instruct them how to add content.
+</markdown>
+
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleEmptyList = !toggleEmptyList">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleEmptyList">
+  <div class="ui">
+    <ds-empty-list></ds-empty-list>
+  </div>
+  <div class="example">
+    <markdown src="app/ds-components/empty-states/empty-list/empty-list.component.html"></markdown>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+## Reccuring Empty States (cycle)
+Content is continually created and resolved. This empty state will show when tasks are complete.
+Wordsmith the empty text to tell the user that there is nothing to display, and instruct them how to add content.
+</markdown>
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleEmptyCycle = !toggleEmptyCycle">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleEmptyCycle">
+  <div class="ui">
+    <ds-empty-list-reocurring></ds-empty-list-reocurring>
+  </div>
+  <div class="example">
+    <markdown src="app/ds-components/empty-states/empty-list-reocurring/empty-list-reocurring.component.html"></markdown>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+## Missing Permissions 
+The user shouldn't be able to navigate to the page through the menu. If they can, show this message on the page.
+</markdown>
+<div class="button-bar">
+    <button class="btn btn-icon" (click)="togglePermissions = !togglePermissions">
+    <mat-icon>code</mat-icon>
+    View Code
+    </button>
+</div>
+<div class="example-block" [class.open]="togglePermissions">
+    <div class="ui">
+    <ds-permissions></ds-permissions>
+    </div>
+    <div class="example">
+    <markdown src="app/ds-components/empty-states/permissions/permissions.component.html"></markdown>
+    </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+  ### With link 
+</markdown>
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleEmptyStatesVertical = !toggleEmptyStatesVertical">
+  <mat-icon>code</mat-icon>
+  View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleEmptyStatesVertical">
+  <div class="ui">
+  <ds-empty-states-vertical></ds-empty-states-vertical>
+  </div>
+  <div class="example">
+  <markdown src="app/ds-components/empty-states/empty-states-vertical/empty-states-vertical.component.html"></markdown>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+## Payroll Closed
+</markdown>
+<div class="button-bar">
+    <button class="btn btn-icon" (click)="togglePayrollClosed = !togglePayrollClosed">
+    <mat-icon>code</mat-icon>
+    View Code
+    </button>
+</div>
+<div  class="example-block" [class.open]="togglePayrollClosed">
+    <div class="ui">
+        <ds-payroll-closed></ds-payroll-closed>
+    </div>
+    <div class="ds-tabs" *ngIf="togglePayrollClosed">
+      <button class="tab" role="navigation" [class.active]="PayrollClosedExample == 1" (click)="PayrollClosedExample = 1">HTML</button>
+      <button class="tab" role="navigation" [class.active]="PayrollClosedExample == 2" (click)="PayrollClosedExample = 2">Legacy</button>
+    </div>
+    <ng-container *ngIf="PayrollClosedExample == 1">
+      <markdown src="app/ds-components/empty-states/payroll-closed/payroll-closed.component.html"></markdown>
+    </ng-container>
+    <ng-container *ngIf="PayrollClosedExample == 2">
+        <markdown src="app/ds-components/empty-states/payroll-closed/payroll-closed-legacy.html"></markdown>
+    </ng-container>
+</div>
+
+<markdown ngPreserveWhitespaces>
+## Add State
+
+**Kanban**
+The add state should always be in the first position, even once content is available.
+</markdown>
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleKanban = !toggleKanban">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleKanban">
+  <div class="ui">
+    <ds-kanban></ds-kanban>
+  </div>
+  <div class="example">
+    <markdown src="app/ds-components/empty-states/kanban/kanban.component.html"></markdown>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+**Add Tile**
+</markdown>
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleAddTile = !toggleAddTile">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleAddTile">
+  <div class="ui">
+    <div class="overflow-list">
+      <ds-add-tile></ds-add-tile>
+    </div>
+  </div>
+  <div class="example">
+    <markdown src="app/ds-components/empty-states/add-tile/add-tile.component.html"></markdown>
+  </div>
+</div>
+

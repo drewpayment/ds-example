@@ -1,0 +1,161 @@
+<form [formGroup]="form" *ngIf="loaded" dsTrackFormChanges [submitted]="isSubmitted">
+    <ds-card border="top">
+        <ds-card-header>
+        <ds-card-header-title>
+            Departments
+        </ds-card-header-title>
+        </ds-card-header>
+        <ds-card-content>
+            <div class="row">
+                <div class="col-2xl-8">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="form-control-label">Division</label>
+                                <select class="form-control custom-select" 
+                                    formControlName="division"
+                                    (change)="changeDivision()" >
+                                    <option default [ngValue]="0">-- Select Division --</option>
+                                    <option *ngFor="let d of divisions" [ngValue]="d.clientDivisionId">{{d.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="form-control-label">Department</label>
+                                <select class="form-control custom-select" 
+                                    formControlName="department"
+                                    (change)="changeDepartment()" >
+                                    <option default [ngValue]="0">-- Add Department --</option>
+                                    <option *ngFor="let d of departments" [ngValue]="d.clientDepartmentId">{{d.isActive ? d.name :  d.name + ' -- inactive'}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="(selectedDivisionId != 0)">
+                        <div class="row ">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="form-control-label">Name</label>
+                                    <input type="text" 
+                                        class="form-control" 
+                                        formControlName="name"
+                                        maxlength="50"
+                                        dsFormControlValidator 
+                                        [dsFormControlSubmitted]="isSubmitted" />
+                                    <div class="invalid-feedback">                            
+                                        Please enter a name.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="form-control-label">Code</label>
+                                    <input type="text" 
+                                        class="form-control" 
+                                        formControlName="code"
+                                        maxlength="50"
+                                        dsFormControlValidator 
+                                        [dsFormControlSubmitted]="isSubmitted" />
+                                        <div class="invalid-feedback">                            
+                                            Please enter a code.
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="form-control-label">
+                                        Head of Department
+                                        <span class="form-help-text">Optional</span>
+                                    </label>
+                                    <select class="form-control custom-select" formControlName="hod" >
+                                        <option default [value]="0"> </option>
+                                        <option *ngFor="let e of employees" [ngValue]="e.employeeId">{{e.lastName}}, {{e.firstName}} {{e.middleInitial}} </option>
+                                    </select>
+                                    <div class="invalid-feedback">                            
+                                        Please select an active destination.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="modifyAllDivisions"> <!-- If Departments Across Divisions Company Option is on, show Modify All checkbox -->
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" formControlName="modifyAll" class="custom-control-input" id="modifyAllCheck">
+                                    <label class="custom-control-label" for="modifyAllCheck">Modify for all Divisions</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="showIsActive"> <!-- Hide Active checkbox for CA -->
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" formControlName="active" class="custom-control-input" id="activeCheck">
+                                    <label class="custom-control-label" for="activeCheck">Active</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ds-card-content>
+        <ds-card-footer>
+        <button class="btn btn-save" [disabled]="isSaving" (click)="save()">Save</button>
+        <div *ngIf="( form.value.department !=0 && form.value.division != 0)"> <!-- Hide Delete if no department selected -->
+            <button class="btn btn-delete" *ngIf="showDelete" (click)="deleteClicked()">Delete</button>
+        </div>
+        </ds-card-footer>
+    </ds-card>
+    <!-- Quick View -->
+    <ds-card>
+        <ds-card-header>
+            <ds-card-header-title>Preview: {{quickViewInformation.title}}</ds-card-header-title>
+        </ds-card-header>
+        <ds-card-content>
+            <div class="overflow-list">
+                <div class="row">
+                    <div class="col-sm-6 col-lg-6 col-xl-4" *ngIf="quickViewInformation.title == 'All Divisions'">
+                        <ds-widget mode="statistic" color="info" [loaded]="loaded">
+                            <ds-widget-header>
+                                <ds-widget-icon>apartment</ds-widget-icon> 
+                                <ds-widget-title-value>{{quickViewInformation.divisions}}</ds-widget-title-value>
+                                <ds-widget-title truncate="true">Division<ng-container *ngIf="quickViewInformation.divisions != 1">s</ng-container></ds-widget-title>
+                            </ds-widget-header>
+                        </ds-widget>
+                    </div>
+                    <div class="col-sm-6 col-lg-6 col-xl-4">
+                        <ds-widget mode="statistic" color="info" [loaded]="loaded">
+                            <ds-widget-header>
+                                <ds-widget-icon>account_tree</ds-widget-icon> 
+                                <ds-widget-title-value>{{quickViewInformation.departments}}</ds-widget-title-value>
+                                <ds-widget-title truncate="true">Department<ng-container *ngIf="quickViewInformation.departments != 1">s</ng-container></ds-widget-title>
+                            </ds-widget-header>
+                        </ds-widget>
+                    </div>
+                    <div class="col-sm-6 col-lg-6 col-xl-4">
+                        <ds-widget mode="statistic" color="info" [loaded]="loaded">
+                            <ds-widget-header>
+                                <ds-widget-icon>people</ds-widget-icon> 
+                                <ds-widget-title-value>{{quickViewInformation.headOfDepartments}}</ds-widget-title-value>
+                                <ds-widget-title truncate="true">Employee<ng-container *ngIf="quickViewInformation.headOfDepartments != 1">s</ng-container></ds-widget-title>
+                            </ds-widget-header>
+                        </ds-widget>
+                    </div>
+                </div>
+            </div>
+        </ds-card-content>
+    </ds-card>
+</form>
+
+<ng-container *ngIf="!loaded">
+  <ds-card mode="noheader">
+    <ds-card-content>
+      <ds-loading-message></ds-loading-message>
+    </ds-card-content>
+  </ds-card>
+</ng-container>

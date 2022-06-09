@@ -1,0 +1,103 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href routerLink="../../..">Profile</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href routerLink="../..">Dependents</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Active page</li>
+    </ol>
+</nav>
+
+<ng-template #showPageContent>
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>{{pageTitle}}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div [formGroup]="form">
+                <div class="ds-mobile-grid form-group">
+                    <div class="row col-2">
+                        <mat-form-field>
+                            <mat-label>First Name</mat-label>
+                            <input type="text" matInput formControlName="firstName" />
+                            <mat-error *ngIf="form.get('firstName').hasError">
+                                First name is required.
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field>
+                            <mat-label>Last Name</mat-label>
+                            <input type="text" matInput formControlName="lastName" />
+                            <mat-error *ngIf="form.get('lastName').hasError">
+                                Last name is required.
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <mat-form-field class="row">
+                        <mat-label>Relationship</mat-label>
+                        <input type="text" matInput formControlName="relationship" />
+                        <mat-error *ngIf="form.get('relationship').hasError">
+                            Relationship is required.
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="row">
+                        <mat-label>Social Security Number</mat-label>
+                        <input type="text" matInput formControlName="socialSecurityNumber" mask="000-00-0000" [dropSpecialCharacters]="false" />
+                        <mat-error *ngIf="form.get('socialSecurityNumber').hasError('required')">
+                            Social security number is required.
+                        </mat-error>
+                        <mat-error *ngIf="form.get('socialSecurityNumber').hasError('invalidSsn')">
+                            Social security number must be in the format 000-00-0000.
+                        </mat-error>
+                    </mat-form-field>
+                    <div class="row col-2">
+                        <mat-form-field>
+                            <mat-label>Birthday</mat-label>
+                            <input matInput [matDatepicker]="birthDatePicker" (ngModelChange)='CalculateAge()'
+                                   formControlName="birthDate" placeholder="Choose a date">
+                            <mat-datepicker-toggle matSuffix [for]="birthDatePicker" (ngModelChange)='CalculateAge()'>
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #birthDatePicker (ngModelChange)='CalculateAge()'></mat-datepicker>
+                            <mat-error *ngIf="form.get('birthDate').hasError">
+                                Birthday is required.
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>Age</mat-label>
+                            <input type="text" [disabled]='true' matInput formControlName="age" maxlength="3" />
+                        </mat-form-field>
+                    </div>
+                    <div class="form-group row">
+                        <mat-button-toggle-group formControlName="gender">
+                            <mat-button-toggle value='F' color="primary">Female</mat-button-toggle>
+                            <mat-button-toggle value='M'>Male</mat-button-toggle>
+                        </mat-button-toggle-group>
+                    </div>
+                    <label class="form-group">Please indicate if this dependent:</label>
+                    <mat-checkbox formControlName="tobaccoUser" class="form-group row">Uses tobacco</mat-checkbox>
+                    <mat-checkbox formControlName="isAStudent" class="form-group row">Is a student</mat-checkbox>
+                    <mat-checkbox formControlName="hasADisability" class="form-group row">Has a disability</mat-checkbox>
+                    <mat-form-field class="row">
+                        <mat-label>
+                            Note <span class='form-help-text'>Optional</span>
+                        </mat-label>
+                        <input type="text" matInput formControlName="comments" />
+                    </mat-form-field>
+                </div>
+            </div>
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-flat-button color="accent" (click)="saveDependent()" [disabled]="clicked">
+                <mat-icon>group_add</mat-icon>
+                {{ hasEditPermissions === true ? 'Save' : 'Request Change' }}
+            </button>
+        </mat-card-actions>
+    </mat-card>
+</ng-template>
+<ng-container *ngIf="isLoading$|async as isLoading; else showPageContent">
+    <div class="d-flex justify-content-center">
+        <mat-spinner></mat-spinner>
+    </div>
+</ng-container>

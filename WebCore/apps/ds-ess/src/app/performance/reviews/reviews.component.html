@@ -1,0 +1,9 @@
+<ds-card mode="nobody" color="primary" border="top">
+    <div ds-card-header>
+        <ds-card-header-title>Reviews</ds-card-header-title>
+        <ds-card-title-action>
+            <button type="button" class="btn btn-outline-primary" (click)="showArchivedReviews = !showArchivedReviews">View {{ showArchivedReviews ? 'Active' : 'Archive' }}</button>
+        </ds-card-title-action>
+    </div>
+</ds-card>
+<ds-review-list [employee]="employee" (evaluationSelected)="selectEvaluation($event)" mode="employee" [archive]="showArchivedReviews"></ds-review-list>

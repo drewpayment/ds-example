@@ -1,0 +1,34 @@
+<div class="ds-card-header-row"> 
+  <div class="ds-card-header-row-inner-wrapper">
+    <div class="ds-card-title">
+        <ng-content select="ds-card-title-icon"></ng-content>
+        <ng-content></ng-content>
+      
+        <ng-content select="ds-card-header-title, ds-card-sub-header-title, ds-card-section-title, ds-card-widget-title,
+            [ds-card-header-title], [ds-card-sub-header-title], [ds-card-section-title], [ds-card-widget-title],
+            [dsCardHeaderTitle], [dsCardSubHeaderTitle], [dsCardSectionTitle], [dsCardWidgetTitle]"></ng-content>
+        <div class="ds-card-inline-content">
+          <ng-content select="ds-card-inline-content, [ds-card-inline-content], [dsCardInlineContent]"></ng-content>
+        </div>
+        <ng-content select="ds-card-bread-crumb, [ds-card-bread-crumb], [dsCardBreadCrumb"></ng-content>
+    </div>
+    <ng-content select="ds-card-title-right-content, [ds-card-title-right-content], [dsCardTitleRightContent]"></ng-content>
+  </div>
+  <div class="ds-card-action">
+    <ng-container *ngTemplateOutlet="contentTemplate"></ng-container>
+  </div>
+  <ng-template #contentTemplate>
+      <ng-content select="ds-card-title-action, [ds-card-title-action], [dsCardTitleAction]"></ng-content>
+  </ng-template>
+</div>
+<ng-container *ngIf="collapse">
+  <div class="ds-card-action-collapse">
+      <button type="button" class="btn btn-icon pr-0" (click)="handleExpansionChange()">
+          <i class="material-icons" *ngIf="!expanded; else notExpanded">chevron_left</i>
+          <ng-template #notExpanded>
+              <i class="material-icons" *ngIf="expanded">expand_more</i>
+          </ng-template>
+      </button>
+  </div>
+</ng-container>
+<ng-content select="ds-card-subtitle, [ds-card-subtitle], [dsCardSubtitle]"></ng-content>

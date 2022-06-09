@@ -1,0 +1,41 @@
+.header-col {
+  display: grid;
+  grid-template-columns: 1fr 130px 80px;
+  column-gap: 1rem;
+}
+
+.admin-grid,
+.ee-grid {
+  display: grid;
+  column-gap: 1rem;
+  align-items: center;
+}
+
+.item-group {
+  position: relative;
+}
+
+.ee-progress {
+  min-width: 300px;
+}
+
+.ee-grid {
+  grid-template-columns: 1fr 72px;
+}
+
+.admin-grid {
+  grid-template-columns: 15px 1fr 130px 80px;
+}
+.ds-item .form-group {
+  margin-bottom: 0;
+}
+.form-control-label {
+  display: none;
+}
+.custom-control-label span{
+  text-indent: -1000px;
+  display: block;
+}
+.nested-cog {
+  position: relative !important;
+}

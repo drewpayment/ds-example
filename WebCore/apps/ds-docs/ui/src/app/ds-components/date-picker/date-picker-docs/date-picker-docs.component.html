@@ -1,0 +1,73 @@
+<markdown ngPreserveWhitespaces>
+    # Angular Material DateBox
+  
+    <p class="description"></p>
+  
+    ## Use 
+    Allows the Angular Material Datepicker to be used on legacy aspx pages through the AngularMaterialDateBox.ascx user control
+  
+    User can type in a date or use the date picker trigger to choose dates
+
+    **Inputs**
+      1. **data:** tpye "string" or Date. This is the initial value passed to Datepicker. When setting the .Text property in the user control, it binds that value to this input in Angular.
+      2. **ctrl:** type "string". This is the rendered ID of the asp:TextBox on our user control. This becomes a reference to the HTML element and is used to talk backwards from Angular to the user control. 
+      3. **enabled** type "string" or Boolean. This is 'true' or 'false' to enable or disable the datepicker. It is passed through the markup, or by changing the Enabled property of the user control.
+
+    **On Init** 
+      -	Converts the ‘disabled’ input from a string to a Boolean, sets the disabled property of matInput
+      -	Converts the ‘ctrl’ input from a string to a reference to the aspTextBox’s rendered HTML element
+      -	Converts the ‘data’ input from a string to a Date and creates a FormControl with the value as that Date.
+      
+  </markdown>
+    
+  <div class="button-bar">
+    <button class="btn btn-icon" (click)="toggleCardHeader = !toggleCardHeader">
+      <mat-icon>code</mat-icon>
+      View Code
+    </button>
+  </div>
+  <div class="example-block" [class.open]="toggleCardHeader">
+    <div class="ui">
+        <div class="example-width-200">
+            <app-date-picker [enabled]="true"></app-date-picker>
+        </div>
+    </div>
+    <div class="example">
+      <div class="ds-tabs" *ngIf="toggleCardHeader">
+        <button class="tab" role="navigation" [class.active]="CardHeaderExample == 1" (click)="CardHeaderExample = 1">HTML</button>
+        <button class="tab" role="navigation" [class.active]="CardHeaderExample == 2" (click)="CardHeaderExample = 2">TS</button>
+      </div>
+      <ng-container *ngIf="CardHeaderExample == 1">
+        <markdown src="app/ds-components/date-picker/date-picker/date-picker.component.html"></markdown>
+      </ng-container>
+      <ng-container *ngIf="CardHeaderExample == 2">
+          <markdown src="app/ds-components/date-picker/date-picker/date-picker.component.ts"></markdown>
+      </ng-container>
+    </div>
+  </div>
+  
+  <markdown ngPreserveWhitespaces>
+    ## User Control
+
+    The ASCX User Control for legacy pages. This is used in VB markup, and allows us to use the Angular component in a way that makes sense to the compiler
+
+    DominionPayroll --> DateBox -> AngularMaterialDateBox.ascx
+
+    **Markup:**
+      1.	**asp:TextBox**
+          Since so many legacy pages hold reference to the .Text() property, and some even holding reference to this exact textbox ID, it is necessary to keep it in the user control. On page load we set its style to hide it:  txtDate.Attributes.Add("style", "display: none")
+      2.	**ds-angular-material-datebox**
+          This is the downgraded angular component, it passes in our input’s that tie to values on the user control code behind. For example, when we set the .Text property, it also effects the <%=data%> passed to angular.
+          
+    **Code Behind:**
+      -	PageLoad: Call getClientID() and pass it as ‘ctrl’ to angular. Set the display of that element to none. 
+      -	GetClientID(): A function to return the rendered ID of the asp textbox.
+      -	Text(): A getter and a setter to the value of the textbox. This also changes the value of ‘data’ which is passed to angular.
+      - Enabled(): Sets the enabled property of the Date Picker.   
+      - IsRequired(): sets input to required for legacy validation.
+      - DataRequiredError(): message to display when the input is invalid. Example: `IsRequired="True" DataRequiredError="Please enter an effective date.`
+
+      **Update Panels:**<br/>
+      `update-panel-recompile`: Recompile Angular after async postback. 
+    
+  </markdown>

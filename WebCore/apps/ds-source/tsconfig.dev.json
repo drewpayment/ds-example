@@ -1,0 +1,96 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+      "outDir": "../../dist/out-tsc",
+      "importHelpers": true,
+      "sourceMap": true,
+      "declaration": false,
+      "moduleResolution": "node",
+      "experimentalDecorators": true,
+      "target": "es5",
+      "typeRoots": [
+        "node_modules/@types"
+      ],
+      "module": "es2015",
+      "types": ["node"],
+      "lib": [
+        "es2015",
+        "es2016",
+        "es2017",
+        "dom"
+      ],
+        "paths": {
+            "@ajs/*": [
+                "Scripts/ds/*"
+            ],
+            "@ds/core": [
+                "lib/ds/core/src/lib"
+            ],
+            "@ds/core/*": [
+                "lib/ds/core/src/lib/*"
+            ],
+            "@util/*": [
+                "Scripts/util/*"
+            ],
+            "@ds/performance": [
+                "lib/ds/performance/src/lib"
+            ],
+            "@ds/performance/*": [
+                "lib/ds/performance/src/lib/*"
+            ],
+            "@ds/payroll": [
+                "lib/ds/payroll/src/lib"
+            ],
+            "@ds/payroll/*": [
+                "lib/ds/payroll/src/lib/*"
+            ],
+            "@ds/notifications": [
+                "lib/ds/notifications/src/lib"
+            ],
+            "@ds/notifications/*": [
+                "lib/ds/notifications/src/lib/*"
+            ],
+            "@ds/reports": [
+                "lib/ds/reports/src/lib"
+            ],
+            "@ds/reports/*": [
+                "lib/ds/reports/src/lib/*"
+            ],
+            "@ds/benefits": [
+                "lib/ds/benefits/src/lib"
+            ],
+            "@ds/benefits/*": [
+                "lib/ds/benefits/src/lib/*"
+            ],
+            "employee-services": [
+                "apps/employee-services/src"
+            ],
+            "employee-services/*": [
+                "apps/employee-services/src/*"
+            ],
+            "@ds/analytics": [
+                "lib/ds/analytics/src/lib"
+            ],
+            "@ds/analytics/*": [
+                "lib/ds/analytics/src/lib/*"
+            ],
+            "@ds/applicants": [
+                "lib/ds/applicants/src/lib"
+            ],
+            "@ds/applicants/*": [
+                "lib/ds/applicants/src/lib/*"
+            ],
+            "@ds/onboarding": [
+                "lib/ds/onboarding/src/lib"
+            ],
+            "@ds/onboarding/*": [
+                "lib/ds/onboarding/src/lib/*"
+            ],
+        }
+    },
+    "exclude": [
+      "src/test.ts",
+      "**/*.spec.ts",
+      "e2e/**"
+    ]
+  }

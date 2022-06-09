@@ -1,0 +1,62 @@
+<ds-card border="top">
+    <div ds-card-header>
+        <ds-card-header-title>
+            Chart Of Accounts
+        </ds-card-header-title>
+        <ds-card-title-action>
+            <button type="button" class="btn btn-outline-primary" (click)="popupImportDialog()">
+                Import Accounts
+            </button>
+        </ds-card-title-action>
+    </div>
+    <ds-card-content>
+        <div *ngIf="isLoading">
+            <ds-loading-message></ds-loading-message>
+        </div>
+        <ng-container *ngIf="!isLoading">
+            <form [formGroup]="form1">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label class="form-control-label">Account</label>
+                            <select class="custom-select form-control" (change)="accountChange()"
+                                [formControl]="accountId">
+                                <option *ngFor="let ledger of companyLedgers" [value]="ledger.accountId"
+                                    [innerHTML]="ledger | formatAccountDesc"></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label class="form-control-label">Name</label>
+                        <input [formControl]="accountName" type="text" class="form-control" maxlength="50"
+                            [class.is-invalid]="accountName.invalid && (accountName.touched || formSubmitted)" />
+                        <div class="invalid-feedback">
+                            <span *ngIf="accountName.errors?.required">Please enter a name.</span>
+                            <span *ngIf="accountName.errors?.maxlength">Name cannot be more than 50 characters.</span>
+                            <span *ngIf="accountName.errors?.duplicate">Please enter a different name.</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <label class="form-control-label">Number</label>
+                        <input [formControl]="accountNumber" type="text" class="form-control" maxlength="75"
+                            [class.is-invalid]="accountNumber.invalid && (accountNumber.touched || formSubmitted)" />
+                        <div class="invalid-feedback">
+                            <span *ngIf="accountNumber.errors?.required">Please enter a number.</span>
+                            <span *ngIf="accountNumber.errors?.maxlength">Number cannot be more than 75
+                                characters.</span>
+                            <span *ngIf="accountNumber.errors?.pattern">Number must be alphanumeric.</span>
+                            <span *ngIf="accountNumber.errors?.duplicate">Please enter a different number.</span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </ng-container>
+    </ds-card-content>
+    <ds-card-footer *ngIf="!isLoading">
+        <button type="button" class="btn btn-save" (click)="save(form1)">Save</button>
+        <button type="button" [class.d-none]="!selectedLedgerId" class="btn btn-delete"
+            (click)="delete()">Delete</button>
+    </ds-card-footer>
+</ds-card>

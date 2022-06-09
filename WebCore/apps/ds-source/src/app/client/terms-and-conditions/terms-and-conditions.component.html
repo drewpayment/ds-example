@@ -1,0 +1,61 @@
+<form [formGroup]="form" >
+  <ds-card border="top">
+    <ds-card-header>
+      <ds-card-sub-header-title>Terms and Conditions</ds-card-sub-header-title>
+    </ds-card-header>
+
+    <ds-card-content *ngIf="!isLoading">
+      <div class="card card-table sitcky" *ngIf="matList && matList.data && matList.data.length">
+        <mat-table [dataSource]="matList">
+          <ng-container matColumnDef="Filename">
+            <mat-header-cell *matHeaderCellDef> File Name </mat-header-cell>
+            <mat-cell *matCellDef="let element;" data-label="Filename">
+              <button type="button" class="btn btn-anchor"
+                (click)="downloadTermsNConditions(element.fileLocation, element.fileName)"> {{element.fileName}}
+              </button>
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="Effective Date">
+            <mat-header-cell *matHeaderCellDef class="table-text-right"> Effective Date </mat-header-cell>
+            <mat-cell *matCellDef="let element;" class="table-text-right" data-label="Effective Date">
+              {{element.effectiveDate | date:'M/d/yyyy'}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="End Date">
+            <mat-header-cell *matHeaderCellDef class="table-text-right"> End Date </mat-header-cell>
+            <mat-cell *matCellDef="let element;" class="table-text-right" data-label="End Date">
+              {{element.lastEffectiveDate | date:'M/d/yyyy'}} </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+        <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[10,25,50]" showFirstLastButtons></mat-paginator>
+      </div>
+      <ng-container *ngIf="matList && ((matList.data && matList.data.length == 0) || matList.data == null)">
+        <div class="empty-state">There are no terms of service items to display.</div>
+      </ng-container>
+    </ds-card-content>
+    <ds-card-content *ngIf="isLoading">
+      <ds-loading-message></ds-loading-message>
+    </ds-card-content>
+    <ds-card-footer *ngIf="!isLoading" class="flex-row align-items-end">
+      <div class="form-group mb-0">
+        <label class="form-control-label d-block" >Add Service Agreement</label>
+        <div class="file-input">
+          <label for="fileUpload" class="btn btn-outline-primary clickable" [ngClass]="[(form.invalid && formSubmitted) ? 'btn btn-outline-danger clickable' : 'btn btn-outline-primary clickable']" >Browse</label>
+          <div class="form-help-text" *ngIf="fileToUpload == null">Accepted file types include .pdf</div>
+          <div class="form-help-text" *ngIf="fileToUpload">{{fileToUpload.name}}</div>
+          <input type="file" id="fileUpload" style="visibility: hidden;" accept=".pdf" formControlName="fileInput"
+            (change)="handleFileInput($event.target.files)" dsFormControlValidator required />
+        </div>
+        <div class="invalid-feedback" [ngClass]="{'d-block' : (form.invalid && formSubmitted)}">
+          Please select a file to upload.
+        </div>
+      </div>
+      
+      <button type="button" CausesValidation="True" class="btn btn-primary" (click)="isSaving = true; upload()">Upload</button>
+    </ds-card-footer>
+
+  </ds-card>
+
+</form>

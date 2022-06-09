@@ -1,0 +1,15 @@
+.name {
+    flex: 0 1 200px;
+}
+
+.department {
+    flex: 0 1 350px;
+}
+
+.costCenter {
+    flex: 0 1 350px;
+}
+
+.hireDate {
+    flex: 0 1 100px;
+}

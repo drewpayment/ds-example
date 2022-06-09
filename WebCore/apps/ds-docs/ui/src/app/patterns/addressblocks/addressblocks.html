@@ -1,0 +1,208 @@
+<h1 id="adress-blocks">Adress Blocks</h1>
+<p class="description">Every address block should have a consistent layout.</p>
+
+<h2 id="layout">Layout</h2>
+<h3 id="standard">Standard</h3>
+<p>Country is always in the first position because it determines if State or County are valid fields.</p>
+<div class="button-bar">
+    <button class="btn btn-icon" ng-click="toggleStandardAddress = !toggleStandardAddress">
+        <i class="material-icons">code</i>
+        View Code
+    </button>
+</div>
+<div class="example-block" ng-class="{'open': toggleStandardAddress}">
+    <div class="ui mb-4">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-control-label" for="country">Country</label>
+                    <select type="text" class="form-control custom-select" id="country" >
+                        <option value="0"></option>
+                        <option value="1">Country options here</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-control-label" for="addressLineOne">Address</label>
+                    <input type="text" class="form-control" id="addressLineOne" />
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="addressLineTwo" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-control-label" for="city">City</label>
+                    <input type="text" class="form-control" id="city" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-control-label" for="state">State/Province</label>
+                    <select type="text" class="form-control custom-select" id="state" >
+                        <option value="0"></option>
+                        <option value="1">State options here</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-control-label" for="zip">Zip/Postal Code</label>
+                    <input type="text" class="form-control" id="zip" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+<pre><code class="hljs html">&lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"row"</span>&gt;
+    &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"col-md-12"</span>&gt;
+        &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-group"</span>&gt;
+            &lt;label <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-control-label"</span> <span class="hljs-keyword">for</span>=<span class="hljs-string">"addressLineOne"</span>&gt;<span class="hljs-type">Address</span>&lt;/label&gt;
+            &lt;input <span class="hljs-class"><span class="hljs-keyword">type</span></span>=<span class="hljs-string">"text"</span> <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-control"</span> id=<span class="hljs-string">"addressLineOne"</span> /&gt;
+        &lt;/div&gt;
+        &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-group"</span>&gt;
+            &lt;input <span class="hljs-class"><span class="hljs-keyword">type</span></span>=<span class="hljs-string">"text"</span> <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-control"</span> id=<span class="hljs-string">"addressLineTwo"</span> /&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+&lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"row"</span>&gt;
+    &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"col-md-4"</span>&gt;
+        &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-group"</span>&gt;
+            &lt;label <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-control-label"</span> <span class="hljs-keyword">for</span>=<span class="hljs-string">"city"</span>&gt;<span class="hljs-type">City</span>&lt;/label&gt;
+            &lt;input <span class="hljs-class"><span class="hljs-keyword">type</span></span>=<span class="hljs-string">"text"</span> <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-control"</span> id=<span class="hljs-string">"city"</span> /&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+     &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"col-md-4"</span>&gt;
+        &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-group"</span>&gt;
+            &lt;label <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-control-label"</span> <span class="hljs-keyword">for</span>=<span class="hljs-string">"state"</span>&gt;<span class="hljs-type">State</span>/<span class="hljs-type">Province</span>&lt;/label&gt;
+            &lt;select <span class="hljs-class"><span class="hljs-keyword">type</span></span>=<span class="hljs-string">"text"</span> <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-control custom-select"</span> id=<span class="hljs-string">"state"</span> &gt;
+                &lt;option value=<span class="hljs-string">"0"</span>&gt;&lt;/option&gt;
+                &lt;option value=<span class="hljs-string">"1"</span>&gt;<span class="hljs-type">State</span> options here&lt;/option&gt;
+            &lt;/select&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"col-md-4"</span>&gt;
+        &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-group"</span>&gt;
+            &lt;label <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-control-label"</span> <span class="hljs-keyword">for</span>=<span class="hljs-string">"zip"</span>&gt;<span class="hljs-type">Zip</span>/<span class="hljs-type">Postal</span> <span class="hljs-type">Code</span>&lt;/label&gt;
+            &lt;input <span class="hljs-class"><span class="hljs-keyword">type</span></span>=<span class="hljs-string">"text"</span> <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-control"</span> id=<span class="hljs-string">"zip"</span> /&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+</div>
+
+<h3 id="county">County</h3>
+<p>Add County directly after Zip/Postal Code</p>
+<div class="button-bar">
+    <button class="btn btn-icon" ng-click="toggleCountyAddress = !toggleCountyAddress">
+        <i class="material-icons">code</i>
+        View Code
+    </button>
+</div>
+<div class="example-block" ng-class="{'open': toggleCountyAddress}">
+    <div class="ui mb-4">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-control-label" for="addressLineOne">Address</label>
+                    <input type="text" class="form-control" id="addressLineOne" />
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="addressLineTwo" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-control-label" for="city">City</label>
+                    <input type="text" class="form-control" id="city" />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-control-label" for="state">State/Province</label>
+                    <select type="text" class="form-control custom-select" id="state" >
+                        <option value="0"></option>
+                        <option value="1">State options here</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-control-label" for="zip">Zip/Postal Code</label>
+                    <input type="text" class="form-control" id="zip" />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-control-label" for="county">County</label>
+                    <select class="form-control custom-select" id="county" >
+                        <option value="0"></option>
+                        <option value="1">County options here</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<pre><code class="hljs html">&lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"row"</span>&gt;
+    &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"col-md-12"</span>&gt;
+        &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-group"</span>&gt;
+            &lt;label <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-control-label"</span> <span class="hljs-keyword">for</span>=<span class="hljs-string">"addressLineOne"</span>&gt;<span class="hljs-type">Address</span>&lt;/label&gt;
+            &lt;input <span class="hljs-class"><span class="hljs-keyword">type</span></span>=<span class="hljs-string">"text"</span> <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-control"</span> id=<span class="hljs-string">"addressLineOne"</span> /&gt;
+        &lt;/div&gt;
+        &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-group"</span>&gt;
+            &lt;input <span class="hljs-class"><span class="hljs-keyword">type</span></span>=<span class="hljs-string">"text"</span> <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-control"</span> id=<span class="hljs-string">"addressLineTwo"</span> /&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+&lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"row"</span>&gt;
+    &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"col-md-4"</span>&gt;
+        &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-group"</span>&gt;
+            &lt;label <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-control-label"</span> <span class="hljs-keyword">for</span>=<span class="hljs-string">"city"</span>&gt;<span class="hljs-type">City</span>&lt;/label&gt;
+            &lt;input <span class="hljs-class"><span class="hljs-keyword">type</span></span>=<span class="hljs-string">"text"</span> <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-control"</span> id=<span class="hljs-string">"city"</span> /&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"col-md-3"</span>&gt;
+        &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-group"</span>&gt;
+            &lt;label <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-control-label"</span> <span class="hljs-keyword">for</span>=<span class="hljs-string">"state"</span>&gt;<span class="hljs-type">State</span>/<span class="hljs-type">Province</span>&lt;/label&gt;
+            &lt;select <span class="hljs-class"><span class="hljs-keyword">type</span></span>=<span class="hljs-string">"text"</span> <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-control custom-select"</span> id=<span class="hljs-string">"state"</span> &gt;
+                &lt;option value=<span class="hljs-string">"0"</span>&gt;&lt;/option&gt;
+                &lt;option value=<span class="hljs-string">"1"</span>&gt;<span class="hljs-type">State</span> options here&lt;/option&gt;
+            &lt;/select&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"col-md-3"</span>&gt;
+        &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-group"</span>&gt;
+            &lt;label <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-control-label"</span> <span class="hljs-keyword">for</span>=<span class="hljs-string">"zip"</span>&gt;<span class="hljs-type">Zip</span>/<span class="hljs-type">Postal</span> <span class="hljs-type">Code</span>&lt;/label&gt;
+            &lt;input <span class="hljs-class"><span class="hljs-keyword">type</span></span>=<span class="hljs-string">"text"</span> <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-control"</span> id=<span class="hljs-string">"zip"</span> /&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"col-md-4"</span>&gt;
+        &lt;div <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-group"</span>&gt;
+            &lt;label <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-control-label"</span> <span class="hljs-keyword">for</span>=<span class="hljs-string">"county"</span>&gt;<span class="hljs-type">County</span>&lt;/label&gt;
+            &lt;select <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">"form-control custom-select"</span> id=<span class="hljs-string">"county"</span> &gt;
+                &lt;option value=<span class="hljs-string">"0"</span>&gt;&lt;/option&gt;
+                &lt;option value=<span class="hljs-string">"1"</span>&gt;<span class="hljs-type">County</span> options here&lt;/option&gt;
+            &lt;/select&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+</div>
+
+<h2 id="validation">Validation</h2>
+<p>Street Address validation follows standard. Examples are sparing. Validation should be handled client-side if at all possible.
+One (mostly) complete example is on <a href="https://zmonster/payroll/CompanyDivision.aspx">https://zmonster/payroll/CompanyDivision.aspx</a> &gt; + Address</p>
+<h4 id="country">Country</h4>
+<p>Determines if State or county selection is valid.</p>
+<h4 id="stateprovince">State/Province</h4>
+<p>If Country is USA or Canada, this field is required.
+Determines if Zip/Postal Code is a valid field.</p>
+<h4 id="zippostal-code">Zip/Postal Code</h4>
+<p>If Country is USA or Canada, this field is required.
+Valid formats are #####, #####-#### (USA) and XXX-XXX (Canada)</p>

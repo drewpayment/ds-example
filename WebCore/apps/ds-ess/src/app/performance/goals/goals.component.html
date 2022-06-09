@@ -1,0 +1,25 @@
+
+<ng-container *ngIf="canReadGoals; else noGoalTracking">
+    <ds-employee-goals-list restrictAssignment="true" isEss="true"></ds-employee-goals-list>
+</ng-container>
+
+<ng-template #noGoalTracking>
+    <ds-card border="top" mode="nobody">
+        <ds-card-header>
+            <ds-card-header-title>Active Goals</ds-card-header-title>
+        </ds-card-header>
+        <ds-card-content>
+            <div class="empty-card-state">
+                <div class="pr-2">
+                    <i class="material-icons md-48 text-warning">warning</i>
+                </div>
+                <div>
+                    <div class="font-xl">Goals are not enabled for your user profile.</div>
+                    <div class="text-muted font-italic font-sm mb-1">
+                        Please contact your company admin if you believe this is an error.
+                    </div>
+                </div>
+            </div>
+        </ds-card-content>
+    </ds-card>
+</ng-template>

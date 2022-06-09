@@ -1,0 +1,248 @@
+
+<form class="mat-drawer-inner-container-form" [formGroup]="goalForm">
+    <div class="drawer-header justify-content-between flex-wrap">
+        <div class="d-flex text-truncate">
+            <button type="button" class="btn btn-icon drawer-close" (click)="closeDrawer()">
+                <i class="material-icons">arrow_forward_ios</i>
+            </button>
+            <h2 class="text-truncate">{{goal?.title}}</h2>
+        </div>
+        <div class="d-flex align-self-center">
+            <div class="d-flex align-items-center">
+                <label class="mr-2 text-muted" for="completion-date">Completion</label>
+                <div class="input-group">
+                    <input matInput 
+                        id="completion-date"
+                        class="form-control"
+                        [matDatepicker]="completionDate" 
+                        [value]="goal.completionDate"
+                        (dateChange)="updateCompletionDate($event)"
+                        [min]="goal.startDate"
+                        [disabled]="goal.isArchived || editMode"
+                    />
+                    <div class="input-group-append">
+                        <mat-datepicker-toggle matSuffix [for]="completionDate" class="input-group-text date">
+                            <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                        </mat-datepicker-toggle>
+                        <mat-datepicker #completionDate></mat-datepicker>
+                    </div>
+                </div>
+            </div>
+            <ng-container *ngIf="!goal.isArchived && !editMode">
+                <button type="button" class="btn btn-icon pr-0" [matMenuTriggerFor]="goalOptions">
+                    <i class="material-icons">more_vert</i>
+                </button>
+                <mat-menu #goalOptions="matMenu">
+                    <button mat-menu-item type="button" (click)="showEditGoalDialog()">
+                        Edit
+                    </button>
+                    <ng-container *ngIf="goalRemovalState$ | async as goalRemovalState">
+                        <button mat-menu-item type="button" *ngIf="enableArchiveOrDelete(goal)" (click)="removeGoal(goal, goalRemovalState)">
+                            {{goalRemovalState.btnText}}
+                        </button>
+                    </ng-container>
+                </mat-menu>
+            </ng-container>
+        </div>
+    </div>
+    <!-- SIDE NAV BODY -->
+    <div class="drawer-content">
+        <span class="p-heading">Description: </span>
+        <ng-container *ngIf="goal.description; else noDescription;"><div [innerHtml]=" goal.description | formatDescription " ></div></ng-container>
+        <ng-template #noDescription>
+            <div class="instruction-text d-inline-block">No description provided</div>
+        </ng-template>
+        <hr />
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <div class="card-data" *ngIf="goal.isAlignedToCompanyGoal">
+                    <div class="item">
+                        <label class="text-uppercase">Aligns To:</label>
+                        {{goal.alignedCompanyGoalName}}
+                    </div>
+                </div>
+                <div class="badge badge-pill badge-success mt-1" *ngIf="goal.oneTimeEarningSettings">
+                    {{goal.oneTimeEarningSettings.name}}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="badge badge-pill badge-info mt-1 ml-4 float-right" *ngIf="goal.includeReview">Included in Review</div>
+            </div>
+        </div>
+    
+        <div class="form-group" *ngIf="goal.employee != null">
+            <div class="list-bordered action" formArrayName="tasks">
+                <div class="row">
+                    <div class="col-6 d-flex align-items-center">
+                        <div class="header">Task List</div>
+                    </div>
+                    <div class="col-6 d-flex align-items-center" *ngIf="childrenTasks.length">
+                        <ds-progress
+                            color="success"
+                            style="width:100%"
+                            [value]="taskListProgress"
+                            labelPosition="right"
+                            label="{{taskListProgress | number:'1.0-0'}}%"
+                            size="small"
+                        ></ds-progress>
+                    </div>
+                    <!-- <div class="col-3 d-flex align-items-center justify-content-end">
+                        <button type="button" class="btn btn-sm btn-list" (click)="addTask()" [disabled]="disableAddTaskButton">
+                            <i class="material-icons md-18">add</i> Task
+                        </button>
+                    </div> -->
+                </div>
+                <div class="body" *ngIf="childrenTasks.length; else noTasksMessage">
+                    <div class="item hoverable" *ngFor="let t of childrenTasks; let i=index" [formGroupName]="i">
+                        <div class="d-flex flex-1-1-auto">
+                            <div class="custom-control custom-checkbox" *ngIf="t.taskId != null && t.taskId != 0">
+                                <input [id]="'item_'+i" 
+                                    type="checkbox" 
+                                    class="custom-control-input" 
+                                    formControlName="completionStatus"
+                                    (click)="updateCompletionStatus($event, i)"
+                                />
+                                <label class="custom-control-label" [for]="'item_'+i"></label>
+                            </div>
+                            <div class="ds-item" *ngIf="!t.editItem || goal.isArchived; else showEditInput;">
+                                <div class="ds-item-label" [innerText]="t.description"></div>
+                            </div>
+                            <ng-template #showEditInput>
+                                <div class="li-edit-item editable-input">
+                                    <input 
+                                        type="text" 
+                                        class="form-control" 
+                                        formControlName="description" 
+                                        #task 
+                                        required
+                                        (keydown.enter)="updateTaskDescription(t, i, true)"
+                                        (keydown.esc)="clearTask(t, i, true)"
+                                    />
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-primary" (click)="updateTaskDescription(t, i)" [disabled]="getTaskControl(i, 'description').invalid || getTaskControl(i, 'description').pristine">
+                                            <i class="material-icons">done</i>
+                                        </button>
+                                    </div>
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-outline-primary" (click)="clearTask(t, i)">
+                                            <i class="material-icons">clear</i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </ng-template>
+                        </div>
+                        <div class="action-items hover-show" *ngIf="!editMode">
+                                <button *ngIf="!goal.isArchived" type="button" class="btn btn-link-secondary pt-0" [matMenuTriggerFor]="editTaskMenu">
+                                <i class="material-icons md-18">more_vert</i>
+                            </button>
+                            <mat-menu #editTaskMenu="matMenu">
+                                <button mat-menu-item type="button" (click)="enableTaskEdit(t)">
+                                    Edit
+                                </button>
+                                <button mat-menu-item type="button" *ngIf="t.taskId != null && t.taskId > 0" (click)="deleteTask(t, i)">
+                                    Delete
+                                </button>
+                            </mat-menu>
+                        </div>
+                    </div>
+                </div>
+                <ng-template #noTasksMessage>
+                    <div class="pt-2 empty-state">There are no tasks to display currently.<br/> Adding tasks can help streamline the goal process.</div>
+                </ng-template>
+            </div>
+            <button *ngIf="!goal.isArchived" type="button" class="btn btn-list" (click)="addTask()" [disabled]="editMode">
+                <i class="material-icons">add</i> Task
+            </button>
+        </div>
+        <div class="list-bordered action" *ngIf="goal.isCompanyGoal">
+            <div class="header d-flex justify-content-between">
+                <span>Sub Goals</span>
+                <button *ngIf="!goal.isArchived" type="button" class="btn btn-list py-0" (click)="addSubGoal()" [disabled]="editMode">
+                    <i class="material-icons">add</i> Sub Goal
+                </button>
+            </div>
+            <div class="body" *ngIf="goal.subGoals && goal.subGoals.length>0; else noSubGoalsMessage">
+                <div class="hoverable item" *ngFor="let sg of goal.subGoals; let i=index">
+                    <div class="ds-item" ng-show="!editView2">
+                        <div class="item-label">{{sg.title}}</div>
+                    </div>
+                    <div class="action-icons hover-show">
+                        <button class="list-edit-icon btn btn-icon" *ngIf="goal.isCompanyGoal" (click)="editSubGoal(sg)">
+                            <i class="material-icons">mode_edit</i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <ng-template #noSubGoalsMessage>
+                <div class="body" formArrayName="">
+                    <div class="pt-2 empty-state">There are no sub goals to display.</div>
+                </div>
+            </ng-template>
+        </div>
+        
+        <div class="list-bordered">
+            <div class="header d-flex justify-content-between">
+                <span>Activity</span>
+                <button *ngIf="!goal.isArchived" type="button" class="btn btn-list py-0" (click)="addRemark($event)" [disabled]="editMode">
+                    <i class="material-icons">add</i> Comment
+                </button>
+            </div>
+            <div class="body" formArrayName="remarks" *ngIf="formRemarks.length; else noRemarksMessage">
+                <div class="item-group" *ngFor="let r of formRemarks; let i=index">
+                    <div class="row align-items-center">
+                        <div class="col-sm-6 account-info">
+                            <i class="material-icons">account_circle</i>
+                            <div class="ds-item d-inline-block">
+                                <div class="ds-item-label bold">
+                                    {{r.user.firstName}} {{r.user.lastName}} 
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 d-flex justify-content-sm-end align-items-center">
+                            <span class="bold" [matTooltip]="r.addedDate | date:'h:mm aa'">{{r.addedDate | date:'mediumDate'}}</span>
+                            <div class="action-icons hover-show" *ngIf="user.userTypeId < 3">
+                                <div class="no-action-placeholder" *ngIf="r.isSystemGenerated || editMode"></div>
+                                <button *ngIf="!goal.isArchived && !editMode && !r.isSystemGenerated" type="button" class="btn btn-link-secondary" [matMenuTriggerFor]="editActivityMenu">
+                                    <i class="material-icons md-18">more_vert</i>
+                                </button>
+                                <mat-menu #editActivityMenu="matMenu">
+                                    <button mat-menu-item type="button" (click)="enableRemarkEdit(r)">
+                                        Edit
+                                    </button>
+                                    <button mat-menu-item type="button" *ngIf="r.remarkId != null && r.remarkId > 0" (click)="deleteRemark(r, i)">
+                                        Delete
+                                    </button>
+                                </mat-menu>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12" 
+                            *ngIf="!r.editItem || goal.isArchived; else editRemark" 
+                            [innerHtml]=" r.description | formatDescription "></div>
+                        <ng-template #editRemark>
+                            <div class="li-edit-item editable-input col-12">
+                                <textarea #remark class="form-control" [formControlName]="i"></textarea>
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-primary" (click)="updateExistingRemark(remark.value, r.remarkId, i)" [disabled]="getRemarkControl(i).hasError('required')">
+                                        <i class="material-icons">done</i>
+                                    </button>
+                                </div>
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-outline-primary" (click)="clearRemark(i)">
+                                        <i class="material-icons">clear</i>
+                                    </button>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+            <ng-template #noRemarksMessage>
+                <div class="body" formArrayName="remarks">
+                    <div class="pt-2 empty-state">There is no activity to display.</div>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+</form>
+    

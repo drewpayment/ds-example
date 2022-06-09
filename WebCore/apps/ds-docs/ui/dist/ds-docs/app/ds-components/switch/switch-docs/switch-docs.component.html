@@ -1,0 +1,38 @@
+<markdown ngPreserveWhitespaces>
+# Switch
+</markdown>
+
+<div class="button-bar">
+    <button class="btn btn-icon" (click)="toggleSwitch = !toggleSwitch">
+        <i class="material-icons">code</i>
+        View Code
+    </button>
+</div>
+<div class="example-block" [class.open]="toggleSwitch">
+    <div class="ui">
+        <ds-switch></ds-switch>
+    </div>
+    <div>
+        <markdown src="app/ds-components/switch/switch/switch.component.html"></markdown>
+        <markdown src="app/ds-components/switch/switch/switch.component.ts"></markdown>
+    </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+# Title Switch
+</markdown>
+<div class="button-bar">
+    <button class="btn btn-icon" (click)="toggleTitleSwitch = !toggleTitleSwitch">
+        <i class="material-icons">code</i>
+        View Code
+    </button>
+</div>
+<div class="example-block" [class.open]="toggleTitleSwitch">
+    <div class="ui">
+        <ds-switch-title></ds-switch-title>
+    </div>
+    <div>
+        <markdown src="app/ds-components/switch/switch-title/switch-title.component.html"></markdown>
+        <markdown src="app/ds-components/switch/switch-title/switch-title.component.ts"></markdown>
+    </div>
+</div>

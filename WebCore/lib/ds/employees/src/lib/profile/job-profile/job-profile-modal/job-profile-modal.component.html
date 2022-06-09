@@ -1,0 +1,111 @@
+<div mat-dialog-header>
+    <h2 class="dialog-title">
+        {{pageTitle}}
+    </h2>
+    <button type="button" class="close" (click)="onNoClick()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</div>
+<div mat-dialog-content>
+    <form [formGroup]="f">
+        <div class="print-page" id="pnlToPrint" name="pnlToPrint">
+            <div class="print-page-header">
+                <h1 class="print-header">{{jobProfileData.clientName}}</h1>
+            </div>
+            <div class="print-page-section-group py-3">
+                <div class="text-uppercase">{{jobProfileData.description}}</div>
+                <div class="row pb-1" *ngIf="jobProfileData.eEOCLocation">
+                    <div class="col-2">
+                        <span class="text-uppercase text-muted">Location</span>
+                    </div>
+                    <div class="col-7">
+                        {{jobProfileData.eEOCLocation}}
+                    </div>
+                </div>
+                <div class="row" *ngIf="jobProfileData.clientDepartment">
+                    <div class="col-2">
+                        <span class="text-uppercase text-muted">Department</span>
+                    </div>
+                    <div class="col-7">
+                        {{jobProfileData.clientDepartment}}
+                    </div>
+                </div>
+            </div>
+            <div class="print-page-body">
+                <div class="print-page-section-group">
+                    <div class="row" *ngIf="jobProfileData.requirements.length>0">
+                        <div class="col-md-12">
+                            <h3 class="print-header d-block">Summary</h3>
+                            <div>{{jobProfileData.requirements}}</div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="print-page-section-group">
+                    <div class="row" *ngIf="jobProfileData.jobProfileResponsibilities.length>0">
+                        <div class="col-md-12">
+                            <h3 class="print-header d-block">Responsibilities</h3>
+                            <ul>
+                                <li *ngFor="let jobResponsibility of jobProfileData.jobProfileResponsibilities">
+                                    <div class="item-label">{{jobResponsibility.description}}</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="print-page-section-group">
+                    <div class="row" *ngIf="jobProfileData.jobProfileSkills.length>0">
+                        <div class="col-md-12">
+                            <h3 class="print-header d-block">Skills</h3>
+                            <ul>
+                                <li *ngFor="let jobSkill of jobProfileData.jobProfileSkills">
+                                    <div class="item-label">{{jobSkill.description}}</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="print-page-section-group">
+                    <div class="row" *ngIf="jobProfileData.workingConditions">
+                        <div class="col-md-12">
+                            <h3 class="print-header d-block">Working Conditions</h3>
+                            <div>{{jobProfileData.workingConditions}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="print-page-section-group">
+                    <div class="row form-group" *ngIf="jobProfileData.benefits">
+                        <div class="col-md-12">
+                            <h3 class="print-header d-block">Benefits</h3>
+                            <div>{{jobProfileData.benefits}}</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 instruction-text">
+                            Viewed on : <span class="text-uppercase text-muted">{{currentDate}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div mat-dialog-actions>
+    <div>
+        <button type="button"
+                class="btn btn-outline-primary"
+                (click)="printGrid()">
+            Print
+        </button>
+        <button type="button"
+                class="btn btn-primary"
+                (click)="convertHtmlPageToPdf()">
+            Download
+        </button>
+    </div>
+    <button type="button"
+            class="btn btn-cancel"
+            (click)="onNoClick()">
+        Cancel
+    </button>
+</div>

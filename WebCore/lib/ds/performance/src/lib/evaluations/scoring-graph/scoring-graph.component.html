@@ -1,0 +1,59 @@
+<div [hidden]="!isScoringEnabled">
+    <div class="row" *ngIf="isInModal; else notInModal">
+        <div class="col-sm-4 border-right">
+            <h3>Overall Score</h3>
+            <div class="font-sm text-muted text-italic">{{overallScoreDesc}}</div>
+            <div class="position-relative">
+                <ng-template #chartDiv>
+                    <canvas baseChart [datasets]="chartSettings.chartData" [labels]="chartSettings.chartLabels"
+                            [chartType]="chartSettings.chartType" [colors]="chartSettings.chartColors"
+                            [options]="chartSettings.chartOptions" #chartjs="base-chart"></canvas>
+                </ng-template>
+                <ng-container *ngIf="showChart" [ngTemplateOutlet]="chartDiv"></ng-container>
+                <div class="center-content-wrapper">
+                    <div class="center-content">
+                        <div class="font-3xl">{{(overallScore | async | number:'1.0-2') + (converter == convertToPercent ? '%' : '')}}</div>
+                        <div *ngIf="{label: label$ | async, makeChart: makeChart$ | async} as data">{{data.label}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-8">
+            <h3>Subtotals</h3>
+            <div #legend></div>
+        </div>
+    </div>
+    <ng-template #notInModal>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card card-height-fix-sm">
+                    <div class="card-body">
+                        <h2>Overall Score</h2>
+                        <div class="font-sm text-muted font-italic">{{overallScoreDesc}}</div>
+                        <div class="position-relative">
+                            <ng-template #chartDiv>
+                                <canvas baseChart [datasets]="chartData" [labels]="chartLabels" [chartType]="chartType"
+                                        [colors]="chartColors" [options]="chartOptions" #chartjs="base-chart"></canvas>
+                            </ng-template>
+                            <ng-container *ngIf="showChart" [ngTemplateOutlet]="chartDiv"></ng-container>
+                            <div class="center-content-wrapper">
+                                <div class="center-content">
+                                    <div class="font-3xl">{{(overallScore | async | number:'1.0-2') + (converter == convertToPercent ? '%' : '')}}</div>
+                                    <div *ngIf="{label: label$ | async, makeChart: makeChart$ | async} as data">{{data.label ? data.label : ''}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <div class="card card card-height-fix-sm">
+                    <div class="card-body">
+                        <h2>Subtotals</h2>
+                        <div #legend></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</div>

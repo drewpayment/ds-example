@@ -1,0 +1,15 @@
+<ds-dashboard-widget [cardType]="cardType">
+    <ds-dashboard-widget-header
+    [title]="title"
+    [availableChartTypes]="chartOptions"
+    [settingsItems]="settingsItems"
+    [headerDropdownOptions]="headerDropdownOptions" 
+    (headerDropdownChange)="headerDropdownChanged($event)" 
+    (chartChange)="chartChanged($event)"
+    (settingSelected)="settingSelected($event)">
+    </ds-dashboard-widget-header>
+
+    <ds-dashboard-widget-content [infoData]="infoData">
+        <!-- Chart Content Can Go Here -->
+    </ds-dashboard-widget-content>
+</ds-dashboard-widget>

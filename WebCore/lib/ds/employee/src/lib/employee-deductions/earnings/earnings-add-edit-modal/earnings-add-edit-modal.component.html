@@ -1,0 +1,119 @@
+<div mat-dialog-header>
+    <h2 *ngIf="option == 'edit'" class="dialog-title">Edit Earning</h2>
+    <h2 *ngIf="option == 'add'" class="dialog-title">Add Earning</h2>
+    <button type="button" class="close" (click)="cancel()">
+        <mat-icon>clear</mat-icon>
+    </button>
+    </div>
+
+    <div mat-dialog-content>
+        <form [formGroup]="earningsForm">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-control-label">Earning</label>
+                        <select class="form-control custom-select" formControlName="clientDeductionID" (change)="populateAmountTypeDropdown(true)" [ngClass]="{'is-invalid': ((earningsForm.controls['clientDeductionID'].touched || formSubmitted ) && !earningsForm.controls['clientDeductionID'].valid)}" cdk-focus-initial>
+                            <!-- <option *ngIf="option == 'add'" [selected]="option == 'add'">--Select a Deduction--</option> -->
+                            <option *ngIf="selectedEarning.clientDeductionID == null" [value]="" [selected]="selectedEarning.clientDeductionID == null"></option>
+                            <option *ngFor="let deduc of earningDropdownList" [selected]="selectedEarning.clientDeductionID == deduc.clientDeductionID" [value]="deduc.clientDeductionID">{{deduc.descriptionCode}}</option>
+                        </select>
+                        <div *ngIf="earningsForm.controls['clientDeductionID'].hasError('required')" class="invalid-feedback">
+                            Please select an earning.
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-control-label">Amount</label>
+                        <div class="input-group">
+
+                            <div *ngIf="earningsForm.controls['amountType'].value.includes('$')" class="input-group-prepend">
+                                <span class="input-group-text currency">$</span>
+                            </div>
+
+                            <input ID="" class="form-control" formControlName="amount" [ngClass]="{'is-invalid': (earningsForm.controls['amount'].touched && !earningsForm.controls['amount'].valid) || ((earningsForm.controls['amount'].touched  || formSubmitted ) && earningsForm.errors?.amount )}"/>
+
+                            <div *ngIf="earningsForm.controls['amountType'].value.includes('ercent') || earningsForm.controls['amountType'].value.includes('%')" class="input-group-append">
+                                <span class="input-group-text percent">%</span>
+                            </div>
+
+                            <div *ngIf="earningsForm.controls['amount'].hasError('required')" class="invalid-feedback">
+                                Please enter an amount.
+                            </div>
+                            <div *ngIf="earningsForm.errors?.amount" class="invalid-feedback">
+                                Invalid amount based on selected amount type.
+                            </div>
+                            <div *ngIf="earningsForm.controls['amount'].hasError('notANumber')" class="invalid-feedback">
+                                Amount must be a number.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-control-label">Amount Type</label>
+                        <select class="form-control custom-select" formControlName="amountType" [ngClass]="{'is-invalid': ((earningsForm.controls['amountType'].touched || formSubmitted ) && !earningsForm.controls['amountType'].valid)}">
+                            <!-- <option *ngIf="option == 'add'" [selected]="option=='add'">--Select an Amount Type--</option> -->
+                            <option *ngIf="selectedEarning.amountType == '' || selectedEarning.amountType == null" [value]="" [selected]="selectedEarning.amountType == '' || selectedEarning.amountType == null"></option>
+                            <option *ngFor="let amountType of amountTypeList"  [selected]="selectedEarning.amountType == amountType.description" [value]="amountType.description">{{amountType.description}}</option>
+                        </select>
+                        <div *ngIf="earningsForm.controls['amountType'].hasError('required')" class="invalid-feedback">
+                            Please select an amount type.
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-control-label">Max Per Payroll <span class="form-help-text"> Optional</span></label>                        
+                        <input type="text" class="form-control" formControlName="max" [ngClass]="{'is-invalid': earningsForm.controls['max'].touched && !earningsForm.controls['max'].valid}" />
+                        <div *ngIf="earningsForm.controls['max'].hasError('notANumber')" class="invalid-feedback">
+                            Max must be a number.
+                        </div>
+                    </div>
+
+                </div>
+                <div *ngIf="clientInfo.costCenterList.length > 0" class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-control-label">Cost Center <span class="form-help-text"> Optional</span></label>                        
+                        <select class="form-control custom-select" formControlName="clientCostCenterID" [ngClass]="{'is-invalid': earningsForm.controls['clientCostCenterID'].touched && !earningsForm.controls['clientCostCenterID'].valid}">
+                            <option [value]=""></option>
+                            <option *ngFor="let cc of clientInfo.costCenterList" [selected]="selectedEarning.clientCostCenterID == cc.clientCostCenterId" [value]="cc.clientCostCenterId">{{cc.description}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-control-label">Max Type <span class="form-help-text"> Optional</span></label>                        
+                        <select class="form-control custom-select" formControlName="maxType" [ngClass]="{'is-invalid': earningsForm.controls['maxType'].touched && !earningsForm.controls['maxType'].valid}">
+                            <option [value]=""></option>
+                            <option *ngFor="let maxType of clientInfo.maxTypeList" [value]="maxType.employeeDeductionMaxTypeID">{{ maxType.description }}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-control-label">Limit/Balance <span class="form-help-text"> Optional</span></label>                        
+                        <input type="text" class="form-control" formControlName="totalMax" [ngClass]="{'is-invalid': earningsForm.controls['totalMax'].touched && !earningsForm.controls['totalMax'].valid}"/>
+                        <div *ngIf="earningsForm.controls['totalMax'].hasError('notANumber')" class="invalid-feedback">
+                            Limit/Balance must be a number.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="custom-control custom-checkbox">
+                        <input formControlName="isActive" type="checkbox" class="custom-control-input" id="customCheck1a">
+                        <label class="custom-control-label" for="customCheck1a">Active</label>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div mat-dialog-actions>
+        <button type="button" class="btn btn-primary" (click)="saveForm()">Save</button>
+        <button type="button" class="btn btn-cancel" (click)="cancel()">Cancel</button> <!-- If adding a new one, show cancel -->
+    </div>

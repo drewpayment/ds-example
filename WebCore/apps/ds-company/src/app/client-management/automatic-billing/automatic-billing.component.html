@@ -1,0 +1,93 @@
+<ds-card border="top" mode="nobody">
+  <ds-card-header>
+    <ds-card-header-title>
+      Automatic Billing Setup
+    </ds-card-header-title>
+    <ds-card-title-action>
+      <button class="btn btn-outline-primary" (click)="openModal(null)">
+        <mat-icon>add</mat-icon> Billing
+      </button>
+    </ds-card-title-action>
+    <ds-card-subtitle>
+      <div class="instruction-text">
+        Save billing items associated with Company Features here. When a feature is turned on, any saved billing items
+        will automatically be added on the Billing Items page.
+        If the "Every Payroll" frequency is Selected for a billing item, enter the annual bill for the Flat and Per Qty
+        amounts.
+      </div>
+    </ds-card-subtitle>
+  </ds-card-header>
+</ds-card>
+
+<ds-card mode="noheader" *ngIf="!isLoading else loadingScreen">
+  <ds-card-content>
+    <div class="row">
+      <div class="col-4">
+        <div class="form-group">
+          <label class="form-control-label">Feature</label>
+          <select class="custom-select form-control" [formControl]="featureOption">
+            <option *ngFor="let feat of featureOptions" [ngValue]="feat.featureOptionId">{{ feat.description }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="card card-table"
+      *ngIf="billingSource && billingSource.data && billingSource.data.length else emptyState">
+      <mat-table [dataSource]="billingSource" color="primary">
+        <ng-container matColumnDef="Name">
+          <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+          <mat-cell *matCellDef="let element;" data-label="Name">{{element.billingItemDescription.description}}
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Frequency">
+          <mat-header-cell *matHeaderCellDef> Frequency </mat-header-cell>
+          <mat-cell *matCellDef="let element;" data-label="Frequency">{{ billingFreqHelper.toString(element.billingFrequency) }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Line">
+          <mat-header-cell *matHeaderCellDef> Line </mat-header-cell>
+          <mat-cell *matCellDef="let element;" data-label="Line">{{element.line | number:'1.2-2' }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Flat">
+          <mat-header-cell *matHeaderCellDef> Flat </mat-header-cell>
+          <mat-cell *matCellDef="let element;" data-label="Per Qty">{{element.flat | number:'1.2-2'}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Per Qty">
+          <mat-header-cell *matHeaderCellDef> Per Qty </mat-header-cell>
+          <mat-cell *matCellDef="let element;" data-label="Per Qty">{{element.perQty | number:'1.2-2'}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="What To Count">
+          <mat-header-cell *matHeaderCellDef> What To Count </mat-header-cell>
+          <mat-cell *matCellDef="let element;" data-label="What To Count">
+            {{ billingWTCHelper.toString(element.billingWhatToCountId) }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <mat-header-cell *matHeaderCellDef class="mat-td-action-icon-width"></mat-header-cell>
+          <mat-cell *matCellDef="let element;" data-label="Edit" class="mat-td-action-icon-width">
+            <button type="button" [matMenuTriggerFor]="automaticBillingMenu" class="btn btn-icon table-edit-icon">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #automaticBillingMenu="matMenu">
+              <button mat-menu-item (click)="openModal(element)">Edit</button>
+              <button mat-menu-item (click)="confirmDeletion(element.automaticBillingId)">Delete</button>
+            </mat-menu>
+          </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="billingColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: billingColumns;"></mat-row>
+      </mat-table>
+      <mat-paginator #billingPaginator [pageSize]="10" [pageSizeOptions]="[10,25,50]" showFirstLastButtons>
+      </mat-paginator>
+    </div>
+    <ng-template #emptyState>
+      <div class="empty-state">There are no billing items to display for {{selectedFeature.description}}. Click + Billing to add one.</div>
+    </ng-template>
+  </ds-card-content>
+</ds-card>
+
+<ng-template #loadingScreen>
+  <ds-card mode="noheader">
+    <ds-card-content>
+      <ds-loading-message></ds-loading-message>
+    </ds-card-content>
+  </ds-card>
+</ng-template>

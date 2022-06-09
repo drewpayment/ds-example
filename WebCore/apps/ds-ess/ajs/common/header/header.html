@@ -1,0 +1,55 @@
+﻿<div id="page-header" ng-style="user.$emulationStyle">
+
+    <div id="top-bar" class="legacy legacy-type" ng-style="user.$emulationStyle">
+
+        <div id="logout"> <a target="_parent" href="Logout?directlogout" ng-click="clearLocalStorage()">Logout</a> </div>
+        <div id="help-link">
+            <a>Help</a>
+        </div>
+
+        <div id="change-stuff">
+            <ul>
+                <li ng-style="user.$emulationStyle" ng-show="user.clientName"><i class="fa fa-building-o"></i>{{ user.clientName }}</li>
+                <li ng-style="user.$emulationStyle">
+                    <ds-menu-wrapper-toggle></ds-menu-wrapper-toggle>
+                </li>
+                <!-- <li ng-style="user.$emulationStyle" ng-show="user.firstLastName"><i class="fa fa-user"></i>{{ user.firstLastName }}</li> -->
+            </ul>
+        </div>
+
+        <!-- <div id="help-link">
+            <a target="_blank" href="http://dominionsystems.helpdocsonline.com/#home">Help</a>
+        </div>
+        <div id="logout">
+            <a target="_parent" href="Logout?directlogout">Logout</a>
+        </div> -->
+    </div>
+
+    <div id="header" ng-style="user.$emulationStyle">
+        <a id="logo" ng-href="{{legacyHomepageLink.url}}">
+            <img src="Images/dominion_logo.png" />
+        </a>
+        <div id="mainNavigation" class="navigation">
+            <ul>
+                <li ng-repeat="link in legacyHeaderLinks">
+                    <a ng-class="{'active': link.isActive}"
+                       ng-href="{{ link.url | lowercase }}"
+                       ng-if="!link.isNgx"
+                       ng-click="updateNgxMenu()"
+                    >{{ link.name }}</a>
+                    <a ng-class="{'active': link.isActive}"
+                        ng-href="{{ link.url | lowercase }}"
+                        ng-if="link.isNgx && link.name.toLowerCase() != 'performance'"
+                        ng-click="updateNgxMenu()"
+                    >{{ link.name }}</a>
+                    <a ng-class="{'active': link.isActive}"
+                        ng-href="{{ redirectToGoals ? link.url : link.url + '/goals' | lowercase }}"
+                        ng-if="link.isNgx && link.name.toLowerCase() == 'performance'"
+                        ng-click="updateNgxMenu()"
+                    >{{ link.name }}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</div>

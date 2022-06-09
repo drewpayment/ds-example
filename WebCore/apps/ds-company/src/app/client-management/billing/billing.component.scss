@@ -1,0 +1,78 @@
+@import "../../../../../../Styles/scss/bootstrap-variables";
+
+
+@media screen and (max-width: 1200px) {
+    .card.card-table {
+        box-shadow: none;
+    }
+    .mat-table {
+        border: 0;
+        vertical-align: middle;
+    }
+
+    .mat-table caption {
+        font-size: 1em;
+    }
+
+    .mat-header-row {
+        display: none;
+    }
+
+    .mat-table .mat-row {
+        display: block;
+        border-bottom: 1px solid #ddd;
+        padding-top: 1rem;
+
+        &:hover {
+            background-color: transparent;
+        }
+        &:after {
+            display: none;
+        }
+    }
+
+    .mat-table .mat-cell {
+        display: flex;
+        font-weight: bold;
+        min-height: 40px;
+        padding: 0 0 1rem 0; // Set padding to form
+        text-align: right;
+        justify-content: space-between;
+        align-items: center;
+
+        &:before {
+            content: attr(data-label);
+            float: left;
+            font-weight: normal;
+            margin-right: 10px;
+        }
+
+        .mat-select {
+            font-weight: normal;
+        }
+    }
+ 
+    .mat-table .table-text-right, .mat-table .table-header .table-text-right {
+        padding-right: 0 !important;
+    }
+
+    .mat-row .table-edit-icon {
+        opacity: 1;
+    }
+}
+
+
+@media screen and (min-width: 1201px) {
+    .justify-md-content-center {
+        justify-content: center;
+    }
+}
+
+// .btn-warning-width {
+//     width: 82px;
+// }
+
+.mat-column-status {
+    flex: 0 0 130px;
+    
+}

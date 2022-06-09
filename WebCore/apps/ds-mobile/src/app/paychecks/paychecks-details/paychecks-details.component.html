@@ -1,0 +1,196 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a href routerLink="../..">Paycheck</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+        {{ id == 1 ? 'Check Detail' : id == 2 ? 'Earnings Detail' : id == 3 ? 'Earnings Hours' : id == 4 ? 'Employer Paid Benefits' : 'Other Information' }}
+    </li>
+  </ol>
+</nav>
+
+<mat-card *ngIf="id == 1 && isLoading">
+  <mat-card-header>
+    <mat-card-title>Check Details For {{currentPaycheckInfo?.checkDate | date:'MMM dd yyyy'}}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content class="px-1">
+    <mat-table [dataSource]='currentPaycheckInfo?.deductions' class="no-border">
+      <ng-container matColumnDef='description'>
+        <mat-header-cell *matHeaderCellDef>
+          <span class="text-truncate">TYPE</span>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let deduction">{{deduction.description}}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef='currentAmount'>
+          <mat-header-cell *matHeaderCellDef class="justify-content-end">
+            <span class="text-truncate">CURRENT</span>
+          </mat-header-cell>
+          <mat-cell *matCellDef="let deduction" class="justify-content-end">{{deduction.currentAmount | currency}}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef='ytdAmount'>
+          <mat-header-cell *matHeaderCellDef class="justify-content-end">
+            <span class="text-truncate">YTD</span>
+          </mat-header-cell>
+          <mat-cell *matCellDef="let deduction" class="justify-content-end">{{deduction.ytdAmount | currency}}</mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row columns: displayedColumns"></mat-row>
+    </mat-table>
+  </mat-card-content>
+</mat-card>
+
+<mat-card *ngIf="id == 2 && isLoading">
+  <mat-card-header>
+    <mat-card-title>Earning Details For {{currentPaycheckInfo?.checkDate | date:'MMM dd yyyy'}}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="table-responsive">
+      <table mat-table [dataSource]='paycheckEarningsDetails' class="no-border wp-100">
+        <ng-container matColumnDef='description'>
+          <th mat-header-cell *matHeaderCellDef >
+            <span class="text-truncate">TYPE</span>
+          </th>
+          <td mat-cell *matCellDef="let earning" >{{earning.description}}</td>
+        </ng-container>
+        <ng-container matColumnDef='rate'>
+          <th mat-header-cell *matHeaderCellDef class="text-right">
+            <span class="text-truncate">RATE</span>
+          </th>
+          <td mat-cell *matCellDef="let earning" class="text-right">{{earning.rate | currency}}</td>
+        </ng-container>
+        <ng-container matColumnDef='hours'>
+            <th mat-header-cell *matHeaderCellDef class="text-right">
+              <span class="text-truncate">HRS</span>
+            </th>
+            <td mat-cell *matCellDef="let earning" class="text-right">{{earning.hours}}</td>
+        </ng-container>
+        <ng-container matColumnDef='amount'>
+            <th mat-header-cell *matHeaderCellDef class="text-right">
+              <span class="text-truncate">AMT</span>
+            </th>
+            <td mat-cell *matCellDef="let earning" class="text-right">{{earning.totalAmount | currency}}</td>
+        </ng-container>
+        <ng-container matColumnDef='ytdAmount'>
+            <th mat-header-cell *matHeaderCellDef class="text-right">
+              <span class="text-truncate">YTD</span>
+            </th>
+            <td mat-cell *matCellDef="let earning" class="text-right">{{earning.ytdTotalAmount | currency}}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="earningDetailsColumns"></tr>
+        <tr mat-row *matRowDef="let row columns: earningDetailsColumns"></tr>
+      </table>
+    </div>
+  </mat-card-content>
+  <mat-card-content *ngIf='currentPaycheckDetails?.earning'>
+    <div class="table-responsive">
+      <table mat-table [dataSource]='currentPaycheckDetails?.earning' class="no-border wp-100">
+        <ng-container matColumnDef='payCode'>
+          <th mat-header-cell *matHeaderCellDef>
+            <span class="text-truncate">PAY CODE</span>
+          </th>
+          <td mat-cell *matCellDef="let detail">{{detail.payCode}}</td>
+        </ng-container>
+        <ng-container matColumnDef='earning'>
+            <th mat-header-cell *matHeaderCellDef class="text-right">
+              <span class="text-truncate">EARNING</span>
+            </th>
+            <td mat-cell *matCellDef="let detail" class="text-right">{{detail.earning}}</td>
+        </ng-container>
+        <ng-container matColumnDef='rate'>
+          <th mat-header-cell *matHeaderCellDef class="text-right">
+            <span class="text-truncate">RATE</span>
+          </th>
+          <td mat-cell *matCellDef="let detail" class="text-right">{{detail.rate}}</td>
+      </ng-container>
+        <ng-container matColumnDef='hours'>
+            <th mat-header-cell *matHeaderCellDef class="text-right">
+              <span class="text-truncate">HOURS</span>
+            </th>
+            <td mat-cell *matCellDef="let detail" class="text-right">{{detail.hours}}</td>
+        </ng-container>
+        <ng-container matColumnDef='pay'>
+            <th mat-header-cell *matHeaderCellDef class="text-right">
+              <span class="text-truncate">PAY</span>
+            </th>
+            <td mat-cell *matCellDef="let detail" class="text-right">{{detail.pay | currency}}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns2s"></tr>
+        <tr mat-row *matRowDef="let row columns: displayedColumns2s"></tr>
+      </table>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-card *ngIf="id == 3 && isLoading">
+  <mat-card-header>
+    <mat-card-title>Earning Hours For {{currentPaycheckInfo?.checkDate | date:'MMM dd yyyy'}}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content *ngIf="employeePaycheckHours">
+    <mat-table *ngFor='let id of groups' [dataSource]='rows[id]' class="no-border">
+      <ng-container matColumnDef='description'>
+          <mat-header-cell *matHeaderCellDef class="justify-content-start">{{id | getCellTitle : headers: 0}}</mat-header-cell>
+          <mat-cell *matCellDef="let hour; let i = index" class="justify-content-start">{{(id | getCellTitle : values: i)?.value1}}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef='YTDTotalAmount'>
+        <mat-header-cell *matHeaderCellDef class="justify-content-end">{{id | getCellTitle : headers: 1}}</mat-header-cell>
+        <mat-cell *matCellDef="let hour; let i = index" class="justify-content-end">{{(id | getCellTitle : values: i)?.value2}}</mat-cell>
+    </ng-container>
+      <mat-header-row *matHeaderRowDef="columns4"></mat-header-row>
+      <mat-row *matRowDef="let row columns: columns4"></mat-row>
+    </mat-table>
+  </mat-card-content>
+</mat-card>
+
+<mat-card *ngIf="id == 4 && isLoading">
+  <mat-card-header>
+    <mat-card-title>Employer Paid Benefits For {{currentPaycheckInfo?.checkDate | date:'MMM dd yyyy'}}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-table [dataSource]='currentPaycheckInfo?.companyPaidBenefits' class="no-border">
+      <ng-container matColumnDef='description'>
+        <mat-header-cell *matHeaderCellDef>
+          <span class="text-truncate">TYPE</span>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let employerBenefits">{{employerBenefits?.description}}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef='current'>
+          <mat-header-cell *matHeaderCellDef class="justify-content-end current">
+            <span class="text-truncate">CURRENT</span>
+          </mat-header-cell>
+          <mat-cell *matCellDef="let employerBenefits" class="justify-content-end current">{{employerBenefits?.current | currency}}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef='endYtd'>
+          <mat-header-cell *matHeaderCellDef class="justify-content-end">
+            <span class="text-truncate">YTD</span>
+          </mat-header-cell>
+          <mat-cell *matCellDef="let employerBenefits" class="justify-content-end">{{employerBenefits?.endYtd | currency}}</mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="displayedColumns4"></mat-header-row>
+      <mat-row *matRowDef="let row columns: displayedColumns4"></mat-row>
+    </mat-table>
+  </mat-card-content>
+</mat-card>
+
+<mat-card *ngIf="id == 5 && isLoading">
+  <mat-card-header>
+    <mat-card-title>Other Information For {{currentPaycheckInfo?.checkDate | date:'MMM dd yyyy'}}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-table [dataSource]='paystubOptions' class="no-border">
+      <ng-container matColumnDef='pointBalance'>
+        <mat-header-cell *matHeaderCellDef>
+          <span class="text-truncate">POINTS</span>
+        </mat-header-cell>
+        <mat-cell *matCellDef="let point">{{point?.pointBalance}}</mat-cell>
+      </ng-container>      
+      <mat-header-row *matHeaderRowDef="displayedColumns5"></mat-header-row>
+      <mat-row *matRowDef="let row columns: displayedColumns5"></mat-row>
+    </mat-table>
+  </mat-card-content>
+</mat-card>
+
+<ng-container *ngIf="!isLoading">
+  <div class="d-flex justify-content-center">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-container>

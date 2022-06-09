@@ -1,0 +1,102 @@
+<div class="ds-card employee-header">
+    <div class="card-body  pt-lg-2">
+        <ng-container *ngIf="isPageLoaded$|async as loaded; else isLoading">
+            <div class="information-wrapper row align-items-center position-relative hoverable">
+                <div class="col-xl-auto">
+                  <div class="profile text-center">
+                    <ds-profile-image
+                      [employeeImage]="employeeImage" 
+                      [image-type]="1" 
+                      [image-size]="1"
+                      firstName="{{employeeContactInfo?.firstName}}"
+                      lastName="{{employeeContactInfo?.lastName}}"></ds-profile-image>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="information row flex-nowrap">
+                      <!-- Employee Information -->
+                      <div class="col">
+                        <div class="row align-items-baseline">
+                          <div class="col-xl-auto mr-auto text-center">
+                              <div class="d-flex flex-wrap align-items-baseline justify-content-xl-start justify-content-center">
+                                  <div class="text-uppercase text-truncate font-2xl pr-3">
+                                      <b>{{ employeeContactInfo?.firstName }} {{ employeeContactInfo?.lastName }}</b>
+                                  </div>
+                                  <div class="d-inline-block text-medium-dark font-weight-bold font-lg">{{employeeContactInfo?.employeeNumber}}</div>
+                              </div>
+                          </div>
+                          <div class="col-xl-auto text-center">
+                              <ul class="list-inline bordered font-lg mb-0 text-center">
+                                  <li class="list-inline-item" *ngIf="employeeContactInfo?.jobTitleInfoDescription">
+                                      <b *ngIf="!showJobTitleLink">{{employeeContactInfo?.jobTitleInfoDescription}}</b>
+                                      <a href="#" class="mr-1" *ngIf="showJobTitleLink" (click)="showJobProfileDialog(jobProfileData)">
+                                          <b>{{employeeContactInfo?.jobTitleInfoDescription}}</b>
+                                      </a>
+                                  </li>
+                                  <li class="list-inline-item" *ngIf="employeeContactInfo?.divisionName">
+                                      <b>{{employeeContactInfo?.divisionName}}</b>
+                                  </li>
+
+                                  <li class="list-inline-item" *ngIf="employeeContactInfo?.departmentName">
+                                      <b>{{employeeContactInfo?.departmentName}}</b>
+                                  </li>
+                              </ul>
+                          </div>
+                        </div>
+
+                        <hr class="my-2" />
+
+                        <div class="d-2xl-flex justify-content-center justify-content-lg-start position-relative">
+                            <div class="info-column">
+                              <div class="emp-content">
+                                        <div class="eheader-sub lg">Primary Phone</div>
+                                  <div class="text-dark text-nowrap" *ngIf="employeeContactInfo?.homePhoneNumber">
+                                      <div>{{employeeContactInfo?.homePhoneNumber}}</div>
+                                  </div>
+                                  <div class="text-nowrap text-muted font-italic" *ngIf="!employeeContactInfo?.homePhoneNumber">Not Specified</div>
+                              </div>
+                              <div class="emp-content" *ngIf="employeeContactInfo?.cellPhoneNumber">
+                                        <div class="eheader-sub lg">Secondary Phone</div>
+                                  <div class="text-dark text-nowrap">{{employeeContactInfo?.cellPhoneNumber}}</div>
+                                  <div class="text-nowrap text-muted font-italic" *ngIf="!employeeContactInfo?.cellPhoneNumber">Not Specified</div>
+                              </div>
+                              <div class="emp-content" *ngIf="employeeContactInfo?.emailAddress">
+                                  <div class="eheader-sub sm">Email</div>
+                                  <div class="text-dark eheader-content">
+                                    <div class="text-truncate email">
+                                      {{employeeContactInfo?.emailAddress}}
+                                    </div>
+                                  </div>
+                                  <div class="text-nowrap text-muted font-italic" *ngIf="!employeeContactInfo?.emailAddress">Not Specified</div>
+                              </div>
+                            </div>
+                            <hr class="d-sm-none" />
+                            <div class="v-line"></div>
+                            <div class="info-column">
+                              <div class="emp-content" *ngIf="employeeContactInfo !== null">
+                                  <div class="eheader-sub sm">Address</div>
+                                  <address class="text-dark" *ngIf="employeeContactInfo?.addressLine1">
+                                      <div>{{employeeContactInfo?.addressLine1}}</div>
+                                      <div *ngIf="employeeContactInfo?.addressLine2">{{employeeContactInfo?.addressLine2}}</div>
+                                      <div>{{employeeContactInfo?.city}} {{employeeContactInfo?.stateName}} {{employeeContactInfo?.postalCode}}</div>
+                                      <div *ngIf="employeeContactInfo?.countryId > 0">{{employeeContactInfo?.countryName}}</div>
+                                  </address>
+                                  <div class="text-nowrap text-muted font-italic" *ngIf="!employeeContactInfo?.addressLine1">Not Specified</div>
+                              </div>
+                            </div>
+                            <button class="btn btn-icon hover-show nested-cog" (click)="showEditContactInfoDialog(employeeContactInfo)">
+                              <i class="material-icons">mode_edit</i>
+                          </button>
+                        </div>
+                      </div>
+                  </div>
+                </div>
+            </div>
+        </ng-container>
+        <ng-template #isLoading>
+            <div class="row justify-content-center">
+                <div class="col"><ds-loading-message></ds-loading-message></div>
+            </div>
+        </ng-template>
+    </div>
+</div>

@@ -1,0 +1,264 @@
+<div [formGroup]="f">
+    <ds-card>
+        <ds-card-header>
+            <ds-card-sub-header-title>Filter</ds-card-sub-header-title>
+        </ds-card-header>
+        <ds-card-content>
+            <div class="row" formGroupName="persistedSearchSettings">
+                <div class="col-md-auto">
+                    <div class="form-group">
+                        <div class="d-flex align-items-center">
+                            <label class="form-control-label mr-2">Employees Per Page</label>
+                            <input dsFormControlValidator [dsFormControlSubmitted]="submitted" type="number"
+                                class="form-control hoursbox" formControlName="empsPerPage" max="25"/>
+                        </div>
+
+                        <div class="invalid-feedback d-block text-right" *ngIf="empsPerPage.hasError('max')">
+                            Must be 25 or less
+                        </div>
+                        <div class="invalid-feedback d-block text-right" *ngIf="empsPerPage.hasError('min')">
+                            Must be 1 or greater
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-auto">
+                    <div class="form-group inline-form-elements mt-1">
+                        <label class="form-control-label mb-0">Display Totals</label>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" id="daily" name="customRadioInline" class="custom-control-input"
+                                formControlName="daily">
+                            <label class="custom-control-label" for="daily">Daily</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" id="weekly" name="customRadioInline" class="custom-control-input"
+                                formControlName="weekly">
+                            <label class="custom-control-label" for="weekly">Weekly</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" id="grand" name="customRadioInline" class="custom-control-input"
+                                formControlName="grand">
+                            <label class="custom-control-label" for="grand">Grand</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-4 col-xl-2">
+                    <div class="form-group">
+                        <label class="form-control-label">Pay Period</label>
+                        <select class="form-control custom-select" name="payPeriod" formControlName="payPeriod"
+                            [compareWith]="comparePayPeriod">
+                            <option *ngFor="let o of payPeriods" [ngValue]="o">
+                                {{o.payPeriod}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-xl-2" [hidden]="!isCustomDateRange">
+                    <div class="form-group">
+                        <label class="form-control-label">Period Start</label>
+                        <div class="input-group">
+                            <input dsFormControlValidator [dsFormControlSubmitted]="submitted" matInput class="form-control" [matDatepicker]="startDatePicker"
+                            formControlName="startDate"/>
+                            <!-- formControlName="startDate" [min]="startDateValidation.minDate()" [max]="startDateValidation.maxDate()"/> -->
+                            <!-- ^ won't show the min/max error messages, if we don't set min/max values on the input. -->
+                            <div class="input-group-append">
+                                <mat-datepicker-toggle matSuffix [for]="startDatePicker" class="input-group-text date">
+                                    <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                                </mat-datepicker-toggle>
+                                <mat-datepicker #startDatePicker></mat-datepicker>
+                            </div>
+                        </div>
+
+                        <div class="invalid-feedback d-block text-left" *ngIf="startDateValidation.hasError()">
+                            {{ startDateValidation.errorMessage() }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-xl-2" [hidden]="!isCustomDateRange">
+                    <div class="form-group">
+                        <label class="form-control-label">End</label>
+                        <div class="input-group">
+                            <input dsFormControlValidator [dsFormControlSubmitted]="submitted" matInput class="form-control" [matDatepicker]="endDatePicker"
+                                formControlName="endDate" [min]="endDateValidation.minDate()" [max]="endDateValidation.maxDate()"/>
+                            <div class="input-group-append">
+                                <mat-datepicker-toggle matSuffix [for]="endDatePicker" class="input-group-text date">
+                                    <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                                </mat-datepicker-toggle>
+                                <mat-datepicker #endDatePicker></mat-datepicker>
+                            </div>
+                        </div>
+
+                        <div class="invalid-feedback d-block text-left" *ngIf="endDateValidation.hasError()">
+                            {{ endDateValidation.errorMessage() }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-xl-2" formGroupName="persistedSearchSettings">
+                    <div class="form-group">
+                        <label class="form-control-label">Days</label>
+                        <select class="form-control custom-select" name="days" formControlName="days">
+                            <option *ngFor="let o of approveHourOptions" [value]="o.value">
+                                {{o.label}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-xl-2">
+                    <div class="form-group">
+                        <label class="form-control-label">Approval Status</label>
+                        <select class="form-control custom-select" name="approvalStatus"
+                            formControlName="approvalStatus">
+                            <option value="1">
+                                All
+                            </option>
+                            <option value="2">
+                                Approved
+                            </option>
+                            <option value="3">
+                                Not Approved
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="row">
+                <div class="col-6 col-md-4 col-xl-2" formGroupName="persistedSearchSettings">
+                    <div class="form-group">
+                        <label class="form-control-label">Days</label>
+                        <select class="form-control custom-select" name="days" formControlName="days">
+                            <option *ngFor="let o of approveHourOptions" [value]="o.value">
+                                {{o.label}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-xl-2">
+                    <div class="form-group">
+                        <label class="form-control-label">Approval Status</label>
+                        <select class="form-control custom-select" name="approvalStatus"
+                            formControlName="approvalStatus">
+                            <option value="1">
+                                All
+                            </option>
+                            <option value="2">
+                                Approved
+                            </option>
+                            <option value="3">
+                                Not Approved
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div> -->
+
+            <div class="row">
+                <div class="col-md-4 col-xl-2">
+                    <div class="form-group">
+                        <label class="form-control-label">Employee Filter</label>
+                        <select class="form-control custom-select" name="filter2Value" formControlName="category1Value">
+                            <option *ngFor="let o of clockFilters1" [value]="o.clockFilterID">
+                                {{o.description}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4 col-xl-4" *ngIf="true === showFilter1">
+                    <div class="form-group" *ngIf="shouldUseAutocompleteField(category1Value.value); else filter1NoAuto">
+                        <label class="form-control-label">{{ filter1ControlLabel }}</label>
+                        <div class="input-group">
+                            <input #filter1AutoInput matInput [matAutocomplete]="filter1Auto"
+                                [formControl]="filter1Value" class="form-control"
+                                [class.is-invalid]="filter1ErrorMessage && filter1ErrorMessage.length > 0"
+                                [placeholder]="formValueCache.filter1Value?.filter || ''"
+                                (focus)="focusOnAutocomplete(1)"
+                                (blur)="focusOffAutocomplete(1)"
+                                (keyup.enter)="matAutocompleteEnterPress($event)">
+                            <mat-autocomplete #filter1Auto="matAutocomplete" [displayWith]="displayFilterValue"
+                                [panelWidth]="getPanelWidth(1, filter1AutoInput.offsetWidth)"
+                                (optionSelected)="filter1AutoInput.blur()"
+                                autoActiveFirstOption>
+                                <mat-option *ngFor="let o of filter1ValueOptions$ | async" [value]="o">
+                                    {{ o.filter }}
+                                </mat-option>
+                            </mat-autocomplete>
+                            <div class="invalid-feedback">
+                                {{ filter1ErrorMessage }}
+                            </div>
+                        </div>
+
+                    </div>
+                    <ng-template #filter1NoAuto>
+                        <div class="form-group">
+                            <label class="form-control-label">{{ filter1ControlLabel }}</label>
+                            <select class="form-control custom-select" name="filter1Value"
+                                formControlName="filter1Value">
+                                <option value="0"></option>
+                                <option *ngFor="let o of filter1ValueOptions$ | async" [ngValue]="o?.id">
+                                    {{o.filter}}
+                                </option>
+                            </select>
+                        </div>
+                    </ng-template>
+                </div>
+                <div class="col-md-4 col-xl-2" *ngIf="true === showCategory2">
+                    <div class="form-group">
+                        <label class="form-control-label">&nbsp;</label>
+                        <select class="form-control custom-select" name="category2Value"
+                            formControlName="category2Value">
+                            <option *ngFor="let o of clockFilters2" [value]="o.clockFilterID">
+                                {{o.description}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4 col-xl-4" *ngIf="true === showFilter2">
+                    <div class="form-group" *ngIf="shouldUseAutocompleteField(category2Value.value); else filter2NoAuto">
+                        <label class="form-control-label">{{ filter2ControlLabel }}</label>
+                        <div class="input-group">
+                            <input #filter2AutoInput matInput [matAutocomplete]="filter2Auto"
+                                [formControl]="filter2Value" class="form-control"
+                                [placeholder]="formValueCache.filter2Value?.filter || ''"
+                                (focus)="focusOnAutocomplete(2)"
+                                (blur)="focusOffAutocomplete(2)"
+                                (keyup.enter)="matAutocompleteEnterPress($event)">
+                            <mat-autocomplete #filter2Auto="matAutocomplete" [displayWith]="displayFilterValue"
+                                [panelWidth]="getPanelWidth(2, filter2AutoInput.offsetWidth)"
+                                (optionSelected)="filter2AutoInput.blur()"
+                                autoActiveFirstOption>
+                                <mat-option *ngFor="let o of filter2ValueOptions$ | async" [value]="o">
+                                    {{ o.filter }}
+                                </mat-option>
+                            </mat-autocomplete>
+                        </div>
+                    </div>
+                    <ng-template #filter2NoAuto>
+                        <div class="form-group">
+                            <label class="form-control-label">{{ filter2ControlLabel }}</label>
+                            <select class="form-control custom-select" name="filter2Value"
+                                formControlName="filter2Value">
+                                <option value="0"></option>
+                                <option *ngFor="let o of filter2ValueOptions$ | async" [ngValue]="o?.id">
+                                    {{o.filter}}
+                                </option>
+                            </select>
+                        </div>
+                    </ng-template>
+                </div>
+            </div>
+
+            <div class="row justify-content-end">
+                <div class="col-md-auto">
+                    <!-- Disable button if using a custom date range, and either the startDate or endDate has an error. -->
+                    <button type="button"
+                            class="btn btn-outline-primary"
+                            [disabled]="isFilterSubmitDisabled"
+                            (click)="sendSearch()">
+                        Filter
+                    </button>
+                </div>
+            </div>
+        </ds-card-content>
+    </ds-card>
+</div>

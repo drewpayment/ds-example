@@ -1,0 +1,21 @@
+<div class="modal-body pb-0 text-center">
+    <div class="font-xl mb-1">
+        <!--Are you sure you want to change this photo?-->
+        {{displayText}}
+    </div>
+    <div class="instruction-text">
+        <!--The current photo will be replaced.<br />This change cannot be undone.-->
+        {{cautionText}}
+    </div>
+</div>
+<div class="modal-footer"
+  [class.flex-row-reverse]="!swapOkClose">
+  <ng-container *ngIf="swapOkClose, else standardFooter">
+    <button class="btn btn-cancel" (click)="cancel()" cdkFocusInitial>{{cancelButtonText}}</button>
+    <button class="btn btn-primary" (click)="save()" >{{confirmButtonText}}</button>
+  </ng-container>
+</div>
+<ng-template #standardFooter>
+    <button class="btn btn-save" (click)="save()" cdkFocusInitial>{{confirmButtonText}}</button>
+    <button class="btn btn-cancel" (click)="cancel()">{{cancelButtonText}}</button>
+</ng-template>

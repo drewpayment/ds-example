@@ -1,0 +1,14 @@
+<ds-dashboard-widget [hover]="true" [cardType]="cardType" [loaded]="loaded" (click)="openDialog()" skeleton="info-card-skeleton">
+    <ds-dashboard-widget-header>
+    </ds-dashboard-widget-header>
+
+    <ds-dashboard-widget-content *ngIf="employeeIds && employeeIds.length > 0; else noData" [infoData]="infoData">
+        <ds-dashboard-widget-bottom-content *ngIf="previousYear">
+            <p class="mb-0">Previous Year:</p>
+            <p class="mb-0 bold">{{ previousYear.turnoverRate }}</p>
+        </ds-dashboard-widget-bottom-content>
+    </ds-dashboard-widget-content>
+    <ng-template #noData>    
+        <div class="empty-state">No employees found to calculate turnover.</div>
+    </ng-template>
+</ds-dashboard-widget>

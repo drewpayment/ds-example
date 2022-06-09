@@ -1,0 +1,30 @@
+<ds-dashboard-widget [cardType]="cardType" [loaded] = "loaded" *ngIf="loaded">
+    <ds-dashboard-widget-header [title]="title" [availableChartTypes]="availableChartTypes" (chartChange)="chartChange($event)"></ds-dashboard-widget-header>
+        <ds-dashboard-widget-content *ngIf="isGraph && !emptyState">
+            <div class="overflow-list">
+                <div class="row">
+                    <div class="col-md-6">
+                        <ds-gender-graph [dateRange]="dateRange" [data]="graphData"></ds-gender-graph>
+                    </div>
+                    <div class="col-md-6">
+                        <ds-age-graph [dateRange]="dateRange" [data]="graphData"></ds-age-graph>
+                    </div>
+                    <div class="col-md-6">
+                        <ds-length-of-service-graph [dateRange]="dateRange" [data]="graphData"></ds-length-of-service-graph>
+                    </div>
+                    <div class="col-md-6">
+                        <ds-ethnicity-graph [dateRange]="dateRange" [data]="graphData"></ds-ethnicity-graph>
+                    </div>
+                </div>
+             </div>
+        </ds-dashboard-widget-content>
+        <ds-dashboard-widget-content *ngIf="isList && !emptyState">
+            <ds-demographics-list [data]="graphData"></ds-demographics-list>
+        </ds-dashboard-widget-content>
+    <ds-dashboard-widget-content *ngIf="emptyState">
+        <div class="empty-state">
+            No data available to display
+        </div>
+    </ds-dashboard-widget-content>
+</ds-dashboard-widget>
+

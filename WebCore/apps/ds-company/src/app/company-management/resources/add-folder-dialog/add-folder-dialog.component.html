@@ -1,0 +1,23 @@
+<mat-dialog-header>
+    <h2 class="dialog-title">
+        {{header}}
+    </h2>
+    <button type="button" class="close" (click)="clear()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</mat-dialog-header>
+<mat-dialog-content>
+    <div [formGroup]="form1">
+        <label class="form-control-label">Folder Name</label>
+        <input id="txtOrgName" maxlength="25" formControlName="folderName" class="form-control" [ngClass]="{'is-invalid':  ((formSubmitted || form1.controls.folderName.touched) && (form1.controls.folderName.errors?.required ||
+                                                                    form1.controls.folderName.errors?.duplicate) )}" cdkFocusInitial />
+        <div class="invalid-feedback">
+            <span *ngIf="form1.controls.folderName.errors?.required">Please enter a folder name.</span>
+            <span *ngIf="form1.controls.folderName.errors?.duplicate">Please enter a different folder name.</span>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button type="button" class="btn btn-save" (click)="save()">Save</button>
+    <button type="button" class="btn btn-cancel" (click)="clear()">Cancel</button>
+</mat-dialog-actions>

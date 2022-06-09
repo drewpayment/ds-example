@@ -1,0 +1,173 @@
+<ng-template #loading>
+  <ds-loading-message></ds-loading-message>
+</ng-template>
+
+<ds-card collapse="true" expanded="true">
+  <ds-card-header>
+    <ds-card-sub-header-title>
+      Computation
+    </ds-card-sub-header-title>
+  </ds-card-header>
+  <ds-card-content>
+    <ng-container *ngIf="{
+        availableClientAccruals: (availableClientAccruals$ | async),
+        dropdownLists: (dropdownLists$ | async)
+      } as data; else loading">
+      <ng-container *ngIf="data.dropdownLists != null; else loading">
+        <form [formGroup]="form">
+          <div class="row" formGroupName="accrual">
+            <div class="col-sm-6 col-md-4">
+              <div class="form-group">
+                <label>Reference Method</label>
+                <select class="form-control custom-select" formControlName="serviceReferencePointId" dsFormControlValidator>
+                  <option value=""></option>
+                  <option *ngFor="let planType of data.dropdownLists.serviceReferencePointFrequencies"
+                    [ngValue]="planType.id">{{planType.description}}</option>
+                </select>
+                <div class="invalid-feedback">
+                  <span>Please select a reference date method.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-6 col-md-4">
+              <div class="form-group">
+                <label class="form-control-label">Reference Type <span class="form-help-text">Optional</span></label>
+                <select class="form-control custom-select" formControlName="beforeAfterId">
+                  <option value=""></option>
+                  <option *ngFor="let referenceType of data.dropdownLists.serviceBeforeAfters"
+                    [ngValue]="referenceType.id">{{referenceType.description}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-sm-6 col-md-4">
+              <div class="form-group">
+                <label>Reference Date <span class="form-help-text">Optional</span></label>
+                <div class="input-group">
+                  <input matInput class="form-control" [matDatepicker]="picker" formControlName="beforeAfterDate" />
+                  <!-- FIXME: removed this from the above^ matInput, because changeDateSelected does not exist in controller... -->
+                  <!-- (dateChange)="changeDateSelected($event)" -->
+                  <div class="input-group-append">
+                    <mat-datepicker-toggle matSuffix [for]="picker" class="input-group-text date">
+                      <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #picker [startAt]="data"></mat-datepicker>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- <div class="col-md-4">
+              <div class="form-group">
+                  <label for="">Reference Date</label>
+                  <div name="referenceDate" class="input-group form-group mr-4" ds-datepicker>
+                      <input name="referenceDate" id="referenceDate" type="text" class="form-control" ds-mask="00/00/0000" aria-describedby="referenceDate" formControlName="referenceDate">
+                          <div class="input-group-addon input-group-append add-on">
+                          <span class="input-group-text date ">
+                              <i class="material-icons">date_range</i>
+                          </span>
+                      </div>
+                  </div>
+              </div>
+          </div> -->
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Balance</label>
+                <select class="form-control custom-select" formControlName="accrualBalanceOptionId" dsFormControlValidator>
+                  <option value=""></option>
+                  <option *ngFor="let planType of data.dropdownLists.accrualBalanceOptions" [ngValue]="planType.id">
+                    {{planType.description}}</option>
+                </select>
+                <div class="invalid-feedback">
+                  <span>Please select a balance option.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label class="form-control-label">Clear <span class="form-help-text">Optional</span></label>
+                <select class="form-control custom-select" formControlName="accrualClearOptionId">
+                  <option value=""></option>
+                  <option *ngFor="let clearType of data.dropdownLists.clientAccrualClearOptions"
+                    [ngValue]="clearType.id">{{clearType.description}}</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Carry Over Method</label>
+                <select class="form-control custom-select" formControlName="accrualCarryOverOptionId">
+                  <!-- <option value=""></option> -->
+                  <option *ngFor="let carryOver of data.dropdownLists.clientAccrualCarryOverOptions"
+                    [ngValue]="carryOver.id">{{carryOver.description}}</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label class="form-control-label">Carry Over To <span class="form-help-text">Optional</span></label>
+                <select class="form-control custom-select" formControlName="carryOverToId">
+                  <option value=""></option>
+                  <option *ngFor="let ca of data.availableClientAccruals" [ngValue]="ca.clientAccrualId">
+                    {{ca.description}}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="row">
+<div class='col-sm-6'>
+
+                <div class="col-sm-auto">
+                  <div class="form-group">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="accrueOnlyWhenPaid"
+                        formControlName="isAccrueWhenPaid">
+                      <label class="custom-control-label" for="accrueOnlyWhenPaid">Accrue Only When Paid</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-sm-auto">
+                  <div class="form-group">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="isUseCheckDates"
+                        formControlName="isUseCheckDates">
+                      <label class="custom-control-label" for="isUseCheckDates">Use Check Dates</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-sm-auto">
+                  <div class="form-group">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="stopLastPay"
+                        formControlName="isStopLastPay">
+                      <label class="custom-control-label" for="stopLastPay">Stop Last Pay</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+                <div class="col-sm-auto" *ngIf="carryOverToId.value > 0">
+                  <div class="form-group">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input" id="carryOverToBalanceLimit"
+                        formControlName="carryOverToBalanceLimit">
+                        <label class="custom-control-label" for="carryOverToBalanceLimit">Up To Balanace Limit</label>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </form>
+      </ng-container>
+    </ng-container>
+  </ds-card-content>
+</ds-card>

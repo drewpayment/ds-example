@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  app:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      target: dev
+    volumes:
+      - ../..:/opt/app/webcore
+      - .:/opt/app/api
+    environment:
+      API_SERVER_ADDR: ":3000"
+      GIN_MODE: "release"
+    ports:
+      - 3000:3000

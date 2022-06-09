@@ -1,0 +1,29 @@
+<div class="input-group">
+  <mat-form-field class="form-control">
+  <mat-chip-list #chipList>
+    <mat-chip *ngFor="let item of selectedItems" [selectable]="true" [removable]="true" (removed)="remove(item)"
+      [disableRipple]="true">
+      {{item.display}}
+      <mat-icon matChipRemove>clear</mat-icon>
+    </mat-chip>
+    <input 
+      #input 
+      #trigger="matAutocompleteTrigger"
+      matInput 
+      [formControl]="control" 
+      [matAutocomplete]="auto" 
+      [matChipInputFor]="chipList">
+  </mat-chip-list>
+  <mat-autocomplete 
+    #auto="matAutocomplete" 
+    (optionSelected)="selected($event); input.value = ''"
+    [autoActiveFirstOption]="true">
+    <mat-option 
+      *ngFor="let item of availableItems$ | async" 
+      [value]="item"
+      (click)="reopenPanel($event)">
+      {{item.display}}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>
+</div>

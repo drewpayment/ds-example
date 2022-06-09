@@ -1,0 +1,13 @@
+<div *ngIf="userInfo$ | async as userInfo">
+  <button *ngIf="
+  completedDate == null && 
+  evalDueDateStatus.isInPast && 
+  (userInfo.userTypeId === UserType.systemAdmin || 
+  userInfo.userTypeId === UserType.companyAdmin || 
+  userInfo.userTypeId === UserType.supervisor)" 
+  mat-menu-item
+  (click)="SendReminder(evaluationId)"
+  >
+    Send Reminder
+  </button>
+</div>

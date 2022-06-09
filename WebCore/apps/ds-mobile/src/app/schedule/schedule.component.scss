@@ -1,0 +1,28 @@
+@import '../../styles/ds-mobile-material/ds-mobile-variables';
+
+.date-width {
+  flex: 0 0 70px;
+}
+
+.schedule-width {
+  flex: 1 0 105px;
+}
+
+.hours-width {
+  flex: 0 0 40px;
+  justify-content: flex-end;
+}
+
+.action-width {
+  flex: 0 0 30px;
+}
+
+.schedule-ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.current-day {
+  background-color: $table-hover;
+}

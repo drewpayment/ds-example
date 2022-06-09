@@ -1,0 +1,75 @@
+<div class="stepper-container" [formGroup]="timePolicies">
+    <ng-container *ngIf="formInit|async as init">
+        <ng-container *ngIf="!isLoading">
+            <ng-container *ngIf="clientTimePolicies?.length !== 0 else noTimePolicy">
+                <h2>{{timePolicyCount}} out of {{clientTimePolicies.length}} Time Policies Selected</h2>
+                <div class="instruction-text form-group">
+                    Select the time policies that you would like to assign to geofences. If a clock only time policy is
+                    selected for Geofencing, then employees with that policy assigned can punch using our app on their
+                    mobile device.
+                </div>
+                <div class="overflow-list form-group">
+                    <div class="row">
+                        <div class="col-xl-4 col-lg-6 col-md-12"
+                            *ngFor="let timePolicy of clientTimePolicies; let idx = index;">
+                            <ds-card (click)="selectedOption(idx)" [hover]="true" mode="widget-nobody"
+                                [color]="timePolicy.geofenceEnabled ? 'success' : 'disabled'">
+                                <div ds-card-icon size="sm">
+                                    <ng-container *ngIf="timePolicy.geofenceEnabled, else iconNotSelected">
+                                        check_circle</ng-container>
+                                    <ng-template #iconNotSelected>remove_circle_outline</ng-template>
+                                </div>
+                                <div ds-card-icon-title>Content</div>
+                                <ds-card-header>
+                                    <ds-card-widget-title>
+                                        {{timePolicy.name}}
+                                    </ds-card-widget-title>
+                                    <ds-card-subtitle>
+                                        <hr>
+                                        <div class="row">
+                                            <div class="col-xl-12 col-lg-12 col-md-8 col-sm-10">
+                                                <div class="form-control-label instruction-text">
+                                                    {{timePolicy.employeeCount}} Employees</div>
+                                            </div>
+                                        </div>
+                                    </ds-card-subtitle>
+                                </ds-card-header>
+                            </ds-card>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-template #noTimePolicy>
+                <div class="empty-state">
+                    There are no time policies found.
+                </div>
+            </ng-template>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngIf="!isLoading">
+        <ng-container *ngIf="!optedIn else saveBtn">
+            <div class="d-flex justify-content-between flex-row-reverse">
+                <div class="d-flex align-items-center">
+                    <div class="text-danger mr-2"
+                        *ngIf="saveClicked && (timePolicyCount === 0 || !hasEmployeesSelected)">
+                        A time policy with at least one geofencing employee must be selected</div>
+                    <button type="button" mat-button matStepperNext class="btn btn-save"
+                        (click)="saveGeofenceOption()">Continue</button>
+                </div>
+            </div>
+        </ng-container>
+        <ng-template #saveBtn>
+            <div class="d-flex justify-content-between flex-row-reverse">
+                <div class="d-flex align-items-center">
+                    <div class="text-danger mr-2"
+                        *ngIf="saveClicked && (timePolicyCount === 0 || !hasEmployeesSelected)">
+                        A time policy with at least one geofencing employee must be selected</div>
+                    <button type="button" mat-button class="btn btn-save" (click)="saveGeofenceOption()">Save</button>
+                </div>
+            </div>
+        </ng-template>
+    </ng-container>
+    <ng-container *ngIf="isLoading">
+        <ds-loading-message></ds-loading-message>
+    </ng-container>
+</div>

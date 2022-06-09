@@ -1,0 +1,37 @@
+<hr *ngIf="data.payrollRequestDate.enabled" />
+<div class="row" *ngIf="data.payrollRequestDate.enabled">
+    <div class="col-md-12">
+        <div>
+            <h3 class="d-inline-block">Payroll Requests</h3>
+        </div>
+    </div>
+</div>
+<div class="row" *ngIf="data.payrollRequestDate.enabled">
+    <div class="col-4">
+        <div class="form-group">
+            <label>Merit Increase Effective Date</label>
+            <div class="input-group">
+                <input matInput 
+                    class="form-control" 
+                    [matDatepicker]="payrollRequestDatePicker" 
+                    [formControl]="data.payrollRequestDate"
+                    dsFormControlValidator 
+                    [dsFormControlSubmitted]="data.submitted()" />
+                <div class="input-group-append">
+                    <mat-datepicker-toggle matSuffix [for]="payrollRequestDatePicker" class="input-group-text date">
+                        <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #payrollRequestDatePicker></mat-datepicker>
+                </div>
+                <div class="invalid-feedback">
+                    Please enter an effective date.
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-8">
+        <div class="form-help-text mt-2 pt-6">
+            This date will apply to all merit increases for this review.
+        </div>
+    </div>
+</div>

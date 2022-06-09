@@ -1,0 +1,182 @@
+<form [formGroup]="f" dsTrackFormChanges class="mat-drawer-inner-container-form">
+    <div class="drawer-header">
+        <button type="button" (click)="clearDrawer()" class="btn btn-icon" *ngIf="!isModal">
+            <mat-icon>chevron_right</mat-icon>
+        </button>
+        <h2>
+            <ng-container *ngIf="!isAdding, else newDependent">
+                {{ pageTitle }}
+            </ng-container>
+            <ng-template #newDependent>
+                Add Dependent
+            </ng-template>
+        </h2>
+        <button  *ngIf="isModal" type="button" class="close float-right" (click)="dismiss()">
+            <i class="material-icons">clear</i>
+        </button>
+    </div>
+    <div class="drawer-content">
+        <div class="row">
+            <div class="col-sm-8 col-md-4 col-lg-8 col-2xl-4">
+                <div class="form-group">
+                    <label class="form-control-label">First Name</label>
+                    <input class="form-control" formControlName="FirstName" maxlength="25"
+                        dsFormControlValidator [dsFormControlSubmitted]="formSubmitted" cdkFocusInitial />
+                    <div class="invalid-feedback" *ngIf="FirstName.invalid">
+                        <span *ngIf="FirstName.errors?.required">Please enter a first name.</span>
+                        <span *ngIf="FirstName.errors?.pattern">Please enter a valid first name.</span>
+                    </div>                        
+                </div>
+            </div>
+            <div class="col-sm-4 col-md-2 col-lg-4 col-2xl-2">
+                <div class="form-group">
+                    <label class="form-control-label">MI <span class="form-help-text">Optional</span></label>
+                    <input class="form-control" formControlName="MiddleInitial" maxlength="1" />
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-12 col-2xl-6">
+                <div class="form-group">
+                    <label class="form-control-label">Last Name</label>
+                    <input class="form-control" formControlName="LastName" maxlength="25"
+                        dsFormControlValidator [dsFormControlSubmitted]="formSubmitted" />
+                    <div class="invalid-feedback" *ngIf="LastName.errors?.required">
+                        Please enter a last name.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-control-label">Relationship</label>
+                    <select class="form-control custom-select"
+                        formControlName="Relationship"
+                        dsFormControlValidator [dsFormControlSubmitted]="formSubmitted">
+                        <option class="text-muted" [ngValue]="null"></option>
+                        <option [ngValue]="relationship.employeeDependentsRelationshipId"
+                            *ngFor="let relationship of relationshipList">
+                            {{ relationship.description }}
+                        </option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="Relationship.errors?.required">
+                        Please select a relationship.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row align-items-baseline">
+            <div class="col-sm-6" *ngIf="showSSN">
+                <div class="form-group">
+                    <label class="form-control-label">Social Security Number <span class="form-help-text">Optional</span></label>
+                    <input class="form-control" formControlName="SocialSecurityNumber" maxlength="11" (keyup)="formatSSN($event)" 
+						dsFormControlValidator [dsFormControlSubmitted]="formSubmitted" />
+                    <div class="invalid-feedback" *ngIf="SocialSecurityNumber.errors?.pattern">
+                        Please enter a valid social security number (xxx-xx-xxxx).
+                    </div>					
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="form-control-label">Birth Date</label>
+					<div class="input-group">
+						<input matInput class="form-control" [formControl]="BirthDate" [matDatepicker]="birthDate" 
+							dsFormControlValidator [dsFormControlSubmitted]="formSubmitted" />
+						<div class="input-group-append">
+						  <mat-datepicker-toggle matSuffix [for]="birthDate" class="input-group-text date">
+							<mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+						  </mat-datepicker-toggle>
+						  <mat-datepicker #birthDate></mat-datepicker>
+						</div>
+                        <div class="invalid-feedback" *ngIf="BirthDate.invalid">
+                          <span *ngIf="BirthDate.errors?.required">Please select birth date.</span>
+                        </div>
+					</div>		
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <label class="form-control-label">Gender</label>
+                <div class="control-spacer-lg">
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="GenderFemale" formControlName="Gender" value="F" class="custom-control-input">
+                        <label class="custom-control-label" for="GenderFemale">Female</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="GenderMale" formControlName="Gender" value="M" class="custom-control-input">
+                        <label class="custom-control-label" for="GenderMale">Male</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="GenderNotSpecified" formControlName="Gender" value=" " class="custom-control-input">
+                        <label class="custom-control-label" for="GenderNotSpecified">Not Specified</label>
+                    </div>                  
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <label class="form-control-label">Additional Information</label>
+                <div class="control-spacer-lg">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" id="IsStudent" formControlName="IsStudent" class="custom-control-input">
+                        <label class="custom-control-label" for="IsStudent">Student</label>
+                    </div>    
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" id="HasDisablity" formControlName="HasDisablity" class="custom-control-input">
+                        <label class="custom-control-label" for="HasDisablity">Disability</label>
+                    </div>    
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" id="IsTobaccoUser" formControlName="IsTobaccoUser" class="custom-control-input">
+                        <label class="custom-control-label" for="IsTobaccoUser">Tobacco User</label>
+                    </div>    
+                </div>		
+            </div>
+        </div>
+        <hr/>
+        <div class="row">
+            <div class="col-md-auto">
+                <div class="form-group">
+                    <label class="form-control-label">Status</label>
+                    <div class="form-group inline-form-elements">
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="StatusActive" formControlName="DependentStatus" value="1" class="custom-control-input">
+                            <label class="custom-control-label" for="StatusActive">Active</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                            <input type="radio" id="StatusInActive" formControlName="DependentStatus" value="0" class="custom-control-input">
+                            <label class="custom-control-label" for="StatusInActive">Inactive</label>
+                        </div>
+                    </div>               
+                </div>
+            </div>
+            <div class="col-md-auto">
+                <div class="form-group" *ngIf="showEffectiveDate">
+                    <label class="form-control-label">Effective Date</label>
+					<div class="input-group">
+						<input matInput class="form-control" [formControl]="EffectiveDate" [matDatepicker]="effectiveDate" 
+							dsFormControlValidator [dsFormControlSubmitted]="formSubmitted" />
+						<div class="input-group-append">
+						  <mat-datepicker-toggle matSuffix [for]="effectiveDate" class="input-group-text date">
+							<mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+						  </mat-datepicker-toggle>
+						  <mat-datepicker #effectiveDate></mat-datepicker>
+						</div>
+                        <div class="invalid-feedback" *ngIf="EffectiveDate.invalid">
+                            <span *ngIf="EffectiveDate.errors?.required">Please select effective date.</span>
+                        </div>
+					</div>		
+                </div>
+            </div>
+        </div>
+        <div class="row">    
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-control-label">Notes</label>
+                    <textarea class="form-control" formControlName="Notes"></textarea>
+                </div>
+            </div>
+        </div> 
+    </div>
+    <div class="drawer-footer">
+        <button type="button" class="btn btn-save" (click)="saveEmployeeDependent()">Save</button>
+        <button type="button" class="btn btn-cancel" (click)="close()">Cancel</button>
+    </div>   
+</form>

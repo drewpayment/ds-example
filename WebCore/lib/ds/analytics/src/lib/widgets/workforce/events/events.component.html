@@ -1,0 +1,19 @@
+
+<ds-dashboard-widget [cardType]="cardType" [loaded]="loaded" skeleton="button-card-skeleton">
+        <ds-dashboard-widget-header [title]="title" [settingsItems]="settingsItems" (settingSelected)="printAll()"></ds-dashboard-widget-header>
+        <ds-dashboard-widget-content>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-4">
+                        <button type="button" (click)="openBirthdateDialog()" class="btn btn-pill btn-info w-100">{{birthdayCount}} Birthday<span *ngIf="birthdayCount == 1; else elseBlock1"></span><ng-template #elseBlock1>s</ng-template></button>
+                    </div>
+                    <div class="col-4">
+                        <button type="button" (click)="openAnniversaryDialog()" class="btn btn-pill btn-info w-100">{{anniversaryCount}} Anniversar<span *ngIf="anniversaryCount == 1; else elseBlock2">y</span><ng-template #elseBlock2>ies</ng-template></button>
+                    </div>
+                    <div class="col-4">
+                        <button type="button" (click)="openNinetyDayDialog()" class="btn btn-pill btn-info w-100">{{ninetyDayAnniversaryCount}} New Hires Reaching 90 Days</button>
+                    </div>
+                </div>
+            </div>
+        </ds-dashboard-widget-content>
+    </ds-dashboard-widget>

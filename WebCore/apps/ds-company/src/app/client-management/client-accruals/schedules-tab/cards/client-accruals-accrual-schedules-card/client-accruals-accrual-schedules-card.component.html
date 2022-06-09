@@ -1,0 +1,284 @@
+<ng-template #loading>
+  <ds-loading-message></ds-loading-message>
+</ng-template>
+
+<ng-template #loadedAndEmpty>
+  <div class="empty-state">
+    There are no General Accruals set up for this Time Off
+    Policy. Click the "+ Schedule" button to add a General
+    Accrual.
+  </div>
+</ng-template>
+
+<ds-card>
+  <ds-card-header>
+    <ds-card-sub-header-title> Accrual Schedule </ds-card-sub-header-title>
+    <ds-card-title-right-content>
+      <button class="btn btn-icon-outline-primary" (click)="toggleEdit(isEditMode)" *ngIf="isEditMode || dataSource?.data?.length">
+        <mat-icon>{{ editIcon$ | async }}</mat-icon>
+      </button>
+    </ds-card-title-right-content>
+    <ds-card-title-action>
+      <button type="button" class="btn btn-primary" (click)="addScheduleRow()">
+        <mat-icon>add</mat-icon> Schedule
+      </button>
+    </ds-card-title-action>
+  </ds-card-header>
+  <ds-card-content>
+    <ng-container *ngIf="!isLoading; else loading">
+      <form dsTrackFormChanges [submitted]="submitted" [formGroup]="form">
+        <ng-container *ngIf="dataSource?.data?.length; else loadedAndEmpty">
+          <div class="row" formGroupName="accrual">
+            <div class="col-md-12">
+              <div class="card card-table">
+                <div class="table-responsive">
+                  <table mat-table [dataSource]="dataSource" class="grid" formArrayName="clientAccrualSchedules">
+                    <ng-container matColumnDef="startService">
+                      <th mat-header-cell *matHeaderCellDef> Start Service </th>
+                      <td mat-cell *matCellDef="let element; let i=index" class="grid-input-container">
+
+                        <div class="form-group" [formGroupName]="i">
+                          <ng-container *ngIf="!isEditMode">
+                            <ng-container
+                              *ngIf="buildStartEndFrequencyLabel(element.serviceStart, element.serviceStartFrequencyId) as startLabel">
+                              {{ startLabel }}
+                            </ng-container>
+                          </ng-container>
+
+                          <div [hidden]="!isEditMode" class="grid-container" [class.d-flex]="isEditMode">
+                            <input class="form-control" type="number" formControlName="serviceStart" min="0"
+                              dsFormControlValidator />
+                            <select class="custom-select form-control" formControlName="serviceStartFrequencyId"
+                              dsFormControlValidator>
+                              <option value=""> -- Type -- </option>
+                              <option *ngFor="let type of serviceStartEndFrequencies" [ngValue]="type.id">
+                                {{type.description}}</option>
+                            </select>
+                          </div>
+                        </div>
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="endService">
+                      <th mat-header-cell *matHeaderCellDef> End Service </th>
+                      <td mat-cell *matCellDef="let element; let i=index" class="grid-input-container">
+                        <div #endService class="form-group" [formGroupName]="i">
+                          <ng-container *ngIf="!isEditMode">
+                            <ng-container
+                              *ngIf="!isEditMode && buildStartEndFrequencyLabel(element.serviceEnd, element.serviceEndFrequencyId) as endLabel">
+                              {{ endLabel }}
+                            </ng-container>
+                          </ng-container>
+
+                          <div [hidden]="!isEditMode" class="grid-container" [class.d-flex]="isEditMode">
+                            <input class="form-control" type="number" formControlName="serviceEnd" min="0"
+                              dsFormControlValidator />
+                            <select class="custom-select form-control" formControlName="serviceEndFrequencyId"
+                              dsFormControlValidator>
+                              <option value=""> -- Type -- </option>
+                              <option *ngFor="let type of serviceStartEndFrequencies" [ngValue]="type.id">
+                                {{type.description}}</option>
+                            </select>
+                          </div>
+
+                        </div>
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="type">
+                      <th mat-header-cell *matHeaderCellDef> Type </th>
+                      <td mat-cell *matCellDef="let element, let i=index" class="grid-input-container"
+                        [formGroupName]="i">
+                        <ng-container *ngIf="!isEditMode && buildServiceFrequencyLabel(element) as label">
+                          {{ label }}
+                          <!-- {{ type[type.selectedIndex]?.text || ' -- Type -- ' }} -->
+                        </ng-container>
+                        <select class="grid-select custom-select" formControlName="serviceFrequencyId"
+                          dsFormControlValidator [hidden]="!isEditMode">
+                          <option value=""> -- Type -- </option>
+                          <option *ngFor="let freq of serviceFrequencies" [ngValue]="freq.id">
+                            {{freq.description}}</option>
+                        </select>
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="reward">
+                      <th mat-header-cell *matHeaderCellDef> Reward </th>
+                      <td mat-cell *matCellDef="let element, let i=index" class="grid-input-container">
+                        <div class="form-group" [formGroupName]="i">
+                          <ng-container *ngIf="!isEditMode && buildRewardLabel(element) as label">
+                            {{label}}
+                            <!-- {{ element.get('reward').get('amount').value }}
+                              {{ rewardType[rewardType.selectedIndex]?.text || ' -- Type -- ' }} -->
+                          </ng-container>
+
+                          <div [hidden]="!isEditMode" class="grid-container" [class.d-flex]="isEditMode">
+                            <input class="form-control" type="number" formControlName="reward" dsFormControlValidator min="0"/>
+                            <select #rewardType class="custom-select form-control" formControlName="serviceRewardFrequencyId"
+                              dsFormControlValidator>
+                              <option value=""> -- Type -- </option>
+                              <option *ngFor="let freq of serviceRewardFrequencies" [ngValue]="freq.id">
+                                {{freq.description}}</option>
+                            </select>
+                          </div>
+                        </div>
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="maxHours">
+                      <th mat-header-cell *matHeaderCellDef> Rate Hours </th>
+                      <td mat-cell *matCellDef="let element, let i=index" class="grid-input-container"
+                        [formGroupName]="i">
+                        <ng-container *ngIf="!isEditMode">
+                          {{ element.renewEnd }}
+                        </ng-container>
+                        <input class="grid-input form-control" id="maxHours{{i}}" formControlName="renewEnd" min="0"
+                          type="number" dsFormControlValidator [hidden]="!isEditMode">
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="renewType">
+                      <th mat-header-cell *matHeaderCellDef> Renew Type </th>
+                      <td mat-cell *matCellDef="let element, let i=index" class="grid-input-container"
+                        [formGroupName]="i">
+                        <ng-container *ngIf="!isEditMode && buildRenewLabel(element.serviceRenewFrequencyId) as label">
+                          {{label}}
+                        </ng-container>
+                        <select class="grid-select custom-select" formControlName="serviceRenewFrequencyId"
+                          dsFormControlValidator [hidden]="!isEditMode">
+                          <option value=""> -- Type -- </option>
+                          <option *ngFor="let type of serviceRenewFrequencies" [ngValue]="type.id">
+                            {{type.description}}</option>
+                        </select>
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="accrualLimit">
+                      <th mat-header-cell *matHeaderCellDef> Accrual Limit </th>
+                      <td mat-cell *matCellDef="let element, let i=index" class="grid-input-container"
+                        [formGroupName]="i">
+                        <ng-container *ngIf="!isEditMode">
+                          {{ element.accrualBalanceLimit }}
+                        </ng-container>
+                        <input class="grid-input form-control" id="accrualLimit{{i}}"
+                          formControlName="accrualBalanceLimit" type="number" dsFormControlValidator min="0"
+                          [hidden]="!isEditMode">
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="balanceLimit">
+                      <th mat-header-cell *matHeaderCellDef> Balance Limit </th>
+                      <td mat-cell *matCellDef="let element, let i=index" class="grid-input-container"
+                        [formGroupName]="i">
+                        <ng-container *ngIf="!isEditMode">
+                          {{ element.balanceLimit }}
+                        </ng-container>
+                        <input class="grid-input form-control" id="balanceLimit{{i}}" formControlName="balanceLimit" min="0"
+                          type="number" dsFormControlValidator [hidden]="!isEditMode">
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="carryOver">
+                      <th mat-header-cell *matHeaderCellDef> Carry Over </th>
+                      <td mat-cell *matCellDef="let element, let i=index" class="grid-input-container"
+                        [formGroupName]="i">
+                        <div #carryOver class="form-group">
+                          <ng-container *ngIf="!isEditMode && buildCarryOverLabel(element) as label">
+                            {{label}}
+                            <!-- {{ element.get('carryOver').get('amount').value }}
+                              {{ carryOverType[carryOverType.selectedIndex]?.text || ' -- Type -- ' }} -->
+                          </ng-container>
+
+                          <div [hidden]="!isEditMode" class="grid-container" [class.d-flex]="isEditMode">
+                            <input class="form-control" formControlName="carryOver" type="number" min="0"
+                              dsFormControlValidator />
+                            <select #carryOverType class="custom-select form-control"
+                              formControlName="serviceCarryOverFrequencyId" dsFormControlValidator>
+                              <option value=""> -- Type -- </option>
+                              <option *ngFor="let freq of serviceCarryOverFrequencies" [ngValue]="freq.id">
+                                {{freq.description}}</option>
+                            </select>
+                          </div>
+                        </div>
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="rateCarryOverMax">
+                      <th mat-header-cell *matHeaderCellDef> Rate Carry Over Max </th>
+                      <td mat-cell *matCellDef="let element, let i=index" class="grid-input-container"
+                        [formGroupName]="i">
+                        <ng-container *ngIf="!isEditMode">
+                          {{ element.rateCarryOverMax }}
+                        </ng-container>
+                        <input class="grid-input form-control" id="rateCarryOverMax{{i}}"
+                          formControlName="rateCarryOverMax" type="number" dsFormControlValidator min="0"
+                          [hidden]="!isEditMode">
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="carryOverOn">
+                      <th mat-header-cell *matHeaderCellDef> Carry Over On </th>
+                      <td mat-cell *matCellDef="let element, let i=index" class="grid-input-container"
+                        [formGroupName]="i">
+                        <ng-container *ngIf="!isEditMode && buildCarryOverWhenLabel(element) as label">
+                          {{ label }}
+                          <!-- {{ carryOverOn[carryOverOn.selectedIndex]?.text || '' }} -->
+                        </ng-container>
+                        <select class="grid-select custom-select" formControlName="serviceCarryOverWhenFrequencyId"
+                          dsFormControlValidator [hidden]="!isEditMode">
+                          <option value=""> -- Type -- </option>
+                          <option *ngFor="let freq of serviceCarryOverWhenFrequencies" [ngValue]="freq.id">
+                            {{freq.description}}</option>
+                        </select>
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="until">
+                      <th mat-header-cell *matHeaderCellDef> Until </th>
+                      <td mat-cell *matCellDef="let element, let i=index" class="grid-input-container"
+                        [formGroupName]="i">
+                        <div #until class="form-group">
+                          <ng-container *ngIf="!isEditMode && buildCarryOverUntilLabel(element) as label">
+                            {{label}}
+                          </ng-container>
+                          <div [hidden]="!isEditMode" class="grid-container" [class.d-flex]="isEditMode">
+                            <input class="form-control" formControlName="serviceCarryOverTill" type="number" min="0"
+                              dsFormControlValidator />
+                            <select #untilType class="custom-select form-control"
+                              formControlName="serviceCarryOverTillFrequencyId" dsFormControlValidator>
+                              <option value=""> -- Type -- </option>
+                              <option *ngFor="let freq of serviceCarryOverUntilFrequencies" [ngValue]="freq.id">
+                                {{freq.description}}</option>
+                            </select>
+                          </div>
+                        </div>
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="action" stickyEnd>
+                      <th mat-header-cell *matHeaderCellDef class="td-action-icon-width mat-table-sticky-border-end" [hidden]="!isEditMode">
+                        &nbsp;</th>
+                      <td mat-cell *matCellDef="let element, let i=index"
+                        class="td-action-icon-width mat-table-sticky-border-end" [hidden]="!isEditMode">
+                        <button type="button" [matMenuTriggerFor]="actionMenu" class="btn btn-icon">
+                          <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #actionMenu="matMenu">
+                          <button mat-menu-item (click)="copyScheduleRow(element, i)">Copy</button>
+                          <button mat-menu-item (click)="deleteScheduleRow(i)">Delete</button>
+                        </mat-menu>
+                      </td>
+                    </ng-container>
+
+                    <tr mat-header-row class="table-header" *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </form>
+    </ng-container>
+  </ds-card-content>
+</ds-card>

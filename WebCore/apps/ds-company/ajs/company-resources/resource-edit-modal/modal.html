@@ -1,0 +1,85 @@
+﻿<div class="modal-header">
+    <h2>Edit Resource</h2>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="cancel()"><i class="material-icons" aria-hidden="false">clear</i></button>
+</div>
+<form name="frmResource">
+    <div class="modal-body">
+        <div class="form-group row align-items-center">
+            <label class="col-form-label col-3">Name</label>
+            <div class="col-9" ng-class="{ 'is-invalid' : frmResource.companyResourceName.$invalid && showError}">
+                <input type="text" name="companyResourceName" class="form-control" ng-model="currentResource.resourceName" maxlength="250" ng-required="true">
+            </div>
+        </div>
+        <div class="form-group row align-items-center">
+            <label class="col-form-label col-3">Folder</label>
+            <div class="col-9">
+                <select name="companyResourceFolder" class="form-control custom-select" data-ng-model="currentResource.companyResourceFolderId"
+                        data-ng-options="folder.companyResourceFolderId as folder.description for folder in companyResourceFolders"
+                        ng-required="true"></select>
+            </div>
+        </div>
+        <!-- <div class="form-group row align-items-center" ng-show="currentResource.resourceTypeId == 1">
+            <label class="col-form-label col-3">Attachment</label>
+            <span class="col-9 clickable" onclick="$('#fileLoader').click();"
+                  ng-click="isFileReselect = true"
+                  ng-show="currentResource.resourceTypeId == 1">
+                <span ng-show="showEditIcon">{{ currentResource ? currentResource.resourceName : (currentResource.source ? currentResource.source.split('\\').pop() : "")}}</span><i class="material-icons">mode_edit</i>
+            </span>
+        </div> -->
+        <input type="file" id="fileLoader" style="display: none;" ngf-select ngf-change="fileChanges($files)" ng-model="currentResource.data" ngf-multiple="false" accept=".PDF,.DOC,.DOCX,.XLS,.XLSX,.TXT,.RTF">
+        <div class="form-group row align-items-center">
+            <label class="col-form-label col-3">Type</label>
+            <div class="col-9">
+                <div class="btn-group" data-toggle="buttons">
+                    <div class="btn-group btn-toggle-group" data-toggle="buttons">
+                        <label class="btn btn-legacy-toggle pointer-events-none disabled" data-ng-repeat="elm in resourceTypes" ng-class="{active: elm.id==$parent.currentResource.resourceTypeId}">
+                            <input name="RadioResourceType"
+                                type="radio"
+                                value="{{elm.id}}"
+                                disabled
+                                ng-model="$parent.currentResource.resourceTypeId" 
+                                ng-required="true" 
+                                disabled 
+                                class="custom-control-input"/> {{elm.desc}}
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row align-items-center" ng-show="currentResource.resourceTypeId != 1">
+            <label class="col-form-label col-3">URL</label>
+            <div class="col-9" ng-class="{ 'is-invalid' : frmResource.companyResourceUrl.$invalid && showError}">
+                <input type="text" name="companyResourceUrl" class="form-control" ng-model="currentResource.source" ng-required="currentResource.resourceTypeId != 1">
+            </div>
+        </div>
+        <div class="form-group row" >
+            <label class="col-form-label col-3">Security Level</label>
+            <div class="col-9">
+                <select name="companyResourceSecurityLevel" class="form-control custom-select" data-ng-model="currentResource.securityLevel"
+                    data-ng-options="securityLevel.id as securityLevel.desc for securityLevel in securityLevels"
+                    ng-required="true"></select>
+                <div class="custom-control custom-checkbox mt-3" ng-show="currentResource.securityLevel == 4">
+                    <input id="manager" type="checkbox" ng-model="currentResource.isManagerLink" class="custom-control-input" name="managerResource" />
+                    <label class="custom-control-label" for="manager">Manager's only</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row align-items-center" ng-show="currentResource.resourceTypeId == 1">
+            <div class="col-sm-12">
+                <div class="primary-callout pl-2 mt-3 d-flex align-items-center justify-content-between" ng-class="{'py-2 pr-2': !showEditIcon}">
+                    <div class="d-inline-block text-truncate">
+                        {{ currentResource ? currentResource.resourceName + (currentResource.resourceFormat ? currentResource.resourceFormat : "") : (currentResource.source ? (currentResource.isAzure ? currentResource.source.split('/').pop()
+                        :currentResource.source.split('\\').pop()) : (currentResource.name ? currentResource.name : ""))}}
+                    </div>
+                    <button ng-show="showEditIcon" type="button" onclick="$('#fileLoader').click();" ng-click="isFileReselect = true" class="btn btn-icon float-right justify-self-end">
+                        <i class="material-icons">mode_edit</i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer flex-row-reverse">
+        <button class="btn btn-save" ng-click="save()">Save</button>
+        <button class="btn btn-delete" ng-show="!currResourceFolder.isNew" ng-click="delete()">Delete</button>
+    </div>
+</form>

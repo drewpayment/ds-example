@@ -1,0 +1,337 @@
+<div ng-show="!isLoaded">Loading Payment Preference...</div>
+<div ng-show="isLoaded">
+    <div class="ess-container">
+        <div class="panel clearfix">
+            <div class="panel-body">
+                <div class="d-flex flex-wrap on-header">
+                    <div class="circle-sm on-pager">{{circleNumber}}</div>
+                    <div class="top-constant">
+                        <h1>Payment Preference</h1>
+                    </div>
+                </div>
+                <form name="frmPreference" class="mt-0 pt-0">
+                    <div id="myForm" class="form-group">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h3 class="mt-0 pt-lg pl-0" ng-show="ClientEssOptions.allowCheck && ClientEssOptions.allowDirectDeposit && ClientEssOptions.allowPaycard">Do you prefer to be paid via check, direct deposit, or paycard?</h3>
+                                <h3 class="mt-0 pt-lg pl-0" ng-show="ClientEssOptions.allowCheck && ClientEssOptions.allowDirectDeposit && !ClientEssOptions.allowPaycard">Do you prefer to be paid via check, or direct deposit?</h3>
+                                <h3 class="mt-0 pt-lg pl-0" ng-show="ClientEssOptions.allowCheck && !ClientEssOptions.allowDirectDeposit && ClientEssOptions.allowPaycard">Do you prefer to be paid via check, or paycard?</h3>
+                                <h3 class="mt-0 pt-lg pl-0" ng-show="!ClientEssOptions.allowCheck && ClientEssOptions.allowDirectDeposit && ClientEssOptions.allowPaycard">Do you prefer to be paid via direct deposit, or paycard?</h3>
+                                <h3 class="mt-0 pt-lg pl-0" ng-show="ClientEssOptions.allowCheck && !ClientEssOptions.allowDirectDeposit && !ClientEssOptions.allowPaycard">Do you prefer to be paid via check?</h3>
+                                <h3 class="mt-0 pt-lg pl-0" ng-show="!ClientEssOptions.allowCheck && ClientEssOptions.allowDirectDeposit && !ClientEssOptions.allowPaycard">Do you prefer to be paid via direct deposit?</h3>
+                                <h3 class="mt-0 pt-lg pl-0" ng-show="!ClientEssOptions.allowCheck && !ClientEssOptions.allowDirectDeposit && ClientEssOptions.allowPaycard">Do you prefer to be paid via paycard?</h3>
+                            </div>
+                        </div>
+
+                        <div class="row form-group" ng-class="{ 'required-field' : invalidPayOption && (isSoftWarned || !isCompleted)}">
+                            <div class="col-sm-4 text-center form-group clickable" ng-show="ClientEssOptions.allowCheck == true" ng-click="setPrefStatus(1);">
+                                <img ng-hide="prefStatusId == 1" src="Images/PaymentPreference/check.png" class="img-responsive" style="max-width: 100%; min-height: 63px; margin: 0 auto; height: 103px;" />
+                                <span ng-hide="prefStatusId == 1" class="text-muted pt-sm">Check</span>
+                                <img ng-show="prefStatusId == 1" src="Images/PaymentPreference/check-selected.png" class="img-responsive" style="max-width: 100%; min-height: 63px; margin: 0 auto; height: 103px;" />
+                                <span ng-show="prefStatusId == 1" class="text-primary pt-sm"><i class="fa fa-check-circle text-primary"></i>&nbsp;<b>Check</b></span>
+                                <p ng-show="prefStatusId == 1" class="text-center text-muted">Payment preference may be changed in the future by contacting your employer.</p>
+                            </div>
+                            <div class="col-sm-4 text-center form-group clickable" ng-show="ClientEssOptions.allowDirectDeposit == true" ng-click="setPrefStatus(2);">
+                                <img ng-hide="prefStatusId == 2" src="Images/PaymentPreference/directdeposit.png" class="img-responsive" style="max-width: 100%; min-height: 63px; margin: 0 auto; height: 91px; margin-bottom: 10px;" />
+                                <span ng-hide="prefStatusId == 2" class="text-muted">Direct Deposit</span>
+                                <img ng-show="prefStatusId == 2" src="Images/PaymentPreference/directdeposit-selected.png" class="img-responsive" style="max-width: 100%; min-height: 63px; margin: 0 auto; height: 91px; margin-bottom: 10px;" />
+                                <span ng-show="prefStatusId == 2" class="text-primary"><i class="fa fa-check-circle text-primary"></i>&nbsp;<b>Direct Deposit</b></span>
+                            </div>
+                            <div class="col-sm-4 text-center form-group clickable" ng-show="ClientEssOptions.allowPaycard == true" ng-click="setPrefStatus(3);">
+                                <img ng-hide="prefStatusId == 3" src="Images/PaymentPreference/paycard.png" class="img-responsive" style="max-width: 100%; min-height: 63px; margin: 0 auto; height: 87px; margin-bottom: 10px;" />
+                                <span ng-hide="prefStatusId == 3" class="text-muted">Paycard</span>
+                                <img ng-show="prefStatusId == 3" src="Images/PaymentPreference/paycard-selected.png" class="img-responsive" style="max-width: 100%;min-height: 63px; margin: 0 auto; height: 87px; margin-bottom: 10px;" />
+                                <span ng-show="prefStatusId == 3" class="text-primary"><i class="fa fa-check-circle text-primary"></i>&nbsp;<b>Paycard</b></span>
+                                <p ng-show="prefStatusId == 3" class="text-center text-muted"> Payment preference may be changed in the future by contacting your employer. </p>
+                            </div>
+                        </div>
+
+                        <div class="row" ng-show="allowPaystubEmails">
+                            <div class="col-sm-12">
+                                <h3>Would you like your pay stub emailed to you?</h3>
+                            </div>
+                            <div class="col-sm-9 form-group" ng-class="{ 'required-field' : invalidOption && (isSoftWarned || !isCompleted)}">
+                                <div class="d-flex align-items-baseline">
+                                    <input id="true" type="radio" name="PaystubOption" ng-model="payStubOption" ng-value="true">
+                                    <label for="true">
+                                        &nbsp;Yes&nbsp;&nbsp;&nbsp;
+                                    </label>
+                                    <input id="false" type="radio" name="PaystubOption" ng-model="payStubOption" ng-value="false">
+                                    <label for="false">
+                                        &nbsp;No
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row ml-20 mr-lg" ng-show="prefStatusId == 2 && directDepositData && directDepositData.length >0">
+                            <hr class="mt-0"/>
+                        </div>
+                        <div class="row" ng-show="prefStatusId == 2">
+                            <div class="col-sm-1">
+                                &nbsp;
+                            </div>
+                            <div class="col-sm-12">
+                                <label>&nbsp;</label>
+                                <h3 class="mt-0 pl-0"><strong>Primary Account</strong></h3>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12 form-group">
+                                <div class="d-flex" id="AccType">
+                                    <input name="Type" id="C" type="radio" value="1" ng-disabled="directDepositData[0].disabled" ng-model="directDepositData[0].accountType">
+                                    <label for="C">
+                                        &nbsp;Checking&nbsp;&nbsp;&nbsp;
+                                    </label>
+                                    <input name="Type" id="S" type="radio" value="0" ng-disabled="directDepositData[0].disabled" ng-model="directDepositData[0].accountType">
+                                    <label for="S">
+                                        &nbsp;Savings
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                     <div class="col-md-3 col-sm-6 col-xs-12 form-group">
+                                         <label>
+                                             Routing
+                                             <a title="tip:https://dominionsystems.helpdocsonline.com/ID6341" class="help-tooltip">
+                                                 <i class="fa fa-question-circle" style="color: lightgray;"></i>
+                                             </a>
+                                         </label>
+ 
+                                         <input name="Routing"
+                                                id="Routing"
+                                                type="text" ds-mask="000000000" class="form-control"
+                                                ng-disabled="directDepositData[0].disabled"
+                                                ng-focus="isConfirmRoutingValid=true; isRoutingValid=true; isAccountValid=true"
+                                                ng-blur="isRoutingValid=false"
+                                                ng-model="directDepositData[0].routingNumber"
+                                                ng-required="directDepositData[0].accountNumber.length>0 && prefStatusId == 2"
+                                                ng-class="{ 'required-field' : directDepositData[0].accountNumber.length==0 && directDepositData[0].routingNumber.length==0 && (isSoftWarned),
+                                                            'mandatory-field' :  !directDepositData[0].disabled && ((frmPreference.Routing.$invalid) || (directDepositData[0].routingNumber.length && !checkRoutingNumber(directDepositData[0].routingNumber) && !isRoutingValid))}" />
+                                     </div>
+                                     <div class="col-md-3 col-sm-6 col-xs-12 form-group">
+                                         <label>
+                                             Confirm Routing
+                                         </label>
+ 
+                                         <input name="ConfirmRouting"
+                                                id="ConfirmRouting"
+                                                type="text" ds-mask="000000000" class="form-control"
+                                                ng-disabled="directDepositData[0].disabled"
+                                                ng-focus="isConfirmRoutingValid=true"
+                                                ng-blur="isConfirmRoutingValid=false"
+                                                ng-model="directDepositData[0].confirmRoutingNumber"
+                                                ng-class="{ 'mandatory-field' : (directDepositData[0].routingNumber.length>0 && directDepositData[0].routingNumber != directDepositData[0].confirmRoutingNumber && !isConfirmRoutingValid)}" />
+                                     </div>
+                                 </div>
+                                 <div class="col-sm-12">
+                                     <div class="col-md-3 col-sm-6 col-xs-12 form-group">
+                                         <label>
+                                             Account
+                                             <a title="tip:https://dominionsystems.helpdocsonline.com/ID6324" class="help-tooltip">
+                                                 <i class="fa fa-question-circle" style="color:lightgray;"></i>
+                                             </a>
+                                         </label>
+                                         <input name="Account"
+                                                id="Account"
+                                                type="text" class="form-control"
+                                                maxlength="15"
+                                                ng-disabled="directDepositData[0].disabled"
+                                                ng-focus="isConfirmAccountValid=true; isAccountValid= true"
+                                                ng-blur="isAccountValid=false"
+                                                ng-model="directDepositData[0].accountNumber"
+                                                ng-required="directDepositData[0].routingNumber.length>0 && prefStatusId == 2"
+                                                ng-class="{ 'mandatory-field' : !directDepositData[0].disabled && frmPreference.Account.$invalid && !isAccountValid, 
+                                                            'required-field' : directDepositData[0].accountNumber.length==0 && directDepositData[0].routingNumber.length==0 && (isSoftWarned)}" />
+                                     </div>
+                                     <div class="col-md-3 col-sm-6 col-xs-12 form-group">
+                                         <label>
+                                             Confirm Account
+                                         </label>
+                                         <input name="ConfirmAccount"
+                                                id="ConfirmAccount"
+                                                type="text" class="form-control"
+                                                maxlength="15"
+                                                ng-disabled="directDepositData[0].disabled"
+                                                ng-focus="isConfirmAccountValid=true"
+                                                ng-blur="isConfirmAccountValid=false"
+                                                ng-model="directDepositData[0].confirmAccountNumber"
+                                                ng-class="{ 'mandatory-field' : (directDepositData[0].accountNumber.length>0 && directDepositData[0].accountNumber != directDepositData[0].confirmAccountNumber &&  !isConfirmAccountValid)}" />
+                                     </div>
+                                     <div class="col-md-3 col-sm-6 col-xs-12 form-group">
+                                         <label>Amount</label>
+                                         <div class="input-group">
+                                             <span class="input-group-addon add-on"><i class="fa fa-dollar"></i></span>
+                                             <input name="Amount"
+                                                    id="Amount"
+                                                    type="text" class="form-control"  placeholder="{{directDepositData.length===1 ? 'Full Amount' : 'Remainder'}}"
+                                                    ng-disabled="true">
+                                         </div>
+ 
+                                     </div>
+                                     <div class="col-md-2 col-sm-6 form-group">
+                                         <div class="primary-callout input-group text-muted pull-right margin-val margin-val-top margin-value">
+                                             <a href="#" class="clickable" ng-show="directDepositData[0].disabled" ng-click="enableDepositEdit(directDepositData[0])">
+                                                 <i class="fa fa-edit" style="font-size: medium;"></i>
+                                             </a>
+                                         </div>
+                                     </div>
+                                 </div>								
+                             </div>
+
+                        </div>
+                        <div class="row pt-sm" ng-show="prefStatusId == 2 && directDepositData.length <=1 && ClientEssOptions.directDepositLimit > 1">
+                            <div class="col-sm-10">
+                                <a id="addFirstSA" ng-click="addSecondaryAccount()">Click here to set up multiple direct deposit accounts</a>
+                            </div>
+                        </div>
+
+                        <div class="row ml-20 mr-lg" ng-show="prefStatusId == 2 && directDepositData.length>1">
+                            <hr />
+                        </div>
+                        <div  ng-show="prefStatusId == 2 && directDepositData.length>1">
+                            <div class="row" ng-repeat="secaccount in directDepositData" ng-if="$index > 0">
+                                <div class="col-sm-12">
+                                    <div ng-if="directDepositData.length > 1 && $index==1">
+
+                                        <h3 class="mt-0 pl-0"><strong>Secondary Account</strong></h3>
+                                        <p>
+                                            Direct deposits will be credited in the order they are added.
+                                        </p>
+                                        <p ng-show="ClientEssOptions.directDepositLimit > 1 && ClientEssOptions.directDepositLimit != 98">
+                                            You may add a maximum of {{ClientEssOptions.directDepositLimit - 1}} secondary account(s).
+                                        </p>
+                                    </div>
+                                    <div ng-if="$last && directDepositData.length >= 1">&nbsp;</div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 form-group">
+                                    <div class="d-flex">
+                                        <input name="TypeSSA{{$index}}"
+                                               id="AccTypeC_{{$index}}"
+                                               type="radio" value="1"
+                                               ng-disabled="secaccount.disabled"
+                                               ng-model="secaccount.accountType">
+                                               <label for="AccTypeC_{{$index}}">
+                                                    &nbsp;Checking&nbsp;&nbsp;&nbsp;
+                                               </label>
+                                        <input name="TypeSSA{{$index}}"
+                                               id="AccTypeS_{{$index}}"
+                                               type="radio" value="0"
+                                               ng-disabled="secaccount.disabled"
+                                               ng-model="secaccount.accountType">
+                                               <label for="AccTypeS_{{$index}}">
+                                                    &nbsp;Savings
+                                               </label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="col-md-3 col-sm-6 col-xs-12 form-group">
+                                            <label>
+                                                Routing
+                                            </label>
+                                            <input name="RoutingSSA{{$index}}"
+                                                   id="RoutingSSA"
+                                                   type="text" class="form-control"
+                                                   ng-disabled="secaccount.disabled"
+                                                   ng-model="secaccount.routingNumber"
+                                                   ng-required="true"
+                                                   ng-focus="isConfirmSecRoutingValid=true; isSecRoutingValid=true; isSecAccountValid=true"
+                                                   ng-blur="isSecRoutingValid=false"
+                                                   ng-class="{ 'mandatory-field' : !secaccount.disabled && ((frmPreference.RoutingSSA{{$index}}.$invalid && showHardStop) || (directDepositData[{{$index}}].routingNumber && !checkRoutingNumber(directDepositData[{{$index}}].routingNumber) && !isSecRoutingValid))}" />
+    
+                                            <!--<p>Any remaining funds will be deposited to the primery account.</p>-->
+                                        </div>
+                                        <div class="col-md-3 col-sm-6 col-xs-12 form-group">
+                                            <label>
+                                                Confirm Routing
+                                            </label>
+    
+                                            <input name="ConfirmRoutingSSA{{$index}}"
+                                                   id="ConfirmRoutingSSA"
+                                                   type="text" class="form-control"
+                                                   ng-disabled="secaccount.disabled"
+                                                   ng-focus="isConfirmSecRoutingValid=true"
+                                                   ng-blur="isConfirmSecRoutingValid=false"
+                                                   ng-model="secaccount.confirmRoutingNumber"
+                                                   ng-class="{ 'mandatory-field' : (secaccount.routingNumber.length>0 && secaccount.routingNumber != secaccount.confirmRoutingNumber && !isConfirmSecRoutingValid)}" />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="col-md-3 col-sm-6 col-xs-12 form-group">
+                                            <label>
+                                                Account
+                                            </label>
+                                            <input name="AccountSSA{{$index}}"
+                                                   id="AccountSSA"
+                                                   type="text" class="form-control"
+                                                   maxlength="15"
+                                                   ng-disabled="secaccount.disabled"
+                                                   ng-model="secaccount.accountNumber"
+                                                   ng-required="true"
+                                                   ng-focus="isConfirmSecAccountValid=true; isSecAccountValid=true"
+                                                   ng-blur="isSecAccountValid=false"
+                                                   ng-class="{ 'mandatory-field' : !secaccount.disabled && frmPreference.AccountSSA{{$index}}.$invalid && (showHardStop || !isSecAccountValid)}" />
+                                        </div>
+                                        <div class="col-md-3 col-sm-6 col-xs-12 form-group">
+                                            <label>
+                                                Confirm Account
+                                            </label>
+                                            <input name="ConfirmAccountSSA{{$index}}"
+                                                   id="ConfirmAccountSSA"
+                                                   type="text" class="form-control"
+                                                   maxlength="15"
+                                                   ng-disabled="secaccount.disabled"
+                                                   ng-model="secaccount.confirmAccountNumber"
+                                                   ng-focus="isConfirmSecAccountValid=true"
+                                                   ng-blur="isConfirmSecAccountValid=false"
+                                                   ng-class="{ 'mandatory-field' : (secaccount.accountNumber.length>0 && secaccount.accountNumber != secaccount.confirmAccountNumber && !isConfirmSecAccountValid)}" />
+                                        </div>
+                                        <div class="col-md-3 col-sm-6 col-xs-12 form-group">
+                                            <label>Amount</label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon add-on"><i class="fa fa-dollar"></i></span>
+                                                <input name="AmountSSA{{$index}}"
+                                                       id="AmountSSA"
+                                                       type="number" min="0" max="999999.99" ds-mask="999999.99" class="form-control"
+                                                       ng-disabled="secaccount.disabled"
+                                                       ng-model="secaccount.amount"
+                                                       ng-required="true"
+                                                       ng-class="{ 'mandatory-field' : !secaccount.disabled && frmPreference.AmountSSA{{$index}}.$invalid && showHardStop}" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 col-xs-12 form-group">
+                                            <div class="input-group pull-right text-muted margin-val margin-val-top margin-value" ng-click="removeSecondaryAccount(secaccount)" >
+                                                <span><i class="fa fa-trash-o"></i></span>
+                                            </div>
+        
+                                            <div class="primary-callout pull-right margin-val margin-val-top margin-value">
+                                                <a href="#" class="clickable" ng-show="secaccount.disabled" ng-click="enableDepositEdit(secaccount)">
+                                                    <i class="fa fa-edit" style="font-size: medium;"></i>
+                                                </a>
+                                            </div>
+        
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" ng-show="prefStatusId == 2 && directDepositData.length>1">
+                            <div class="col-sm-8">
+                                <div ng-show="prefStatusId == 2 && directDepositData.length>1 && directDepositData.length<=ClientEssOptions.directDepositLimit - 1">
+                                    <a id="addFirstSA" ng-click="addSecondaryAccount()">Add additional accounts</a>
+                                </div>
+                                <br />
+                                <p>Any remaining funds will be deposited to the primary account.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                    <hr class="col-sm-12" />
+                    <ds-nav-workflow-footer workflow-Hide-Next="false" workflow-Hide-Prev="false"
+                        my-Workflow="myWorkflow"
+                        on-save="$ctrl.clickSavePageData($direction)" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

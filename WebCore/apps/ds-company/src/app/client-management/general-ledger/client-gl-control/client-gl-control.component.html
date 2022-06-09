@@ -1,0 +1,360 @@
+<form #formControl="ngForm" novalidate (submit)="save(formControl)" dsTrackFormChanges>
+
+  <ds-card mode="nobody" border="top">
+    <ds-card-header>
+      <ds-card-header-title>GL Control</ds-card-header-title>
+      <ds-card-title-action>
+        <ds-client-gl-report-options-trigger></ds-client-gl-report-options-trigger>
+        <ds-client-gl-custom-class-trigger></ds-client-gl-custom-class-trigger>
+      </ds-card-title-action>
+    </ds-card-header>
+  </ds-card>
+
+  <ds-card class="card-height-fix-sm">
+    <ds-card-header>
+      <ds-card-sub-header-title>Overall Options</ds-card-sub-header-title>
+    </ds-card-header>
+    <ds-card-content *ngIf="!isOverallOptionsLoading">
+      <div class="form-group">
+        <div class="control-spacer-lg">
+          <label class="form-control-label">Include:</label>
+          <div class="nested-control-spacer-lg">
+            <div class="row">
+              <div class="col-auto">
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" name="chkAccrual" id="chkAccrual"
+                    [(ngModel)]="glControl.includeAccrual">
+                  <label class="custom-control-label" for="chkAccrual">Accrual</label>
+                </div>
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" name="chkProject" id="chkProject"
+                    [(ngModel)]="glControl.includeProject">
+                  <label class="custom-control-label" for="chkProject">Project</label>
+                </div>
+              </div>
+              <div class="col-auto">
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" name="chkSequence" id="chkSequence"
+                    [(ngModel)]="glControl.includeSequence">
+                  <label class="custom-control-label" for="chkSequence">Sequence</label>
+                </div>
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" name="chkClassGroups" id="chkClassGroups"
+                    [(ngModel)]="glControl.includeClassGroups">
+                  <label class="custom-control-label" for="chkClassGroups">Class Groups</label>
+                </div>
+              </div>
+              <div class="col-auto">
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" name="chkOffset" id="chkOffset"
+                    [(ngModel)]="glControl.includeOffset">
+                  <label class="custom-control-label" for="chkOffset">Offset</label>
+                </div>
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" name="chkDetail" id="chkDetail"
+                    [(ngModel)]="glControl.includeDetail">
+                  <label class="custom-control-label" for="chkDetail">Detail</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ds-card-content>
+    <ds-card-content *ngIf="isOverallOptionsLoading">
+      <ds-loading-message></ds-loading-message>
+    </ds-card-content>
+  </ds-card>
+
+  <ds-card mode="nav">
+    <div ds-card-header>
+      <ds-card-sub-header-title>Payroll Transactions</ds-card-sub-header-title>
+    </div>
+    <ds-card-nav>
+      <div class="ds-tabs d-none d-md-flex" role="navigation">
+        <div class="tab" (click)="getActiveTab('cash', $event)" [class.active]="selectedTab == 'cash'">Cash</div>
+        <div class="tab" (click)="getActiveTab('expense', $event)" [class.active]="selectedTab == 'expense'">Expense</div>
+        <div class="tab" (click)="getActiveTab('liability', $event)" [class.active]="selectedTab == 'liability'">Liability</div>
+        <div class="tab" (click)="getActiveTab('payment', $event)" [class.active]="selectedTab == 'payment'">Payment</div>
+      </div>
+
+      <mat-form-field class="ds-tabs-select d-md-none">
+        <mat-select role="navigation" [(value)]="selectedTab">
+          <mat-option value="cash">Cash</mat-option>
+          <mat-option value="expense">Expense</mat-option>
+          <mat-option value="liability">Liability</mat-option>
+          <mat-option value="payment">Payment</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ds-card-nav>
+  </ds-card>
+
+  <ds-card mode="noheader" *ngIf="isLoading">
+    <ds-card-content>
+      <ds-loading-message></ds-loading-message>
+    </ds-card-content>
+  </ds-card>
+
+  <ds-card *ngIf="(selectedTab == 'cash') && !isLoading">
+    <div ds-card-header>
+      <ds-card-sub-header-title>Cash</ds-card-sub-header-title>
+    </div>
+    <ds-card-content>
+      <ng-container *ngFor="let head of glControl.cashControlHeaders">
+        <div class="ds-grid-header" *ngIf="head.generalLedgerGroupHeaderId != 0">
+          <hr />
+          <h4>{{ head.description }}</h4>
+        </div>
+        <ng-container *ngFor="let d of head.clientGLControlItems; let i = index;">
+          <div class="gl-grid">
+            <label>{{ d.description }}</label>
+            <div>
+                <mat-button-toggle-group #group="matButtonToggleGroup" class="form-group">
+                    <mat-button-toggle 
+                        value="Company Total" 
+                        aria-label="Company Total" 
+                        [checked]="d.assignmentMethodId == 1"
+                        (click)="setAssignment(d,1)">
+                        Company Total
+                    </mat-button-toggle>
+                    <mat-button-toggle 
+                        value="Company Total" 
+                        aria-label="Company Total" 
+                        [checked]="(d.assignmentMethodId > 1 || d._isSplit)"
+                        (click)="setSplit(d)">
+                        Split
+                    </mat-button-toggle>
+                </mat-button-toggle-group>
+            </div>
+
+            <div class="inline-radio" *ngIf="(d.assignmentMethodId > 1 || d._isSplit)">
+              <label class="form-control-label">By:</label>
+              <div class="custom-control custom-radio mb-1">
+                <input type="radio" id="{{'cashRadio' + head.generalLedgerGroupHeaderId + '1' + i}}"
+                  name="{{'cashRadio' + head.generalLedgerGroupHeaderId + i}}" class="custom-control-input" [value]="2"
+                  [(ngModel)]="d.assignmentMethodId" dsFormControlValidator dsCustomControlValidator>
+                <label class="custom-control-label"
+                  for="{{'cashRadio' + head.generalLedgerGroupHeaderId + '1' + i}}">Cost Center</label>
+              </div>
+              <div class="custom-control custom-radio mb-1">
+                <input type="radio" id="{{'cashRadio' + head.generalLedgerGroupHeaderId + '2' + i}}"
+                  name="{{'cashRadio' + head.generalLedgerGroupHeaderId + i}}" class="custom-control-input" [value]="3"
+                  [(ngModel)]="d.assignmentMethodId" dsFormControlValidator>
+                <label class="custom-control-label"
+                  for="{{'cashRadio' + head.generalLedgerGroupHeaderId + '2' + i}}">Department</label>
+              </div>
+              <div class="custom-control custom-radio mb-1">
+                <input type="radio" id="{{'cashRadio' + head.generalLedgerGroupHeaderId + '3' + i}}"
+                  name="{{'cashRadio' + head.generalLedgerGroupHeaderId + i}}" class="custom-control-input" [value]="4"
+                  [(ngModel)]="d.assignmentMethodId" dsFormControlValidator>
+                <label class="custom-control-label"
+                  for="{{'cashRadio' + head.generalLedgerGroupHeaderId + '3' + i}}">Custom Class</label>
+              </div>
+            </div>
+            <div class="invalid-feedback">
+              Please select a split.
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+    </ds-card-content>
+  </ds-card>
+
+  <ds-card *ngIf="(selectedTab == 'expense') && !isLoading">
+    <div ds-card-header>
+      <ds-card-sub-header-title>Expenses</ds-card-sub-header-title>
+    </div>
+    <ds-card-content>
+      <ng-container *ngFor="let head of glControl.expenseControlHeaders">
+        <div class="ds-grid-header" *ngIf="head.generalLedgerGroupHeaderId != 0">
+          <hr />
+          <h4>{{ head.description }}</h4>
+        </div>
+        <div class="gl-grid" *ngFor="let d of head.clientGLControlItems; let i = index;">
+          <label>{{ d.description }}</label>
+          <div>
+            <mat-button-toggle-group #group="matButtonToggleGroup" class="form-group">
+                <mat-button-toggle 
+                    value="Company Total" 
+                    aria-label="Company Total" 
+                    [checked]="d.assignmentMethodId == 1"
+                    (click)="setAssignment(d,1)">
+                    Company Total
+                </mat-button-toggle>
+                <mat-button-toggle 
+                    value="Company Total" 
+                    aria-label="Company Total" 
+                    [checked]="(d.assignmentMethodId > 1 || d._isSplit)"
+                    (click)="setSplit(d)">
+                    Split
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+          </div>
+          <div class="inline-radio" *ngIf="(d.assignmentMethodId > 1 || d._isSplit)">
+            <label class="form-control-label">By:</label>
+            <div>
+              <div class="custom-control custom-radio mb-1">
+                <input type="radio" id="{{'expenseRadio' + head.generalLedgerGroupHeaderId + '1' + i}}"
+                  name="{{'expenseRadio' + head.generalLedgerGroupHeaderId + i}}" class="custom-control-input"
+                  [value]="2" [(ngModel)]="d.assignmentMethodId" dsFormControlValidator dsCustomControlValidator>
+                <label class="custom-control-label"
+                  for="{{'expenseRadio' + head.generalLedgerGroupHeaderId + '1' + i}}">Cost Center</label>
+              </div>
+              <div class="custom-control custom-radio mb-1">
+                <input type="radio" id="{{'expenseRadio' + head.generalLedgerGroupHeaderId + '2' + i}}"
+                  name="{{'expenseRadio' + head.generalLedgerGroupHeaderId + i}}" class="custom-control-input"
+                  [value]="3" [(ngModel)]="d.assignmentMethodId" dsFormControlValidator>
+                <label class="custom-control-label"
+                  for="{{'expenseRadio' + head.generalLedgerGroupHeaderId + '2' + i}}">Department</label>
+              </div>
+              <div class="custom-control custom-radio mb-1">
+                <input type="radio" id="{{'expenseRadio' + head.generalLedgerGroupHeaderId + '3' + i}}"
+                  name="{{'expenseRadio' + head.generalLedgerGroupHeaderId + i}}" class="custom-control-input"
+                  [value]="4" [(ngModel)]="d.assignmentMethodId" dsFormControlValidator>
+                <label class="custom-control-label"
+                  for="{{'expenseRadio' + head.generalLedgerGroupHeaderId + '3' + i}}">Custom
+                  Class</label>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </ng-container>
+    </ds-card-content>
+  </ds-card>
+
+  <ds-card *ngIf="(selectedTab == 'liability') && !isLoading">
+    <div ds-card-header>
+      <ds-card-sub-header-title>Liabilities</ds-card-sub-header-title>
+    </div>
+    <ds-card-content>
+      <ng-container *ngFor="let head of glControl.liabilityControlHeaders">
+        <div class="ds-grid-header" *ngIf="head.generalLedgerGroupHeaderId != 0">
+          <hr />
+          <h4>{{ head.description }}</h4>
+        </div>
+        <ng-container *ngFor="let d of head.clientGLControlItems; let i = index;">
+          <div class="gl-grid">
+            <label>{{ d.description }}</label>
+            <mat-button-toggle-group #group="matButtonToggleGroup" class="form-group">
+                <mat-button-toggle 
+                    value="Company Total" 
+                    aria-label="Company Total" 
+                    [checked]="d.assignmentMethodId == 1"
+                    (click)="setAssignment(d,1)">
+                    Company Total
+                </mat-button-toggle>
+                <mat-button-toggle 
+                    value="Company Total" 
+                    aria-label="Company Total" 
+                    [checked]="(d.assignmentMethodId > 1 || d._isSplit)"
+                    (click)="setSplit(d)">
+                    Split
+                </mat-button-toggle>
+              </mat-button-toggle-group>
+            <div class="inline-radio" *ngIf="(d.assignmentMethodId > 1 || d._isSplit)">
+              <label class="form-control-label">By:</label>
+              <div class="custom-control custom-radio mb-1">
+                <input type="radio" id="{{'liabilityRadio' + head.generalLedgerGroupHeaderId + '1' + i}}"
+                  name="{{'liabilityRadio' + head.generalLedgerGroupHeaderId + i}}" class="custom-control-input"
+                  [value]="2" [(ngModel)]="d.assignmentMethodId" dsFormControlValidator dsCustomControlValidator>
+                <label class="custom-control-label"
+                  for="{{'liabilityRadio' + head.generalLedgerGroupHeaderId + '1' + i}}">Cost Center</label>
+              </div>
+              <div class="custom-control custom-radio mb-1">
+                <input type="radio" id="{{'liabilityRadio' + head.generalLedgerGroupHeaderId + '2' + i}}"
+                  name="{{'liabilityRadio' + head.generalLedgerGroupHeaderId + i}}" class="custom-control-input"
+                  [value]="3" [(ngModel)]="d.assignmentMethodId" dsFormControlValidator>
+                <label class="custom-control-label"
+                  for="{{'liabilityRadio' + head.generalLedgerGroupHeaderId + '2' + i}}">Department</label>
+              </div>
+              <div class="custom-control custom-radio mb-1">
+                <input type="radio" id="{{'liabilityRadio' + head.generalLedgerGroupHeaderId + '3' + i}}"
+                  name="{{'liabilityRadio' + head.generalLedgerGroupHeaderId + i}}" class="custom-control-input"
+                  [value]="4" [(ngModel)]="d.assignmentMethodId" dsFormControlValidator>
+                <label class="custom-control-label"
+                  for="{{'liabilityRadio' + head.generalLedgerGroupHeaderId + '3' + i}}">Custom Class</label>
+              </div>
+              <div class="invalid-feedback">
+                Please select a split.
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+    </ds-card-content>
+  </ds-card>
+
+  <ds-card *ngIf="(selectedTab == 'payment') && !isLoading">
+    <div ds-card-header>
+      <ds-card-sub-header-title>Tax Payment</ds-card-sub-header-title>
+    </div>
+    <ds-card-content>
+      <ng-container *ngFor="let head of glControl.paymentControlHeaders">
+        <div class="ds-grid-header" *ngIf="head.generalLedgerGroupHeaderId != 0">
+          <hr />
+          <h4>{{ head.description }}</h4>
+        </div>
+        <ng-container *ngFor="let d of head.clientGLControlItems; let i = index;">
+          <div class="gl-grid">
+            <label>{{ d.description }}</label>
+            <mat-button-toggle-group #group="matButtonToggleGroup" class="form-group">
+                <mat-button-toggle 
+                    value="Company Total" 
+                    aria-label="Company Total" 
+                    [checked]="d.assignmentMethodId == 1"
+                    (click)="setAssignment(d,1)">
+                    Company Total
+                </mat-button-toggle>
+                <mat-button-toggle 
+                    value="Company Total" 
+                    aria-label="Company Total" 
+                    [checked]="(d.assignmentMethodId > 1 || d._isSplit)"
+                    (click)="setSplit(d)">
+                    Split
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+            <div class="inline-radio" *ngIf="(d.assignmentMethodId > 1 || d._isSplit)">
+              <label class="form-control-label">By:</label>
+              <div class="custom-control custom-radio mb-1">
+                <input type="radio" id="{{'paymentRadio' + head.generalLedgerGroupHeaderId + '1' + i}}"
+                  name="{{'paymentRadio' + head.generalLedgerGroupHeaderId + i}}" class="custom-control-input"
+                  [value]="2" [(ngModel)]="d.assignmentMethodId" dsFormControlValidator dsCustomControlValidator>
+                <label class="custom-control-label"
+                  for="{{'paymentRadio' + head.generalLedgerGroupHeaderId + '1' + i}}">Cost Center</label>
+              </div>
+              <div class="custom-control custom-radio mb-1">
+                <input type="radio" id="{{'paymentRadio' + head.generalLedgerGroupHeaderId + '2' + i}}"
+                  name="{{'paymentRadio' + head.generalLedgerGroupHeaderId + i}}" class="custom-control-input"
+                  [value]="3" [(ngModel)]="d.assignmentMethodId" dsFormControlValidator>
+                <label class="custom-control-label"
+                  for="{{'paymentRadio' + head.generalLedgerGroupHeaderId + '2' + i}}">Department</label>
+              </div>
+              <div class="custom-control custom-radio mb-1">
+                <input type="radio" id="{{'paymentRadio' + head.generalLedgerGroupHeaderId + '3' + i}}"
+                  name="{{'paymentRadio' + head.generalLedgerGroupHeaderId + i}}" class="custom-control-input"
+                  [value]="4" [(ngModel)]="d.assignmentMethodId" dsFormControlValidator>
+                <label class="custom-control-label"
+                  for="{{'paymentRadio' + head.generalLedgerGroupHeaderId + '3' + i}}">Custom Class</label>
+              </div>
+              <div class="invalid-feedback">
+                Please select a split.
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+    </ds-card-content>
+  </ds-card>
+
+
+  <ds-card mode="noheader" *ngIf="!isLoading">
+    <ds-card-content>
+      <div class="row justify-content-end">
+        <div class="col-auto">
+          <button type="submit" [disabled]="isSaving" class="btn btn-save">Save</button>
+        </div>
+      </div>
+    </ds-card-content>
+  </ds-card>
+</form>

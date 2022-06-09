@@ -1,0 +1,72 @@
+<div ng-show="!isLoaded">Loading Documents...</div>
+<div ng-show="isLoaded">
+    <div class="container-new">
+        <div class="panel clearfix">
+            <div class="panel-body">
+                <div class="d-flex flex-wrap on-header">
+                    <div class="circle-sm on-pager">{{circleNumber}}</div>
+                    <div class="top-constant">
+                        <h1>{{currWorkflowTitle}}</h1>
+                        <p>{{description}}</p>
+                    </div>
+                </div>
+                <form name="frmDocument">
+                    <div id="myForm" class="form-group">
+                        <div class="row form-group">
+                            <div class="col-md-3 col-md-push-9 p-l">
+                                <div class="Acme-Documents" ng-class="{ 'Documents-active' : selectedResource.previewResourceCssClass}" ng-repeat="selectedResource in selectedResources" ng-click="setPreviewResource(selectedResource)" style="border-radius: 0px;">
+                                    <h3 class="res-style clickable"
+                                        data-toggle="tooltip" title="{{selectedResource.resourceName}}" ng-click = "setPreviewResource(selectedResource)" >
+                                        {{selectedResource.resourceName}}
+                                    </h3>
+                                    <i class="fa fa-cloud-download download-icon clickable" ng-click="download(selectedResource)" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                            <div class="col-md-9 col-md-pull-3 p-r">
+                                <iframe name="filePreview" ng-src="{{previewResource}}" class="document-border" frameborder="0"></iframe>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12" ng-if="userMustUpload">
+                                <div ng-class="{ 'required-field' : isSoftWarned && !document.isUploaded}">
+                                    <h3 class="temp-primary d-block">
+                                        {{uploadDescription}}
+                                    </h3>
+                                    <div class="file-input">
+                                        <button class="btn btn-default mr-2" id="fileLoader" ngf-select ngf-change="fileChanges($files)" ng-model="document.currentAttachment.data" ngf-multiple="false" accept="{{fileAccept}}">
+                                            Browse
+                                        </button>
+                                        <span class="clickable">
+                                            {{ document.currentAttachment.data ? document.currentAttachment.data.name : (document.currentAttachment.source ? document.currentAttachment.source.split('\\').pop() : (document.currentAttachment.name ? document.currentAttachment.name : ""))}}
+                                        </span>
+                                        <p class="placeholder-text" ng-if="!document.isUploaded">
+                                            Accepted file types include .pdf, .doc, .docx, .xlsx, .xls, .txt, .rtf <br/>
+                                            Max file size: 3 mb
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12 pt-sm">
+                                <div ng-if="considerSignatureDescription" class="on-checkbox" ng-class="{ 'required-field' : isSoftWarned && !document.isCompleted}">
+                                    <span>
+                                        <input type="checkbox" class="document-agree12" id="agreeCheckbox"
+                                                ng-model="document.isCompleted"
+                                                ng-change="changeSignatureState($event)">
+                                    </span>
+                                    <label for="agreeCheckbox" class="form-label">
+                                        <span>{{signatureDescription}}</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr style="height: 1px; border: none; color: lightgrey; background-color: lightgrey;" />
+                    <ds-nav-workflow-footer workflow-Hide-Next="false" workflow-Hide-Prev="false"
+                        my-Workflow="myWorkflow"
+                        on-save="$ctrl.clickSavePageData($direction)" />
+                    <br />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,29 @@
+<mat-dialog-header>
+    <h2 class="dialog-title">
+        Client
+    </h2> 
+    <button type="button" class="close" (click)="clear()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</mat-dialog-header>
+<mat-dialog-content [formGroup]="form" *ngIf="form">
+    <div class="form-group">
+        <label for="clientSelector">Please select a company</label>
+        <select class="form-control custom-select" formControlName="clientSelector"
+            [class.is-invalid]="(form.controls.clientSelector.touched || formSubmitted) && 
+            (form.controls.clientSelector.errors?.required)">
+            <option [ngValue]="client.clientId" *ngFor="let client of clientList">
+            {{ client.clientName }}
+            </option>
+        </select>  
+        <div class="invalid-feedback">
+            <span *ngIf="form.controls.clientSelector.errors?.required">Please select a company.</span>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button type="button" class="btn btn-save"
+        (click)="save()" >Continue</button>
+    <button type="button" class="btn btn-cancel" 
+        (click)="clear()" >Cancel</button>
+</mat-dialog-actions>

@@ -1,0 +1,30 @@
+<markdown ngPreserveWhitespaces>
+  # Help and Tooltips
+
+  ## Tooltips
+  Use a tooltip when explaining a field to fill out. Tooltip content is managed by trainers. Cost Center from Employee Profile is used as the example, and the tooltip explains in detail how to assign the cost center and where it can be overridden.
+
+  ### SVG
+</markdown>
+
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleTooltip = !toggleTooltip">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleTooltip">
+  <div class="ui">
+    <ds-tooltip-example></ds-tooltip-example>
+  </div>
+  <div class="example">
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+  ## Help Link (Deprecated)
+  Put at the top of the page to the right of the page title or card title. Content is created and managed by trainers. We are no longer adding these to new pages.
+
+  ### AngularJs Help Link Component
+ <a href="https://www.notion.so/dominionsystems/help-link-2956cd62d56b4a12a61fce2ebb059212">AngularJs Help Link</a>
+ </markdown>

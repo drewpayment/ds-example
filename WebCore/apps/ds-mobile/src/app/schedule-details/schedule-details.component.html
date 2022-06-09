@@ -1,0 +1,30 @@
+<ng-container *ngIf="!isLoading.content">
+    <ng-container *ngIf="punchesByDay.length; else inputHoursDetail">
+        <ds-schedule-detail-card *ngFor="let scheduleDetailsDay of punchesByDay" [scheduleDetailsDay]="scheduleDetailsDay"
+            [dates]="dates">
+        </ds-schedule-detail-card>
+    </ng-container>
+    
+    <ng-template #inputHoursDetail>
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>{{ inputHoursTitleString() }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <h2 class="schedule-title text-center">
+                    <ng-container *ngIf="!isLoading.hoursWorked">
+                        <!-- <span class="bold">Daily total: {{ scheduleDetailsDay.getHoursWorked().toFixed(2) }}</span> -->
+                        <span class="bold">Daily total: {{ inputHoursShift?.hoursWorked | number:'1.2-2' }}</span>
+                        <span class="daily-total">&nbsp;hours</span>
+                    </ng-container>
+                </h2>
+            </mat-card-content>
+        </mat-card>        
+    </ng-template>
+</ng-container>
+
+<ng-container *ngIf="isLoading.content">
+    <div class="d-flex justify-content-center">
+        <mat-spinner></mat-spinner>
+    </div>
+</ng-container>

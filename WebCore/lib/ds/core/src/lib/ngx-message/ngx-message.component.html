@@ -1,0 +1,16 @@
+<div class="valCard" *ngIf="showMessage" (click)="showMessage = false">
+    <div id="system-feedback" class="alert alert-dismissable text-center" [ngClass]="message.type">
+
+        <span style="word-break:break-word" [ngStyle]="{'color' : message.textColor }" >{{ message.text }}</span>
+
+        <span class="clickable" (click)="toggleDetail($event)" *ngIf="message.details && message.details.length">
+            <mat-icon>{{showDetail ? 'arrow_drop_up' : 'arrow_drop_down'}}</mat-icon>
+        </span>
+
+        <div *ngIf="showDetail">
+            <ng-container *ngFor="let detail of message.details; let i = index;">
+                <span >#{{ i + 1 }}: {{ (detail.msg) ? detail.msg : detail.errorMessage }}</span>
+            </ng-container>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,178 @@
+<ds-card mode="nav" border="top" color="secondary">
+	<div ds-card-header >
+	  <ds-card-header-title><h1>Electronic Consents</h1></ds-card-header-title>
+	  <ds-card-subtitle>
+		<div class="instruction-text">
+			Accepting these agreements means you will be able to view and download a copy of your W-2 and 1095C forms
+			 electronically through your ESS account. You can signup to receive text and email notifications when these forms
+			 are ready for you to view in your <a href="#" (click)="gotoPreferences()">Notifications</a> page.
+		</div>
+	  </ds-card-subtitle>
+	</div>
+	<ds-card-nav>
+		<div class="ds-tabs d-none d-md-flex">
+			<div class="tab"  
+				(click)="selected = 'W2';" 
+				[class.active]="selected == 'W2'">
+				W-2 Consent
+			</div>
+			<div class="tab" 
+				(click)="selected = '1095 C';"
+				[class.active]="selected == '1095 C'">
+				1095C CONSENT
+			</div>
+		</div>
+	</ds-card-nav>
+</ds-card>
+<ng-container *ngIf="loading;else doc">
+	<ds-card mode="noheader">
+	<ds-card-content>
+		<ds-loading-message></ds-loading-message>
+	</ds-card-content>
+	</ds-card>
+</ng-container>
+<ng-template #doc>
+<ds-card mode="noheader">
+	<ds-card-content>
+		<div class="empty-state-cycle warning" *ngIf="isHRBlocked; else notHRBlocked">
+			<i class="material-icons">warning</i>
+			<div class="title">Electronic Consents are not displayed for your user profile.</div>
+			<p>Please contact your Dominion Systems representative if you believe this is an error.</p>
+		</div>
+		<ng-template #notHRBlocked>
+			<div class="row" [class.d-none]="selected != 'W2'">
+				<div class="col-md-12">
+					
+						<p>
+						After consenting to receive your W-2 online, you can obtain a paper copy of your Form W-2 by printing a copy from this Employee Self Service system.  In order to view and print your Form W-2, you must have access to a computer that supports viewing and printing of PDFs, and have an operable printer setup to work with the computer.
+						</p>
+						<p>
+						Additionally, you can request a paper copy of your Form W-2 from your Payroll Department.  This request will not constitute a withdrawal of consent to receive your W-2 online through this Employee Self Service system.
+						</p>
+						<p>
+						If you wish to withdraw your consent to receive your W-2 online, you must click the "Withdrawal of Consent" button.  Withdrawing your consent becomes effective immediately through the software, but does not apply to a W-2 that was furnished electronically before the due date on which the withdrawal of consent occurred.  Information about your withdrawal of your consent through this system will be made available to your Company Administrator which they will be able to confirm prior to the release of any future Form W-2s.
+						</p>
+						<p>
+						Access to your electronic W-2 will remain on this Employee Self Service system at least through October 15th for the year following the calendar year to which the Form W-2 relates (or on the first business day after October 15, if October 15 falls on a Saturday, Sunday, or legal holiday).  However, access to your Electronic W-2s through this Employee Self Service system will cease upon termination of employment, unless your Company Administrator provides access to this system after termination of employment.  Additionally, if your employer terminates services with Dominion Systems, access to your electronic Form W-2 will cease through this Employee Self Service system.
+						</p>
+						<p>
+						You agree to notify the Payroll Department or update this Employee Self Service system if any e-mail, address, or phone number changes have occurred since the issuance of your previous years' W-2.
+						<br/>Your employer is responsible for notifying you of any changes to their contact information.
+						</p>
+						<p>
+						By accepting this agreement, you acknowledge that the electronic version of the Form W-2 meets the IRS requirements for a substitute form, and that you will use this Employee Self Service system to review and print your Form W-2.  Additionally, you can review and save your electronic Form W-2 to your own computer hardware.
+						</p>
+						<p>
+						You acknowledge that a paper copy of Form W-2 may be required to be printed and attached to a Federal, State, or local income tax return.
+						</p>
+						<p>By not accepting the above agreement, you agree to receive a paper copy of your Form W-2 from the Payroll Department by hand delivery or U.S. mail.</p>
+				</div>
+			</div>
+			<div class="row" [class.d-none]="selected == 'W2'">
+				<div class="col-md-12">
+					<p>
+						By consenting to receive your 1095-C online, you agree to not receive a paper Form 1095-C from your
+						employer. If you consent to receive your 1095-C online, your consent will remain in effect for all
+						future years until you withdraw it.
+					</p>
+					<p>
+						After consenting to receive your 1095-C online, you can obtain a paper copy of your Form 1095-C by
+						printing a copy from this Employee Self Service system. <i>In order to view and print your Form 1095-C,
+							you must have access to a computer that supports viewing and printing of PDFs, and have an operable
+							printer set up to work with the computer.</i>
+					</p>
+					<p>
+					Additionally, you can request a paper copy of your Form 1095-C from your Payroll Department. This request
+					will not constitute a withdrawal of consent to receive your 1095-C online through this Employee Self Service
+					system.<br/>
+					
+						If you wish to withdraw your consent to receive your 1095-C online, you must click the "Withdrawal of
+						Consent" button. Withdrawing your consent becomes effective immediately through the software, but does
+						not apply to a 1095-C that was furnished electronically before the due date on which the withdrawal of
+						consent occurred. Information about your withdrawal of your consent through this system will be made
+						available to your Company Administrator which they will be able to confirm prior to the release of any
+						future Form 1095-Cs.
+					</p>
+					<p>
+						Access to your electronic 1095-C will remain on this Employee Self Service system at least through
+						October 15th for the year following the calendar year to which the Form 1095-C relates (or on the first
+						business day after October 15, if October 15 falls on a Saturday, Sunday, or legal holiday). However,
+						access to your electronic 1095-Cs through this Employee Self Service system will cease upon termination
+						of employment, unless your Company Administrator provides access to this system after termination of
+						employment. Additionally, if your employer terminates services with Dominion Systems, access to your
+						electronic Form 1095-C will cease through this Employee Self Service system.
+					</p>
+					<p>You agree to notify the Payroll Department or update this Employee Self Service system if any e-mail,
+					address, or phone number changes have occurred since the issuance of your previous years' 1095-C.<br/>
+					
+						Your employer is responsible for notifying you of any changes to their contact information.
+					</p>
+					<p>
+						By accepting this agreement, you acknowledge that the electronic version of the Form 1095-C meets the
+						IRS requirements for a substitute form, and that you will use this Employee Self Service system to
+						review and print your Form 1095-C. Additionally, you can review and save your electronic Form 1095-C to
+						your own computer hardware
+					</p>
+					<p>
+						You acknowledge that a paper copy of Form 1095-C may be required to be printed and attached to a
+						Federal, State, or local income tax return
+					</p>
+					<p>
+						By not accepting the above agreement, you agree to receive a paper copy of your 1095 from the Payroll
+						Department by hand delivery or US mail.
+					</p>
+				</div>
+			</div>
+		</ng-template>
+	</ds-card-content>
+	<ds-card-footer *ngIf="!isHRBlocked">
+		<div class="row">
+			<div class="col-md-12">
+			<ng-container *ngIf="readonly;else acceptButtons">
+				<mat-button-toggle-group #group="matButtonToggleGroup" 
+					value=""  class="form-group">
+					<mat-button-toggle value="yes" disabled >
+						ACCEPT AGREEMENT
+					</mat-button-toggle>
+					<mat-button-toggle value="no"  disabled >
+						WITHDRAW ELECTRONIC CONSENT
+					</mat-button-toggle>
+				</mat-button-toggle-group>
+			</ng-container>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12 py-2 instruction-text">
+				<ng-container *ngIf="withdrawnDate();else acceptNotes">
+					<span >Electronic consent withdrawn by {{elecronicConsent.employeeName}} on {{withdrawnDate()}}</span>
+				</ng-container>
+			</div>
+		</div>
+	</ds-card-footer>
+</ds-card>
+</ng-template>
+<ng-template #acceptNotes>
+	<span *ngIf="acceptedDate()">Agreement accepted by {{elecronicConsent.employeeName}} on {{acceptedDate()}}</span>
+</ng-template>
+<ng-template #acceptButtons>
+	<mat-button-toggle-group *ngIf="showAccept(); else withdrawButtoms" #group="matButtonToggleGroup" 
+		value="yes"  class="form-group">
+		<mat-button-toggle value="yes" (click)="accept()" >
+			ACCEPT AGREEMENT
+		</mat-button-toggle>
+		<mat-button-toggle value="no" disabled >
+			WITHDRAW ELECTRONIC CONSENT
+		</mat-button-toggle>
+	</mat-button-toggle-group>
+</ng-template>
+<ng-template #withdrawButtoms>
+	<mat-button-toggle-group #group="matButtonToggleGroup" 
+		value="no"  class="form-group">
+		<mat-button-toggle value="yes" disabled >
+			ACCEPT AGREEMENT
+		</mat-button-toggle>
+		<mat-button-toggle value="no"  (click)="withdraw()">
+			WITHDRAW ELECTRONIC CONSENT
+		</mat-button-toggle>
+	</mat-button-toggle-group>
+</ng-template>

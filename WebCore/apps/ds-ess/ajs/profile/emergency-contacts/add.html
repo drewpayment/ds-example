@@ -1,0 +1,199 @@
+﻿<div class="row">
+
+    <div class="col-md-12">
+        
+        <h1>
+            Add Emergency Contact&nbsp;
+
+            <button class="btn btn-default btn-xs btn-cancel" ng-click="cancelEdit()">
+                Cancel
+            </button>
+        </h1>
+        
+        <div class="panel panel-default">
+
+            <div class="panel-body" ng-hide="unauthorizedMessages.validationMessages">
+                <div class="pull-right text-warning">* indicates required</div>
+
+
+                <form class="form-horizontal" name="frm" ng-submit="submit()" novalidate>
+
+                    <ds-inline-validated-input
+                        label-class="col-md-2 col-sm-3"
+                        input-div-class="col-md-3 col-sm-4"
+                        ds-required="1"
+                        ds-max-length="25"
+                        frm-obj="frm"
+                        label-text="First Name"
+                        input-name="inputFirstName"
+                        ds-auto-focus-on="true"
+                        ds-model="employeeEmergencyContact.firstName"></ds-inline-validated-input>
+
+                    <ds-inline-validated-input
+                        label-class="col-md-2 col-sm-3"
+                        input-div-class="col-md-1 col-sm-2"
+                        ds-max-length="1"
+                        frm-obj="frm"
+                        label-text="Middle Initial"
+                        input-name="inputMiddleInitial"
+                        ds-model="employeeEmergencyContact.middleInitial"></ds-inline-validated-input>
+
+                    <ds-inline-validated-input
+                        label-class="col-md-2 col-sm-3"
+                        input-div-class="col-md-3 col-sm-4"
+                        ds-required="1"
+                        ds-max-length="25"
+                        frm-obj="frm"
+                        label-text="Last Name"
+                        input-name="inputLastName"
+                        ds-model="employeeEmergencyContact.lastName"></ds-inline-validated-input>
+
+                    <ds-inline-validated-input
+                        label-class="col-md-2 col-sm-3"
+                        input-div-class="col-md-3 col-sm-4"
+                        ds-required="1"
+                        ds-max-length="20"
+                        frm-obj="frm"
+                        label-text="Relationship"
+                        input-name="inputRelationship"
+                        ds-model="employeeEmergencyContact.relation"></ds-inline-validated-input>
+
+
+                    <hr />
+
+                    <ds-inline-validated-input 
+                        label-class="col-md-2 col-sm-3"
+                        input-div-class="col-md-2 col-sm-3"
+                        ds-required="1"
+                        frm-obj="frm"
+                        ds-built-in-pattern-key="phone"
+                        ds-built-in-help-message-key="phone"
+                        ds-built-in-mask-key="phone"                        
+                        label-text="Home Phone"
+                        input-name="inputHomePhone" 
+                        ds-model="employeeEmergencyContact.homePhoneNumber"></ds-inline-validated-input>        
+                    
+                    <ds-inline-validated-input 
+                        label-class="col-md-2 col-sm-3"
+                        input-div-class="col-md-2 col-sm-3"
+                        frm-obj="frm"
+                        ds-built-in-pattern-key="phone"
+                        ds-built-in-help-message-key="phone"
+                        ds-built-in-mask-key="phone"                        
+                        label-text="Work Phone"
+                        input-name="inputWorkPhone" 
+                        ds-model="employeeEmergencyContact.workPhoneNumber"></ds-inline-validated-input>
+
+                    <ds-inline-validated-input 
+                        label-class="col-md-2 col-sm-3"
+                        input-div-class="col-md-2 col-sm-3"
+                        frm-obj="frm"
+                        ds-built-in-pattern-key="phone"
+                        ds-built-in-help-message-key="phone"
+                        ds-built-in-mask-key="phone"    
+                        label-text="Cell Phone"
+                        input-name="inputCellPhone" 
+                        ds-model="employeeEmergencyContact.cellPhoneNumber"></ds-inline-validated-input>
+                    
+                    <ds-inline-validated-input 
+                        label-class="col-md-2 col-sm-3"
+                        input-div-class="col-md-4 col-sm-4"
+                        frm-obj="frm"
+                        ds-built-in-pattern-key="email"
+                        ds-built-in-help-message-key="email"
+                        label-text="Email Address"
+                        input-name="inputEmail" 
+                        ds-model="employeeEmergencyContact.emailAddress"></ds-inline-validated-input>
+
+                    <hr />
+
+                    <div class="form-group" label-class="col-md-2 col-sm-3">
+                        <label class="control-label col-md-2 col-sm-3">
+                            <span class="required-star"></span>Include Street Address
+                        </label>
+                        <div class="control-label col-md-2 col-sm-3" style="text-align:left"><input type="checkbox" ng-model="EmergencyContactAddress" /></div>
+                    </div>
+
+                    <div ng-show="EmergencyContactAddress">
+                        <ds-inline-validated-input label-class="col-md-2 col-sm-3"
+                                                   input-div-class="col-md-4 col-sm-4"
+                                                   ds-max-length="50"
+                                                   frm-obj="frm"
+                                                   label-text="Street Address"
+                                                   input-name="inputAddressLine1"
+                                                   ds-model="employeeEmergencyContact.addressLine1"></ds-inline-validated-input>
+
+                        <ds-inline-validated-input label-class="col-md-2 col-sm-3"
+                                                   input-div-class="col-md-4 col-sm-4"
+                                                   ds-max-length="50"
+                                                   frm-obj="frm"
+                                                   label-text="Line 2"
+                                                   input-name="inputAddressLine2"
+                                                   ds-model="employeeEmergencyContact.addressLine2"></ds-inline-validated-input>
+
+                        <ds-inline-validated-input label-class="col-md-2 col-sm-3"
+                                                   input-div-class="col-md-3 col-sm-4"
+                                                   ds-max-length="25"
+                                                   frm-obj="frm"
+                                                   label-text="City"
+                                                   input-name="inputCity"
+                                                   ds-model="employeeEmergencyContact.city"></ds-inline-validated-input>
+
+                        <ds-inline-validated-select label-class="col-md-2 col-sm-3"
+                                                    input-div-class="col-md-3 col-sm-4"
+                                                    frm-obj="frm"
+                                                    label-text="Country"
+                                                    input-name="inputCountry"
+                                                    ds-select-changed-func="countryAndState.clearSuppressionLoadStates()"
+                                                    ds-select-options="country.countryId as country.name for country in $parent.countryAndState.countries | orderBy: 'name'"
+                                                    ds-model="countryAndState.countryId"></ds-inline-validated-select>
+
+                        <ds-inline-validated-select label-class="col-md-2 col-sm-3"
+                                                    input-div-class="col-md-3 col-sm-4"
+                                                    frm-obj="frm"
+                                                    label-text="State"
+                                                    input-name="inputState"
+                                                    ds-can-clear-suppression="1"
+                                                    ds-select-options="state.stateId as state.name for state in $parent.countryAndState.states | orderBy: 'name'"
+                                                    ds-model="countryAndState.stateId"></ds-inline-validated-select>
+
+                        <ds-inline-validated-input label-class="col-md-2 col-sm-3"
+                                                   input-div-class="col-md-2 col-sm-3"
+                                                   dsInputHelpMsg
+                                                   ds-built-in-pattern-key="usZip"
+                                                   ds-built-in-help-message-key="usZip"
+                                                   ds-built-in-mask-key="usZip"
+                                                   frm-obj="frm"
+                                                   label-text="Zip Code"
+                                                   input-name="inputZipCode"
+                                                   ds-model="employeeEmergencyContact.postalCode"></ds-inline-validated-input>
+                    </div>
+
+</form>
+            </div>
+            
+            <div class="panel-footer">
+
+                <div class="col-md-offset-2 col-sm-offset-3">
+                    <button 
+                        id="submit" 
+                        class="btn btn-primary"  
+                        value="Submit" 
+                        ng-disabled="!isDataModified()" 
+                        ng-click="validateThenSubmit()">
+                        Save
+                    </button>
+
+                    <button 
+                        class="btn btn-default" 
+                        ng-click="cancelEdit()">
+                        Cancel
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>

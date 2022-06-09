@@ -1,0 +1,61 @@
+<!-- template-validation.component.html -->
+<ds-card>
+    <ds-card-header>
+        <ds-card-section-title>
+            Template Driven Forms
+        </ds-card-section-title>
+    </ds-card-header>
+    <ds-card-content>
+        <form #f="ngForm" (submit)="save(f)">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input class="form-control" [(ngModel)]="person.firstName" name="firstName" 
+                            required pattern="[A-Za-z ]+" 
+                            #firstName="ngModel" dsFormControlValidator />
+                        <div class="invalid-feedback" *ngIf="firstName.invalid">
+                            <span *ngIf="firstName.errors.required">Please enter a first name.</span>
+                            <span *ngIf="firstName.errors.pattern">Please enter a valid first name.</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input class="form-control" [(ngModel)]="person.lastName" name="lastName" 
+                            required pattern="[A-Za-z ]+"
+                            #lastName="ngModel" dsFormControlValidator />
+                        <div class="invalid-feedback" *ngIf="lastName.invalid">                            
+                            <span *ngIf="lastName.errors.required">Please enter a last name.</span>
+                            <span *ngIf="lastName.errors.pattern">Please enter a valid last name.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>State</label>
+                        <select class="form-control custom-select" [(ngModel)]="person.stateAbbreviation" name="stateAbbreviation"
+                            required dsFormControlValidator>
+                            <option [ngValue]="null"></option>
+                            <option *ngFor="let state of states" [ngValue]="state.abbreviation">{{ state.name }}</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Please select a state.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-save float-right">Save</button>
+                    <button type="button" class="btn btn-link float-right" (click)="reset(f)">Reset</button>
+                </div>
+            </div>
+        </form>
+    </ds-card-content>
+</ds-card>
+
+

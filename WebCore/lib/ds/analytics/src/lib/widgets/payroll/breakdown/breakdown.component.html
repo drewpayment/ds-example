@@ -1,0 +1,17 @@
+<ng-container *ngIf="{options: headerDropdownOptions$|async} as d">
+    <ds-dashboard-widget [cardType]="cardType" [loaded]="loaded" skeleton="bar-graph-skeleton">
+        <ds-dashboard-widget-header [title]="title" [availableChartTypes]="availableChartTypes" [headerDropdownOptions]="d.options" *ngIf="d.options != null" 
+        tooltip="Displays the selected earning's amount for each check date within the time period."
+        [settingsItems]="settingsItems" (headerDropdownChange)="headerDropdownChanged($event)" (chartChange)="chartChanged($event)" (settingSelected)="settingSelected($event)"></ds-dashboard-widget-header>
+        <ds-dashboard-widget-content>
+            <div *ngIf="!emptyState" class="chart">
+                <canvas baseChart #baseChat width="400" height="150" [data]="chartData" [labels]="chartLabels" [options]="chartOptions" [colors]="chartColors" [legend]="chartLegend" [chartType]="chartType"></canvas>
+            </div>
+            <div *ngIf="emptyState">
+                <div class="empty-state">
+                    No data available to display
+                </div>
+            </div>
+        </ds-dashboard-widget-content>
+    </ds-dashboard-widget>
+</ng-container>

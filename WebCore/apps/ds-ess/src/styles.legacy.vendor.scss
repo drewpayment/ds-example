@@ -1,0 +1,12 @@
+/**
+ * Legacy Vendor Stylesheets
+ * These are loaded to support older ASPX controls and styles that use
+ * 3rd party libraries
+ */
+
+ //@import "eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css";
+ @import "timepicker/jquery.timepicker.css";
+
+ #main-body {
+    margin: 0 !important;
+}

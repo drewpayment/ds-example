@@ -1,0 +1,44 @@
+<mat-dialog-header>
+    <h2 class="dialog-title">
+        Close Onboarding
+    </h2>
+    <button type="button" class="close" (click)="clear()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</mat-dialog-header>
+<mat-dialog-content [formGroup]="form1">
+    <div class="italic text-muted mb-2">Are you sure you want to close this employee before all tasks are completed?</div>
+    <div class="form-group">
+        <label class="form-control-label">Separation Date</label>
+        <div class="input-group">
+            <input matInput class="form-control" [class.is-invalid]="getFormControlError('separationDate', ['required'])" [matDatepicker]="separationDate"
+                   formControlName="separationDate" />
+            <div class="input-group-append">
+                <mat-datepicker-toggle matSuffix [for]="separationDate" class="input-group-text date">
+                    <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                </mat-datepicker-toggle>
+                <mat-datepicker #separationDate></mat-datepicker>
+            </div>
+            <div class="invalid-feedback" *ngIf="form1.controls.separationDate.errors?.required">
+                Please enter a separation date.
+            </div>
+        </div>
+    </div>
+    <div class="form-group" >
+        <label class="form-control-label">Status</label>
+        <select [class.is-invalid]="formSubmitted && (form1.controls.employeeStatus.errors?.required)"
+            class="form-control custom-select" formControlName="employeeStatus" >
+            <option class="text-muted" value=""></option>
+            <option *ngFor="let status of allStatuses" [value]="status.employeeStatusId">
+                {{status.description}}
+            </option>
+        </select>
+        <div class="invalid-feedback">
+            <span *ngIf="form1.controls.employeeStatus.errors?.required">Please select an employe status.</span>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button type="button" class="btn btn-save" (click)="save()">Save</button>
+    <button type="button" class="btn btn-cancel" (click)="clear()">Cancel</button>
+</mat-dialog-actions>

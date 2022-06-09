@@ -1,0 +1,41 @@
+<div mat-dialog-header>
+    <h2 class="dialog-title">
+        {{pageTitle}}
+    </h2>
+    <button type="button" class="close" (click)="onNoClick()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</div>
+<div mat-dialog-content>
+    <form [formGroup]="f">
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-control-label">About Me</label>
+                    <textarea rows="10"
+                              [class.is-invalid]="getFormControlError('bio', ['required'])"
+                              class="form-control"
+                              formControlName="bio" required cdkFocusInitial></textarea>
+                    <div class="invalid-feedback" *ngIf="f.controls.bio.errors?.required">
+                        Please enter information about yourself.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </form>
+</div>
+<div mat-dialog-actions>
+    <button type="button"
+            class="btn btn-primary"
+            [disabled]="f.hasError('required')"
+            (click)="saveEmployeeBio()">
+        Save
+    </button>
+    <button type="button"
+            class="btn btn-cancel"
+            (click)="onNoClick()">
+        Cancel
+    </button>
+</div>

@@ -1,0 +1,112 @@
+<ds-card border="top">
+    <ds-card-header>
+        <ds-card-header-title>
+            Task Lists
+        </ds-card-header-title>    
+        <ds-card-subtitle>
+            <nav aria-label="breadcrumb" *ngIf="showBreadCrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a routerLink="/manage/onboarding/dashboard">Onboarding</a>
+                    </li>
+                    <li class="breadcrumb-item active">Task Lists</li>
+                </ol>
+            </nav>
+        </ds-card-subtitle>
+    </ds-card-header>
+    <ds-card-content >
+        <ng-container *ngIf="!isLoading; else loadingScreen">
+            <ng-container *ngTemplateOutlet="cardView"></ng-container>
+        </ng-container>
+        <ng-template #cardView>
+            <mat-drawer-container 
+                hasBackdrop="true" 
+                [@changeDrawerHeightOnOpen]="activeTaskListId != 0">
+                <mat-drawer-content>
+                    <ds-card 
+                        mode="widget-nobody" 
+                        color="add" 
+                        (click)="addTaskList()"
+                        hover="true">
+                        <div ds-card-icon>add</div>
+                        <ds-card-header>
+                            <ds-card-widget-title>Add Task List</ds-card-widget-title>
+                        </ds-card-header>
+                    </ds-card>
+                    <ng-container *ngFor="let tl of allTaskList; let i = index;">
+                        <ng-container *ngIf="tl.onboardingAdminTaskListId > 0">
+                            <ds-card
+                                mode="widget-nobody" 
+                                color="info" 
+                                hover="true" 
+                                [drawerMask]="true"
+                                [drawerMaskActive]="tl.onboardingAdminTaskListId == activeTaskListId"
+                                (click)="toggleActiveTaskList(tl.onboardingAdminTaskListId)">
+                                <div ds-card-icon>assignment</div>
+                                <div ds-card-icon-title>Content</div>
+                                <ds-card-header>
+                                    <ds-card-widget-title>
+                                        {{tl.name}}
+                                    </ds-card-widget-title>
+                                    <ds-card-subtitle>
+                                        <div class="card-data bordered font-md flex-wrap">
+                                            <div class="item white-space-nowrap">
+                                                {{tl.onboardingAdminTasks.length}} Task{{tl.onboardingAdminTasks.length==1?'':'s'}}
+                                            </div>
+                                            <div class="item white-space-nowrap" *ngIf="tl.jobProfiles && tl.jobProfiles.length > 0">
+                                                Assigned to {{tl.jobProfiles.length}} Job Profile{{tl.jobProfiles.length==1?'':'s'}}
+                                            </div>
+                                            <div class="item white-space-nowrap" *ngIf="!tl.jobProfiles || tl.jobProfiles.length == 0">
+                                                Not Assigned
+                                            </div>
+                                        </div>
+                                    </ds-card-subtitle>
+                                    <ds-card-title-action>
+                                        <div [class.hover-show]="!tl.hovered">
+                                            <button [matMenuTriggerFor]="menu" class="btn btn-icon" type="button"
+                                                (click)="$event.stopPropagation()">
+                                                <i class="material-icons">more_vert</i>
+                                            </button>
+                                            <mat-menu #menu="matMenu">
+                                                <button type="button" mat-menu-item (click)="deleteTLDialog(tl)">Delete</button>
+                                            </mat-menu>
+                                        </div>
+                                    </ds-card-title-action>
+                                </ds-card-header>                            
+                            </ds-card>
+                        </ng-container>
+                    </ng-container>
+                </mat-drawer-content>
+                <mat-drawer 
+                    #drawer 
+                    [mode]="over"
+                    position="end"
+                    [opened]="activeTaskListId != 0"
+                    [class.open]="activeTaskListId != 0"
+                    autoFocus="false"
+                    disableClose="true"
+                    [@matDrawerAfterHeightChange]="activeEmployeeId > 0">
+                    <ng-container *ngIf="activeTaskList != null; else loadingScreen">
+                        <ng-container *ngTemplateOutlet="cardDrawerContent;"></ng-container>
+                    </ng-container>
+                </mat-drawer>
+            </mat-drawer-container>
+
+            <div class="row justify-content-end">
+                <div class="col-auto py-4">
+                    <button type="button" class="btn btn-save" (click)="save(3)">Save</button>
+                </div>
+            </div>
+        </ng-template>
+
+        <ng-template #cardDrawerContent>
+            <ds-admin-task-form [user]="userinfo" [jobProfiles]="jobProfiles" (statusChange)="refresh($event)" [pageSubmitted]="submitted">
+            </ds-admin-task-form>
+        </ng-template>
+
+    </ds-card-content>
+</ds-card>
+
+<ng-template #loadingScreen>
+    <ds-loading-message></ds-loading-message>
+</ng-template>

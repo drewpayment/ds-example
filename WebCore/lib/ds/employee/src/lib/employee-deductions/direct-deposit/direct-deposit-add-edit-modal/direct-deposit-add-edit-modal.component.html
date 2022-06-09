@@ -1,0 +1,111 @@
+<div mat-dialog-header>
+    <h2 *ngIf="option == 'add'" class="dialog-title">Add Direct Deposit</h2>
+    <h2 *ngIf="option == 'edit'" class="dialog-title">Edit Direct Deposit</h2>
+    <h2 *ngIf="option == 'addHSA'" class="dialog-title">Add Direct Deposit for Deduction</h2>
+    <h2 *ngIf="option == 'editHSA'" class="dialog-title">Edit Direct Deposit for Deduction</h2>
+
+    <button type="button" class="close" (click)="cancel()">
+        <mat-icon>clear</mat-icon>
+    </button>
+    </div>
+
+    <div mat-dialog-content>
+        <form [formGroup]="DDFormGroup">
+            <div class="row">
+                <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="form-control-label">Account Type</label>
+                            <select class="form-control custom-select" formControlName="accountType" [ngClass]="{'is-invalid': ((DDFormGroup.controls['accountType'].touched || formSubmitted ) && !DDFormGroup.controls['accountType'].valid)}" cdk-focus-initial>
+                                <option [selected]="this.selectedDD.accountType == 1" [value]="1">Checking</option>
+                                <option [selected]="this.selectedDD.accountType == 0" [value]="0">Savings</option>
+                            </select>
+                            <div *ngIf="DDFormGroup.controls['accountType'].hasError('required')" class="invalid-feedback">
+                                Please select an account type.
+                            </div>
+                        </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-control-label">Amount</label>
+                        <div class="input-group">
+
+                            <div *ngIf="DDFormGroup.controls['amountType'].value.includes('$')" class="input-group-prepend">
+                                <span class="input-group-text currency">$</span>
+                            </div>
+                            <input [disabled]="option.includes('HSA')" formControlName="amount" class="form-control" [ngClass]="{'is-invalid': ((DDFormGroup.controls['amount'].touched || formSubmitted ) && !DDFormGroup.controls['amount'].valid) || (DDFormGroup.controls['amount'].touched && DDFormGroup.errors?.amount) || DDFormGroup.errors?.multipleHundreds}"/>
+                            <div *ngIf="DDFormGroup.controls['amountType'].value.includes('ercent') || DDFormGroup.controls['amountType'].value.includes('%')" class="input-group-append">
+                                <span class="input-group-text percent">%</span>
+                            </div>
+
+                            <div *ngIf="DDFormGroup.controls['amount'].hasError('required')" class="invalid-feedback">
+                                Please enter an amount.
+                            </div>
+                            <div *ngIf="DDFormGroup.errors?.amount" class="invalid-feedback">
+                                Invalid amount based on selected amount type.
+                            </div>
+                            <div *ngIf="DDFormGroup.controls['amount'].hasError('notANumber')" class="invalid-feedback">
+                                Amount must be a number.
+                            </div>
+                            <div *ngIf="DDFormGroup.errors?.multipleHundreds" class="invalid-feedback">
+                                Cannot create active Direct Deposit with 100 Percent of Net if one already exists.
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="form-control-label">Amount Type</label>
+                        <select [disabled]="option.includes('HSA')" class="form-control custom-select" formControlName="amountType" [ngClass]="{'is-invalid': ((DDFormGroup.controls['amountType'].touched || formSubmitted ) && !DDFormGroup.controls['amountType'].valid)}">
+                            <option *ngIf="selectedDD.amountType == ''" [value]="" [selected]="selectedDD.amountType == ''"></option>
+                            <option *ngFor="let amountType of amountTypeList" [selected]="selectedDD.amountType == amountType.description" [value]="amountType.description">{{amountType.description}}</option>
+                        </select>
+                        <div *ngIf="DDFormGroup.controls['amountType'].hasError('required')" class="invalid-feedback">
+                            Please select an amount type.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-control-label">Routing Number</label>
+                        <input type="text" class="form-control" formControlName="routingNumber" [ngClass]="{'is-invalid': DDFormGroup.controls['routingNumber'].touched && !DDFormGroup.controls['routingNumber'].valid}"/>
+                        <div *ngIf="DDFormGroup.controls['routingNumber'].hasError('required')" class="invalid-feedback">
+                            Please enter a routing number.
+                        </div>
+                        <div *ngIf="DDFormGroup.controls['routingNumber'].hasError('routingNumber') && DDFormGroup.controls['routingNumber'].value != ''" class="invalid-feedback">
+                            Invalid routing number.
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-control-label">Account Number</label>
+                        <input maxlength="17" type="text" class="form-control" formControlName="accountNumber" [ngClass]="{'is-invalid': ((DDFormGroup.controls['accountNumber'].touched || formSubmitted ) && !DDFormGroup.controls['accountNumber'].valid)}" />
+                        <div *ngIf="DDFormGroup.controls['accountNumber'].hasError('required')" class="invalid-feedback">
+                            Please enter an account number.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div *ngIf="clientInfo.noPreNote == false"  class="custom-control custom-checkbox"> <!--Hiding this div is client does not have prenote option turned on-->
+                        <input formControlName="isPreNote" type="checkbox" class="custom-control-input" id="customCheckSpacer1a">
+                        <label class="custom-control-label" for="customCheckSpacer1a">Prenote</label>
+                    </div>
+                    <div *ngIf="!this.option.includes('HSA')" class="custom-control custom-checkbox">
+                        <input formControlName="isActive" type="checkbox" class="custom-control-input" id="customCheckSpacer1b">
+                        <label class="custom-control-label" for="customCheckSpacer1b">Active</label>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div mat-dialog-actions>
+        <button type="button" class="btn btn-primary" (click)="saveForm()">Save</button>
+        <button type="button" class="btn btn-cancel" (click)="cancel()">Cancel</button>
+    </div>

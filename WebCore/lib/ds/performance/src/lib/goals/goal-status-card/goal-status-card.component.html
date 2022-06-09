@@ -1,0 +1,55 @@
+<ds-card mode="widget-nobody" [color]="contextColor" border="top" class="hoverable goal-status-card" hover="true">
+    <ds-card-header x-align="center">
+        <ds-card-title-icon class="text-medium-dark">assignment_ind</ds-card-title-icon>
+        <ds-card-widget-title class="text-medium-dark">
+            {{goal.title}}
+        </ds-card-widget-title>
+        <ds-card-subtitle>
+            <div class="card-data bordered centered instruction-text font-sm mb-4">
+                <div class="item flex-0-0-auto">
+                    <ng-container *ngIf="goal.completionDate != null; else dueDateElement">
+                        Completed: {{goal.completionDate | date:'shortDate'}}
+                    </ng-container>
+                    <ng-template #dueDateElement>
+                        <ng-container *ngIf="goal.dueDate != null; else noDatesElement">
+                            Due: {{goal.dueDate | date:'shortDate'}}
+                        </ng-container>
+                        <ng-template #noDatesElement>
+                            Start: {{goal.startDate | date:'shortDate'}}
+                        </ng-template>
+                    </ng-template>
+                </div>
+                <div class="item text-truncate" title="{{goal.goalOwner.lastName}}, {{goal.goalOwner.firstName}}" *ngIf="goal.goalOwner != null">
+                    {{goal.goalOwner.lastName}}, {{goal.goalOwner.firstName}} 
+                </div>
+            </div>
+            
+            <ds-progress
+                *ngIf="mode === 'todo' || mode === 'inProgress' || mode === 'overdue'"
+                [value]="progress"
+                color="success"
+                labelPosition="top"
+                [label]="progress + '% Complete'"
+                size="small"
+            ></ds-progress>
+            <div class="font-sm text-center pt-2 text-truncate" *ngIf="mode === 'complete'">
+                {{getCompletionAccuracyMessage(goal)}}
+            </div>
+        </ds-card-subtitle>
+        <ds-card-title-action *ngIf="isEditable">
+            <button type="button" class="btn btn-icon nested-cog hover-show" [matMenuTriggerFor]="rowMenu">
+                <i class="material-icons">more_vert</i>
+            </button>
+            <mat-menu #rowMenu="matMenu">
+                <button mat-menu-item (click)="editGoal()">Edit</button>
+                <ng-container *ngIf="goalRemovalState$ | async as goalRemovalState">
+                    <button mat-menu-item type="button" (click)="removeGoal(goal, goalRemovalState)">
+                        {{goalRemovalState.btnText}}
+                    </button>
+                </ng-container>
+                <!-- <button mat-menu-item>Unlink</button> -->
+                <!-- <button mat-menu-item>Add Note</button> -->
+            </mat-menu>
+        </ds-card-title-action>
+    </ds-card-header>
+</ds-card>

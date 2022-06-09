@@ -1,0 +1,152 @@
+<markdown ngPreserveWhitespaces>
+# Lists
+This can be an editable or static element. If it's editable, the user should only be able to edit one row at a time.
+
+## Simple View
+</markdown>
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleList = !toggleList">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleList">
+  <div class="ui">
+    <ds-list></ds-list>
+  </div>
+  <div class="example">
+    <markdown src="app/ds-components/lists/list/list.component.html"></markdown>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+  ## Lists with actions
+</markdown>
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleActionList = !toggleActionList">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleActionList">
+  <div class="ui">
+    <ds-list-action></ds-list-action>
+  </div>
+  <div class="example">
+    <markdown src="app/ds-components/lists/list-action/list-action.component.html"></markdown>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+  ## Lists with row selection
+</markdown>
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleSelectionList = !toggleSelectionList">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleSelectionList">
+  <div class="ui">
+    <ds-list-selectable></ds-list-selectable>
+  </div>
+  <div class="example">
+    <markdown src="app/ds-components/lists/list-selectable/list-selectable.component.html"></markdown>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+  ## Complex Lists
+
+  Complex lists contain more than one row of content row per list row. Each repeated group of content has `.item-group` that applies padding. From there, use `.row`s and `.col`s to work the rest of the layout. A border is automatically added when there are 2 or more `.item-group` elements in a row, but they *must be siblings* for this to work. Everything inside of the `.item-group` is customizable.
+</markdown>
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleComplexList = !toggleComplexList">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleComplexList">
+  <div class="ui">
+    <ds-list-complex></ds-list-complex>
+  </div>
+  <div class="example">
+    <markdown src="app/ds-components/lists/list-complex/list-complex.component.html"></markdown>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+  ## Complex Lists with Large margin
+</markdown>
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleLargeComplexList = !toggleLargeComplexList">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleLargeComplexList">
+  <div class="ui">
+    <ds-list-large></ds-list-large>
+  </div>
+  <div class="example">
+    <markdown src="app/ds-components/lists/list-large/list-large.component.html"></markdown>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+    ## Empty State
+  </markdown>
+  <div class="button-bar">
+    <button class="btn btn-icon" (click)="toggleEmptyList = !toggleEmptyList">
+      <mat-icon>code</mat-icon>
+      View Code
+    </button>
+  </div>
+  <div class="example-block" [class.open]="toggleEmptyList">
+    <div class="ui">
+      <ds-list-empty></ds-list-empty>
+    </div>
+    <div class="example">
+      <markdown src="app/ds-components/lists/list-empty/list-empty.component.html"></markdown>
+    </div>
+  </div>
+  
+<markdown ngPreserveWhitespaces>
+  ## Button Placement
+</markdown>
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleButtonList = !toggleButtonList">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleButtonList">
+  <div class="ui">
+    <div class="mb-4">
+        <ds-list-buttons></ds-list-buttons>
+    </div>
+    <ds-list-buttons-top></ds-list-buttons-top>
+  </div>
+  <div class="example">
+    <markdown src="app/ds-components/lists/list-buttons/list-buttons.component.html"></markdown>
+    <markdown src="app/ds-components/lists/list-buttons-top/list-buttons-top.component.html"></markdown>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+    ## Collapsable Lists
+  </markdown>
+  <div class="button-bar">
+    <button class="btn btn-icon" (click)="toggleCollapseList = !toggleCollapseList">
+      <mat-icon>code</mat-icon>
+      View Code
+    </button>
+  </div>
+  <div class="example-block" [class.open]="toggleCollapseList">
+    <div class="ui">
+      <ds-list-collapse></ds-list-collapse>
+    </div>
+    <div class="example">
+      <markdown src="app/ds-components/lists/list-collapse/list-collapse.component.html"></markdown>
+    </div>
+  </div>

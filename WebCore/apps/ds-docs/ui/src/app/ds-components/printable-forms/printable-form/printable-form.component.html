@@ -1,0 +1,106 @@
+<div class="print-page">
+  <div class="print-page-header">
+      <h1 class="print-header">Print Elements and Layout</h1>
+      <div class="print-page-section-group">
+          <div class="instruction-text">These are the supported elements</div>
+          <hr/>
+          Content seperation within a section
+      </div>
+  </div>
+  <div class="print-page-body">
+      <h3 class="print-header">TextArea</h3>
+      <div class="print-page-section-group">
+          <div class="break-avoid">
+              <div class="print-page-li-label">TextArea with an answer</div>
+              <div class="text-box-response">
+                  Now, how the hell do we defeat an enemy that knows us better than we know ourselves? A lot of things can change in twelve years, Admiral. How long can two people talk about nothing?
+              </div>
+          </div>
+      </div>
+      <div class="print-page-section-group">
+          <div class="break-avoid">
+              <div class="print-page-li-label">TextArea without an answer</div>
+              <div class="comment-box"></div>
+          </div>
+      </div>
+      <h3 class="print-header">Checkboxes</h3>
+      <div class="print-page-section-group">
+          <div class="custom-control custom-checkbox" >
+              <input type="checkbox" class="custom-control-input"  />
+              <label class="custom-control-label">Unchecked</label>
+              <svg class="print-checkbox" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+          </div>
+          <div class="custom-control custom-checkbox" >
+              <input type="checkbox" class="custom-control-input" checked />
+              <label class="custom-control-label">Checked</label>
+              <svg class="print-checkbox" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+          </div>
+      </div>
+      <h3 class="print-header">Text Inputs</h3>
+      <div class="print-page-section-group">
+          <div class="row print-page-input-section break-avoid">
+              <div class="col-8">
+                  <div class="single-line-input">Input text</div>
+                  <div class="instruction-text">Title</div>
+              </div>
+              <div class="col-4">
+                  <div class="single-line-input">12/26/2018</div>
+                  <div class="instruction-text">Date</div>
+              </div>
+          </div>
+      </div>
+      <div class="print-page-section-group">
+          <div class="row print-page-input-section break-avoid">
+              <div class="col-8">
+                  <div class="single-line-input-initial-state"></div>
+                  <div class="instruction-text">Title</div>
+              </div>
+              <div class="col-4">
+                  <div class="single-line-input-initial-state"></div>
+                  <div class="instruction-text">Date</div>
+              </div>
+          </div>
+      </div>
+      <h3 class="print-header">Stars</h3>
+      <div class="print-page-section-group">
+          <div class="star-rating sm">
+              <input id="star_1" type="radio" class="star-radio" name="star_1" disabled checked/>
+              <label class="star" for="star_1">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="filled"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/><path d="M0 0h24v24H0z" fill="none"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="outline-view">
+                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/><path d="M0 0h24v24H0z" fill="none"/></svg>
+              </label>
+          </div>
+          <div class="star-rating sm">
+              <input id="star_2" type="radio" class="star-radio" name="star_2" disabled checked/>
+              <label class="star" for="star_2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="filled"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/><path d="M0 0h24v24H0z" fill="none"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="outline-view">
+                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/><path d="M0 0h24v24H0z" fill="none"/></svg>
+              </label>
+          </div>
+          <div class="star-rating sm">
+              <input id="star_3" type="radio" class="star-radio" name="star_3" disabled checked/>
+              <label class="star" for="star_3">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="filled"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/><path d="M0 0h24v24H0z" fill="none"/></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="outline-view">
+                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/><path d="M0 0h24v24H0z" fill="none"/></svg>
+              </label>
+          </div>
+          <div class="star-rating sm">
+              <input id="star_4" type="radio" class="star-radio" name="star_4" disabled />
+              <label class="star" for="star_4">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="filled"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/><path d="M0 0h24v24H0z" fill="none"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="outline-view"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/><path d="M0 0h24v24H0z" fill="none"/></svg>
+              </label>
+          </div>
+          <div class="star-rating sm">
+              <input id="star_4" type="radio" class="star-radio" name="star_4" disabled />
+              <label class="star" for="star_4">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="filled"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/><path d="M0 0h24v24H0z" fill="none"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="outline-view"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/><path d="M0 0h24v24H0z" fill="none"/></svg>
+              </label>
+          </div>
+      </div>
+  </div>
+</div>

@@ -1,0 +1,41 @@
+agm-map {
+    height: 75vh;
+}
+
+#addressSearch {
+    text-overflow: ellipsis;
+    width: 300px;
+    top: 15px !important;
+    margin-right: 20px;
+}
+
+#showAllGeofences {
+    top: 15px !important;
+    right: 15px !important;
+}
+
+#toggleDrawingMode {
+    top: 15px !important;
+    left: 15px !important;
+}
+
+#toggleMapType {
+    bottom: 30px !important;
+    left: 15px !important;
+}
+
+#editGeofence {
+    right: 15px !important;
+}
+
+.form-group-margin {
+    margin-top: 50px;
+}
+
+.addressTextArea {
+    resize: none;
+}
+
+.geofence-form {
+    font-size: 14px;
+}

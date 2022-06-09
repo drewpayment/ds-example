@@ -1,0 +1,142 @@
+<!-- <ng-container *ngIf="initLists$ | async"></ng-container> -->
+<div [hidden]="!devicesLoaded">
+    <div class="card card-2xl-table" *ngIf="devicesDatasource.data.length > 0, else emptyState">
+        <div class="table-2xl-responsive">
+            <mat-table [dataSource]="devicesDatasource" matSort color="primary">
+                <ng-container matColumnDef="selected">
+                    <mat-header-cell  *matHeaderCellDef class="table-checkbox">
+                        <div class="custom-control custom-checkbox">
+                            <input id="header-row-checkbox"
+                                class="custom-control-input"
+                                type="checkbox"
+                                (click)="$event ? checkUncheckAllPaged($event.target.checked) : null"
+                                [checked]="selectAllCheckboxChecked"
+                            />
+                            <label class="custom-control-label" for="header-row-checkbox">
+                                <span>Select All</span>
+                            </label>
+                        </div>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let item; let i = index" class="table-checkbox">
+                        <div class="custom-control custom-checkbox">
+                            <input class="custom-control-input" type="checkbox" #clientMachineRows [id]="'selected_'+i"
+                            [checked]="item.isSelected" name="list_name" value="{{item.clientMachineId}}"
+                            [class.is-invalid]="displayCheckboxValidationError"
+                            (change)="onCheckChange(item.clientMachineId, $event.target.checked)"/>
+                            <label class="custom-control-label" [for]="'selected_'+i">
+                                <span>Select Clock</span>
+                            </label>
+                        </div>
+                    </mat-cell>
+
+                </ng-container>
+                <ng-container matColumnDef="description">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="clockName"> Clock Name
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let device" class="clockName" data-label="Clock Name">
+                        <div class="text-truncate"> {{device.description }} </div>
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="devSn">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="devSn table-text-right"> Serial Number
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let device" class="devSn table-text-right" data-label="Serial Number">
+                        <div class="text-truncate"> {{device.pushMachine?.devSn ? device.pushMachine.devSn : "" }} </div>
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="devIp">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="devIp table-text-right"> IP Address
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let device" class="devIp table-text-right" data-label="IP Address">
+                        <div class="text-truncate"> {{device.pushMachine?.devIp ? device.pushMachine.devIp : "" }} </div>
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="realtime">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="transInterval table-text-right"> Realtime
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let device" class="transInterval table-text-right" data-label="Interval">
+                        <div class="text-truncate"> {{device.pushMachine?.realtime ? device.pushMachine.transInterval == "1" ? "Yes" : "No" : "" }}  </div>
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="operLogStamp">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="operLogStamp table-text-right"> Last Activity
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let device" class="operLogStamp table-text-right" data-label="Last Activity">
+                        {{device.pushMachine?.operLogStamp ? (device.pushMachine.operLogStamp | date: 'medium') : "" }} </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="devFirmwareVersion">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="devFirmwareVersion"> FW
+                        Version </mat-header-cell>
+                    <mat-cell *matCellDef="let device" class="devFirmwareVersion" data-label="FW Version">
+                        <div class="text-truncate"> {{device.pushMachine?.devFirmwareVersion ? device.pushMachine.devFirmwareVersion : "" }} </div>
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="userCount">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="userCount table-text-right"> User Count
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let device" class="userCount table-text-right" data-label="User Count">
+                        <ng-container *ngIf="device.pushMachine && device.pushMachine.userCount">
+                            {{device.pushMachine ? device.pushMachine.userCount : 0 }}
+                        </ng-container>
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="fpCount">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="fpCount table-text-right"> Fp Count
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let device" class="fpCount table-text-right" data-label="Fp Count">
+                        <ng-container *ngIf="device.pushMachine && device.pushMachine.fpCount">
+                            {{device.pushMachine ? device.pushMachine.fpCount : 0 }}
+                        </ng-container>
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="attCount">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="attCount table-text-right"> Transaction Count
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let device" class="attCount table-text-right" data-label="Transaction Count">
+                        <ng-container *ngIf="device.pushMachine && device.pushMachine.attCount">
+                            {{device.pushMachine ? device.pushMachine.attCount : 0 }} </ng-container>
+                        </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="isRental">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="isRental"> Purchase / Rental
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let device" class="isRental" data-label="Purchase / Rental">
+                        {{device.isRental ? 'Rental' : 'Purchase'}} </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="edit">
+                    <mat-header-cell *matHeaderCellDef class="mat-td-action-icon-width"> </mat-header-cell>
+                    <mat-cell *matCellDef="let device; let i = index" class="mat-td-action-icon-width">
+                        <button type="button" [matMenuTriggerFor]="actionsMenu" class="btn btn-icon table-edit-icon">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #actionsMenu="matMenu">
+                            <button mat-menu-item (click)="openClientMachine(device.clientMachineId, i)">Edit</button>
+                            <button mat-menu-item (click)="deleteDevice(device)">Delete</button>
+                        </mat-menu>
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef class="mat-td-action-icon-width"> </mat-footer-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="devicesDisplayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: devicesDisplayedColumns;"></mat-row>
+            </mat-table>
+            <mat-paginator #devicesPaginator [pageSizeOptions]="[10, 25, 50]" [(pageSize)]="pageSize" [(pageIndex)]="pageIndex" showFirstLastButtons (page)="pageEvent = changePage($event)">
+            </mat-paginator>
+        </div>
+    </div>
+</div>
+<div *ngIf="!devicesLoaded">
+    <ds-loading-message></ds-loading-message>
+</div>
+<ng-template #emptyState>
+    <div class="empty-state">There is no data to display.</div>
+</ng-template>

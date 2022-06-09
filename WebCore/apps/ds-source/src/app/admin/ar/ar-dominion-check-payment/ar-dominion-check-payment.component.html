@@ -1,0 +1,162 @@
+<ng-container *ngIf="params$ | async"></ng-container>
+<ds-card border="top" mode="nobody">
+    <ds-card-header>
+        <ds-card-header-title>
+            AR Dominion Check Payments
+        </ds-card-header-title>
+        <ds-card-bread-crumb>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#" routerLink="/ar/deposits">AR Deposits</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">AR Dominion Check Payment</li>
+                </ol>
+            </nav>
+        </ds-card-bread-crumb>
+    </ds-card-header>
+</ds-card>
+<ds-card>
+    <ds-card-header>
+        <ds-card-header-title *ngIf="deposit != null">
+            Deposit #{{deposit.arDepositId}} {{deposit == null ? "" : deposit.postedDate != null ? "(Posted)" : ""}}
+        </ds-card-header-title>
+    </ds-card-header>
+
+    <ds-card-content>
+        <div [formGroup]="invoiceFormGroup" class="row">
+            <div class="col-xl-12">
+                <div class="row">
+                    <div class="col-sm-6 col-md-4 col-xl-3">
+                        <div class="form-group">
+                            <label class="form-control-label">Invoice Start Date</label>
+                            <div class="input-group">
+                                <input matInput
+                                    class="form-control"
+                                    [matDatepicker]="startDatePicker"
+                                    formControlName="StartDate"
+                                    required name="startDatePicker"
+                                    [max]="EndDate.value"
+                                    required
+                                    dsFormControlValidator
+                                    [dsFormControlSubmitted]="formSubmitted"
+                                />
+                                <div class="input-group-append">
+                                    <mat-datepicker-toggle matSuffix [for]="startDatePicker" class="input-group-text date">
+                                        <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #startDatePicker></mat-datepicker>
+                                </div>
+                                <div class="invalid-feedback" *ngIf="StartDate?.hasError('required')">
+                                    Please enter a valid start date.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-4 col-xl-3">
+                        <div class="form-group">
+                            <label class="form-control-label">Invoice End Date</label>
+                            <div class="input-group">
+                                <input matInput
+                                    class="form-control"
+                                    [matDatepicker]="endDatePicker"
+                                    formControlName="EndDate"
+                                    [min]="StartDate.value"
+                                    required
+                                    dsFormControlValidator
+                                    [dsFormControlSubmitted]="formSubmitted"
+                                />
+                                <div class="input-group-append">
+                                    <mat-datepicker-toggle matSuffix [for]="endDatePicker" class="input-group-text date">
+                                        <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #endDatePicker></mat-datepicker>
+                                </div>
+                                <div class="invalid-feedback">
+                                    Please enter a valid end date.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="form-group">
+                            <button class="btn btn-outline-primary inline-md-control" type="button" (click)="showInvoices()">Show Invoices</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card card-sm-table" [hidden]="!(arDominionCheckPaymentsLoaded && arDominionCheckPayments && arDominionCheckPayments.length)">
+            <div class="table-sm-responsive">
+                <mat-table [dataSource]="datasource">
+                    <ng-container matColumnDef="clientCode">
+                        <mat-header-cell *matHeaderCellDef class="table-text-right"> Client </mat-header-cell>
+                        <mat-cell *matCellDef="let element" data-label="Client" class="table-text-right"> {{element.clientCode}} </mat-cell>
+                        <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="arPaymentId">
+                        <mat-header-cell *matHeaderCellDef class="table-text-right"> Payment ID </mat-header-cell>
+                        <mat-cell *matCellDef="let element" data-label="Payment ID" class="table-text-right"> {{element.arPaymentId}} </mat-cell>
+                        <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="invoiceNumber">
+                        <mat-header-cell *matHeaderCellDef class="table-text-right"> Invoice Number </mat-header-cell>
+                        <mat-cell *matCellDef="let element" data-label="Invoice Number" class="table-text-right"> {{element.invoiceNumber}} </mat-cell>
+                        <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="invoiceDate">
+                        <mat-header-cell *matHeaderCellDef class="table-text-right"> Invoice Date </mat-header-cell>
+                        <mat-cell *matCellDef="let element" data-label="Invoice Date" class="table-text-right"> {{ element.invoiceDate | date: 'MM/dd/yyyy' }} </mat-cell>
+                        <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="checkNumber">
+                        <mat-header-cell *matHeaderCellDef class="table-text-right"> Check Number </mat-header-cell>
+                        <mat-cell *matCellDef="let element" data-label="Check Number" class="table-text-right"> {{element.checkNumber}} </mat-cell>
+                        <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="checkDate">
+                        <mat-header-cell *matHeaderCellDef class="table-text-right"> Check Date </mat-header-cell>
+                        <mat-cell *matCellDef="let element" data-label="Check Date" class="table-text-right"> {{ element.checkDate | date: 'MM/dd/yyyy' }} </mat-cell>
+                        <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="totalAmount">
+                        <mat-header-cell *matHeaderCellDef class="table-text-right"> Payment Amount </mat-header-cell>
+                        <mat-cell *matCellDef="let element" data-label="Amount" class="table-text-right"> {{element.totalAmount | currency}} </mat-cell>
+                        <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="isPaid">
+                        <mat-header-cell *matHeaderCellDef class="mat-td-checkbox-width"> Paid </mat-header-cell>
+                        <mat-cell *matCellDef="let element; let i = index;" class="mat-td-checkbox-width table-checkbox">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="isPaidCheck_{{i}}" [(ngModel)]="element.isPaid" (ngModelChange)="toggleIsPaid(element)">
+                                <label class="custom-control-label" for="isPaidCheck_{{i}}"><span>Paid</span></label>
+                            </div>
+                        </mat-cell>
+                        <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="isDataAvailable">
+                        <mat-footer-cell *matFooterCellDef colspan="6">
+                        No Data found
+                        </mat-footer-cell>
+                    </ng-container>
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                    <mat-footer-row *matFooterRowDef="['isDataAvailable']" [ngClass]="{'hide':!(arDominionCheckPayments!=null && arDominionCheckPayments.length==0 && arDominionCheckPaymentsLoaded)}">
+                    </mat-footer-row>
+                </mat-table>
+                <mat-paginator [pageSizeOptions]="[10, 20, 50]" [pageSize]="20" showFirstLastButtons></mat-paginator>
+            </div>
+        </div>
+        <div class="empty-state" *ngIf="(arDominionCheckPayments!=null && arDominionCheckPayments.length==0 && arDominionCheckPaymentsLoaded)">
+            There is no data to display.
+        </div>
+        <div *ngIf="!arDominionCheckPaymentsLoaded">
+            <ds-loading-message></ds-loading-message>
+        </div>
+    </ds-card-content>
+    <ds-card-footer>
+        <div>
+            <button class="btn btn-save" type="button" (click)="saveButton()" *ngIf="arDominionCheckPayments!=null && arDominionCheckPayments.length && arDominionCheckPaymentsLoaded">Save</button>
+        </div>
+        <button class="btn btn-outline-primary" type="button" routerLink="/ar/deposits">Back</button>
+    </ds-card-footer>
+
+</ds-card>

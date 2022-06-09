@@ -1,0 +1,471 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7E28572D-F226-43C4-AB8C-B003079EBE58}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Dominion.LaborManagement.Dto</RootNamespace>
+    <AssemblyName>Dominion.LaborManagement.Dto</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Production|AnyCPU'">
+    <OutputPath>bin\Production\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Production|x86'">
+    <OutputPath>bin\x86\Production\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Production|x64'">
+    <OutputPath>bin\x64\Production\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Staging|AnyCPU'">
+    <OutputPath>bin\Staging\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Staging|x86'">
+    <OutputPath>bin\x86\Staging\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Staging|x64'">
+    <OutputPath>bin\x64\Staging\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EnhancementQA|AnyCPU'">
+    <OutputPath>bin\EnhancementQA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EnhancementQA|x86'">
+    <OutputPath>bin\x86\EnhancementQA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EnhancementQA|x64'">
+    <OutputPath>bin\x64\EnhancementQA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'MobileQA|AnyCPU'">
+    <OutputPath>bin\MobileQA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'MobileQA|x86'">
+    <OutputPath>bin\x86\MobileQA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'MobileQA|x64'">
+    <OutputPath>bin\x64\MobileQA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Linq" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ApplicantTracking\ApplicantApplicantPostingDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantApplicationEmailHistoryDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantApplicationDetailDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantApplicationHeaderAndApplicantRejectionReasonDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantDaysToHireDetailDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantsEmailDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantEmploymentHistoryWithStateDto.cs" />
+    <Compile Include="ApplicantTracking\TerminatedEmployeeInfoDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantDocumentDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicationSectionInstructionDto.cs" />
+    <Compile Include="ApplicantTracking\GetTimeApprovalTableDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantSkillDto.cs" />
+    <Compile Include="ApplicantTracking\PostingFilterDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantsToReviewDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantToEmployeeDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantTrackingHomePageDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicationHeaderApplicantPostingInnerJoinResultDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantQuestionSetsDto.cs" />
+    <Compile Include="ApplicantTracking\Application\ApplicationQuestionDto.cs" />
+    <Compile Include="ApplicantTracking\Application\ApplicationQuestionResponseDto.cs" />
+    <Compile Include="ApplicantTracking\Application\ApplicationSectionSystemType.cs" />
+    <Compile Include="ApplicantTracking\Application\ApplicationSectionWithQuestionsDto.cs" />
+    <Compile Include="ApplicantTracking\Application\QuestionItemOptionDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantClientDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantCompanyApplicationDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantCompanyCorrespondenceDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantCompanyJobBoardInfoDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantCorrespondenceType.cs" />
+    <Compile Include="ApplicantTracking\ApplicantCorrespondenceTypeDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantDegreeListDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantDetailDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantEducationHistoryDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantEmploymentHistoryDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantFilterDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantJobBoardPostingDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantJobBoardCategoryDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantJobSiteDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantLicenseDto.cs" />
+    <Compile Include="ApplicantTracking\AverageDaysToFillDto.cs" />
+    <Compile Include="ApplicantTracking\CandidateCountDto.cs" />
+    <Compile Include="ApplicantTracking\EmailBodyDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantNoteDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantOnBoardingDefaultDetailDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantOnBoardingDetailDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantOnBoardingProcessSetDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantOnboardingProcessTypeDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantOnboardingTaskAttachmentDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantOnBoardingTaskDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantOnBoardingHeaderDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantPostingSchoolRequirementDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantPostingListDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantQuestionControlDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantQuestionDdlItemDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantReferenceDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantResumeDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantsCountDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantsStatusChangeDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantStatusType.cs" />
+    <Compile Include="ApplicantTracking\ApplicantToEmployeePostDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicationQuestionSectionWithQuestionDetailDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicationSectionDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicationViewedDto.cs" />
+    <Compile Include="ApplicantTracking\ClientJobSiteDto.cs" />
+    <Compile Include="ApplicantTracking\ClosePostingDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantJobTypeDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantOnBoardingProcessDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantFinalCorrespondenceDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantRejectionReasonDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantStatusTypeDto.cs" />
+    <Compile Include="ApplicantTracking\DisclaimerDetailDto.cs" />
+    <Compile Include="ApplicantTracking\GetJobBoardParametersDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantsAutoDenialDto.cs" />
+    <Compile Include="ApplicantTracking\EmailDto.cs" />
+    <Compile Include="ApplicantTracking\IndeedApply\HierarchicalOption.cs" />
+    <Compile Include="ApplicantTracking\IndeedApply\IndeedAnalytics.cs" />
+    <Compile Include="ApplicantTracking\IndeedApply\IndeedAnswer.cs" />
+    <Compile Include="ApplicantTracking\IndeedApply\IndeedApplicant.cs" />
+    <Compile Include="ApplicantTracking\IndeedApply\IndeedApplication.cs" />
+    <Compile Include="ApplicantTracking\IndeedApply\IndeedArray.cs" />
+    <Compile Include="ApplicantTracking\IndeedApply\IndeedAssociation.cs" />
+    <Compile Include="ApplicantTracking\IndeedApply\IndeedAward.cs" />
+    <Compile Include="ApplicantTracking\IndeedApply\IndeedCertification.cs" />
+    <Compile Include="ApplicantTracking\IndeedApply\IndeedCondition.cs" />
+    <Compile Include="ApplicantTracking\IndeedApply\IndeedEducation.cs" />
+    <Compile Include="ApplicantTracking\IndeedApply\IndeedFilePropertyBag.cs" />
+    <Compile Include="ApplicantTracking\IndeedApply\IndeedJob.cs" />
+    <Compile Include="ApplicantTracking\IndeedApply\IndeedLink.cs" />
+    <Compile Include="ApplicantTracking\IndeedApply\IndeedLocation.cs" />
+    <Compile Include="ApplicantTracking\IndeedApply\IndeedMilitaryService.cs" />
+    <Compile Include="ApplicantTracking\IndeedApply\IndeedPatent.cs" />
+    <Compile Include="ApplicantTracking\IndeedApply\IndeedPosition.cs" />
+    <Compile Include="ApplicantTracking\IndeedApply\IndeedPublication.cs" />
+    <Compile Include="ApplicantTracking\IndeedApply\IndeedQuestion.cs" />
+    <Compile Include="ApplicantTracking\IndeedApply\IndeedQuestionOption.cs" />
+    <Compile Include="ApplicantTracking\IndeedApply\IndeedScreenerQuestions.cs" />
+    <Compile Include="ApplicantTracking\IndeedApply\IndeedResume.cs" />
+    <Compile Include="ApplicantTracking\IndeedApply\IndeedResumeData.cs" />
+    <Compile Include="ApplicantTracking\InitializeAppHistoryDto.cs" />
+    <Compile Include="ApplicantTracking\NewApplicantDataPointDto.cs" />
+    <Compile Include="ApplicantTracking\NewApplicantsWidgetDataDto.cs" />
+    <Compile Include="ApplicantTracking\OpenPostsToFillDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantResumeRequiredDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantSchoolTypeDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantApplicationHeaderDto.cs" />
+    <Compile Include="ApplicantTracking\PostsWithoutApplicantsDto.cs" />
+    <Compile Include="ApplicantTracking\RejectionReasonsDto.cs" />
+    <Compile Include="ApplicantTracking\TurnoverRateDto.cs" />
+    <Compile Include="Approval\ApprovalOptionType.cs" />
+    <Compile Include="Approval\ClockApprovalDayDto.cs" />
+    <Compile Include="Approval\ClockEventToBeApprovedType.cs" />
+    <Compile Include="Approval\EmployeeBenefitEventToBeApproved.cs" />
+    <Compile Include="Approval\EmployeeClockApprovalStatusDto.cs" />
+    <Compile Include="Approval\EmployeePunchEventToBeApproved.cs" />
+    <Compile Include="Approval\ExceptionEventToBeApproved.cs" />
+    <Compile Include="Approval\IClockEventToBeApproved.cs" />
+    <Compile Include="Approval\OpenSupervisorCards.cs" />
+    <Compile Include="Approval\SupervisorApprovalStatus.cs" />
+    <Compile Include="Approval\SupervisorStatusResultDto.cs" />
+    <Compile Include="Approval\TimeOffEventToBeApproved.cs" />
+    <Compile Include="ApplicantTracking\ApplicantDto.cs" />
+    <Compile Include="ApplicantTracking\ApplicantPostingDto.cs" />
+    <Compile Include="ApplicantTracking\PostingOwnerDto.cs" />
+    <Compile Include="Clock\CanEmployeePunchDto.cs" />
+    <Compile Include="Clock\CheckPunchTypeResultDto.cs" />
+    <Compile Include="Clock\ClockCostCenterRequirementType.cs" />
+    <Compile Include="Clock\ClockEarningDesHistoryDto.cs" />
+    <Compile Include="Clock\ClockEmployeeBenefitChangeHistoryDto.cs" />
+    <Compile Include="Clock\ClockEmployeeBenefitDto.cs" />
+    <Compile Include="Clock\ClockEmployeeBenefitListDto.cs" />
+    <Compile Include="Clock\ClockEmployeeDto.cs" />
+    <Compile Include="Clock\ClockEmployeeScheduleListDto.cs" />
+    <Compile Include="Clock\EarningPunchTypeItem.cs" />
+    <Compile Include="Clock\EmployeeClockConfiguration.cs" />
+    <Compile Include="Clock\EmployeeClockSetupConfiguration.cs" />
+    <Compile Include="Clock\EmployeeRecentPunchInfo.cs" />
+    <Compile Include="Clock\EmployeeTimePolicyConfiguration.cs" />
+    <Compile Include="Clock\EmployeeTimePolicyLunchConfiguration.cs" />
+    <Compile Include="Clock\EmployeeTimePolicyRuleConfiguration.cs" />
+    <Compile Include="Clock\LunchPunchTypeItem.cs" />
+    <Compile Include="Clock\Misc\CheckPunchAllowedResult.cs" />
+    <Compile Include="Clock\Misc\InputHoursPunchRequest.cs" />
+    <Compile Include="Clock\Misc\PunchResult.cs" />
+    <Compile Include="Clock\Misc\RealTimePunchLocation.cs" />
+    <Compile Include="Clock\Misc\RealTimePunchPairRequest.cs" />
+    <Compile Include="Clock\Misc\RealTimePunchPairRequestWithHours.cs" />
+    <Compile Include="Clock\Misc\RealTimePunchPairResult.cs" />
+    <Compile Include="Clock\Misc\RealTimePunchPairResultDto.cs" />
+    <Compile Include="Clock\Misc\RealTimePunchPairWithHoursResultDto.cs" />
+    <Compile Include="Clock\Misc\RealTimePunchRequest.cs" />
+    <Compile Include="Clock\Misc\RealTimePunchResult.cs" />
+    <Compile Include="Clock\Misc\RealTimePunchResultDto.cs" />
+    <Compile Include="Clock\Misc\RealTimePunchWithHoursResultDto.cs" />
+    <Compile Include="Clock\PunchRerunClientDto.cs" />
+    <Compile Include="Clock\PunchRerunEmployeeDto.cs" />
+    <Compile Include="Clock\PunchRerunInfoDto.cs" />
+    <Compile Include="Clock\PunchRerunRawDto.cs" />
+    <Compile Include="Clock\PunchTypeItem.cs" />
+    <Compile Include="Clock\PunchTypeItemResult.cs" />
+    <Compile Include="Clock\PunchTypeItemSource.cs" />
+    <Compile Include="Clock\TimeClockClientDto.cs" />
+    <Compile Include="CostCenters\ClientCostCenterScheduleGroupOnlyDto.cs" />
+    <Compile Include="Department\ClientDepartmentDto.cs" />
+    <Compile Include="EmployeeLaborManagement\ClockEmployeeDto.cs" />
+    <Compile Include="EmployeeLaborManagement\ClockEmployeePinBadgeNumberVerificationDto.cs" />
+    <Compile Include="EmployeeLaborManagement\EmployeeHireInfoDto.cs" />
+    <Compile Include="Enums\ApplicantJobSiteEnum.cs" />
+    <Compile Include="EmployeeLaborManagement\ClockEmployeeSetupDto.cs" />
+    <Compile Include="EmployeeLaborManagement\EmployeeCostCenterSetupDto.cs" />
+    <Compile Include="EmployeeLaborManagement\EmployeeScheduleSetupDto.cs" />
+    <Compile Include="EmployeeLaborManagement\EmployeeTimePolicyInfoDto.cs" />
+    <Compile Include="EmployeeLaborManagement\RawPolicyInfoDto.cs" />
+    <Compile Include="EmployeeLaborManagement\RawRuleInfoDto.cs" />
+    <Compile Include="Enums\TCAEmployeeFilterType.cs" />
+    <Compile Include="JobCosting\AssociatedClientJobCostingDto.cs" />
+    <Compile Include="DataServiceObjects\CalculateWeeklyActivityRequestArgs.cs" />
+    <Compile Include="JobCosting\ClientJobCostingAssignmentSelectedDto.cs" />
+    <Compile Include="JobCosting\ClientJobCostingCustomDto.cs" />
+    <Compile Include="JobCosting\ClientJobCostingDto.cs" />
+    <Compile Include="JobCosting\ClientJobCostingListDto.cs" />
+    <Compile Include="DataServiceObjects\DataServicesGetScheduleArgs.cs" />
+    <Compile Include="DataServiceObjects\DataServicesGetScheduleResult.cs" />
+    <Compile Include="JobCosting\EmployeeJobCostingDto.cs" />
+    <Compile Include="DataServiceObjects\PunchScreenPunchRequestArgs.cs" />
+    <Compile Include="DataServiceObjects\RoundPunchRequestArgs.cs" />
+    <Compile Include="Notification\ApplicantTrackingCorrespondenceNotificationDetailDto.cs" />
+    <Compile Include="Notification\ApplicantTrackingCorrespondenceReplacementInfoDto.cs" />
+    <Compile Include="Notification\ApplicantTrackingHiringWorkflowNotificationDetailDto.cs" />
+    <Compile Include="Notification\ApplicantTrackingPostingApplicantNotificationDetailDto.cs" />
+    <Compile Include="Notification\ApplicantTrackingPostingOwnerNotificationDetailDto.cs" />
+    <Compile Include="ScheduleSetup\SchedulingSetupDtos.cs" />
+    <Compile Include="Scheduling\ClockEmployeeOvertimeDto.cs" />
+    <Compile Include="Scheduling\ClockEmployeeOvertimeInformationDto.cs" />
+    <Compile Include="Scheduling\ClockEmployeePunchDto.cs" />
+    <Compile Include="Scheduling\ClockEmployeeScheduleDto.cs" />
+    <Compile Include="Scheduling\ClockEmployeeScheduleShiftDto.cs" />
+    <Compile Include="GroupScheduling\GroupScheduleConfigRawDto.cs" />
+    <Compile Include="GroupScheduling\GroupScheduleDto.cs" />
+    <Compile Include="GroupScheduling\GroupScheduleShiftIdsOnly.cs" />
+    <Compile Include="GroupScheduling\GroupScheduleShiftReferencesDto.cs" />
+    <Compile Include="GroupScheduling\IGroupScheduleDto.cs" />
+    <Compile Include="GroupScheduling\ScheduleGroupType.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scheduling\ClockOvertimeSetupDto.cs" />
+    <Compile Include="Scheduling\EmployeeSchedulesPersistDto.cs" />
+    <Compile Include="Sproc\ApprovalDto.cs" />
+    <Compile Include="Sproc\ClockEmployeePunchListByDateAndFilterPaginatedCountArgs.cs" />
+    <Compile Include="Scheduling\EmployeeScheduleShiftDto.cs" />
+    <Compile Include="Scheduling\ScheduledHoursWorkedDto.cs" />
+    <Compile Include="Scheduling\ScheduledHoursWorkedResult.cs" />
+    <Compile Include="Sproc\EmployeePunchListCountAndResultLengthDto.cs" />
+    <Compile Include="Sproc\GetClientJobCostingInfoByClientIDDto.cs" />
+    <Compile Include="Sproc\GetClientJobCostingInfoByClientIDResultsDto.cs" />
+    <Compile Include="Sproc\GetClockClientNoteListResultDto.cs" />
+    <Compile Include="Scheduling\ScheduleType.cs" />
+    <Compile Include="Sproc\GetClockClientRulesByEmployeeIdArgsDto.cs" />
+    <Compile Include="Sproc\GetClockClientRulesByEmployeeIdResultDto.cs" />
+    <Compile Include="Sproc\ClockEmployeeLastPunchDto.cs" />
+    <Compile Include="Sproc\ClockEmployeePayPeriodEndedDto.cs" />
+    <Compile Include="Sproc\GetClockEmployeeAllocatedHoursDifferenceDto.cs" />
+    <Compile Include="Sproc\GetClockEmployeeApproveDateDto.cs" />
+    <Compile Include="Sproc\GetClockEmployeeApproveHoursOptionsDto.cs" />
+    <Compile Include="Sproc\GetClockEmployeeApproveHoursSettingsDto.cs" />
+    <Compile Include="Sproc\GetClockEmployeeExceptionHistoryByEmployeeIDListDto.cs" />
+    <Compile Include="Sproc\GetClockEmployeeHoursComparisonDto.cs" />
+    <Compile Include="Sproc\GetClockEmployeePunchListByDateAndFilterDto.cs" />
+    <Compile Include="Sproc\GetClockFilterCategoryDto.cs" />
+    <Compile Include="Sproc\GetClockFilterIdsDto.cs" />
+    <Compile Include="Sproc\GetClockPayrollListByClientIDPayrollRunIDDto.cs" />
+    <Compile Include="Sproc\GetReportClockEmployeeOnSiteDto.cs" />
+    <Compile Include="Sproc\GetPayrollListByClientIDPayrollRunIDDto.cs" />
+    <Compile Include="Sproc\GetScheduleGroupCostCentersResultDto.cs" />
+    <Compile Include="Sproc\GetScheduleGroupCostCentersArgsDto.cs" />
+    <Compile Include="Sproc\GetTimeCardAuthorizationDataResult.cs" />
+    <Compile Include="Sproc\GetTimeClockCurrentPeriodDto.cs" />
+    <Compile Include="Sproc\JobCosting\ClientJobCostingAssignmentSprocDto.cs" />
+    <Compile Include="JobCosting\ClientJobCostingAssignmentDto.cs" />
+    <Compile Include="Sproc\JobCosting\ClientJobCostingIdDto.cs" />
+    <Compile Include="Sproc\GetClockEmployeeExceptionHistoryByEmployeeIDDto.cs" />
+    <Compile Include="Sproc\SqlServerTimeDto.cs" />
+    <Compile Include="TimeClockHardware\ClockClientHardwareDto.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Ds.Core\Dominion.Core.Dto\Dominion.Core.Dto.csproj">
+      <Project>{918955ad-8918-4b6b-bf4d-56a3484079e1}</Project>
+      <Name>Dominion.Core.Dto</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Ds.Taxes\Dominion.Taxes.Dto\Dominion.Taxes.Dto.csproj">
+      <Project>{b4860b48-e16e-489c-a870-b750fd89309b}</Project>
+      <Name>Dominion.Taxes.Dto</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Ds.Utility\Dominion.Utility\Dominion.Utility.csproj">
+      <Project>{cc558777-0e1a-456b-a4e0-226bbe34f433}</Project>
+      <Name>Dominion.Utility</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Clients\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,11 @@
+@media screen and ( min-width: 1200px ) and ( max-width: 1530px ) {
+    // Bootstrap grid doesn't give enough precision for content here
+    // In order to preserve layout and have all letters of words together, reset grid in a custom fashion
+    .history-detail {
+        .col-8,
+        .col-4 {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+    }
+}

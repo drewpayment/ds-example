@@ -1,0 +1,235 @@
+
+@import '../../../../../../../../Styles/scss/bootstrap-variables';
+
+.table-responsive {
+  max-height: calc(100vh - 155px);
+  overflow: auto;
+}
+
+.ds-table {
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: separate;
+}
+
+.ds-header-row, ds-header-row {
+  color: $table-header-text-color;
+}
+
+.ds-header-cell, ds-header-cell {
+  padding: $table-header-padding;
+  background-color: $table-header-color;
+}
+
+.ds-cell, ds-cell, .empty-state {
+  padding: $table-cell-padding;
+  border-left: 1px solid $table-border-color;
+  border-bottom: 1px solid $table-border-color;
+  background-color: $white;
+}
+.action {
+  width: 50px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+// hover
+.view {
+  .ds-table, ds-table {
+    .ds-cell, ds-cell {
+      border-left: none;
+    }
+    .ds-row:hover, ds-table:hover {
+      .ds-cell, ds-cell {
+        background: $table-hover;
+      }
+    }
+  }
+} 
+
+
+
+.mat-paginator {
+  justify-self: flex-end;
+}
+
+// Input Styling
+
+.ds-form {
+
+  .ds-cell {
+    height: 1px; // set this to make children take up entire height
+    padding: 0;
+    position: relative;
+    
+
+    .form-control {
+      border: none;
+      border-radius: 0;
+      cursor: pointer;
+
+      &:disabled,
+      &.mat-select-disabled {
+        border-left: none;
+      }
+
+      // temp focus
+      // TO DO Remove once these styles are applied to all form elements
+      &:focus {
+        box-shadow: none;
+        
+      }
+    }
+
+    .ds-cell-container {
+      display: flex;
+      flex-direction: colum;
+    }
+
+    // border styling 
+    input[type="text"].form-control,
+    .mat-select.form-control {
+      border: 1px solid transparent;
+      border-bottom-width: 2px;
+
+      &:focus {
+        border-color: $gray-300;
+      }
+
+      &.is-invalid:focus {
+        border-color: $red;
+      }
+    }
+    
+    input[type="text"].form-control,
+    .mat-select.form-control {
+      height: 100%;
+    }
+    textarea.form-control {
+      overflow: hidden;
+      height: 52px;
+    }
+  }
+}
+
+
+// Ds Table Validation
+.ds-table {
+  .form-control.is-invalid {
+    background-color: white;
+    padding-right: 35px;
+    border: none;
+    transition: border 0.2 ease-in;
+
+    &:focus {
+      border-color: $danger-border !important;
+      border-bottom-width: 2px !important;
+    }
+  }
+
+  // Tooltip Icon
+  .mat-icon.invalid-feedback {
+    position: absolute;
+    display: block;
+    right: 5px; 
+    top: 50%;
+    transform: translate(0, -55%);
+    font-size: 24px;
+    color: $red;
+
+    &:hover {
+      cursor: default;
+    }
+  }
+
+  // allows icons and arrorws to show without content overlap
+  .form-control.mat-select.mat-select-invalid {
+    .mat-select-value {
+      padding-right: 45px;
+    }
+    ~ .mat-icon.invalid-feedback {
+      right: 30px;
+    }
+  }
+
+}
+
+// Sticky
+.sticky {
+  border-collapse: separate;
+}
+td.cdk-table-sticky:not(.cdk-table-sticky-border-elem-left),
+td.cdk-table-sticky:not(.cdk-table-sticky-border-elem-right) {
+  z-index: 2 !important;
+}
+th.cdk-table-sticky-border-elem-left {
+  border-right: 2px solid #505050;
+  box-shadow: 2px 2px 3px rgb(0 0 0 / 10%);
+}
+td.cdk-table-sticky-border-elem-left {
+  border-right: 2px solid #e2e2e2;
+  box-shadow: 2px 2px 3px rgb(0 0 0 / 10%);
+}
+th.cdk-table-sticky-border-elem-right {
+  border-left: 2px solid #505050;
+  box-shadow: -2px 2px 3px rgb(0 0 0 / 10%);
+}
+td.cdk-table-sticky-border-elem-right {
+  border-left: 2px solid #e2e2e2;
+  box-shadow: -2px 2px 3px rgb(0 0 0 / 10%);
+}
+
+// Positioning 
+.ds-table {
+  .right {
+    text-align: right;
+    padding-right: 1rem; // Additional padding for sorter
+  }
+  .center {
+    text-align: center;
+  }
+  .ds-table-checkbox {
+    width: 75px;
+    text-align: center;
+
+    .custom-control {
+      display: inline-block;
+    }
+  }
+  .action {
+    width: 52px;
+    min-width: 52px;
+    text-align: center;
+  }
+}
+
+.view .ds-table {
+  .view-right {
+    text-align: right;
+    padding-right: 1rem; // Additional padding for sorter
+
+    .mat-select {
+      margin-right: -8px;
+      padding-right: 0;
+    }
+  }
+}
+
+@media screen and (min-width: 961px) {
+  .custom-checkbox .custom-control-label span {
+    display: block;
+    text-indent: -1000px;
+  }
+}
+// Flex styling in progress
+// ds-row {
+//   display: flex;
+//   align-items: center;
+// }
+// ds-table {
+//   ds-header-row,
+//   ds-row {
+//     display: grid;
+//     grid-template-columns: repeat(auto-fit, minmax(10em, 1fr));
+//   }
+// }

@@ -1,0 +1,110 @@
+<ds-card border="top">
+    <ds-card-header>
+        <ds-card-header-title>
+            Custom Pages
+        </ds-card-header-title>
+        <ds-card-title-action>
+            <button [matMenuTriggerFor]="menu" class="btn btn-primary dropdown-toggle">
+                <i class="material-icons">add</i> Custom Page
+            </button>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="addCustomPage('Document')">Document</button>
+                <button mat-menu-item (click)="addCustomPage('Link')">Link</button>
+                <button mat-menu-item (click)="addCustomPage('Video')">Video</button>
+            </mat-menu>
+        </ds-card-title-action>
+        <ds-card-subtitle>
+            <nav aria-label="breadcrumb" class="form-group">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a routerLink="/manage/onboarding/dashboard/">Onboarding</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Custom Pages</li>
+                </ol>
+            </nav>
+            <div class="instruction-text">
+                Custom pages allow you to create custom tasks for new hires to complete in Onboarding.
+            </div>
+        </ds-card-subtitle>
+    </ds-card-header>
+    <ds-card-content [formGroup]="form" *ngIf="form">
+
+        <div class="row align-items-center justify-content-sm-end form-group">
+            <div class="col-auto">
+              <div class="custom-control custom-checkbox inline-sm-control">
+                <input type="checkbox" class="custom-control-input" id="includeInactiveTasks"
+                  formControlName="includeInactiveTasks">
+                <label class="custom-control-label" for="includeInactiveTasks">Include Inactive</label>
+              </div>
+            </div>
+            <div class="col-auto search-container">
+                <label class="instruction-text font-xs">Search {{(tasks | filterCustomPages : {excludeInactiveTasks: !includeInactiveTasks, searchText: searchTasks}).length}} of {{tasks.length}} Custom Pages</label>
+                <div class="input-group">
+                    <input type="search" formControlName="searchTasks" class="form-control" />
+                    <div class="input-group-append">
+                        <button class="search" type="button">
+                            <i class="material-icons">search</i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <ng-container *ngIf="!isLoading; else loading">
+            <div *ngIf="(tasks).length > 0" class="overflow-list">
+                <div class="row">
+                    <div class="col-6 col-md-4 col-lg-3" *ngFor="let task of tasks | filterCustomPages : {excludeInactiveTasks: !includeInactiveTasks, searchText: searchTasks}">
+                      <ds-card hover="true" mode="object" x-align="center" matchHeight="true" (click)="editCustomPage(task)" [color]="task.isDeleted ? 'archive' : ''">
+                        <div ds-card-header>
+                          <ds-card-title-action>
+                            <div class="nested-cog" [class.hover-show]="true">
+                              <button [matMenuTriggerFor]="menu" class="btn btn-icon" type="button"
+                                  (click)="$event.stopPropagation();">
+                                  <i class="material-icons">more_vert</i>
+                              </button>
+                              <mat-menu #menu="matMenu">
+                                  <button type="button" (click)="editCustomPage(task)" mat-menu-item>Edit</button>
+                                  <div 
+                                    matTooltip="This page is in use and cannot currently be marked as inactive."
+                                    [matTooltipDisabled]="!task.hasActiveWorkflowReference">
+                                    <button type="button" 
+                                      mat-menu-item 
+                                      (click)="changeStatusOfCustomPage(task);"
+                                      [disabled]="task.hasActiveWorkflowReference" >
+                                      {{task.isDeleted ? 'Set as Active' : getActionText(task)}}
+                                    </button>
+                                  </div>
+                                  
+                              </mat-menu>
+                            </div> 
+                          </ds-card-title-action>
+                          <ds-card-subtitle>
+                            <div class="split-content">
+                              <div class="top">
+                                <div class="object-card-avatar">
+                                    <div class="aw aw-{{task.route1=='Document' ? 'doc' : task.route1=='Link' ? 'link' : task.route1=='Video' ? 'video' : 'doc'}}">
+                                      <div class="aw-img color"></div>
+                                    </div>
+                                </div>
+                                <div class="font-lg text-center mb-1 text-truncate" matTooltip="{{task.workflowTitle}}">
+                                  {{task.workflowTitle}}
+                                </div>
+                                <div class="text-muted text-truncate text-center" matTooltip="{{ task.description }}">
+                                  {{ task.description }}
+                                </div>
+                                <div *ngIf="task.isDeleted" class="mt-4 d-flex justify-content-center">
+                                  <span class="badge badge-pill badge-disabled">Inactive</span>
+                                </div>
+                              </div>
+                            </div>                        
+                          </ds-card-subtitle>
+                        </div>
+                      </ds-card>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+        <ng-template #loading>
+            <ds-loading-message>
+            </ds-loading-message>
+        </ng-template>
+    </ds-card-content>
+</ds-card>

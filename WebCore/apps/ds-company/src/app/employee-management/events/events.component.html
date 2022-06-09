@@ -1,0 +1,57 @@
+<ds-employee-header  (employeeNavigated)="reload()"></ds-employee-header>
+
+<ds-card color="secondary" border="top">
+  <ds-card-header>
+    <ds-card-header-title>Events</ds-card-header-title>
+    <ds-card-bread-crumb>
+      <nav aria-label="breadcrumb" *ngIf="baseUrl">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a [href]="breadcrumb">Employee List</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">
+            Events
+          </li>
+        </ol>
+      </nav>
+    </ds-card-bread-crumb>
+    <div ds-card-title-action *ngIf="canManageTopics">
+      <button class="btn btn-outline-primary" (click)="manageTopics()">Manage Topics</button>
+    </div>
+  </ds-card-header>
+</ds-card>
+
+<ds-card mode="noheader">
+  <ds-card-content >
+    <ng-container *ngIf="!isLoading; else loadingScreen">
+      <ng-container *ngIf="!isSupervisorOnHimself; else onHimself">
+        <ds-event-list [user]="userinfo" [employeeId]="employeeId" [isEssMode]="false"></ds-event-list>
+      </ng-container>
+    </ng-container>
+  </ds-card-content>
+</ds-card>
+
+<ng-template #loadingScreen>
+  <ds-loading-message></ds-loading-message>
+</ng-template>
+
+<ng-template #onHimself>
+  <!-- ESS REDIRECT - SUPERVISOR VIEWING THEIR TAX INFO, isSupervisorOnHimself -->
+  <div class="row justify-content-center">
+    <div class="col-auto">
+      <div class="empty-state-cycle warning">
+        <mat-icon class="material-icons">warning</mat-icon>
+        <div class="title">
+          Your events are only available in ESS
+        </div>
+        <p>
+          Go to your ESS Profile to view and edit your events.
+        </p>
+        <a type="button" class="btn btn-primary" [routerLink]="essProfile">
+          <mat-icon>account_circle</mat-icon>
+          My ESS
+        </a>
+      </div>
+    </div>
+  </div>
+</ng-template>

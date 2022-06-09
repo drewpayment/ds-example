@@ -1,0 +1,48 @@
+<div class="ds-card">
+  <div class="ds-card-container">
+      <div class="ds-card-header">
+          <div class="ds-card-header-row">
+            <div class="ds-card-header-row-inner-wrapper">
+              <div class="ds-card-title">
+                  <div class="ds-card-title-icon">
+                      <i class="material-icons text-info">domain</i>
+                  </div>
+                  <h2>Expandable Card Header</h2>
+                  <div class="ds-card-inline-content">
+                      <div class="card-data">
+                          <div class="item">
+                              <label>Collapse:</label> True
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="ds-card-right-content">
+                  <label class="switch switch-default switch-pill switch-success"><input type="checkbox" class="switch-input" aria-describedby="MyLabelName" checked><span class="switch-label"></span><span class="switch-handle"></span><span class="ds-switch-off">Off</span><span class="ds-switch-on">On</span></label>
+              </div>
+            </div>
+            <div class="ds-card-action-collapse">
+                <button class="btn btn-icon pr-0" ng-class="{'accordion-rotate': toggleCardAccordion}" ng-click="toggleCardAccordion = !toggleCardAccordion">
+                    <i class="material-icons">keyboard_arrow_left</i>
+                </button>
+            </div>
+          </div>
+          <div class="ds-card-subtitle">
+              <div class="instruction-text">
+                  When has justice ever been as simple as a rule book? Captain, why are we out here chasing comets? Sure. You'd be surprised how far a hug goes with Geordi, or Worf.
+              </div>
+          </div>
+      </div>
+      <div class="ds-card-collapsible" ng-class="{'open': toggleCardAccordion}">
+          <div class="ds-card-body">
+              <hr class="mt-0 mb-2" />
+              <div class="instruction-text">Optional description</div>
+              <hr class="mt-2" />
+              Content
+              <div class="ds-card-footer">
+                  <button class="btn btn-delete">Delete</button>
+                  <button class="btn btn-primary float-right">Save</button>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>

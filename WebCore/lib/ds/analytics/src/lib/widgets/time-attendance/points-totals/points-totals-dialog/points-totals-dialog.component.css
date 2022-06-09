@@ -1,0 +1,12 @@
+
+.date {
+    flex: 0 1 150px;
+}
+
+.supervisorName {
+    flex: 0 1 250px;
+}
+
+.points {
+    flex: 0 1 100px;
+}

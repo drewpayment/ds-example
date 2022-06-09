@@ -1,0 +1,236 @@
+<form [formGroup]="fourthFormGroup">
+    <ng-container *ngIf="formInit|async as init">
+        <div class="instruction-text form-group">
+            Enter information for the fields below and answer the questions. Select "Save" if you would like to save this data and run the report at another time. You also have the option to download the report as a PDF or CSV.
+        </div>
+        <div class="row align-items-baseline">
+            <div class="col-lg-8 col-xl-4">
+                <div class="form-group">
+                    <label class="form-control-label">Please select a Location to designate as the Headquarters</label>
+                    <select class="form-control custom-select" formControlName="location" id="location" [class.is-invalid]="fourthFormGroup.controls['location'].touched && fourthFormGroup.controls['location'].invalid">
+                        <option *ngIf="this.fourthFormGroup.controls['location'].value == null" [value]="null"></option>
+                        <option *ngFor="let eeocLocation of eeocLocations" [value]="eeocLocation.eeocLocationId">{{eeocLocation.eeocLocationDescription}}</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a location.
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4 col-xl-2">
+                <div class="form-group">
+                    <label class="form-control-label">NAICS Code</label>
+                    <input formControlName="naicsCode" type="text" class="form-control" maxLength="6" [class.is-invalid]="fourthFormGroup.controls['naicsCode'].touched && fourthFormGroup.controls['naicsCode'].invalid" />
+                    <div class="invalid-feedback">
+                        <ng-container *ngIf="fourthFormGroup.controls['naicsCode'].hasError('pattern')">Please enter numbers only.</ng-container>
+                        <ng-container *ngIf="fourthFormGroup.controls['naicsCode'].hasError('required')">Please enter a NAICS Code.</ng-container>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4 col-xl-2">
+                <div class="form-group">
+                    <label class="form-control-label">Company Number</label>
+                    <input formControlName="companyNumber" type="text" class="form-control" maxlength="7" [class.is-invalid]="fourthFormGroup.controls['companyNumber'].touched && fourthFormGroup.controls['companyNumber'].invalid" />
+                    <div class="invalid-feedback">
+                        Please enter a Company Number.
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-sm-4 col-xl-2">
+                <div class="form-group">
+                    <label class="form-control-label">NORC UserID</label>
+                    <span class="form-help-text"> Optional</span>
+                    <input formControlName="norcUserId" type="text" class="form-control" maxlength="8" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-4">
+                <label class="form-control-label">Was an EEO-1 report filed for this establishment last year?</label>
+                <div class="inline-form-elements">
+                    <div class="custom-control custom-radio">
+                        <input type="radio" formControlName="questionB2C" value="1" id="previousReportFiledYes"
+                            class="custom-control-input" [class.is-invalid]="fourthFormGroup.controls['questionB2C'].touched && fourthFormGroup.controls['questionB2C'].invalid">
+                        <label class="custom-control-label" for="previousReportFiledYes">Yes</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" formControlName="questionB2C" value="2" id="previousReportFiledNo"
+                            class="custom-control-input" [class.is-invalid]="fourthFormGroup.controls['questionB2C'].touched && fourthFormGroup.controls['questionB2C'].invalid">
+                        <label class="custom-control-label" for="previousReportFiledNo">No</label>
+                    </div>
+                    <div class="invalid-feedback" *ngIf="fourthFormGroup.controls['questionB2C'].touched && fourthFormGroup.controls['questionB2C'].invalid">
+                        Please select an option.
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-8">
+                <label class="form-control-label">Does your entire company have at least 100 employees in the payroll period for which you are reporting?</label>
+                <div class="inline-form-elements">
+                    <div class="custom-control custom-radio">
+                        <input type="radio" formControlName="questionC1" value="1" id="questionC1Yes"
+                            class="custom-control-input" [class.is-invalid]="fourthFormGroup.controls['questionC1'].touched && fourthFormGroup.controls['questionC1'].invalid">
+                        <label class="custom-control-label" for="questionC1Yes">Yes</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" formControlName="questionC1" value="2" id="questionC1No"
+                            class="custom-control-input" [class.is-invalid]="fourthFormGroup.controls['questionC1'].touched && fourthFormGroup.controls['questionC1'].invalid">
+                        <label class="custom-control-label" for="questionC1No">No</label>
+                    </div>
+                    <div class="invalid-feedback" *ngIf="fourthFormGroup.controls['questionC1'].touched && fourthFormGroup.controls['questionC1'].invalid">
+                        Please select an option.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <label class="form-control-label">Is your company affiliated through common ownership and/or centralized management with other entities in an enterprise with a total employment of 100 or more?</label>
+                <div class="inline-form-elements">
+                    <div class="custom-control custom-radio">
+                        <input type="radio" formControlName="questionC2" value="1" id="questionC2Yes"
+                            class="custom-control-input" [class.is-invalid]="fourthFormGroup.controls['questionC2'].touched && fourthFormGroup.controls['questionC2'].invalid">
+                        <label class="custom-control-label" for="questionC2Yes">Yes</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" formControlName="questionC2" value="2" id="questionC2No"
+                            class="custom-control-input" [class.is-invalid]="fourthFormGroup.controls['questionC2'].touched && fourthFormGroup.controls['questionC2'].invalid">
+                        <label class="custom-control-label" for="questionC2No">No</label>
+                    </div>
+                    <div class="invalid-feedback" *ngIf="fourthFormGroup.controls['questionC2'].touched && fourthFormGroup.controls['questionC2'].invalid">
+                        Please select an option.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <label class="form-control-label">
+                    Does the company or any of its establishments:
+                    <div class="ml-4">
+                        (a) have 50 or more employees AND
+                    </div>
+                    <div class="ml-4">
+                        (b) is not exempt as provided by 41 CFR 60-1.5, AND either
+
+                        <div class="ml-4">
+                            <div>(1) is a prime governemnt contractor or first-tier subcontractor, and has a
+                                contract,
+                                subcontract or purchase order amounting to $50,000 or more
+                            </div>
+                            <div>
+                                (2) serves as a despository of Government funds in any amount or is a financial
+                                institution which is an issuing and paying agent for U.S. Savings Bonds and Savings
+                            </div>
+                        </div>
+                    </div>
+                </label>
+                <div class="inline-form-elements">
+                    <div class="custom-control custom-radio">
+                        <input type="radio" formControlName="questionC3" value="1" id="questionC3Yes"
+                            class="custom-control-input" [class.is-invalid]="fourthFormGroup.controls['questionC3'].touched && fourthFormGroup.controls['questionC3'].invalid">
+                        <label class="custom-control-label" for="questionC3Yes">Yes</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" formControlName="questionC3" value="2" id="questionC3No"
+                            class="custom-control-input" [class.is-invalid]="fourthFormGroup.controls['questionC3'].touched && fourthFormGroup.controls['questionC3'].invalid">
+                        <label class="custom-control-label" for="questionC3No">No</label>
+                    </div>
+                    <div class="invalid-feedback" *ngIf="fourthFormGroup.controls['questionC3'].touched && fourthFormGroup.controls['questionC3'].invalid">
+                        Please select an option.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-8 col-xl-4">
+                <div class="form-group">
+                    <label class="form-control-label">Please enter your Dun & Bradstreet Number</label>
+                    <span class="form-help-text"> Optional</span>
+                    <input formControlName="dunBradstreetNumber" type="text" class="form-control" maxlength="9" [class.is-invalid]="fourthFormGroup.controls['dunBradstreetNumber'].touched && fourthFormGroup.controls['dunBradstreetNumber'].invalid"/>
+                    <div class="invalid-feedback">
+                        Please enter letters and numbers only.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr/>
+        <h3>Certifying Official</h3>
+        <div class="instruction-text form-group">
+            Please designate a Certifying Official for your company. The Certifying Official should be someone who can make edits to the report in case of an error.
+        </div>
+        <div class="row align-items-baseline">
+            <div class="col-10 col-md-4 col-lg-3">
+                <div class="form-group">
+                    <label class="form-control-label">First Name</label>
+                    <input formControlName="firstName" type="text" class="form-control" maxlength="35" [class.is-invalid]="fourthFormGroup.controls['firstName'].touched && fourthFormGroup.controls['firstName'].invalid" />
+                    <div class="invalid-feedback">
+                        Please enter a First Name.
+                    </div>
+                </div>
+            </div>
+            <div class="col-2 col-md-2 col-lg-1">
+                <div class="form-group">
+                    <label class="form-control-label">MI</label>
+                    <input formControlName="middleInitial" type="text" class="form-control" maxlength="1" />
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-3">
+                <div class="form-group">
+                    <label class="form-control-label">Last Name</label>
+                    <input formControlName="lastName" type="text" class="form-control" maxlength="50" [class.is-invalid]="fourthFormGroup.controls['lastName'].touched && fourthFormGroup.controls['lastName'].invalid" />
+                    <div class="invalid-feedback">
+                        Please enter a Last Name.
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-10 col-lg-3">
+                <div class="form-group">
+                    <label class="form-control-label">Job Title</label>
+                    <input formControlName="jobTitle" type="text" class="form-control" maxlength="25" [class.is-invalid]="fourthFormGroup.controls['jobTitle'].touched && fourthFormGroup.controls['jobTitle'].invalid" />
+                    <div class="invalid-feedback">
+                        Please enter a Job Title.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row align-items-baseline">
+            <div class="col-md-3 col-xl-3">
+                <div class="form-group">
+                    <label class="form-control-label">Phone Number</label>
+                    <input formControlName="phoneNumber" type="text" class="form-control" maxlength="15" mask="000-000-0000" [class.is-invalid]="fourthFormGroup.controls['phoneNumber'].touched && fourthFormGroup.controls['phoneNumber'].invalid"  />
+                    <div class="invalid-feedback">
+                        Please enter a Phone Number.
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-7 col-xl-7">
+                <div class="form-group">
+                    <label class="form-control-label">Email</label>
+                    <input formControlName="email" type="email" class="form-control" maxlength="50" email [class.is-invalid]="fourthFormGroup.controls['email'].touched && fourthFormGroup.controls['email'].invalid" />
+                    <div class="invalid-feedback">
+                        Please enter a valid Email.
+                    </div>
+                    <div class="invalid-feedback" *ngIf="">
+                        Please enter a valid
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="d-flex justify-content-between flex-row-reverse">
+            <div>
+                <button type="button" class="btn btn-outline-primary" (click)="downloadCSV()">
+                    Download CSV
+                </button>
+                <button type="button" class="btn btn-outline-primary" (click)="downloadPDF()">
+                    Download PDF
+                </button>
+                <button type="button" class="btn btn-save" (click)="saveForm()">
+                    Save
+                </button>
+            </div>
+            <button matStepperPrevious class="btn btn-cancel">Back</button>
+        </div>
+    </ng-container>
+</form>

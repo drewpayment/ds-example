@@ -1,0 +1,147 @@
+<div [formGroup]="reviewEmployees">
+    <ng-container *ngIf="formInit|async as init">
+        <ng-container *ngIf="employeeList.length !==0 else noEmployees">
+            <h2 class="card-data bordered">
+                <div class="item">{{employeeCount}} out of {{employeeList.length}} employees selected</div>
+                <div class="item">Estimated Cost  {{employeeCount*(2/totalEmployeePerPayrolls[0].multiplier) | currency}} Per Payroll</div>
+            </h2>
+            <div class="instruction-text form-group">
+                Employees are pre-selected below to enable geofences, based on the Time Policies chosen.
+                Use the checkboxes to exclude employees from geofencing as needed.
+            </div>
+            <div class="card card-table">
+                <div *ngIf="!isLoading">
+                    <mat-table class="w-100" [dataSource]="dataSource$">
+
+                        <ng-container matColumnDef="avi">
+                            <mat-header-cell *matHeaderCellDef class="mat-td-profile-width">
+                                <mat-icon>person</mat-icon>
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let element" class="mat-td-profile-width content-center">
+                                <ds-avatar
+                                    *ngIf="!!element.profileImage && (element.profileImage.profileImageInfo.length > 0) else noImage;"
+                                     firstName="{{element.firstName}}"
+                                     lastName="{{element.lastName}}"
+                                    resource="{{element.profileImage.profileImageInfo[0].source}}{{element.profileImage.sasToken}}"
+                                     size="24"
+                                     color="{{(element.employeeAvatar != null)? element.employeeAvatar.avatarColor : 'teal' }}">
+                                 </ds-avatar>
+                                <ng-template #noImage>
+                                   <ds-avatar
+                                        firstName="{{element.firstName}}"
+                                        lastName="{{element.lastName}}"
+                                        size="24"
+                                        color="{{(element.employeeAvatar != null)? element.employeeAvatar.avatarColor : 'teal' }}">
+                                    </ds-avatar>
+                                </ng-template>
+                            </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="name">
+                            <mat-header-cell *matHeaderCellDef class="mat-column-name">Name</mat-header-cell>
+                            <mat-cell *matCellDef="let element"
+                                class="mat-column-name split-content-between content-center">
+                                {{element.firstName}} {{element.lastName}}
+                            </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="checkbox">
+                            <mat-header-cell *matHeaderCellDef class="mat-td-checkbox-width">
+                                <div class="text-center">
+                                    Active
+                                </div>
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let element; let idx = index"
+                                class="mat-td-checkbox-width table-checkbox content-center">
+                                <div class="custom-control custom-checkbox">
+                                    <input [id]="'checkBox_'+element.employeeId" class="custom-control-input"
+                                        [ngClass]="{'is-invalid': saveClicked && employeeCount === 0}"
+                                        type="checkbox" [formControl]="employeeRows.at(idx + tmpIndex)"
+                                        (change)="checkboxClicked(idx+tmpIndex)" />
+                                    <label class="custom-control-label" [for]="'checkBox_'+element.employeeId">
+                                        <span>
+                                            Active
+                                        </span>
+                                    </label>
+                                </div>
+                            </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="number">
+                            <mat-header-cell *matHeaderCellDef class="table-text-right mat-column-empno">Number
+                            </mat-header-cell>
+                            <mat-cell *matCellDef="let element"
+                                class="table-text-right mat-column-empno split-content-between" data-label="Number">
+                                {{element.employeeNumber}}</mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="timePolicy">
+                            <mat-header-cell *matHeaderCellDef>Time Policy</mat-header-cell>
+                            <mat-cell *matCellDef="let element" data-label="Time Policy" class="split-content-between">
+                                {{element.clockEmployee.timePolicy.name}}</mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="jobTitle">
+                            <mat-header-cell *matHeaderCellDef>Job Title</mat-header-cell>
+                            <mat-cell *matCellDef="let element" data-label="Job Title" class="split-content-between">
+                                {{element.jobTitle}}</mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="location">
+                            <mat-header-cell *matHeaderCellDef>Location</mat-header-cell>
+                            <mat-cell *matCellDef="let element" data-label="Location" class="split-content-between">
+                                {{element.eeocLocation?.eeocLocationDescription}}</mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="department">
+                            <mat-header-cell *matHeaderCellDef>Department</mat-header-cell>
+                            <mat-cell *matCellDef="let element" data-label="Department" class="split-content-between">
+                                {{element.department?.name}}</mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="supervisor">
+                            <mat-header-cell *matHeaderCellDef>Supervisor</mat-header-cell>
+                            <mat-cell *matCellDef="let element" data-label="Supervisor" class="split-content-between">
+                                {{element.directSupervisor?.firstName}} {{element.directSupervisor?.lastName}}
+                            </mat-cell>
+                        </ng-container>
+
+                        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: displayedColumns;" class="hoverable"></mat-row>
+                    </mat-table>
+                </div>
+                <mat-paginator [length]="pagLength" [pageSizeOptions]="[10, 25, 50]" (page)="paginatorClicked()">
+                </mat-paginator>
+            </div>
+        </ng-container>
+
+        <ng-template #noEmployees>
+            <div class="empty-state">
+                There are no Employees found for the selected time policies.
+            </div>
+        </ng-template>
+        <ng-container *ngIf="!optedIn else saveBtn">
+            <div class="d-flex justify-content-between flex-row-reverse">
+                <div class="d-flex align-items-center">
+                    <div class="text-danger mr-2" *ngIf="saveClicked && employeeCount === 0">
+                        At least one employee must be selected</div>
+                    <button type="button" mat-button matStepperNext class="btn btn-save"
+                        (click)="saveEmployees()">Continue</button>
+                </div>
+                <button matStepperPrevious class="btn btn-cancel">Back</button>
+            </div>
+        </ng-container>
+        <ng-template #saveBtn>
+            <div class="d-flex justify-content-between flex-row-reverse">
+                <div class="d-flex align-items-center">
+                    <div class="text-danger mr-2" *ngIf="saveClicked && employeeCount === 0">
+                        At least one employee must be selected</div>
+                    <button type="button" mat-button class="btn btn-save" (click)="saveEmployees()">Save</button>
+                </div>
+            </div>
+        </ng-template>
+    </ng-container>
+    <ng-container *ngIf="isLoading">
+        <ds-loading-message></ds-loading-message>
+    </ng-container>
+</div>

@@ -1,0 +1,43 @@
+.form-section {
+  margin: 1rem 0.5rem;
+  padding: 0.375rem 0.75rem;
+  line-height: 1.5;
+  color: #d8d8d8 !important;
+  background-color: #393f44f3;
+  border: 1px solid #d8d8d8;
+  border-radius: 0.15rem;
+  box-shadow: 0 0 0 transparent;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+  *.form-control-label,
+  *.form-control,
+  h3 {
+    color: #d8d8d8;
+  }
+}
+
+.form-control.disabled {
+  background-color: #e7e7e7;
+  opacity: 1;
+  min-height: 35px;
+}
+
+.mat-option {
+  .help-text {
+    opacity: 0;
+    transition: opacity 0.3s ease-in 0.3s;
+  }
+  &:hover {
+    .help-text {
+      opacity: 1;
+    }
+  }
+}
+
+.input-group {
+  &.loading {
+    .form-control {
+      border-right: none;
+    }
+  }
+}

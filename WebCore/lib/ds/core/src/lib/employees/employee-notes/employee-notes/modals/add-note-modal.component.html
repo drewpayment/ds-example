@@ -1,0 +1,47 @@
+<div mat-dialog-header class="ds-dialog-header">
+    <ng-template
+        *ngIf="currNote.remarkId == null;then add; else edit">
+    </ng-template>
+        <ng-template #add>
+            <h2 class="dialog-title">Add Note</h2>
+        </ng-template>
+        <ng-template #edit>
+            <h2 class="dialog-title"> Edit Note</h2>
+        </ng-template>
+
+    <button type="button" class="close" (click)="close()">
+        <i class="material-icons">clear</i>
+    </button>
+    <div class="dialog-subtitle">
+        <div class="instruction-text">
+            For {{ employeeName }}
+        </div>
+    </div>
+</div>
+<div mat-dialog-content>
+    <form [formGroup]="form">
+        <div class="form-group">
+            <label class="form-control-label">Source</label>
+            <select class="form-control custom-select" formControlName="noteSource" cdk-focus-initial required
+            [ngClass]="{'is-invalid': form.get('noteSource').invalid && (formSubmitted || form.get('noteSource').dirty || form.get('noteSource').touched)}">
+                <option *ngFor="let n of sources" [value]="n.noteSourceId">{{n.noteSource}}</option>
+            </select>
+            <div *ngIf="form.get('noteSource').invalid">
+                Please select a source.
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label">Note</label>
+            <textarea rows="6" cols="50" id="noteText" formControlName="noteText" class="form-control" required
+                [ngClass]="{'is-invalid': form.get('noteText').invalid && (formSubmitted || form.get('noteText').dirty || form.get('noteText').touched)}"
+            ></textarea>
+            <div class="invalid-feedback" *ngIf="form.get('noteText').invalid && (formSubmitted || form.get('noteText').dirty || form.get('noteText').touched)">
+                Please enter a note.
+            </div>
+        </div>
+    </form>
+</div>
+<div mat-dialog-actions class="ds-dialog-footer mat-dialog-actions">
+    <button type="button" class="btn btn-primary" (click)="saveNote()">Save</button>
+    <button type="button" class="btn btn-cancel" (click)="close()">Cancel</button>
+</div>

@@ -1,0 +1,99 @@
+<ds-card>
+        <ds-card-header>
+            <ds-card-header-title>
+                Direct Deposit
+            </ds-card-header-title>
+
+            <ds-card-title-right-content>
+                    <button *ngIf="!this.hideSequenceButton && userHasAccountWriteAccess" type="button" (click)="changeSequenceClicked()" class="btn btn-outline-primary text-nowrap mb-2" [disabled]="!userHasAccountWriteAccess || isOwnDDAndIsSupervisor">
+                        Change Direct Deposit Sequence
+                    </button>
+                    <button *ngIf="userHasAccountWriteAccess || userHasAmountWriteAccess" type="button" (click)="openDialog(null)" class="btn btn-outline-primary text-nowrap mb-2" [disabled]="reminderChecked == true || !userHasAccountWriteAccess || (isOwnDDAndIsSupervisor && maxDirectDeposits <= directDeposits.list.length)">
+                        <mat-icon>add</mat-icon> Direct Deposit
+                    </button>
+            </ds-card-title-right-content>
+            <ds-card-subtitle *ngIf="dataSource.data.length != this.directDeposits.list.length">
+                <div class="instruction-text">
+                    Inactive items not shown by user preference
+                </div>
+            </ds-card-subtitle>
+        </ds-card-header>
+
+        <ds-card-content>
+            <div class="card card-table"  [ngStyle]="{'display': dataSource.data.length != 0 ? 'block': 'none' }">
+                <div class="table-responsive">
+                    <table mat-table [dataSource]="dataSource" class="table">
+                        <!--- Note that these columns can be defined in any order.
+                                The actual rendered columns are set as a property on the row definition" -->
+
+                        <!-- Active Column -->
+                        <ng-container matColumnDef="isActive">
+                            <th mat-header-cell *matHeaderCellDef> Active </th>
+                            <td mat-cell *matCellDef="let deduction"><i *ngIf="deduction.isActive == true" class="material-icons">done</i></td>
+                        </ng-container>
+
+                        <!-- Account Type Column -->
+                        <ng-container matColumnDef="accountTypeDescription">
+                            <th mat-header-cell *matHeaderCellDef> Account Type </th>
+                            <td mat-cell *matCellDef="let deduction"> {{deduction.accountTypeDescription}} </td>
+                        </ng-container>
+
+                        <!-- Amount Column -->
+                        <ng-container matColumnDef="amount">
+                            <th mat-header-cell *matHeaderCellDef class="table-text-right"> Amount </th>
+                            <td mat-cell *matCellDef="let deduction" class="table-text-right text-nowrap">
+                                <span *ngIf="deduction.amountType.includes('$')">$ {{deduction.amount | number: '1.4-4'}}</span>
+                                <span *ngIf="deduction.amountType.includes('P')">{{deduction.amount | number: '1.4-4'}} %</span>
+                            </td>
+                        </ng-container>
+
+                        <!-- Amount Type Column -->
+                        <ng-container matColumnDef="amountType">
+                            <th mat-header-cell *matHeaderCellDef> Amount Type </th>
+                            <td mat-cell *matCellDef="let deduction"> {{deduction.amountType}} </td>
+                        </ng-container>
+
+                        <!-- Routing Number Column -->
+                        <ng-container matColumnDef="routingNumber">
+                            <th mat-header-cell *matHeaderCellDef class="table-text-right"> Routing Number </th>
+                            <td mat-cell *matCellDef="let deduction" class="table-text-right"> {{deduction.routingNumber}} </td>
+                        </ng-container>
+
+                        <!-- Account Number Column -->
+                        <ng-container matColumnDef="accountNumber">
+                            <th mat-header-cell *matHeaderCellDef class="table-text-right"> Account Number </th>
+                            <td mat-cell *matCellDef="let deduction" class="table-text-right"> {{deduction.accountNumber}} </td>
+                        </ng-container>
+
+                        <!-- Prenote Column -->
+                        <ng-container matColumnDef="isPreNote">
+                            <th mat-header-cell *matHeaderCellDef> Prenote </th>
+                            <td mat-cell *matCellDef="let deduction"><i *ngIf="deduction.isPreNote == true" class="material-icons">done</i></td>
+                        </ng-container>
+
+                        <!-- Actions Column  -->
+                        <ng-container matColumnDef="actions">
+                            <th mat-header-cell *matHeaderCellDef class="td-action-icon-width"></th>
+                            <td mat-cell *matCellDef="let deduction">
+                                <ng-container *ngIf="userHasAccountWriteAccess || userHasAmountWriteAccess">
+                                    <button type="button" [matMenuTriggerFor]="DDmenu" class="btn btn-icon table-edit-icon">
+                                        <mat-icon>more_vert</mat-icon>
+                                    </button>
+                                    <mat-menu #DDmenu="matMenu">
+                                        <button mat-menu-item (click)="editDD(deduction)" [disabled]="invalidReminderDate == true || !userHasAmountWriteAccess">Edit</button>
+                                        <button mat-menu-item (click)="deleteDD(deduction)" [disabled]="invalidReminderDate == true || !userHasAccountWriteAccess || isOwnDDAndIsSupervisor">Delete</button>
+                                    </mat-menu>
+                                </ng-container>
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
+                </div>
+            </div>
+
+            <div *ngIf="!loading && dataSource.data.length == 0" class="empty-state">There are no direct deposits to display.</div> <!--Click the "+ Direct Deposit" button to add one for this employee.-->
+            <div *ngIf="loading" class="loading-message">Loading...</div>
+        </ds-card-content>
+    </ds-card>

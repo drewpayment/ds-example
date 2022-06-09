@@ -1,0 +1,56 @@
+<ng-template #loading>
+  <ds-loading-message></ds-loading-message>
+</ng-template>
+
+<ds-card collapse="true" expanded="true">
+  <ds-card-header>
+    <ds-card-sub-header-title>
+      Earnings
+    </ds-card-sub-header-title>
+  </ds-card-header>
+  <ds-card-content>
+    <ng-container *ngIf="!isLoading; else loading">
+      <form [formGroup]="form" dsTrackFormChanges >
+        <div class="row" formGroupName="accrual">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="form-control-label">Earnings</label>
+
+              <input type="text" formControlName="clientEarnings" hidden dsFormControlValidator >
+
+              <mat-form-field class="form-control">
+                <mat-chip-list #earningList>
+                  <mat-chip *ngFor="let earningType of clientEarningsControl?.value;" [selectable]="true"
+                    [removable]="true" (removed)="remove(earningType)">
+                    {{ earningType.description }}
+                    <mat-icon matChipRemove>clear</mat-icon>
+                  </mat-chip>
+                  <input 
+                    type="text" 
+                    [matAutocomplete]="auto" 
+                    [matChipInputFor]="earningList" 
+                    #searchInput
+                    matInput
+                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes" 
+                    [matChipInputAddOnBlur]="addOnBlur"
+                    formControlName="searchEarningsCtrl" 
+                    #trigger="matAutocompleteTrigger">
+                </mat-chip-list>
+                <mat-autocomplete 
+                  #auto="matAutocomplete" 
+                  (optionSelected)="selected($event)">
+                  <mat-option 
+                    *ngFor="let earningType of (filteredEarnings$ | async)"
+                    [value]="earningType.clientEarningId"
+                    (click)="selectOption($event, trigger)">
+                    {{earningType.description}}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </form>
+    </ng-container>
+  </ds-card-content>
+</ds-card>

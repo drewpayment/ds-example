@@ -1,0 +1,70 @@
+
+.grid-container {
+  input[type="number"] {
+    width: 45px;
+    min-width: 45px;
+    flex: 0 0 45px;
+  }
+}
+
+// Needs to accommodate 10+ digits.
+.mat-column-reward {
+  width: 230px;
+  min-width: 230px;
+  .grid-container {
+    input[type="number"] {
+      width: 45px;
+      min-width: 45px;
+      flex: 0 0 110px;
+    }
+  }
+}
+
+// Needs to accommodate 6+ digits.
+.mat-column-carryOver {
+  width: 200px;
+  min-width: 200px;
+  .grid-container {
+    input[type="number"] {
+      width: 45px;
+      min-width: 45px;
+      flex: 0 0 80px;
+    }
+  }
+}
+
+// col sizing
+// .mat-column-reward,
+// .mat-column-carryOver,
+.mat-column-startService,
+.mat-column-endService {
+  width: 175px;
+  min-width: 175px;
+}
+
+.mat-column-maxHours {
+  width: 90px;
+  min-width: 90px;
+}
+
+.mat-column-renewType,
+.mat-column-carryOverOn,
+.mat-column-maxHours,
+.mat-column-type,
+.mat-column-until {
+  width: 190px;
+  min-width: 190px;
+}
+
+.mat-column-accrualLimit,
+.mat-column-balanceLimit,
+.mat-column-rateCarryOverMax {
+  width: 105px;
+  min-width: 105px;
+}
+
+.mat-paginator-sticky {
+  bottom: 0px;
+  position: sticky;
+  z-index: 10;
+}

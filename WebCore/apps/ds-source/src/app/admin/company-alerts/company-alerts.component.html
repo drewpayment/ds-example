@@ -1,0 +1,103 @@
+<ds-card border="top">
+    <div ds-card-header>
+        <ds-card-header-title>
+            Alerts
+        </ds-card-header-title>
+        <ds-card-title-action>
+            <button type="button" class="btn btn-outline-primary d-none" (click)="test()">
+                Test
+            </button>
+            <button type="button" class="btn btn-primary" (click)="popupAlertDialog(null)">
+                <i class="material-icons">add</i> Alert
+            </button>
+        </ds-card-title-action>
+    </div>
+    <div ds-card-content>
+        <div class="row justify-content-between align-items-baseline">
+            <div class="col-auto">
+                <label>&nbsp;</label>
+                <div class="form-group inline-form-elements">
+                    <label class="form-control-label">Sort By:</label>
+                    <div class="custom-control custom-radio custom-control-bg primary">
+                        <input id="sortByType" type="radio" name="sortBy" value="type" class="custom-control-input" [formControl]="sortByCtrl">
+                        <label class="custom-control-label" for="sortByType">Alert Type</label>
+                        <div class="custom-bg"></div>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-bg primary">
+                        <input id="sortByDate" type="radio" name="sortBy" value="date" class="custom-control-input" [formControl]="sortByCtrl">
+                        <label class="custom-control-label" for="sortByDate">Date</label>
+                        <div class="custom-bg"></div>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-bg primary">
+                        <input id="sortByTitle" type="radio" name="sortBy" value="title" class="custom-control-input" [formControl]="sortByCtrl">
+                        <label class="custom-control-label" for="sortByTitle">Title</label>
+                        <div class="custom-bg"></div>
+                    </div>
+                    <div class="custom-control custom-checkbox ml-2">
+                        <input type="checkbox" class="custom-control-input" id="expire-checkbox" [formControl]="expiredCtrl"  />
+                        <label class="custom-control-label" for="expire-checkbox">
+                            Include Inactive
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="form-group">
+                    <div class="search-container">
+                        <label class="instruction-text font-xs">Search {{ displayedCount }} of {{ totalCount }} alerts</label>
+                        <div class="input-group">
+                            <input class="form-control" (keyup)="applyFilter($event.target.value)"  type="search" name="alertSearch" matInput cdkFocusIntial />
+                            <div class="input-group-append">
+                                <button class="search" type="button">
+                                    <i class="material-icons">search</i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <ng-container *ngIf="!isLoading; else loadingScreen">
+        <ng-container *ngIf="alertList.length; else noAlert">
+            <div *ngFor="let alert of alertList">
+            <ds-card [color]="(alert.alertCategoryId == 1 ? 'default-blue' : (alert.alertCategoryId == 2 ? 'info' : 'success'))" 
+                mode="widget-nobody" hover="true">
+            <div ds-card-icon>notifications</div>
+                <ds-card-header>
+                    <ds-card-widget-title class="text-medium-dark">{{ alert.title }} | Display from: {{alert.dateStartDisplay | date: 'MM/dd/yyyy'}} - 
+                        {{alert.dateEndDisplay | date: 'MM/dd/yyyy'}}</ds-card-widget-title>
+                    <ds-card-subtitle>
+                      <div class="instruction-text">
+                        {{alert.alertText}}
+                      </div>
+                      <button *ngIf="alert.alertCategoryId == 1" type="button" class="btn btn-instruction-text mt-4" (click)="download(alert)">
+                        {{fileName(alert.alertLink)}}
+                      </button>
+                      <a *ngIf="alert.alertCategoryId == 3" target="_blank" [href]="alert.alertLink" class="btn btn-instruction-text text-lowercase mt-4 text-truncate">
+                        {{alert.alertLink}}
+                      </a>
+                    </ds-card-subtitle>
+                    <ds-card-title-action>
+                        <span *ngIf="alert.alertCategoryId == 1" class="badge badge-pill badge-default-blue">Attachment</span>
+                        <span *ngIf="alert.alertCategoryId == 2" class="badge badge-pill badge-info">Memo</span>
+                        <span *ngIf="alert.alertCategoryId == 3" class="badge badge-pill badge-success">Link</span>
+                        <mat-menu #toggleMenu="matMenu">
+                            <button mat-menu-item type="button" (click)="popupAlertDialog(alert)">Edit</button>
+                        </mat-menu>
+                        <button [matMenuTriggerFor]="toggleMenu" type="button" class="btn btn-icon hover-show pr-0" (click)="$event.stopPropagation()">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                    </ds-card-title-action>
+                </ds-card-header>
+            </ds-card>
+        </div>
+        </ng-container>
+        </ng-container>
+        <ng-template #noAlert>
+            <div class="empty-state">No alerts found.</div>
+        </ng-template>
+    </div>
+</ds-card>
+<ng-template #loadingScreen>
+    <ds-loading-message></ds-loading-message>
+</ng-template>

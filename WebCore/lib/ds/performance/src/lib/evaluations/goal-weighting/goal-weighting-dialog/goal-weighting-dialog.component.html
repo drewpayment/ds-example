@@ -1,0 +1,86 @@
+<div mat-dialog-header>
+    <h2 class="dialog-title">
+        Weight Goals
+    </h2>
+    <button type="button" class="close" (click)="onNoClick()">
+        <mat-icon>clear</mat-icon>
+    </button>
+    <div class="dialog-subtitle">
+        <span class="instruction-text">Goals that have been rated can not be excluded from the review.</span>
+    </div>
+</div>
+<div mat-dialog-content class="pb-0 overflow-x-hidden overflow-y-auto">
+    <div class="overflow-list mb-2">
+        <div class="row justify-content-end mb-6" *ngFor="let item of goalWeightItems; let goalItemIndex = index;">
+            <div class="col-lg-10">
+                <ds-card
+                    [class.clickable]="!isReadOnly"
+                    [class.hoverable]="!isReadOnly"
+                    [color]="item.goal.onReview ? 'info' : 'disabled'"
+                    mode="widget-nobody"
+                    #goalCard>
+                    <div ds-card-icon>track_changes</div>
+                
+                    <ds-card-content>
+                        <div class="row py-4 bordered-md-layout">
+                            <div class="col-md-8 ds-border">
+                                <div class="font-xl bold">{{ item.goal.title }}</div>
+                                <div class="card-data bordered">
+                                    <div class="item" *ngIf="item.goal.startDate">
+                                        <label>START:</label>
+                                        {{ item.goal.startDate ? (item.goal.startDate | date: 'MM/dd/yyyy') : 'Not Specified'}}
+                                    </div>
+                                    <div class="item" *ngIf="item.goal.dueDate">
+                                        <label>DUE:</label>
+                                        {{ item.goal.dueDate ? (item.goal.dueDate | date: 'MM/dd/yyyy') : 'Not Specified'}}
+                                    </div>
+                                    <div class="item">
+                                        <label>COMPLETED:</label>
+                                        {{ item.goal.completionDate ? (item.goal.completionDate | date: 'MM/dd/yyyy') : 'Not Complete' }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 align-self-center">
+                                <div class="custom-control custom-checkbox my-2" *ngIf="!item.ratingValue">
+                                    <input type="checkbox" class="custom-control-input" id="customCheck{{goalItemIndex}}"
+                                    (click)="zeroWeight(item.goal.goalId)" [(ngModel)]="item.goal.onReview">
+                                    <label class="custom-control-label" for="customCheck{{goalItemIndex}}">Include in review</label>
+                                </div>
+                            </div>
+                        </div>
+                    </ds-card-content>
+                </ds-card>
+            </div>
+            <div class="col-sm-6 col-md-4 col-lg-2">
+                <div class="form-group card-height-fix-sm">
+                    <div class="input-group h-100" id="wrapper-{{item.goal.goalId}}">
+                        <input class="form-control" id="{{item.goal.goalId}}" name="{{item.goal.goalId}}" (load)="checkWeight(item.goal.goalId)" (change)="updateTotalWeight(item.goal.goalId)"
+                        [(ngModel)]="item.goal.weight"  type="number" [min]=".01" step=".01" [disabled]="!item.goal.onReview"
+                        required dsFormControlValidator />
+                        <div class="input-group-append ">
+                            <span class="input-group-text percent">%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="total-border text-right modal-table-total">
+        <div class="font-xl text-uppercase bold">Total = {{totalWeight}}%</div>
+        <!-- <div class="instruction-text">You have used {{totalWeight}} of 100</div> -->
+        <div class="instruction-text" >
+            <span class="text-danger" *ngIf="hasZeroOrNegative">Included goal weight must be greater than zero.</span>
+            You have {{100 - totalWeight}} of 100 remaining.
+        </div>
+    </div>
+</div>
+<div mat-dialog-actions>
+    <button
+        class="btn btn-primary"
+        (click)="saveGoalWeights()"
+    >Save</button>
+    <button type="button"
+        class="btn btn-cancel"
+        (click)="onNoClick()"
+    >Cancel</button>
+</div>

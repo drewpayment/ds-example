@@ -1,0 +1,42 @@
+﻿<div class="modal-header">
+    <h2>Override Shift Destination</h2>
+</div>
+<div class="modal-body" ng-form="scheduleForm">
+    <div class="form-group row align-items-center">
+        <label class="col-sm-7 col-form-label">
+            Override the employee's cost center on
+        </label>
+        <div class="col-sm-5">
+            <b>
+                {{shift.eventDate | date : 'EEEE'}},
+                <span moment-text
+                      moment="shift.$startMoment"
+                      moment-format="h:mma"
+                      moment-single-char-meridiem="true"></span>
+                -
+                <span moment-text
+                      moment="shift.$endMoment"
+                      moment-format="h:mma"
+                      moment-single-char-meridiem="true"></span>
+            </b>
+        </div>
+    </div>
+    <div class="form-group row mb-0">
+        <label class="col-sm-7 col-form-label">
+            Desired Cost Center
+        </label>
+        <div class="col-sm-5">
+            <select class="form-control custom-select" ng-model="selectedGroup" 
+                    ng-options="group as group.description for group in scheduleGroups | orderBy:'description'">
+                <option value="">Select Group</option>
+            </select>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="modal-footer flex-row-reverse">
+    <button class="btn btn-save" ng-hide="!shift.isPreview || !shift.isScheduledForGroup(shift.scheduleGroup)" ng-click="save()">Save</button>
+    <button class="btn btn-cancel" ng-click="cancel()">Cancel</button>
+</div>

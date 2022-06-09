@@ -1,0 +1,102 @@
+﻿<div class="panel panel-default">
+
+    <div class="panel-heading">
+        <button 
+            type="button" 
+            class="close" 
+            ng-click="close()">
+            &times;
+        </button>
+
+        <h2 class="panel-title">
+            Emergency Contact Detail
+        </h2>
+    </div>
+    
+    <div carousel
+         no-transition="false">
+
+        <div slide
+             ng-repeat="contact in emergencyContacts"
+             active="contact.active">
+            
+            <div class="panel-body">
+
+                <a
+                    ng-click="edit(contact)"
+                    ng-show="hasEditPermission(contact)">
+
+                    <i class="icon-pencil pull-right"></i>
+
+                </a>
+
+
+                <h3 class="mb-0">{{ getFirstMidLastName(contact) }}</h3>
+                <div class="mb-10"><em>{{ contact.relation }}</em></div>
+
+                <div class="row">
+
+                    <div class="col-xs-6">
+                        <table class="form-view">
+                            <tr>
+                                <td>
+                                    <label class="text-primary">Home</label></td>
+                                <td>{{ contact.homePhoneNumber }}</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="text-primary">Cell</label></td>
+                                <td>{{ contact.cellPhoneNumber }}</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="text-primary">Work</label></td>
+                                <td>{{ contact.workPhoneNumber }}</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="text-primary">Email</label></td>
+                                <td>{{ contact.emailAddress }}</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="col-xs-6">
+                        <table class="form-view">
+                            <tr>
+                                <td rowspan="2">
+                                    <label class="text-primary">Address</label>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+
+                                    <ul class="street-address" ng-if="hasAddress(contact)">
+                                        <li>{{ contact.addressLine1 }}</li>
+                                        <li>{{ contact.addressLine2 }}</li>
+                                        <li>{{ contact.city }},
+                                            {{ contact.stateName }} 
+                                            {{ contact.postalCode }}
+                                        </li>
+                                        <li>{{ contact.countryName }}</li>
+                                    </ul>
+
+                                    <ul class="street-address" ng-if="!hasAddress(contact)">
+                                        <li>No Address Provided</li>
+                                    </ul>
+
+                                </td>
+                            </tr>
+
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-footer">
+        </div>
+    </div>
+</div>

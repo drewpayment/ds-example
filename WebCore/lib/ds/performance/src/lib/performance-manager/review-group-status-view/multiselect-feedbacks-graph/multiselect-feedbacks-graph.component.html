@@ -1,0 +1,50 @@
+<ds-card class="card-height-fix-sm">
+    <ds-card-header>
+      <ds-card-inline-content>
+        <div class="font-lg bold">{{feedback.body}}</div>
+      </ds-card-inline-content>
+    </ds-card-header>
+    <ds-card-content>
+        <div class="row  justify-content-center" *ngIf="showChart" 
+          [ngClass]="multipleCharts ? 'multi-option-pie-chart' : 'single-option-pie-chart'">
+          <div *ngIf="showEmployeeGraph" class="col-12 col-xl-auto">
+            <div class="donut-chart-wrapper">
+              <div class="chart-title">Employees</div>
+              <ng-template #multiselectBarChartDiv >
+                  <canvas width="50" height="50"
+                      baseChart
+                      [datasets]  ="chartDataSet"
+                      [labels]    ="chartLabels"
+                      [chartType] ="chartType"
+                      [colors]    ="chartColors"
+                      [options]   ="chartOptions"
+                      #multiselectBarChart ="base-chart"
+                  ></canvas>
+              </ng-template>
+              <ng-container  [ngTemplateOutlet]="multiselectBarChartDiv"></ng-container>
+            </div>
+          </div>
+          <div *ngIf="showManagerGraph" class="col-12 col-xl-auto">
+              <div class="donut-chart-wrapper">
+                <div class="chart-title">Supervisors</div>
+                <ng-template #multiselectBarChartDiv2 >
+                    <canvas width="50" height="50"
+                        baseChart
+                        [datasets]  ="chartDataSet2"
+                        [labels]    ="chartLabels"
+                        [chartType] ="chartType"
+                        [colors]    ="chartColors2"
+                        [options]   ="chartOptions2"
+                        #multiselectBarChart ="base-chart"
+                    ></canvas>
+                </ng-template>
+                <ng-container [ngTemplateOutlet]="multiselectBarChartDiv2"></ng-container>
+              </div>
+          </div>
+          <div class="col-auto align-self-center justify-content-center">
+              <div class="chart-title">&nbsp;</div>
+              <div #optionsLegend class="ds-legend-group"></div>
+          </div>
+        </div>
+    </ds-card-content>
+  </ds-card>

@@ -1,0 +1,27 @@
+
+<ng-container *ngIf="{options: headerDropdownOptions$|async} as d">
+    <ds-dashboard-widget [cardType]="cardType" [loaded]="loaded" skeleton="double-pie-graph-skeleton">
+        <ds-dashboard-widget-header [title]="title" [headerDropdownOptions]="d.options" *ngIf="d.options != null"
+            (headerDropdownChange)="changePayroll($event)"></ds-dashboard-widget-header>
+        <ds-dashboard-widget-content *ngIf="!emptyState">
+            <div class="overflow-list">
+                <div class="row">
+                    <div class="col-xl-6">
+                        <ds-bank-graph *ngIf="loaded" [dateRange]="dateRange" [data]="graphData"
+                            (breakdown)="changeBreakdown($event)"></ds-bank-graph>
+                    </div>
+                    <div class="col-xl-6">
+                        <ds-payment-graph *ngIf="loaded" [dateRange]="dateRange" [currentPayrollId]="currentPayrollId"
+                            [breakdownType]="breakdownType" [currentCheckDate]="currentCheckDate">
+                        </ds-payment-graph>
+                    </div>
+                </div>
+            </div>
+        </ds-dashboard-widget-content>
+        <ds-dashboard-widget-content *ngIf="emptyState">
+            <div class="empty-state">
+                No data available to display
+            </div>
+        </ds-dashboard-widget-content>
+    </ds-dashboard-widget>
+</ng-container>

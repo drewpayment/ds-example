@@ -1,0 +1,471 @@
+﻿<div class="card-body no-style-print">
+    <div class="overlay" ng-if="context.$isLoading"></div>
+
+    <div class="d-none d-print-block">
+        <div class="schedule-title mb-2"> {{ activeGroup.description }} Schedule | {{ context.$isPreview ? 'Preview' : 'Published' }} </div>
+        <div class="schedule-date-range d-inline-block float-right mb-2"> {{ week.$first.$moment.twix(week.$last.$moment, {allDay:true}).format({implicitYear: false, monthFormat: 'MMMM'}) }} </div>
+    </div>
+
+    <!-- HEADER & WEEK -->
+    <!-- ACTIONS -->
+    <div class="row d-print-none">
+
+        <div class="col-sm-8">
+            <div class="form-row">
+                <div class="form-group col-auto">
+                    <select class="form-control custom-select"
+                            ng-model="activeGroup"
+                            ng-options="group as group.description for group in scheduleGroups | orderBy:'description'"
+                            ng-change="selectGroup(activeGroup)"
+                            ng-disabled="mode.$isRecurring">
+                        <option value="">Select Group</option>
+                    </select>
+                </div>
+                <div class="form-group col-auto" ng-show="context.isValid()">
+                    <select class="form-control custom-select"
+                            ng-model="activeSchedule"
+                            ng-options="schedule as schedule.name for schedule in groupSchedules | orderBy:'name'"
+                            ng-change="clearAndSelectSchedule(activeSchedule)"
+                            ng-disabled="mode.$isRecurring || context.hasSavedShifts()">
+                        <option value="">Select Schedule</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+
+            <div class="d-flex align-items-center justify-content-end mb-2" ng-show="context.isValid() && (context.hasPreviewShift() || context.hasPublishShift() || !context.$isSaved)">
+
+                <div class="float-right font-sm pr-6">
+                    <span ng-if="context.$isPreview && context.isValid() && !mode.$isRecurring && context.hasSavedShifts()">
+                        <i class="material-icons">visibility</i> Previewing Schedule
+                    </span>
+                    <span ng-if="!context.$isPreview && context.isValid() && !mode.$isRecurring">
+                        <i class="material-icons">send</i> Published Schedule
+                    </span>
+                    <span ng-if="mode.$isRecurring">
+                        <i class="material-icons">restore</i> Set Recurring Shifts
+                    </span>
+                </div>
+
+                <div class="col-auto text-danger" ng-if="!context.$isSaved" title="Unsaved Changes Exist">
+                    <i class="material-icons">warning</i>
+                </div>
+
+                <div class="btn-group" dropdown is-open="context.$isActionOpen">
+                    <button class="btn btn-primary"
+                            ng-click="saveSchedule(!context.$isPreview)"
+                            ng-if="context.$isSaved && context.$isPreview && !mode.$isRecurring">
+                        Publish Schedule
+                    </button>
+                    <button class="btn btn-danger"
+                            ng-click="saveSchedule(context.$isPreview)"
+                            ng-if="!context.$isSaved && context.$isPreview && !mode.$isRecurring">
+                        Save Changes
+                    </button>
+                    <button class="btn btn-primary"
+                            ng-if="!context.$isPreview && !mode.$isRecurring"
+                            ng-click="toggleActions($event)">
+                        Schedule Actions
+                    </button>
+                    <button class="btn"
+                            ng-class="{ 'btn-danger': !context.$isSaved, 'btn-primary': context.$isSaved }"
+                            ng-click="saveSchedule(context.$isPreview)"
+                            ng-if="mode.$isRecurring">
+                        Save Recurring Shifts
+                    </button>
+                    <button class="btn dropdown-toggle"
+                            ng-class="{ 'btn-primary': context.$isSaved, 'btn-danger': !context.$isSaved }"
+                            dropdown-toggle></button>
+                    <div class="dropdown-menu">
+                      <button type="button" class="dropdown-item w-100" ng-if="!context.$isSaved || mode.$isRecurring" ng-click="cancelChanges()">
+                          Cancel Changes
+                      </button>
+                      <button type="button" class="dropdown-item w-100" ng-if="!context.$isPreview" ng-click="saveSchedule(!context.$isPreview)">
+                          Unpublish Schedule
+                      </button>
+                      <button type="button" class="dropdown-item w-100" ng-if="!mode.$isRecurring && context.$isPreview && context.hasShifts()" ng-click="context.clearScheduledShifts()">
+                          Clear Schedule
+                      </button>
+                      <button type="button" class="dropdown-item w-100" ng-if="!mode.$isRecurring" ng-click="printSchedule()">
+                          Print Schedule
+                      </button>
+                      <hr class="my-0" ng-if="!mode.$isRecurring && context.$isSaved" />
+                      <button type="button" class="dropdown-item w-100" ng-if="!mode.$isRecurring && context.$isSaved" ng-click="setRecurringShifts()">
+                          Set Recurring Shifts
+                      </button>
+                        <!-- <a href="" class="dropdown-item" ng-if="!context.$isSaved || mode.$isRecurring" ng-click="cancelChanges()">
+                            Cancel Changes
+                        </a>
+                        <a href="" class="dropdown-item" ng-if="!context.$isPreview" ng-click="saveSchedule(!context.$isPreview)">
+                            Unpublish Schedule
+                        </a>
+                        <a href="" class="dropdown-item" ng-if="!mode.$isRecurring && context.$isPreview && context.hasShifts()" ng-click="context.clearScheduledShifts()">
+                            Clear Schedule
+                        </a>
+                        <a href="" class="dropdown-item" ng-if="!mode.$isRecurring" ng-click="printSchedule()">
+                            Print Schedule
+                        </a>
+                        <hr class="my-0" ng-if="!mode.$isRecurring && context.$isSaved" />
+                        <a href="" class="dropdown-item" ng-if="!mode.$isRecurring && context.$isSaved" ng-click="setRecurringShifts()">
+                            Set Recurring Shifts
+                        </a> -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- CALENDAR -->
+    <div class="cal-table-actions d-print-none" ng-if="context.isValid() && !mode.$isRecurring">
+        <i class="material-icons clickable" ng-click="goToPrevWeek()">keyboard_arrow_left</i>
+        <div class="week-range font-lg w-25 text-center">{{ week.$first.$moment.twix(week.$last.$moment, {allDay:true}).format({implicitYear: false, monthFormat: 'MMMM'}) }}</div>
+        <i class="material-icons clickable" ng-click="goToNextWeek()">keyboard_arrow_right</i>
+    </div>
+    <table class="table calendar week" ng-show="context.isValid()">
+        <thead>
+            <tr class="table-header">
+                <th class="info">
+                    Employee
+                </th>
+                <th class="day" ng-repeat="day in week.$days">
+                    <span class="text-uppercase">{{ day.$moment.format('ddd') }}</span>
+                    <span class="date" ng-if="!mode.$isRecurring">&nbsp; {{ day.$moment.format('DD') }}</span>
+                </th>
+                <th class="info text-center" ng-class="{'d-print-none':!printIncludeHours && !printIncludeRates}" style="padding-right: 15px; padding-left: 15px"><strong> Total Hours </strong></th>
+            </tr>
+        </thead>
+        <tbody class="table-bordered">
+            <!-- GROUP SHIFTS | DEFAULT -->
+            <tr class="cal-row info-row" ng-if="!mode.$isRecurring && (!isPrinting || printIncludeOpenShifts)">
+                <td class="info schedule-first-col">
+                    <div class="info-title">
+                        <strong>Open Shifts</strong>
+                    </div>
+                </td>
+                <td class="day" ng-class="{ weekend: day.isWeekend() }" ng-repeat="day in week.$days">
+                    <!-- UI -->
+                    <div class="chip chip-sm d-print-none"
+                         ng-class="{ 'chip-blue-dark': !shift.$selected && !shift.isScheduled(), 'chip-blue': shift.$selected && !shift.isScheduled(), 'chip-disabled': shift.isScheduled() || mode.$isRecurring, 'disabled': shift.isScheduled() || !context.$isPreview || mode.$isRecurring }"
+                         ng-repeat="shift in activeSchedule.$defaultSubgroup.shifts | filter:{dayOfWeek: day.$dayOfWeek} | orderBy:'startTime'"
+                         ng-click="(shift.isScheduled() || !context.$isPreview) || selectShift(shift)">
+                        <div class="chip-content" title="{{ shift.toTimeRangeString() }}">
+                            <!-- This is the Open Shift Section -->
+                            <span moment-text
+                                  moment="shift.$startMoment"
+                                  moment-format="h:mma"
+                                  moment-single-char-meridiem="true"></span>
+                            -
+                            <span moment-text
+                                  moment="shift.$endMoment"
+                                  moment-format="h:mma"
+                                  moment-single-char-meridiem="true"></span>
+                        </div>
+                        <span class="chip-action action-block" ng-if="!mode.$isRecurring">
+                            <span class="chip-seperator"></span>{{ shift.numberRemaining() }}
+                        </span>
+                    </div>
+                    <!-- PRINT -->
+                    <div class="schedule-report-shift font-xs d-none d-print-block"
+                         ng-if="isPrinting && !shift.isScheduled()"
+                         ng-repeat="shift in activeSchedule.$defaultSubgroup.shifts | filter:{dayOfWeek: day.$dayOfWeek}">
+                        <span moment-text
+                              moment="shift.$startMoment"
+                              moment-format="h:mmA"></span>
+                        -
+                        <span moment-text
+                              moment="shift.$endMoment"
+                              moment-format="h:mmA"></span>
+
+                        <strong class="open-shift-avatar" ng-if="shift.numberRemaining() > 1">
+                            <i class="material-icons">person</i>
+                            {{ shift.numberRemaining() }}
+                        </strong>
+                    </div>
+                </td>
+                <td class="schedule-first-col text-center" ng-class="{'d-print-none':!printIncludeHours}"></td>
+            </tr>
+
+            <!-- GROUP SHIFTS | SUB-GROUPS -->
+            <tr class="cal-row info-row subgroup-row"
+                ng-repeat="subgroup in activeSchedule.subgroups | filter:nonDefaultSubgroup | orderBy:['name']"
+                ng-if="!mode.$isRecurring && (!isPrinting || printIncludeOpenShifts)">
+                <td class="info schedule-first-col">
+                    <div class="info-title">
+                        {{ subgroup.name }}
+                    </div>
+                </td>
+                <td class="day" ng-class="{ weekend: day.isWeekend() }" ng-repeat="day in week.$days">
+                    <!-- UI -->
+                    <div class="chip chip-sm d-print-none"
+                         ng-class="{ 'chip-blue-dark': !shift.$selected && !shift.isScheduled(), 'chip-blue': shift.$selected && !shift.isScheduled(), 'chip-disabled': shift.isScheduled() || mode.$isRecurring, 'disabled': shift.isScheduled() || !context.$isPreview || mode.$isRecurring }"
+                         ng-repeat="shift in subgroup.shifts | filter:{dayOfWeek: day.$dayOfWeek} | orderBy:'startTime'"
+                         ng-click="(shift.isScheduled() || !context.$isPreview) || selectShift(shift)">
+                        <div class="chip-content" title="{{ shift.toTimeRangeString() }}">
+                            <span moment-text
+                                  moment="shift.$startMoment"
+                                  moment-format="h:mma"
+                                  moment-single-char-meridiem="true"></span>
+                            -
+                            <span moment-text
+                                  moment="shift.$endMoment"
+                                  moment-format="h:mma"
+                                  moment-single-char-meridiem="true"></span>
+                        </div>
+                        <span class="chip-action action-block" ng-if="!mode.$isRecurring">
+                            <span class="chip-seperator"></span>{{ shift.numberRemaining() }}
+                        </span>
+                    </div>
+                    <!-- PRINT -->
+                    <div class="schedule-report-shift d-none d-print-block"
+                         ng-if="isPrinting  && !shift.isScheduled()"
+                         ng-repeat="shift in subgroup.shifts | filter:{dayOfWeek: day.$dayOfWeek}">
+                        <span moment-text
+                              moment="shift.$startMoment"
+                              moment-format="h:mmA"></span>
+                        -
+                        <span moment-text
+                              moment="shift.$endMoment"
+                              moment-format="h:mmA"></span>
+
+                        <strong class="open-shift-avatar" ng-if="shift.numberRemaining() > 1">
+                            <i class="material-icons">person</i>
+                            {{ shift.numberRemaining() }}
+                        </strong>
+                    </div>
+                </td>
+                <td class="schedule-first-col" ng-class="{'d-print-none':!printIncludeHours}"></td>
+            </tr>
+            <!-- EMPLOYEE SHIFTS -->
+            <tr class="cal-row clickable divider-row-print"
+                ng-repeat="employee in context.$employeeSchedules | orderBy:[order.byEmployeeStatus, order.byEmployeeTitle, order.byEmployeeName]"
+                ng-if="!mode.$isRecurring || ( mode.$isRecurring && (employee.employeeRecurringShifts.length > 0 || employee.employeeScheduleShifts.length > 0) )"
+                ng-class="{ 'divider-row': $first && !mode.$isRecurring && (!isPrinting || printIncludeOpenShifts), 'd-print-none': !employee.hasShifts(), 'alt-row': $index % 2 == 0 }"
+                ng-click="!context.$isPreview || mode.$isRecurring || assignShiftsToEmployee(employee)">
+
+                <td class="info schedule-first-col"
+                    title="{{getStatusText(employee)}}"
+                    ng-class="{ 'pt-xs':employee.jobProfileId && (!isPrinting || printIncludeJobTitles), 'pb-xs':employee.jobProfileId && (!isPrinting || printIncludeJobTitles), selected: employee.$selected, clickable: context.$isPreview && !mode.$isRecurring, disabled: employee.isTerminated || employee.isNotAssignedToSource }"
+                    ng-click="!context.$isPreview || mode.$isRecurring || selectEmployee(employee, $event)">
+                    <div class="info-title">
+                        <i class="material-icons" ng-if="employee.isTerminated || employee.isNotAssignedToSource">block</i>
+                        <strong>
+                            {{ employee.lastName }},
+                            {{ employee.firstName }}
+                        </strong>
+                        <div ng-if="employee.jobProfileId && (!isPrinting || printIncludeJobTitles)" class="text-muted font-xs">
+                            {{ employee.jobTitle }}
+                        </div>
+                        <div ng-if="rateAccess.canViewRates && budgetAccess.canViewBudgeting" ng-class="{'d-print-none':!printIncludeRates}">
+                            <div class="text-muted font-xs" ng-if="employee.isHourly"> {{ employee.rateDescription }}<br />{{ employee.rate | currency}}</div>
+                            <div class="text-muted font-xs" ng-if="!employee.isHourly"> Salary </div>
+                        </div>
+                    </div>
+                    <span class="flag"></span>
+                </td>
+
+                <td class="day"
+                    ng-class="{ weekend: day.isWeekend() }"
+                    ng-repeat="day in week.$days">
+
+                    <!-- EMPLOYEE BENEFITS -->
+                    <div class="chip chip-sm hoverable d-print-none"
+                         ng-class="{ 'chip-gray': true, 'disabled': true }"
+                         ng-repeat="benefit in employee.getBenefitsOnDay(day.$moment)">
+
+                        <div class="chip-content" title="{{ benefit.description }}">
+                            <strong class="mr-1">{{ benefit.totalHours }} hrs</strong>{{ benefit.description }}
+                            <div ng-if="benefit.$startMoment.isValid() && benefit.$endMoment.isValid()">
+                                <span moment-text
+                                      moment="benefit.$startMoment"
+                                      moment-format="h:mma"
+                                      moment-single-char-meridiem="true"></span>
+                                -
+                                <span moment-text
+                                      moment="benefit.$endMoment"
+                                      moment-format="h:mma"
+                                      moment-single-char-meridiem="true"></span>
+                            </div>
+                            <div class="chip-action with-icon">
+                                <i class="material-icons" ng-show="!benefit.isApproved" title="Pending">help</i><i class="material-icons" ng-show="!benefit.isHoliday" title="Time-Off">beach_access</i><i class="material-icons" ng-show="benefit.isHoliday" title="Holiday">star</i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- EMPLOYEE SHIFTS | SCHEDULED -->
+                    <div class="chip chip-sm hoverable d-print-none"
+                         ng-class="{ 'chip-green': shift.isScheduledForGroup(context.$scheduleGroup), 'chip-gray': !shift.isScheduledForGroup(context.$scheduleGroup) || shift.isOverridden, disabled: !context.$isPreview || !shift.isScheduledForGroup(context.$scheduleGroup) }"
+                         ng-repeat="shift in employee.getShiftsOnDay(day.$moment)"
+                         ng-if="!mode.$isRecurring">
+
+                        <div class="chip-content" ng-click="!shift.isPreview || !shift.isScheduledForGroup(context.$scheduleGroup) || scheduleGroupOverridePopup(employee, shift)" title="{{ shift.toTimeRangeString() }}">
+
+                            <i class="material-icons" ng-show="shift.isOverridden">settings</i> <span moment-text
+                                                                                                      moment="shift.$startMoment"
+                                                                                                      moment-format="h:mma"
+                                                                                                      moment-single-char-meridiem="true"></span>
+                            -
+                            <span moment-text
+                                  moment="shift.$endMoment"
+                                  moment-format="h:mma"
+                                  moment-single-char-meridiem="true"></span>
+                            <span class="font-xs" ng-show="shift.$groupShift.$subgroup.name && !shift.isOverridden && shift.isScheduledForGroup(context.$scheduleGroup) ">
+                                <br />
+                                {{ shift.$groupShift.$subgroup.name }}
+                            </span>
+                            <br ng-show="!shift.isScheduledForGroup(context.$scheduleGroup) || shift.isOverridden" />
+                            <!-- RON ADD NEW SPAN HERE FOR OVERRIDE -->
+                            <span class="font-xs text-muted" ng-show="!shift.isScheduledForGroup(context.$scheduleGroup)" title="{{shift.scheduleGroupDescription}}">
+                                {{ shift.scheduleGroupDescription }}
+                            </span>
+                            <span class="font-xs text-muted" ng-show="shift.isOverridden && shift.isScheduledForGroup(context.$scheduleGroup) " title="{{shift.override_Description}}">
+                                {{ shift.override_Description }}
+                            </span>
+                        </div>
+                        <div class="chip-action hover-show with-icon z-3"
+                             ng-show="context.$isPreview && shift.isScheduledForGroup(context.$scheduleGroup) && !mode.$isRecurring"
+                             ng-click="removeEmployeeShift(employee, shift, $event)">
+                            <i class="material-icons">clear</i>
+                        </div>
+
+                        <div class="chip-action with-icon" ng-show="!shift.isScheduledForGroup(context.$scheduleGroup)">
+                            <i class="material-icons" ng-show="!shift.isPreview" title="Published Schedule">send</i>
+                            <i class="material-icons" ng-show="shift.isPreview" title="Preview Schedule">visibility</i>
+                            <i class="material-icons" title="Previously Scheduled">lock</i>
+                        </div>
+                        <div class="chip-action with-icon hover-hide action-block" ng-if="shift.isScheduledForGroup(context.$scheduleGroup) && shift.$isRecurring">
+                            <i class="material-icons">restore</i>
+                        </div>
+                    </div>
+
+                    <!-- EMPLOYEE SHIFTS | UNSCHEDULED RECURRING SHIFTS -->
+                    <div class="chip chip-sm hoverable d-print-none"
+                         ng-class="{ 'chip-green': mode.$isRecurring, 'chip-disabled': !mode.$isRecurring, 'disabled': !mode.$isRecurring && !shift.$isScheduled }"
+                         ng-repeat="shift in employee.getRecurringShiftsOnDayOfWeek(day.$dayOfWeek, false, context.$groupSchedule)"
+                         ng-click="!mode.$isRecurring || removeEmployeeRecurringShift(employee, shift, $event)"
+                         ng-if="context.$groupSchedule && shift.isScheduledForGroup(context.$scheduleGroup)"
+                         title="Unscheduled Recurring Shift">
+
+                        <div class="chip-content">
+                            <span moment-text
+                                  moment="shift.$startMoment"
+                                  moment-format="h:mma"
+                                  moment-single-char-meridiem="true"></span>
+                            -
+                            <span moment-text
+                                  moment="shift.$endMoment"
+                                  moment-format="h:mma"
+                                  moment-single-char-meridiem="true"></span>
+                            <span class="font-xs text-muted" ng-show="shift.$groupShift.$subgroup.name && !shift.isOverridden">
+                                <br />
+                                {{ shift.$groupShift.$subgroup.name }}
+                            </span>
+                        </div>
+                        <div class="chip-action with-icon">
+                            <i class="material-icons">restore</i>
+                        </div>
+                    </div>
+
+                    <!-- EMPLOYEE SHIFTS | RECURRING MODE -->
+                    <div class="chip chip-sm hoverable d-print-none chip-green"
+                         ng-repeat="shift in employee.getShiftsOnDay(day.$moment)"
+                         ng-click="toggleRecurringShift(shift, $event)"
+                         ng-if="mode.$isRecurring && shift.isScheduledForGroup(context.$scheduleGroup)">
+
+                        <div class="chip-content" title="{{ shift.toTimeRangeString() }}">
+                            <span moment-text
+                                  moment="shift.$startMoment"
+                                  moment-format="h:mma"
+                                  moment-single-char-meridiem="true"></span>
+                            -
+                            <span moment-text
+                                  moment="shift.$endMoment"
+                                  moment-format="h:mma"
+                                  moment-single-char-meridiem="true"></span>
+                        </div>
+                        <div class="chip-action with-icon action-block" ng-if="shift.$isRecurring" title="Recurring Shift">
+                            <i class="fa dom-recur"></i>
+                        </div>
+                    </div>
+
+                    <!-- Print area starts here everything above is not printed-->
+                    <div class="schedule-report-shift font-xs d-none d-print-block"
+                         ng-repeat="benefit in employee.getBenefitsOnDay(day.$moment) | filter:printBenefits">
+                        <span class="secondary">{{ benefit.description }}</span>
+                        <span class="secondary" ng-if="!benefit.isApproved">(Pending)</span>
+                        <div ng-if="benefit.$startMoment && benefit.$endMoment">
+                            <span class="secondary"
+                                  moment-text
+                                  moment="benefit.$startMoment"
+                                  moment-format="h:mmA"></span>
+                            <span class="secondary">-</span>
+                            <span class="secondary"
+                                  moment-text
+                                  moment="benefit.$endMoment"
+                                  moment-format="h:mmA"></span>
+                        </div>
+                    </div>
+                    <div class="schedule-report-shift font-xs d-none d-print-block"
+                         ng-repeat="shift in employee.getShiftsOnDay(day.$moment) | filter:printInScheduleGroup">
+                        <span moment-text
+                              moment="shift.$startMoment"
+                              moment-format="h:mmA"></span>
+                        -
+                        <span moment-text
+                              moment="shift.$endMoment"
+                              moment-format="h:mmA"></span>
+                        <span class="font-xs text-muted" ng-show="shift.$groupShift.$subgroup.name && !shift.isOverridden && printIncludeSubgroups">
+                            <br />
+                            {{ shift.$groupShift.$subgroup.name }}
+                        </span>
+                    </div>
+                    <div class="schedule-report-shift font-xs d-none d-print-block secondary"
+                         ng-repeat="shift in employee.getShiftsOnDay(day.$moment) | filter:printNotInScheduleGroup">
+                        <span class="secondary"
+                              moment-text
+                              moment="shift.$startMoment"
+                              moment-format="h:mmA"></span>
+                        -
+                        <span class="secondary"
+                              moment-text
+                              moment="shift.$endMoment"
+                              moment-format="h:mmA"></span>
+                        <br />
+                        <span class="font-xs text-muted" ng-show="!shift.isOverridden">({{ shift.scheduleGroupDescription }})</span>
+                        <span class="font-xs text-muted" ng-show="shift.isOverridden">{{ shift.override_Description }}</span>
+                    </div>
+                </td>
+                <td class="text-center schedule-first-col" ng-class="{'d-print-none':!printIncludeHours}">
+                    <div ng-class="{'d-print-none':!printIncludeHours}">
+                        <strong>{{ employee.getTotalShiftDuration() }}</strong>
+                    </div>
+                    <div ng-if="rateAccess.canViewRates && budgetAccess.canViewBudgeting" class="text-muted font-xs" ng-class="{'d-print-none':!printIncludeRates}">
+                        <span class="text-muted" ng-if="employee.isHourly">
+                            {{ employee.getTotalEmployeeCost() | currency }}
+                        </span>
+                        <span class="text-muted" ng-if="!employee.isHourly"> Salary </span>
+                    </div>
+                </td>
+            </tr>
+            <tr class="schedule-total-row" ng-class="{'d-print-none':!printIncludeHours && !printIncludeRates}">
+                <td class="text-uppercase">Totals</td>
+                <td ng-repeat="day in week.$days" class="text-center info">
+                    <strong ng-class="{'d-print-none':!printIncludeHours}">{{ context.getTotalShiftDuration(day.$moment) }}</strong>
+                    <div ng-if="rateAccess.canViewRates && budgetAccess.canViewBudgeting" ng-class="{'d-print-none':!printIncludeRates}">
+                        <em>{{ context.getTotalEmployeeCost(day.$moment) | currency }}</em>
+                    </div>
+                </td>
+                <td class="text-center info">
+                    <strong ng-class="{'d-print-none':!printIncludeHours}">{{ context.getTotalShiftDuration() }}</strong>
+                    <div ng-if="rateAccess.canViewRates && budgetAccess.canViewBudgeting" ng-class="{'d-print-none':!printIncludeRates}">
+                        <em>{{ context.getTotalEmployeeCost() | currency }}</em>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="schedule-report-print-date d-none d-print-block float-right mt-4">
+        Printed {{ moment().format('dddd MMMM DD, YYYY h:mm A') }}
+    </div>
+</div>

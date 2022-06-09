@@ -1,0 +1,31 @@
+﻿<div class="form-group">
+
+    <label class="control-label">
+        <span ng-show="dsRequired" class="required-star">*</span>{{labelText}}
+    </label>
+
+    <div>
+
+        <label 
+            class="radio-inline"
+            ng-repeat="option in dsRadioOptions">
+    
+            <input
+                ng-model="$parent.dsModel"
+                type="radio" 
+                ng-value="option.val"
+                ng-change="dsModelValueChanged" />{{option.txt}}
+
+        </label>
+
+    </div>
+
+    <div ng-show="showMessages" class="message-area">
+
+        <div ng-repeat="error in dsMessages">
+            <span>{{error}}</span>
+        </div>
+
+    </div>
+
+</div>

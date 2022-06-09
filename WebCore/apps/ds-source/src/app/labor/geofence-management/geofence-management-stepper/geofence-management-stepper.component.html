@@ -1,0 +1,39 @@
+<ds-card *ngIf="formInit|async as init" border="top">
+    <ds-card-header>
+        <div>
+            <ds-card-header-title>Geofence Manager</ds-card-header-title>
+            <ng-container *ngIf="!isLoading">
+                <div *ngIf="!isLinear" class="instruction-text">
+                    To deactivate this feature, please contact Client Solutions via the chat, email, or phone
+                    616-248-3835.
+                </div>
+            </ng-container>
+        </div>
+    </ds-card-header>
+    <ds-card-content>
+        <ng-container *ngIf="!isLoading" #stepper>
+            <mat-horizontal-stepper [ngClass]="{'mat-stepper-linear': isLinear}" [selectedIndex]="stepIndex"
+                [linear]="isLinear" [disableRipple]="true">
+                <mat-step [stepControl]="geofenceFormGroup.get('timePolicies')">
+                    <ng-template matStepLabel>Time Policies</ng-template>
+                    <ds-geofence-time-policies></ds-geofence-time-policies>
+                </mat-step>
+                <mat-step [stepControl]="geofenceFormGroup.get('reviewEmployees')">
+                    <ng-template matStepLabel>Review Employees</ng-template>
+                    <ds-geofence-employees></ds-geofence-employees>
+                </mat-step>
+                <mat-step [stepControl]="geofenceFormGroup.get('updateGeofences')">
+                    <ng-template matStepLabel>Geofencing Map</ng-template>
+                    <ds-geofence-management-map></ds-geofence-management-map>
+                </mat-step>
+                <mat-step [stepControl]="geofenceFormGroup.get('acceptTerms')">
+                    <ng-template matStepLabel>Accept Terms</ng-template>
+                    <ds-geofence-accept-terms></ds-geofence-accept-terms>
+                </mat-step>
+            </mat-horizontal-stepper>
+        </ng-container>
+    </ds-card-content>
+</ds-card>
+<ng-container *ngIf="isLoading">
+    <ds-loading-message></ds-loading-message>
+</ng-container>

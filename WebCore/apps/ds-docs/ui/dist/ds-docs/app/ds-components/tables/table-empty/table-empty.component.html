@@ -1,0 +1,72 @@
+<ds-card>
+  <ds-card-header>
+      <ds-card-header-title>Table</ds-card-header-title>
+      <ds-card-title-action>
+          <button 
+              class="btn btn-outline-primary" 
+              (click)="editForm()"
+              *ngIf="!isEdit">
+              Add Data
+          </button>
+      </ds-card-title-action>
+  </ds-card-header>
+  <ds-card-content>
+      <form [formGroup]="form">
+          <ds-table-container>
+              <table ds-table formArrayName="row" [dataSource]="dataSource">
+                  <ng-container dsColumnDef="character">
+                      <th ds-header-cell *dsHeaderCellDef>
+                          Character </th>
+                      <td ds-cell *dsCellDef="let element, let i = index" [formGroupName]="i">
+                          <input type="text" class="form-control" formControlName="character" />
+                      </td>
+                  </ng-container>
+                  <ng-container dsColumnDef="movie">
+                      <th ds-header-cell *dsHeaderCellDef > Movie </th>
+                      <td ds-cell *dsCellDef="let element, let i = index" [formGroupName]="i">
+                          <input type="text" class="form-control" formControlName="movie" />
+                      </td>
+                  </ng-container>
+                  <ng-container dsColumnDef="year">
+                      <th ds-header-cell *dsHeaderCellDef> Year </th>
+                      <td ds-cell *dsCellDef="let element, let i = index" [formGroupName]="i">
+                          <mat-select class="form-control custom-select" formControlName="year"
+                              [(value)]="element.selected">
+                              <mat-option *ngFor="let year of years" [value]="year.id">{{ year.year }}</mat-option>
+                          </mat-select>
+                      </td>
+                  </ng-container>
+                  <ng-container dsColumnDef="quote">
+                      <th ds-header-cell *dsHeaderCellDef> Quote </th>
+                      <td ds-cell *dsCellDef="let element, let i = index" [formGroupName]="i">
+                          <textarea type="text" class="form-control" formControlName="quote"></textarea>
+                      </td>
+                  </ng-container>
+                  <ng-container dsColumnDef="action">
+                      <th ds-header-cell *dsHeaderCellDef class="td-action-icon-width"> </th>
+                      <td ds-cell *dsCellDef="let element, let i = index" [formGroupName]="i" class="td-action-icon ds-table-sticky-border-end">
+                          <button type="button" mat-button [matMenuTriggerFor]="menu" class="btn btn-icon">
+                              <mat-icon>more_vert</mat-icon>
+                          </button>
+                          <mat-menu #menu="matMenu">
+                              <button mat-menu-item (click)="delete(element)">Delete</button>
+                          </mat-menu>
+                      </td>
+                  </ng-container>
+
+                  <tr ds-header-row *dsHeaderRowDef="displayedColumns" ></tr>
+                  <tr ds-row *dsRowDef="let row; columns: displayedColumns;"></tr>
+
+                  <tr *dsNoDataRow>
+                    <td class="empty-state" colspan="5">There is no data to display</td>
+                  </tr>
+              </table>
+              <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons></mat-paginator>
+          </ds-table-container>
+      </form>
+
+  </ds-card-content>
+  <ds-card-footer>
+      <button class="btn btn-save" (click)="editForm()">Save</button>
+  </ds-card-footer>
+</ds-card>

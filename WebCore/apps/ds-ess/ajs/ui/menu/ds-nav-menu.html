@@ -1,0 +1,21 @@
+﻿<ul id="{{menuId}}">
+    
+    <li 
+        ng-repeat="item in menu.items" 
+        ng-class="{active: item.isActive}">
+        
+        <a 
+            ng-if="item.linkToHref"
+            ng-href="{{ item.linkToHref }}"
+            target="_self">
+            {{ item.title }}
+        </a>
+        <a 
+            ng-if="item.linkToState"
+            ui-sref="{{ item.linkToState }}" >
+            {{ item.title }}
+        </a>
+    
+    </li>
+
+</ul>

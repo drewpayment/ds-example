@@ -1,0 +1,26 @@
+﻿<div class="row">
+    <div class="col-lg-12">
+        <h1>Edit About Me</h1>
+        <form name="frm" class="form form-horizontal" novalidate>
+            <div class="panel panel-default">
+                <div class="panel-body" ng-hide="unauthorizedMessages.validationMessages">
+                    <textarea rows="10" name="EmployeePersonalDetail"
+                        class="form-control no-border"
+                        ng-model="employeePersonalInformationData.bio"
+                        ds-auto-focus-on="true"></textarea>
+                </div>
+                <div class="panel-footer">
+                    <button class="btn btn-primary pull-right" id="submit"
+                            value="Submit"
+                            ng-click="updatePersonalInformation()">
+                        Save
+                    </button>
+                    <button class="btn btn-default" id="cancel"
+                            ng-click="cancelEdit()">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

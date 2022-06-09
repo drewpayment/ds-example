@@ -1,0 +1,35 @@
+<mat-dialog-header>
+    <h2 class="dialog-title">
+        Import Admin Task List
+    </h2>
+    <button type="button" class="close" (click)="clear()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</mat-dialog-header>
+<mat-dialog-content >
+    <ng-container *ngIf="!isLoading; else loading">
+    <div *ngIf="!noData" class="form-group" [formGroup]="form1" >
+        <label class="form-control-label">Please select one list to import.</label>
+        <select [class.is-invalid]="formSubmitted && (form1.controls.taskList.errors?.required)"
+            class="form-control custom-select" formControlName="taskList" required>
+            <option class="text-muted" value=""></option>
+            <option *ngFor="let tl of allAdminTaskList" [value]="tl.onboardingAdminTaskListId">
+                {{tl.name}}
+            </option>
+        </select>
+        <div class="invalid-feedback">
+            Please select a task list.
+        </div>
+    </div>
+    <div *ngIf="noData" class="empty-state">
+        No admin task list available to import.
+    </div>
+    </ng-container>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button type="button" class="btn btn-save" *ngIf="!isLoading && !noData" (click)="import()">Import</button>
+    <button type="button" class="btn btn-cancel" (click)="clear()">Cancel</button>
+</mat-dialog-actions>
+<ng-template #loading>
+    <ds-loading-message></ds-loading-message>
+</ng-template>

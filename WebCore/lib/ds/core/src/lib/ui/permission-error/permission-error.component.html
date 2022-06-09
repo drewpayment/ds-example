@@ -1,0 +1,15 @@
+<div class="card">
+  <div class="card-body">
+    <div class="row justify-content-center">
+      <div class="col-6">
+          <div class="empty-state-cycle warning">
+              <mat-icon>warning</mat-icon>
+              <div class="title" *ngIf="!customMessage">You need permission to view this page.</div>
+              <div class="title" *ngIf="customMessage">{{customMessage}}</div>
+              <p  *ngIf="showHelpMessage">If you need access, please contact your administrator.</p>
+              <button class="btn btn-primary" (click)="goHome()" *ngIf="showHomeButton">Home</button>
+           </div>
+      </div>
+    </div>
+  </div>
+</div>

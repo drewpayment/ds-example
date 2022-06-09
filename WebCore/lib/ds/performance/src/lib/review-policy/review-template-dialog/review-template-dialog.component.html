@@ -1,0 +1,119 @@
+<div mat-dialog-header>
+    <h2 class="dialog-title">
+        {{!dialogData.reviewTemplate.reviewTemplateId ? 'Add' : 'Edit'}} 
+        {{dialogData.reviewTemplate.isRecurring | isRecurringToString}} Review
+    </h2>
+    <button type="button" class="close" (click)="cancel()">
+        <mat-icon>clear</mat-icon>
+    </button>
+    <div class="dialog-subtitle">
+        <div class="instruction-text">  
+                Select a Review Profile from the drop down list.  Additional fields will display below based on the Review Profile set-up.  If you need a new Review Profile, go to the Setup section under the Performance menu.
+        </div>
+    </div>
+</div>
+<!-- TODO some validation messages copied from multi-review-edit-dialog.component.html...... consolidate -->
+<div mat-dialog-content>
+    <div [formGroup]="determineFormType">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-control-label">Review Profile</label>
+                    <select class="form-control custom-select" formControlName="reviewProfile"
+                        dsFormControlValidator [dsFormControlSubmitted]="submitted" cdkFocusInitial>
+                        <option [value]=""></option>
+                        <option [value]="profile.reviewProfileId" *ngFor="let profile of reviewProfiles">
+                            {{profile.name}}
+                        </option>
+                    </select>
+                    <div class="invalid-feedback">
+                            Please select a Review Profile.
+                        </div>
+                </div>
+            </div>
+            <ng-container *ngIf="SetTitle$ | async"></ng-container>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-control-label">Name</label>
+                    <input type="text" class="form-control" formControlName="title"
+                    required 
+                    dsFormControlValidator 
+                    [dsFormControlSubmitted]="submitted" />
+                    <div class="invalid-feedback">
+                        Please enter a name.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group ds-autocomplete">
+                    <label class="form-control-label">Review Owner <span class="form-help-text">Optional; select the individual that should have full access to this
+                        review.</span></label>
+                    <ds-contact-autocomplete [multiple]="false" [contacts]="owners$ | async" formControlName="reviewOwner"
+                        displayUserType="1"
+                        name="reviewOwner" [inputControl]="ownerCtrl">
+                    </ds-contact-autocomplete>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <hr/>
+                <h3 class="d-inline-block">Schedule</h3>
+            </div>
+        </div>
+        <div class="row" >
+            <div class="col-md-12">
+                <div class="form-group inline-radio">
+                    <div class="custom-control custom-radio custom-control-bg primary">
+                        <input id="radioInline" type="radio" name="scheduleBasedOn" [value]="ScheduleType.DateOfHire"
+                            class="custom-control-input" formControlName="scheduleBasedOn">
+                        <label class="custom-control-label" for="radioInline">Date of Hire</label>
+                        <div class="custom-bg"></div>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-bg primary">
+                        <input id="radioInline2" type="radio" name="scheduleBasedOn" [value]="ScheduleType.CalendarYear" 
+                            class="custom-control-input" formControlName="scheduleBasedOn">
+                        <label class="custom-control-label" for="radioInline2">Calendar Year</label>
+                        <div class="custom-bg"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="(selectedReviewProfile$ | async) as selectedRP">
+        <div *ngIf="!!scheduleBasedOn.value">
+                    <ds-reference-date 
+                    [Submitted]="submitted" 
+                    [SetForm]="selectedRP.selectedRCR"
+                    [ReviewProfile]="selectedRP.setup"
+                    [referenceDate]="selectedRP.scheduleType"
+                    [openRecurringView]="dialogData.openRecurringView"
+                    (FormValue)="CalendarYearFormValue = $event"></ds-reference-date>
+        <div *ngIf="groupSvc.groups$ | async as groupData">
+        <div class="row">
+            <div class="col-md-12">
+                <h3 class="d-inline-block">Assign Employees</h3>
+            </div>
+        </div>
+        <div class="row" [formGroup]="determineFormType">
+                
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-control-label">Groups <span class="instruction-text">Select the groups that should receive this review.</span></label>
+                    <ds-generic-autocomplete
+                    [items]="groupData | toAutocompleteItem : groupMapper" formControlName="groups">
+                    </ds-generic-autocomplete>
+                </div>
+            </div>
+          </div>
+        </div>
+    </div>
+    </div>
+</div>
+<div mat-dialog-actions>
+    <button type="button" class="btn btn-primary" #saveReviewBtn>Save</button>
+    <button type="button" class="btn btn-cancel" (click)="cancel()">Cancel</button>
+</div>
+<ng-container *ngIf="reviewOwnerSet$ | async"></ng-container>

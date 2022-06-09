@@ -1,0 +1,47 @@
+<div class="list-bordered list-bordered-large">
+  <div class="header">Title</div>
+  <div class="body">
+    <div class="item-group">
+      <div class="title-row">
+        <div class="list-title">
+          <mat-icon class="mt-1">comment</mat-icon>
+          <div>Title</div>
+          <mat-icon>attachment</mat-icon>
+        </div>
+        <div class="list-right-content">
+          Right Content Info
+        </div>
+        <div class="list-action-items">
+          <button mat-button [matMenuTriggerFor]="menu" class="btn btn-icon" type="button">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button type="button" mat-menu-item>Action</button>
+            <button type="button" mat-menu-item>Action</button>
+          </mat-menu>
+          <button type="button" class="btn btn-icon" [class.accordion-rotate]="showDetail" (click)="showDetail = !showDetail">
+            <mat-icon>keyboard_arrow_left</mat-icon>
+          </button>
+        </div>
+      </div>
+      <div class="list-content">
+        <div class="list-subtitle" (click)="showDetail = !showDetail" *ngIf="!showDetail">
+          <p class="mb-0 clickable">Yes, absolutely, I do indeed concur, wholeheartedly! When has justice ever been as simple as a rule book? How long can two people talk about nothing? But the probability of making a six is no greater than that of rolling a seven. That might've been one of the shortest assignments in the history of Starfleet. Captain, why are we out here chasing comets? Talk about going nowhere fast. I think you've let your personal feelings cloud your judgement. You enjoyed that. Is it my imagination, or have tempers become a little frayed on the ship lately? You're going to be an interesting companion, Mr. Data.</p>
+        </div>
+        <div class="collapse" [class.show]="showDetail">
+          <p>Yes, absolutely, I do indeed concur, wholeheartedly! When has justice ever been as simple as a rule book? How long can two people talk about nothing? 
+            But the probability of making a six is no greater than that of rolling a seven. That might've been one of the shortest assignments in the history of Starfleet. 
+            Captain, why are we out here chasing comets? Talk about going nowhere fast. I think you've let your personal feelings cloud your judgement. You enjoyed that. 
+            Is it my imagination, or have tempers become a little frayed on the ship lately? You're going to be an interesting companion, Mr. Data.
+          </p>
+          <div class="list-section">
+            <h4>Activity</h4>
+            <div class="history-item">
+              <div>History Item</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

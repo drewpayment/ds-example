@@ -1,0 +1,185 @@
+<ds-card collapse="true"
+    *ngIf="isAnalyticsView && group &&
+        hasCompletedReviews && allRatings && allRatings.length > 0"
+        [expanded]="expanded"
+        mode="nobody">
+    <ds-card-header>
+        <ds-card-sub-header-title>
+            Scores
+        </ds-card-sub-header-title>
+    </ds-card-header>
+    <ds-card-content>
+        <div class="overflow-list">
+            <div class="row" >
+                <div [ngClass]="(isScoringEnabled)? 'col-lg-5' : 'd-print-none d-none'">
+                    <ds-review-scoring-graph
+                        [clientId]="clientId"
+                        [competencyScores]="competencyScores"
+                        [allRatings]="allRatings"
+                        [overallEmployees]="group.overallEmployees"
+                        [selectedEmployees]="group.selectedEmployees"
+                        [scoreModel]="scoreModel"
+                        [group]="group" >
+                    </ds-review-scoring-graph>
+                </div>
+                <div [ngClass]="(isScoringEnabled)? 'col-lg-7' : 'col-lg-12'" *ngIf="competencyScores && competencyScores.length > 0">
+                        <ds-review-competency-graph
+                        [clientId]="clientId"
+                        [competencyScores]="competencyScores"
+                        [allRatings]="allRatings" >
+                    </ds-review-competency-graph>
+                </div>
+            </div>
+        </div>
+    </ds-card-content>
+</ds-card>
+
+<!-- <ng-template #noScores>
+    <ds-card mode="nobody" *ngIf="isAnalyticsView && group.overallEmployees">
+        <ds-card-content>
+            <div class="empty-state">
+                No competency scores found for the selected employee{{group.overallEmployees>1?'s':''}}
+            </div>
+        </ds-card-content>
+    </ds-card>
+</ng-template> -->
+
+<ds-card collapse="true"
+    *ngIf="isAnalyticsView  &&
+    ((textQuestionsAndFeedBacks && textQuestionsAndFeedBacks.length > 0) ||
+    (yesnoQuestionsAndFeedBacks && yesnoQuestionsAndFeedBacks.length > 0) ||
+    (multiSelectQuestionsAndFeedBacks && multiSelectQuestionsAndFeedBacks.length > 0))" [expanded]="expanded">
+    <ds-card-header>
+        <ds-card-sub-header-title>
+            Feedback Results
+        </ds-card-sub-header-title>
+    </ds-card-header>
+    <ds-card-content>
+        <div class="overflow-list">
+            <ng-container *ngFor="let resp of textQuestionsAndFeedBacks">
+                <ds-text-feedbacks [feedback]="findFeedback(resp.name)" [responseList]="resp.value" [reviewedEmps]="reviewedEmps" ></ds-text-feedbacks>
+            </ng-container>
+            <div class="row">
+                <ng-container *ngFor="let resp of yesnoQuestionsAndFeedBacks;let inx=index">
+                  <div class="col-12" >
+                      <ds-yesno-feedbacks-graph [feedback]="findFeedback(resp.name)" [responseList]="resp.value" ></ds-yesno-feedbacks-graph>
+                  </div>
+                </ng-container>
+                <ng-container *ngFor="let resp of multiSelectQuestionsAndFeedBacks;let inx=index">
+                <div class="col-12">
+                    <ds-multiselect-feedbacks-graph [feedback]="findFeedback(resp.name)" [responseList]="resp.value" ></ds-multiselect-feedbacks-graph>
+                </div>
+                </ng-container>
+            </div>
+        </div>
+    </ds-card-content>
+</ds-card>
+
+<!-- <ng-template #noFeedback>
+    <ds-card mode="nobody">
+        <ds-card-content>
+            <div class="empty-state">
+                There is no feedback to display for the filters selected.
+            </div>
+        </ds-card-content>
+    </ds-card>
+</ng-template> -->
+
+<ds-card *ngIf="group" [expanded]="expanded">
+    <ds-card-header>
+        <ds-card-sub-header-title>
+            {{ group.reviewTemplateName }}
+        </ds-card-sub-header-title>
+        <ds-card-inline-content>
+            <ds-card-sub-header-title>
+                <div class="text-muted" *ngIf="group.reviewProcessDueDate">Due: {{ group.reviewProcessDueDate | date: 'MM/dd/yyyy' }}</div>
+            </ds-card-sub-header-title>
+        </ds-card-inline-content>
+        <ds-card-title-right-content>
+            <ng-container *ngIf="isStatusView && empReviews.length">
+                <div class="form-inline">
+                    <label class="align-self-center white-space-nowrap col-auto">Show Assigned To</label>
+                    <select class="form-control custom-select col-auto" name="supervisor" [(ngModel)]="selectedUser" (change)="filterAssigned()">
+                        <option [ngValue]="null">All</option>
+                        <option [ngValue]="super" *ngFor="let super of empReviews">
+                            {{super.fullName}}
+                        </option>
+                    </select>
+                </div>
+            </ng-container>
+        </ds-card-title-right-content>
+        <ds-card-title-action>
+            <button type="button" class="btn btn-icon" [matMenuTriggerFor]="reviewMenu" *ngIf="csvDownloadLink && empReviews.length">
+                <i class="material-icons">more_vert</i>
+            </button>
+            <mat-menu #reviewMenu="matMenu">
+                <a mat-menu-item [href]="csvDownloadLink" *ngIf="csvDownloadLink">Download CSV</a>
+                <button mat-menu-item *ngIf="false">Send Overdue</button>
+                <button mat-menu-item *ngIf="false">Reminders</button>
+            </mat-menu>
+        </ds-card-title-action>
+        <ds-card-subtitle *ngIf="group.reviewProcessStartDate">
+            <div class="card-data">
+                <div class="item">
+                  <label>Start:</label> {{ group.reviewProcessStartDate | date: 'MM/dd/yyyy' }}
+                </div>
+            </div>
+        </ds-card-subtitle>
+    </ds-card-header>
+    <ds-card-content>
+        <!-- <div class="row">
+            <div class="col-md-6 align-self-center">
+              <div class="form-group">
+                  <div class="card-data" *ngIf="group.reviewProcessStartDate">
+                      <div class="item">
+                        <label>Start:</label> {{ group.reviewProcessStartDate | date: 'MM/dd/yyyy' }}
+                      </div>
+                  </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group form-row justify-content-end">
+
+                    <div class="col-md-auto">
+
+                    </div>
+                </div>
+            </div>
+        </div> -->
+        <ng-container *ngIf="empReviews.length, else statusEmptyState">
+            <!-- Status View, Kanban cards-->
+            <div class="kanban" *ngIf="isStatusView">
+                <div class="kanban-header">
+                    <div class="row">
+                        <div class="col-md-12 col-xl-3" *ngFor="let statusGroup of group.statusGroups">
+                            <h3 class="d-none d-md-none d-xl-block">{{statusGroup.title}}: {{statusGroup.reviewCount}}</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="kanban-body" style="max-height: 500px;">
+                    <div class="row">
+                        <div class="col-md-12 col-xl-3" *ngFor="let statusGroup of group.statusGroups">
+                            <h3 class="d-block d-md-block d-xl-none">{{statusGroup.title}}: {{statusGroup.reviewCount}}</h3>
+                            <div class="row">
+                                <div class="col-md-6 col-xl-12" *ngFor="let reviewStatus of filterStatus(statusGroup)">
+                                    <ds-review-status-card [reviewStatus]="reviewStatus" (reviewChange)="reviewUpdated($event)" (evaluationSelect)="evaluationSelected($event)"></ds-review-status-card>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Analytics View -->
+            <ng-container *ngIf="isAnalyticsView">
+                <ds-review-group-analytics [group]="group"></ds-review-group-analytics>
+            </ng-container>
+        </ng-container>
+
+    </ds-card-content>
+</ds-card>
+
+<ng-template #statusEmptyState>
+    <div class="empty-state">
+        There are no reviews to display for the filters selected.
+    </div>
+</ng-template>

@@ -1,0 +1,67 @@
+<ng-container [formGroup]="parentForm">
+  <div class="form-group">
+      <label for="{{durationControlName}}" class="form-control-label">{{label}}<span class="instruction-text" style="margin-left: .25rem;">{{helpText}}</span></label>
+    <div id="{{durationControlName}}" class="input-with-button-group">
+      <div [ngStyle]="{'width': textInputWidth + '%' }">
+          <input  dsFormControlValidator 
+            [dsFormControlSubmitted]="submitted" 
+            type="number" step="1" min="0" 
+            class="form-control" 
+            [formControlName]="durationControlName" />
+    </div>
+      <div class="btn-group btn-toggle-group">
+        <label class="btn btn-legacy-toggle" 
+            [class.active]="SelectedUnitType.value === TimeUnit.Day"
+            for="{{unitTypeControlName + 'inlineRadio1'}}" >
+            <input dsFormControlValidator 
+                [dsFormControlSubmitted]="submitted" 
+                [value]="TimeUnit.Day" 
+                [formControlName]="unitTypeControlName" 
+                type="radio"
+                id="{{unitTypeControlName + 'inlineRadio1'}}" name="{{unitTypeControlName}}" class="custom-control-input">
+            Days
+        </label>
+        <label class="btn btn-legacy-toggle" 
+            [class.active]="SelectedUnitType.value === TimeUnit.Week"
+            for="{{unitTypeControlName + 'inlineRadio2'}}">
+            <input dsFormControlValidator 
+                [dsFormControlSubmitted]="submitted" 
+                [value]="TimeUnit.Week" 
+                [formControlName]="unitTypeControlName" type="radio"
+                id="{{unitTypeControlName + 'inlineRadio2'}}" 
+                name="{{unitTypeControlName}}" 
+                class="custom-control-input">
+             Weeks
+        </label>
+        <label class="btn btn-legacy-toggle"
+             [class.active]="SelectedUnitType.value === TimeUnit.Month"
+            for="{{unitTypeControlName + 'inlineRadio3'}}">
+            <input dsFormControlValidator 
+                [dsFormControlSubmitted]="submitted" 
+                [value]="TimeUnit.Month" 
+                [formControlName]="unitTypeControlName" 
+                type="radio"
+                id="{{unitTypeControlName + 'inlineRadio3'}}" 
+                name="{{unitTypeControlName}}" 
+                class="custom-control-input">
+            Months
+        </label>
+    </div>
+    <!-- Justin S: TODO create a generic solution to display only one error at a time -->
+    <div [ngStyle]="{'display': 'block'}" class="invalid-feedback" *ngIf="(DurationCtrl.touched || submitted) && DurationCtrl.hasError('maxDateError')">
+      Time to Complete Evaluation must be less than Time to Complete Reviews.
+      </div>
+      <div [ngStyle]="{'display': 'block'}" class="invalid-feedback" *ngIf="(DurationCtrl.touched || submitted) && DurationCtrl.hasError('required') && !(SelectedUnitType.hasError('required') && (SelectedUnitType.touched || submitted))">
+        Please enter a duration.
+      </div>
+      <div [ngStyle]="{'display': 'block'}" class="invalid-feedback" *ngIf="(SelectedUnitType.touched || submitted) && SelectedUnitType.hasError('required')">
+        Please select a duration type.
+      </div>
+      <div [ngStyle]="{'display': 'block'}" class="invalid-feedback" *ngIf="(DurationCtrl.touched || submitted) && DurationCtrl.hasError('min')">
+        Please enter a positive value.
+      </div>
+      <div [ngStyle]="{'display': 'block'}" class="invalid-feedback" *ngIf="(DurationCtrl.touched || submitted) && DurationCtrl.hasError('pattern') && !DurationCtrl.hasError('min')">
+        Please enter a whole number.
+      </div>
+  </div>
+</ng-container>

@@ -1,0 +1,42 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>Profile</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <div class="text-center italic">
+            Select an item below to view it.
+        </div>
+        <mat-nav-list class="mobile-nav-list" role="navigation">
+            <mat-list-item [routerLink]="['settings']">
+                User Settings
+                <button mat-icon-button>
+                    <mat-icon>keyboard_arrow_right</mat-icon>
+                </button>
+            </mat-list-item>
+            <mat-list-item [routerLink]="['contact-information']">
+                Contact Information
+                <button mat-icon-button>
+                    <mat-icon>keyboard_arrow_right</mat-icon>
+                </button>
+            </mat-list-item>
+            <mat-list-item [routerLink]="['emergency-contacts']">
+                Emergency Contacts
+                <button mat-icon-button>
+                    <mat-icon>keyboard_arrow_right</mat-icon>
+                </button>
+            </mat-list-item>
+            <mat-list-item [routerLink]="['dependents']">
+                Dependents
+                <button mat-icon-button>
+                    <mat-icon>keyboard_arrow_right</mat-icon>
+                </button>
+            </mat-list-item>
+            <mat-list-item [routerLink]="['taxes']">
+                Taxes
+                <button mat-icon-button>
+                    <mat-icon>keyboard_arrow_right</mat-icon>
+                </button>
+            </mat-list-item>
+        </mat-nav-list>
+    </mat-card-content>
+</mat-card>

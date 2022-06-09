@@ -1,0 +1,69 @@
+<ng-container *ngIf="initializeComponent$ | async"></ng-container>
+<ng-template #pageContent>
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Schedule <ng-container *ngIf="startDate && endDate">For {{ titleDateString() }}</ng-container></mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="px-1">
+      <div class="empty-state" *ngIf="isLoading; else pageContent">
+        <mat-spinner></mat-spinner>
+      </div>
+      <ng-template #pageContent>
+        <div class="instruction-text text-center form-group">Select an item below to view it.</div>
+
+        <mat-table [dataSource]="employeeSchedules">
+          <ng-container cdkColumnDef="date">
+            <mat-header-cell class="date-width" *cdkHeaderCellDef> Date </mat-header-cell>
+            <mat-cell class="date-width" [class.instruction-text]="!row?.isScheduled()" *cdkCellDef="let row">
+              {{ row.getTitleDateString() }}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container cdkColumnDef="schedule">
+            <mat-header-cell class="schedule-width" *cdkHeaderCellDef> Schedule </mat-header-cell>
+            <mat-cell class="schedule-width" [class.instruction-text]="!row?.isScheduled()" *cdkCellDef="let row">
+              <ul class="schedule-ul">
+                <li *ngFor="let schedule of row.schedule">
+                  {{ schedule }}
+                </li>
+              </ul>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container cdkColumnDef="hours">
+            <mat-header-cell class="justify-content-end hours-width" *cdkHeaderCellDef> Hours </mat-header-cell>
+            <mat-cell class="justify-content-end hours-width" [class.instruction-text]="!row?.isScheduled()"
+              *cdkCellDef="let row">
+              {{ (!row.isScheduled() || row.hasHours()) ? row.hours.toFixed(2) : '---' }}
+
+            </mat-cell>
+          </ng-container>
+
+          <ng-container cdkColumnDef="action">
+            <mat-header-cell class="justify-content-end action-width" *cdkHeaderCellDef></mat-header-cell>
+            <mat-cell class="justify-content-end action-width" *cdkCellDef="let row">
+              <button mat-icon-button *ngIf="row?.isScheduled() || row.hasHours()">
+                <mat-icon>keyboard_arrow_right</mat-icon>
+              </button>
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row *cdkHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *cdkRowDef="let row; columns: displayedColumns"
+            [class.current-day]="row.isToday()"
+            [class.disabled]="!row?.isScheduled() && !row.hasHours()"
+            (click)="showDetail(row)">
+          </mat-row>
+
+        </mat-table>
+
+      </ng-template>
+    </mat-card-content>
+  </mat-card>
+</ng-template>
+
+<ng-container *ngIf="isLoading; else pageContent">
+  <div class="d-flex justify-content-center">
+    <mat-spinner></mat-spinner>
+  </div>
+</ng-container>

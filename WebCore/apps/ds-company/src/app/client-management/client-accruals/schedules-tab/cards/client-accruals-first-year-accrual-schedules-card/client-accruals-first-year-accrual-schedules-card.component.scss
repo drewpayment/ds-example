@@ -1,0 +1,17 @@
+.mat-column-days,
+.mat-column-date,
+.mat-column-from,
+.mat-column-to,
+.mat-column-reward {
+  width: 25%;
+  min-width: 170px;
+}
+
+.grid-input-group .grid-input {
+  width: calc(100% - 40px);
+}
+
+.grid-append {
+  width: 35px;
+  right: 0;
+}

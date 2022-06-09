@@ -1,0 +1,24 @@
+<div class="ds-card-mask" *ngIf="drawerMask"></div>
+<ng-content select="ds-card-icon, [ds-card-icon], [dsCardIcon]"></ng-content>
+<ng-content select="ds-card-avatar, [ds-callout-avatar], [dsCalloutAvatar]"></ng-content>
+
+<div class="ds-card-container">
+    <!-- Pre card header content-->
+    <ng-content select="ds-card-precontent, [ds-card-precontent], [dsCardPrecontent]"></ng-content>
+
+    <!-- card header -->
+    <ng-content select="ds-card-header, [ds-card-header], [dsCardHeader]" (expansionChange)="toggleExpansion($event)"></ng-content>
+
+    <!-- only used to support legacy (e.g. employee.aspx) cards that as left border on title row -- don't use for new stuff -->
+    <ng-content select="card-title"></ng-content>
+
+    <!-- Card Navigation -->
+    <ng-content select="ds-card-nav, [ds-card-nav], [dsCardNav]"></ng-content>
+
+    <!-- card body -->
+    <div class="ds-card-body" [class.py-0]="mode === 'callout' || mode === 'nobody' || mode === 'footer' || mode === 'widget-nobody'">
+        <ng-content select="ds-card-content, [ds-card-content], [dsCardContent]"></ng-content>
+    </div>
+
+    <ng-content select="ds-card-footer, [ds-card-footer], [dsCardFooter]"></ng-content>
+</div>

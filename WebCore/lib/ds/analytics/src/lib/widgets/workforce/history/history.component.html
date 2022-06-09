@@ -1,0 +1,16 @@
+<ds-dashboard-widget [cardType]="cardType" [loaded]="loaded" skeleton="line-graph-skeleton line-graph-lines">
+    <ds-dashboard-widget-header [title]="title" [availableChartTypes]="availableChartTypes" [headerDropdownOptions]="headerDropdownOptions" [settingsItems]="settingsItems" (headerDropdownChange)="headerDropdownChanged($event)" (chartChange)="chartChanged($event)"
+        (settingSelected)="settingSelected($event)">
+    </ds-dashboard-widget-header>
+
+    <ds-dashboard-widget-content>
+        <div *ngIf="!emptyState" class="chart">
+            <canvas baseChart #baseChat width="400" height="150" [datasets]="chartData" [labels]="chartLabels" [options]="chartOptions" [colors]="chartColors" [legend]="chartLegend" [chartType]="chartType"></canvas>
+        </div>
+        <div *ngIf="emptyState">
+            <div class="empty-state">
+                No data available to display
+            </div>
+        </div>
+    </ds-dashboard-widget-content>
+</ds-dashboard-widget>

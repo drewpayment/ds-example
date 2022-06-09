@@ -1,0 +1,152 @@
+﻿<div id="dependent-add-form" class="benefits">
+    <div class="modal-header">
+        <h2>{{ !employeeDependent.employeeDependentId ? "Add" : "Edit" }} Dependent</h2>
+    </div>
+    <div class="modal-body">
+        <div class="text-right text-warning">* indicates required</div>
+        <form class="form-horizontal modal-form" name="editDependentForm" novalidate>
+
+            <ds-inline-validated-input            
+                label-class="col-md-12"
+                input-div-class="col-md-12"
+                ds-required="1"
+                ds-max-length="25"
+                frm-obj="editDependentForm"
+                label-text="First Name"
+                input-name="inputFirstName"
+                ds-auto-focus-on="true"
+                ds-model="employeeDependent.firstName"
+                ds-conditional-required="isEditDependentFormSubmitted()"></ds-inline-validated-input>
+
+            <ds-inline-validated-input
+                label-class="col-md-12"
+                input-div-class="col-md-12"
+                ds-max-length="1"
+                frm-obj="editDependentForm"
+                label-text="Middle Initial"
+                input-name="inputMiddleInitial"
+                ds-model="employeeDependent.middleInitial"></ds-inline-validated-input>
+
+            <ds-inline-validated-input
+                label-class="col-md-12"
+                input-div-class="col-md-12"
+                ds-required="2"
+                ds-max-length="25"
+                frm-obj="editDependentForm"
+                label-text="Last Name"
+                input-name="inputLastName"
+                ds-model="employeeDependent.lastName"
+                ds-conditional-required="isEditDependentFormSubmitted()"></ds-inline-validated-input>
+                    
+            <ds-inline-validated-input
+                label-class="col-auto"
+                input-div-class="col"
+                frm-obj="editDependentForm"
+                ds-required="1"
+                ds-built-in-pattern-key="ssn"
+                ds-built-in-help-message-key="ssn"
+                ds-built-in-mask-key="ssn"	
+                label-text="SSN"
+                input-name="inputSocialSecurityNumber"
+                view-icon-class="icon-pencil"
+                ds-edit-to-view-promise="updateSsnMask"
+                ds-view-mode-override="!employeeDependent.employeeDependentId"
+                ds-view-model="employeeDependent.maskedSocialSecurityNumber"
+                ds-model="employeeDependent.unmaskedSocialSecurityNumber"
+                ds-conditional-required="isEditDependentFormSubmitted()"></ds-inline-validated-input>
+
+            <ds-inline-validated-select
+                label-class="col-md-12"
+                input-div-class="col-md-12"
+                ds-required="1"
+                frm-obj="editDependentForm"
+                label-text="Relationship"
+                select-name="selectRelationship"
+                ds-include-default-option="true"
+                ds-default-option-text="--Select--"
+                ds-model="selectedRelationship"
+                ds-select-options="relationship.description for relationship in $parent.EmployeeDependentRelationshipsList | orderBy: 'description' track by relationship.employeeDependentsRelationshipId"
+                ds-select-changed-func="relationshipChanged(selectedRelationship)"
+                ds-conditional-required="isEditDependentFormSubmitted()"></ds-inline-validated-select>
+
+            <!--<ds-inline-validated-input
+                label-class="col-md-4"
+                input-div-class="col-md-5"
+                ds-required="1"
+                ds-max-length="15"
+                frm-obj="editDependentForm"
+                label-text="Relationship"
+                input-name="inputRelationship"
+                ds-model="employeeDependent.relationship"></ds-inline-validated-input>-->
+
+            <ds-inline-validated-radio 
+                label-class="col-auto"
+                input-div-class="col"
+                ds-required="1" 
+                frm-obj="editDependentForm"
+                label-text="Gender" 
+                input-name="inputGender"
+                ds-radio-options="genderTxtValuePairs"
+                ds-model="employeeDependent.gender"
+                ds-conditional-required="isEditDependentFormSubmitted()"></ds-inline-validated-radio>
+
+            <ds-inline-validated-input
+                label-class="col-md-12"
+                input-div-class="col-md-12"
+                ds-required="1"
+                is-date="1"
+                ds-built-in-pattern-key="mmddyyyy"
+                ds-built-in-help-message-key="mmddyyyy"
+                ds-built-in-mask-key="mmddyyyy"
+                frm-obj="editDependentForm"
+                label-text="Date of Birth"
+                input-name="inputBirthDate"
+                ds-model="employeeDependent.birthDate"
+                ds-conditional-required="isEditDependentFormSubmitted()"></ds-inline-validated-input>
+            <ds-inline-validated-radio
+                    label-class="col-auto"
+                    input-div-class="col"
+                    ds-required="1"
+                    frm-obj="editDependentForm"
+                    label-text="Is A Student"
+                    input-name="inputIsAStudent"
+                    ds-radio-options="YesNoPairs"
+                    ds-model="employeeDependent.isAStudent"
+                    ds-conditional-required="isEditDependentFormSubmitted()"></ds-inline-validated-radio>
+             <ds-inline-validated-radio
+                    label-class="col-auto"
+                    input-div-class="col"
+                    ds-required="1"
+                    frm-obj="editDependentForm"
+                    label-text="Has A Disability"
+                    input-name="inputHasADisability"
+                    ds-radio-options="YesNoPairs"
+                    ds-model="employeeDependent.hasADisability"
+                    ds-conditional-required="isEditDependentFormSubmitted()"></ds-inline-validated-radio>
+             <ds-inline-validated-radio 
+                    label-class="col-auto"
+                    input-div-class="col"
+                    ds-required="1" 
+                    frm-obj="editDependentForm"
+                    label-text="Uses Tobacco Products"
+                    input-name="inputTobaccoUser" 
+                    ds-radio-options="YesNoPairs"
+                    ds-model="employeeDependent.tobaccoUser"
+                    ds-conditional-required="isEditDependentFormSubmitted()"></ds-inline-validated-radio>
+        </form>
+    </div><!--/.modal-body-->
+    <div id="save-dependent" class="modal-footer" > 
+        <button 
+            class="btn btn-default" id="cancel" 
+            ng-click="close()">Cancel</button>   
+        <button
+            class="btn btn-primary"
+            type="submit"
+            id="submit"
+            value="Submit"
+            ng-click="validateThenSubmitWithoutChangeRequest()">
+            Update</button>       
+    </div>
+
+          
+</div>

@@ -1,0 +1,15 @@
+<ds-dashboard-widget 
+[cardType]="cardType" 
+[loaded]="loaded" 
+[hover]="true"
+skeleton="simple-card-skeleton"
+(click)="openDialog()" >
+    <ds-dashboard-widget-header>
+    </ds-dashboard-widget-header>
+
+    <ds-dashboard-widget-content [infoData]="infoData">
+        <ds-dashboard-widget-bottom-content >
+
+        </ds-dashboard-widget-bottom-content>
+    </ds-dashboard-widget-content>
+</ds-dashboard-widget>

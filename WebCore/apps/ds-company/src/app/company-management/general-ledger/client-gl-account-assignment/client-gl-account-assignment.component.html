@@ -1,0 +1,500 @@
+
+<ds-card mode="nobody" border="top">
+  <ds-card-header>
+    <ds-card-header-title>GL Account Assignment</ds-card-header-title>
+    <ds-card-title-action>
+      <ds-client-gl-report-options-trigger></ds-client-gl-report-options-trigger>
+    </ds-card-title-action>
+  </ds-card-header>
+</ds-card>
+
+<ds-card *ngIf="!isLoading">
+  <ds-card-header>
+    <ds-card-sub-header-title>General</ds-card-sub-header-title>
+  </ds-card-header>
+  <ds-card-content>
+    <div class="row">
+      <div class="col-xl-8">
+        <div class="row">
+          <div class="col-md-4" *ngIf="filterOptions.splitByCostCenter || !filterOptions.controlExists || filterOptions.hasCompanyTotal">
+            <div class="form-group">
+              <label class="form-control-label">Cost Center</label>
+              <select class="custom-select form-control" (change)="filterChange(2)" name="costCenter"
+                [(ngModel)]="filterOptions.costCenter">
+                <option value=""></option>
+                <option value="0" *ngIf="!filterOptions.controlExists || filterOptions.hasCompanyTotal">Company Total</option>
+                <ng-container *ngIf="(filterOptions.controlExists && filterOptions.splitByCostCenter) || (!filterOptions.controlExists)">
+                  <option *ngFor="let cc of costCenters" [ngValue]="cc.clientCostCenterId">{{ cc.description }}</option> 
+                </ng-container>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4" *ngIf="filterOptions.splitByDepartment || !filterOptions.controlExists">
+            <div class="form-group">
+              <label class="form-control-label">Department</label>
+              <select class="custom-select form-control" (change)="filterChange(3)" name="department"
+                [(ngModel)]="filterOptions.department">
+                <option value=""></option>
+                <option *ngFor="let dep of departments" [ngValue]="dep.clientDepartmentId">{{ dep.name }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4" *ngIf="filterOptions.splitByCustomClass || !filterOptions.controlExists">
+            <div class="form-group">
+              <label class="form-control-label">Custom Class</label>
+              <select class="custom-select form-control" (change)="filterChange(4)" name="customClass"
+                [(ngModel)]="filterOptions.customClass">
+                <option value=""></option>
+                <option *ngFor="let c of customClasses" [ngValue]="c.clientGLCustomClassId">{{ c.description }}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ds-card-content>
+  <ds-card-footer>
+    <div class="row justify-content-end">
+        <div class="col-auto">
+            <button type="button" class="btn btn-outline-primary" (click)="changeType()">Filter</button>
+        </div>
+    </div>
+</ds-card-footer>
+</ds-card>
+
+<form #formControl="ngForm" novalidate (submit)="save(formControl)" dsTrackFormChanges>
+  <ng-container *ngIf="!isLoading">
+    <ds-card mode="nav" *ngIf="showBody && !filterOptions.controlExists">
+      <div ds-card-header>
+        <ds-card-sub-header-title>Payroll Transactions</ds-card-sub-header-title>
+      </div>
+      <ds-card-nav>
+        <div class="ds-tabs d-none d-md-flex" role="navigation">
+          <div class="tab" (click)="formControl.onSubmit($event); getActiveTab('cash')" [class.active]="selectedTab == 'cash'">Cash</div>
+          <div class="tab" (click)="formControl.onSubmit($event); getActiveTab('expense')" [class.active]="selectedTab == 'expense'">Expense</div>
+          <div class="tab" (click)="formControl.onSubmit($event); getActiveTab('liability')" [class.active]="selectedTab == 'liability'">Liability</div>
+          <div class="tab" (click)="formControl.onSubmit($event); getActiveTab('payment')" [class.active]="selectedTab == 'payment'">Payment</div>
+        </div>
+
+        <mat-form-field class="ds-tabs-select d-md-none">
+          <mat-select role="navigation" [(value)]="selectedTab">
+            <mat-option value="cash">Cash</mat-option>
+            <mat-option value="expense">Expense</mat-option>
+            <mat-option value="liability">Liability</mat-option>
+            <mat-option value="payment">Payment</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ds-card-nav>
+    </ds-card>
+  </ng-container>
+
+  <ng-container *ngIf="!isLoading && !showLoadingBody">
+    <ds-card *ngIf="((selectedTab == 'cash') || filterOptions.controlExists) && showBody && !showLoadingBody">
+      <div ds-card-header>
+        <ds-card-sub-header-title>Cash</ds-card-sub-header-title>
+      </div>
+      <ds-card-content>
+        <ng-container *ngIf="clientGLAssignment.cashItemCount > 0">
+          <ng-container *ngFor="let head of clientGLAssignment.cashAssignmentHeaders; let headIdx = index;">
+            <ng-container 
+              *ngIf="head.generalLedgerGroupHeaderId != 0 && head.clientGLAssignments.length > 0">
+              <hr />
+              <h4>{{ head.description }}</h4>
+            </ng-container>
+            <ng-container *ngFor="let a of head.clientGLAssignments; let i = index;">
+              <div class="row mb-2">
+                <div class="col-xl-2">
+                  <label class="title">{{ a.description }}</label>
+                </div>
+                <div class="col-sm-6 col-md-auto col-xl-2">
+                  <div class="form-group">
+                    <mat-select (keypress)="typeToObject($event, headIdx, i)" class="form-control custom-select gen-ledger" (openedChange)="openChange($event, a.clientGeneralLedgerId, headIdx, i)"
+                      name="{{'cash' + head.description + 'ItemGLAccount' + i}}" [(ngModel)]="a.clientGeneralLedgerId"
+                      dsFormControlValidator  placeholder="-- Select Account --" panelClass="gl-assignment-panel">
+                      <ng-container *ngIf="a.clientGeneralLedgerId != null">
+                        <mat-option [value]="a.clientGeneralLedgerId" style="visibility: hidden; height: 0px">{{getDescription(a.clientGeneralLedgerId)}}</mat-option>
+                      </ng-container>
+                      <cdk-virtual-scroll-viewport #cashSelect itemSize="26" minBufferPx="200" maxBufferPx="400" class="gl-viewport">
+                        <mat-option  [value]="null" class="gl-item" disableRipple>-- Select Account --</mat-option>
+                        <mat-option *cdkVirtualFor="let acc of glAccounts; templateCacheSize: 0" class="gl-item text-truncate" [value]="acc.accountId" disableRipple>{{acc.number}} ({{acc.description}})</mat-option>
+                      </cdk-virtual-scroll-viewport>
+                    </mat-select>
+                    <div class="invalid-feedback">
+                      Please select a general ledger account.
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6 col-md-auto col-xl-2">
+                  <div class="form-group">
+                    <select class="custom-select form-control class-group"
+                      name="{{'cash' + head.description + 'ItemClassGroup' + i}}" [(ngModel)]="a.clientGLClassGroupId"
+                      *ngIf="clientGLAssignment.includeClassGroups">
+                      <option value="null" class="text-muted">-- Select Class Group --</option>
+                      <option *ngFor="let lg of glClassGroups" [ngValue]="lg.clientGLClassGroupId">{{ lg.classGroupDesc }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-sm-6 col-md-auto" *ngIf="clientGLAssignment.includeSequence">
+                  <div class="form-group row">
+                    <label class="col-3 col-sm-4 col-md-auto col-form-label pr-0">Sequence</label>
+                    <div class="col-9 col-sm-8 col-md-auto">
+                      <input type="number" class="form-control sequence" name="{{'cash' + head.description + 'ItemSequence' + i}}"
+                        [(ngModel)]="a.sequenceNum" />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6 col-md-auto" *ngIf="clientGLAssignment.includeProject">
+                  <div class="form-group row">
+                    <label class="col-3 col-md-auto col-form-label pr-0">Project</label>
+                    <div class="col-9 col-md-auto">
+                      <input type="text" class="form-control project" name="{{'cash' + head.description + 'ItemProject' + i}}"
+                        [(ngModel)]="a.project" maxlength="100" />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-auto col-xl-2">
+                  <div class="form-group inline-form-elements mt-2">
+                    <div class="custom-control custom-checkbox detail"
+                      *ngIf="a.canBeDetail && clientGLAssignment.includeDetail">
+                      <input type="checkbox" class="custom-control-input detail" id="{{'cash' + head.description + 'ItemDetailID' + i}}"
+                        name="{{'cash' + head.description + 'ItemDetail' + i}}" [(ngModel)]="a.isDetail">
+                      <label class="custom-control-label" for="{{'cash' + head.description + 'ItemDetailID' + i}}">Detail</label>
+                    </div>
+                    <div class="custom-control custom-checkbox accrued"
+                      *ngIf="a.canBeAccrued && clientGLAssignment.includeAccrual">
+                      <input type="checkbox" class="custom-control-input accrual" id="{{'cash' + head.description + 'ItemAccrualID' + i}}"
+                        name="{{'cash' + head.description + 'ItemAccrual' + i}}" [(ngModel)]="a.isAccrued">
+                      <label class="custom-control-label" for="{{'cash' + head.description + 'ItemAccrualID' + i}}">Accrued</label>
+                    </div>
+                    <div class="custom-control custom-checkbox offset"
+                      *ngIf="a.canBeOffset && clientGLAssignment.includeOffset">
+                      <input type="checkbox" class="custom-control-input offset" id="{{'cash' + head.description + 'ItemOffsetID' + i}}"
+                        name="{{'cash' + head.description + 'ItemOffset' + i}}" [(ngModel)]="a.isOffset">
+                      <label class="custom-control-label" for="{{'cash' + head.description + 'ItemOffsetID' + i}}">Offset</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+        <ng-container *ngIf="clientGLAssignment.cashItemCount == 0">
+          <div class="empty-state">There are no payroll transactions to display.</div>
+        </ng-container>
+      </ds-card-content>
+    </ds-card>
+
+    <ds-card *ngIf="((selectedTab == 'expense') || filterOptions.controlExists) && showBody && !showLoadingBody">
+      <div ds-card-header>
+        <ds-card-sub-header-title>Expense</ds-card-sub-header-title>
+      </div>
+      <ds-card-content>
+        <ng-container *ngIf="clientGLAssignment.expenseItemCount > 0">
+          <ng-container *ngFor="let head of clientGLAssignment.expenseAssignmentHeaders; let headIdx = index;">
+            <ng-container *ngIf="head.generalLedgerGroupHeaderId != 0 && head.clientGLAssignments.length > 0">
+              <hr />
+              <h4>{{ head.description }}</h4>
+            </ng-container>
+            <ng-container *ngFor="let a of head.clientGLAssignments; let i = index;">
+              <div class="row mb-2">
+                <div class="col-xl-2">
+                  <label class="title">{{ a.description }}</label>
+                </div>
+                <div class="col-sm-6 col-md-auto col-xl-2">
+                  <div class="form-group">
+                    <mat-select (keypress)="typeToObject($event, headIdx, i)" class="form-control custom-select gen-ledger" (openedChange)="openChange($event, a.clientGeneralLedgerId, headIdx, i)"
+                      name="{{'expense' + head.description + 'ItemGLAccount' + i}}" [(ngModel)]="a.clientGeneralLedgerId"
+                      dsFormControlValidator  placeholder="-- Select Account --" panelClass="gl-assignment-panel">
+                      <ng-container *ngIf="a.clientGeneralLedgerId != null">
+                        <mat-option [value]="a.clientGeneralLedgerId" style="visibility: hidden; height: 0px">{{getDescription(a.clientGeneralLedgerId)}}</mat-option>
+                      </ng-container>
+                      <cdk-virtual-scroll-viewport #expenseSelect itemSize="26" minBufferPx="200" maxBufferPx="400" class="gl-viewport">
+                        <mat-option [value]="null" class="gl-item">-- Select Account --</mat-option>
+                        <mat-option *cdkVirtualFor="let acc of glAccounts; templateCacheSize: 0" class="gl-item text-truncate" [value]="acc.accountId">{{acc.description}}</mat-option>
+                      </cdk-virtual-scroll-viewport>
+                    </mat-select>
+                    <!-- <select class="custom-select form-control gen-ledger"
+                      name="{{'expense' + head.description + 'ItemGLAccount' + i}}" [(ngModel)]="a.clientGeneralLedgerId"
+                      dsFormControlValidator [required]="filterOptions.controlExists">
+                      <option value="null" class="text-muted">-- Select Account --</option>
+                      <option *ngFor="let acc of glAccounts" [ngValue]="acc.accountId">{{ acc.description }}</option>
+                    </select> -->
+                    <div class="invalid-feedback">
+                      Please select a general ledger account.
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6 col-md-auto col-xl-2">
+                  <div class="form-group">
+                    <select class="custom-select form-control class-group"
+                      name="{{'expense' + head.description + 'ItemClassGroup' + i}}" [(ngModel)]="a.clientGLClassGroupId"
+                      *ngIf="clientGLAssignment.includeClassGroups">
+                      <option value="null" class="text-muted">-- Select Class Group --</option>
+                      <option *ngFor="let lg of glClassGroups" [ngValue]="lg.clientGLClassGroupId">{{ lg.classGroupDesc }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-sm-6 col-md-auto" *ngIf="clientGLAssignment.includeSequence">
+                  <div class="form-group row">
+                    <label class="col-3 col-sm-4 col-md-auto col-form-label pr-0">Sequence</label>
+                    <div class="col-9 col-sm-8 col-md-auto">
+                      <input type="number" class="form-control sequence" name="{{'expense' + head.description + 'ItemSequence' + i}}"
+                        [(ngModel)]="a.sequenceNum" />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6 col-md-auto" *ngIf="clientGLAssignment.includeProject">
+                  <div class="form-group row">
+                    <label class="col-3 col-sm-4 col-md-auto col-form-label pr-0">Project</label>
+                    <div class="col-9 col-sm-8 col-md-auto">
+                      <input type="text" class="form-control project" name="{{'expense' + head.description + 'ItemProject' + i}}"
+                        [(ngModel)]="a.project" maxlength="100" />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-auto col-xl-2">
+                  <div class="form-group inline-form-elements mt-2">
+                    <div class="custom-control custom-checkbox" *ngIf="a.canBeAccrued && clientGLAssignment.includeAccrual">
+                      <input type="checkbox" class="custom-control-input accrual" id="{{'expense' + head.description + 'ItemAccrualID' + i}}"
+                        name="{{'expense' + head.description + 'ItemAccrual' + i}}" [(ngModel)]="a.isAccrued">
+                      <label class="custom-control-label" for="{{'expense' + head.description + 'ItemAccrualID' + i}}">Accrued</label>
+                    </div>
+                    <div class="custom-control custom-checkbox" *ngIf="a.canBeDetail && clientGLAssignment.includeDetail">
+                      <input type="checkbox" class="custom-control-input detail" id="{{'expense' + head.description + 'ItemDetailID' + i}}"
+                        name="{{'expense' + head.description + 'ItemDetail' + i}}" [(ngModel)]="a.isDetail">
+                      <label class="custom-control-label" for="{{'expense' + head.description + 'ItemDetailID' + i}}">Detail</label>
+                    </div>
+                    <div class="custom-control custom-checkbox" *ngIf="a.canBeOffset && clientGLAssignment.includeOffset">
+                      <input type="checkbox" class="custom-control-input offset" id="{{'expense' + head.description + 'ItemOffsetID' + i}}"
+                        name="{{'expense' + head.description + 'ItemOffset' + i}}" [(ngModel)]="a.isOffset">
+                      <label class="custom-control-label" for="{{'expense' + head.description + 'ItemOffsetID' + i}}">Offset</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+        <ng-container *ngIf="clientGLAssignment.expenseItemCount == 0">
+          <div class="empty-state">There are no payroll transactions to display.</div>
+        </ng-container>
+      </ds-card-content>
+    </ds-card>
+
+    <ds-card *ngIf="((selectedTab == 'liability') || filterOptions.controlExists) && showBody && !showLoadingBody">
+      <div ds-card-header>
+        <ds-card-sub-header-title>Liabilities</ds-card-sub-header-title>
+      </div>
+      <ds-card-content>
+        <ng-container *ngIf="clientGLAssignment.liabilityItemCount > 0">
+          <ng-container *ngFor="let head of clientGLAssignment.liabilityAssignmentHeaders; let headIdx = index;">
+            <ng-container *ngIf="head.generalLedgerGroupHeaderId != 0 && head.clientGLAssignments.length > 0">
+              <hr />
+              <h4>{{ head.description }}</h4>
+            </ng-container>
+            <ng-container *ngFor="let a of head.clientGLAssignments; let i = index;">
+              <div class="row mb-2">
+                <div class="col-xl-2">
+                  <label class="title">{{ a.description }}</label>
+                </div>
+                <div class="col-sm-6 col-md-auto col-xl-2">
+                  <div class="form-group">
+                    <!-- <select class="custom-select form-control gen-ledger"
+                      name="{{'liability' + head.description + 'ItemGLAccount' + i}}"
+                      [(ngModel)]="a.clientGeneralLedgerId" dsFormControlValidator
+                      [required]="filterOptions.controlExists">
+                      <option value="null" class="text-muted">-- Select Account --</option>
+                      <option *ngFor="let acc of glAccounts" [ngValue]="acc.accountId">{{ acc.description }}</option>
+                    </select> -->
+                    <mat-select (keypress)="typeToObject($event, headIdx, i)" class="form-control custom-select gen-ledger" (openedChange)="openChange($event, a.clientGeneralLedgerId, headIdx, i)"
+                      name="{{'liability' + head.description + 'ItemGLAccount' + i}}" [(ngModel)]="a.clientGeneralLedgerId"
+                      dsFormControlValidator  placeholder="-- Select Account --" panelClass="gl-assignment-panel">
+                      <ng-container *ngIf="a.clientGeneralLedgerId != null">
+                        <mat-option [value]="a.clientGeneralLedgerId" style="visibility: hidden; height: 0px">{{getDescription(a.clientGeneralLedgerId)}}</mat-option>
+                      </ng-container>
+                      <cdk-virtual-scroll-viewport #liabilitySelect itemSize="26" minBufferPx="200" maxBufferPx="400" class="gl-viewport">
+                        <mat-option [value]="null" class="gl-item">-- Select Account --</mat-option>
+                        <mat-option *cdkVirtualFor="let acc of glAccounts; templateCacheSize: 0" class="gl-item text-truncate" [value]="acc.accountId">{{acc.description}}</mat-option>
+                      </cdk-virtual-scroll-viewport>
+                    </mat-select>
+                    <div class="invalid-feedback">
+                      Please select a general ledger account.
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6 col-md-auto col-xl-2">
+                  <div class="form-group">
+                    <select class="custom-select form-control class-group"
+                      name="{{'liability' + head.description + 'ItemClassGroup' + i}}" [(ngModel)]="a.clientGLClassGroupId"
+                      *ngIf="clientGLAssignment.includeClassGroups">
+                      <option value="null" >-- Select Class Group --</option>
+                      <option *ngFor="let lg of glClassGroups" [ngValue]="lg.clientGLClassGroupId">{{ lg.classGroupDesc }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-sm-6 col-md-auto" *ngIf="clientGLAssignment.includeSequence">
+                  <div class="form-group row">
+                    <label class="col-3 col-sm-4 col-md-auto col-form-label pr-0">Sequence</label>
+                    <div class="col-9 col-sm-8 col-md-auto">
+                      <input type="number" class="form-control sequence" name="{{'liability' + head.description + 'ItemSequence' + i}}"
+                        [(ngModel)]="a.sequenceNum" />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6 col-md-auto" *ngIf="clientGLAssignment.includeProject">
+                  <div class="form-group row">
+                    <label class="col-3 col-md-auto col-form-label pr-0">Project</label>
+                    <div class="col-9 col-md-auto">
+                      <input type="text" class="form-control project" name="{{'liability' + head.description + 'ItemProject' + i}}"
+                        [(ngModel)]="a.project" maxlength="100" />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-auto col-xl-2">
+                  <div class="form-group inline-form-elements mt-2">
+                    <div class="custom-control custom-checkbox" *ngIf="a.canBeAccrued && clientGLAssignment.includeAccrual">
+                      <input type="checkbox" class="custom-control-input accrual" id="{{'liability' + head.description + 'ItemAccrualID' + i}}"
+                        name="{{'liability' + head.description + 'ItemAccrual' + i}}" [(ngModel)]="a.isAccrued">
+                      <label class="custom-control-label" for="{{'liability' + head.description + 'ItemAccrualID' + i}}">Accrued</label>
+                    </div>
+                    <div class="custom-control custom-checkbox" *ngIf="a.canBeDetail && clientGLAssignment.includeDetail">
+                      <input type="checkbox" class="custom-control-input detail" id="{{'liability' + head.description + 'ItemDetailID' + i}}"
+                        name="{{'liability' + head.description + 'ItemDetail' + i}}" [(ngModel)]="a.isDetail">
+                      <label class="custom-control-label" for="{{'liability' + head.description + 'ItemDetailID' + i}}">Detail</label>
+                    </div>
+                    <div class="custom-control custom-checkbox" *ngIf="a.canBeOffset && clientGLAssignment.includeOffset">
+                      <input type="checkbox" class="custom-control-input offset" id="{{'liability' + head.description + 'ItemOffsetID' + i}}"
+                        name="{{'liability' + head.description + 'ItemOffset' + i}}" [(ngModel)]="a.isOffset">
+                      <label class="custom-control-label" for="{{'liability' + head.description + 'ItemOffsetID' + i}}">Offset</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+        <ng-container *ngIf="clientGLAssignment.liabilityItemCount == 0">
+          <div class="empty-state">There are no payroll transactions to display.</div>
+        </ng-container>
+      </ds-card-content>
+    </ds-card>
+
+    <ds-card *ngIf="((selectedTab == 'payment') || filterOptions.controlExists) && showBody && !showLoadingBody">
+      <div ds-card-header>
+        <ds-card-sub-header-title>Payment</ds-card-sub-header-title>
+      </div>
+      <ds-card-content>
+        <ng-container *ngIf="clientGLAssignment.paymentItemCount > 0">
+          <ng-container *ngFor="let head of clientGLAssignment.paymentAssignmentHeaders; let headIdx = index;">
+            <ng-container *ngIf="head.generalLedgerGroupHeaderId != 0 && head.clientGLAssignments.length > 0">
+              <hr />
+              <h4>{{ head.description }}</h4>
+            </ng-container>
+            <ng-container *ngFor="let a of head.clientGLAssignments; let i = index;">
+              <div class="row mb-2">
+                <div class="col-xl-2">
+                  <label class="title">{{ a.description }}</label>
+                </div>
+                <div class="col-sm-6 col-md-auto col-xl-2">
+                  <div class="form-group">
+                    <mat-select (keypress)="typeToObject($event, headIdx, i)" class="form-control custom-select gen-ledger" (openedChange)="openChange($event, a.clientGeneralLedgerId, headIdx, i)"
+                      name="{{'payment' + head.description + 'ItemGLAccount' + i}}" [(ngModel)]="a.clientGeneralLedgerId"
+                      dsFormControlValidator  placeholder="-- Select Account --" panelClass="gl-assignment-panel">
+                      <ng-container *ngIf="a.clientGeneralLedgerId != null">
+                        <mat-option [value]="a.clientGeneralLedgerId" style="visibility: hidden; height: 0px">{{getDescription(a.clientGeneralLedgerId)}}</mat-option>
+                      </ng-container>
+                      <cdk-virtual-scroll-viewport #paymentSelect itemSize="26" minBufferPx="200" maxBufferPx="400" class="gl-viewport">
+                        <mat-option [value]="null" class="gl-item">-- Select Account --</mat-option>
+                        <mat-option *cdkVirtualFor="let acc of glAccounts; templateCacheSize: 0" class="gl-item text-truncate" [value]="acc.accountId">{{acc.description}}</mat-option>
+                      </cdk-virtual-scroll-viewport>
+                    </mat-select>
+                    <!-- <select class="custom-select form-control gen-ledger"
+                      name="{{'payment' + head.description + 'ItemGLAccount' + i}}" [(ngModel)]="a.clientGeneralLedgerId"
+                      dsFormControlValidator [required]="filterOptions.controlExists">
+                      <option value="null" class="text-muted">-- Select Account --</option>
+                      <option *ngFor="let acc of glAccounts" [ngValue]="acc.accountId">{{ acc.description }}</option>
+                    </select> -->
+                    <div class="invalid-feedback">
+                      Please select a general ledger account.
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6 col-md-auto col-xl-2">
+                  <div class="form-group">
+                    <select class="custom-select form-control class-group"
+                      name="{{'payment' + head.description + 'ItemClassGroup' + i}}" [(ngModel)]="a.clientGLClassGroupId"
+                      *ngIf="clientGLAssignment.includeClassGroups">
+                      <option value="null" class="text-muted" >-- Select Class Group --</option>
+                      <option *ngFor="let lg of glClassGroups" [ngValue]="lg.clientGLClassGroupId">{{ lg.classGroupDesc }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-sm-6 col-md-auto" *ngIf="clientGLAssignment.includeSequence">
+                  <div class="form-group row">
+                    <label class="col-3 col-sm-4 col-md-auto col-form-label pr-0">Sequence</label>
+                    <div class="col-9 col-sm-8 col-md-auto">
+                      <input type="number" class="form-control sequence" name="{{'payment' + head.description + 'ItemSequence' + i}}"
+                        [(ngModel)]="a.sequenceNum" />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6 col-md-auto" *ngIf="clientGLAssignment.includeProject">
+                  <div class="form-group row">
+                    <label class="col-3 col-md-auto col-form-label pr-0">Project</label>
+                    <div class="col-9 col-md-auto">
+                      <input type="text" class="form-control project" name="{{'payment' + head.description + 'ItemProject' + i}}"
+                        [(ngModel)]="a.project" maxlength="100" />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-auto col-xl-2">
+                  <div class="form-group inline-form-elements mt-2">
+                    <div class="custom-control custom-checkbox" *ngIf="a.canBeAccrued && clientGLAssignment.includeAccrual">
+                      <input type="checkbox" class="custom-control-input accrual" id="{{'payment' + head.description + 'ItemAccrualID' + i}}"
+                        name="{{'payment' + head.description + 'ItemAccrual' + i}}" [(ngModel)]="a.isAccrued">
+                      <label class="custom-control-label" for="{{'payment' + head.description + 'ItemAccrualID' + i}}">Accrued</label>
+                    </div>
+                    <div class="custom-control custom-checkbox" *ngIf="a.canBeDetail && clientGLAssignment.includeDetail">
+                      <input type="checkbox" class="custom-control-input detail" id="{{'payment' + head.description + 'ItemDetailID' + i}}"
+                        name="{{'payment' + head.description + 'ItemDetail' + i}}" [(ngModel)]="a.isDetail">
+                      <label class="custom-control-label" for="{{'payment' + head.description + 'ItemDetailID' + i}}">Detail</label>
+                    </div>
+                    <div class="custom-control custom-checkbox" *ngIf="a.canBeOffset && clientGLAssignment.includeOffset">
+                      <input type="checkbox" class="custom-control-input offset" id="{{'payment' + head.description + 'ItemOffsetID' + i}}"
+                        name="{{'payment' + head.description + 'ItemOffset' + i}}" [(ngModel)]="a.isOffset">
+                      <label class="custom-control-label" for="{{'payment' + head.description + 'ItemOffsetID' + i}}">Offset</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+        <ng-container *ngIf="clientGLAssignment.paymentItemCount == 0">
+          <div class="empty-state">There are no payroll transactions to display.</div>
+        </ng-container>
+      </ds-card-content>
+    </ds-card>
+  </ng-container>
+
+  <ds-card mode="noheader" *ngIf="isLoading || showLoadingBody">
+    <ds-card-content>
+      <ds-loading-message></ds-loading-message>
+    </ds-card-content>
+  </ds-card>
+
+  <ds-card mode="noheader" *ngIf="!isLoading && showBody && !showLoadingBody">
+    <ds-card-content>
+      <div class="row justify-content-end">
+        <div class="col-auto">
+          <button type="submit" [disabled]="isSaving" class="btn btn-save" >Save</button>
+        </div>
+      </div>
+    </ds-card-content>
+  </ds-card>
+
+</form>

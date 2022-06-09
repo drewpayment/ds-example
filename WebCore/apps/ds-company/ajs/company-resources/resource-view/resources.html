@@ -1,0 +1,231 @@
+<div>
+    <div class="ds-card" ng-if="isLoading" >
+        <div class="card-body">
+            <div class="loading-message">Loading Resources...</div>
+        </div>
+    </div>    
+    <div class="ds-card" ng-if="!isLoading">
+        <div class="ds-card-header header-bar border-top-primary">
+            <div class="ds-card-header-row">
+                <div class="ds-card-title">
+                    <h1>Company Resources</h1>              
+                    <div class="ds-card-inline-content"></div>
+                    <div class="ds-card-breadcrumb">
+                      <nav aria-label="breadcrumb" role="navigation">
+                          <ol class="breadcrumb" ng-show="showFiles">
+                              <li class="breadcrumb-item"><a href="javascript:;" ng-click="backToFolders()">Folders</a></li>
+                              <li class="breadcrumb-item active" aria-current="page">{{selectedFolder.description}}</li>
+                          </ol>
+                      </nav>
+                  </div>
+                </div>
+                <div class="ds-card-action">
+                    <button type="button" class="btn btn-outline-primary" ng-hide="showFiles" ng-click="popupFolderDialog()">
+                        <i class="material-icons">add</i>  Folder
+                    </button>
+                    <button type="button" class="btn btn-primary" ng-click="popupResourceDialog(null, selectedFolder)" ng-show="folders.length > 0">
+                        <i class="material-icons">add</i> Resource
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+                <div class="row" ng-hide="folders.length > 0">
+                    <div class="col-12">
+                        <div class="empty-state"> You do not currently have any folders assigned to your company. You can begin assigning them by clicking the <a href="javascript:;" ng-click="popupFolderDialog()">Add Folder</a> button.</div>
+                    </div>
+                </div>
+                <div ng-show="(!showFiles && folders.length > 0) || (showFiles)">
+                <div class="overflow-list" ng-hide="showFiles">
+                    <div class="row">
+                        <div class="col-6 col-md-4 col-lg-3" ng-repeat="folder in folders | orderBy : 'description'" ng-click="folderClicked(folder)">
+                            <div class="ds-card ds-card-widget actionable primary"  ng-mouseover="folder.hovered = true" ng-mouseleave="folder.hovered = false">
+                                <div class="ds-card-container"> 
+                                  <div class="ds-card-header d-block align-y-top">
+                                      <div class="ds-card-header-row">
+                                          <div class="ds-card-title">
+                                              <div class="ds-card-inline-content"></div>
+                                          </div>
+                                          <div class="ds-card-action">
+                                            <div ng-class="{'hover-show': true, 'nested-cog': true, 'dropdown': true}" dropdown>
+                                                <button type="button" class="btn btn-icon" dropdown-toggle ng-click="$event.stopPropagation()" title="">
+                                                    <i class="material-icons">more_vert</i>
+                                                </button>
+                                                <div class="dropdown-menu" role="menu">
+                                                    <button type="button" class="dropdown-item w-100"
+                                                        ng-click="popupFolderDialog(folder); $event.stopPropagation()" title="Edit folder">
+                                                        Edit
+                                                    </button>
+                                                </div>
+                                            </div>
+                                          </div>
+                                      </div>
+                                      <div class="ds-card-subtitle">
+                                          <div  class="split-content">
+                                              <div class="top">
+                                                  <div  class="object-card-avatar">
+                                                      <mat-icon class="avatar mat-icon material-icons" ng-class="{'text-info': folder.hovered}"  role="img" aria-hidden="true">folder_open</mat-icon>
+                                                  </div>
+                                                  <div class="font-lg text-center text-truncate" data-toggle="tooltip" title="{{folder.description}}">{{folder.description}}</div>
+                                                <div class="text-muted text-center mb-4 font-xs">Resources: {{folder.resourceCount}}</div>
+                                              </div>
+                                          </div>
+                                        </div>
+                                  </div>
+                                </div>
+                              </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group" ng-show="showFiles && (resources | filter: {resourceTypeId : 1}).length > 0">                    
+                    <h3>Documents</h3>
+                    <!-- Documents -->
+                    <div class="overflow-list">
+                        <div class="row">
+                            <div class="col-6 col-md-4 col-lg-3" ng-repeat="resource in resources | filter: {resourceTypeId : 1}">
+                                <div class="ds-card ds-card-widget actionable ds-object primary" ng-click="download(resource); $event.stopPropagation()" title="Download {{resource.resourceName}}">
+                                    <div class="ds-card-container"> 
+                                      <div class="ds-card-header d-block align-y-top">
+                                          <div class="ds-card-header-row">
+                                              <div class="ds-card-title">
+                                                  <div class="ds-card-inline-content"></div>
+                                              </div>
+                                              <div class="ds-card-action">
+                                                <div ng-class="{'hover-show': true, 'nested-cog': true, 'dropdown': true}" dropdown class="open-position-right">
+                                                    <button type="button" class="btn btn-icon" dropdown-toggle ng-click="$event.stopPropagation()" title="">
+                                                        <i class="material-icons">more_vert</i>
+                                                    </button>
+                                                    <div class="dropdown-menu dropdown-menu-right" role="menu">
+                                                        <button type="button" class="dropdown-item w-100"
+                                                        ng-click="popupEditResourceDialog(resource, selectedFolder); $event.stopPropagation()" title="Edit {{resource.resourceName}}">
+                                                            Edit
+                                                        </button>
+                                                        <button type="button" class="dropdown-item w-100"
+                                                        ng-click="download(resource); $event.stopPropagation()" title="Download {{resource.resourceName}}">
+                                                            Download
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                              </div>
+                                          </div>
+                                          <div class="ds-card-subtitle">
+                                              <div  class="split-content">
+                                                  <div class="top">
+                                                      <div  class="object-card-avatar">
+                                                        <img ng-if="resource.resourceFormat.toUpperCase() == '.DOC' || resource.resourceFormat.toUpperCase() == '.DOCX'" class="resource-img py-5" src="WebCore/Images/Resources/DOC.png" />
+                                                        <img ng-if="resource.resourceFormat.toUpperCase() == '.PDF'" class="resource-img py-5" src="WebCore/Images/Resources/PDF.png" />
+                                                        <img ng-if="resource.resourceFormat.toUpperCase() == '.XLS' || resource.resourceFormat.toUpperCase() == '.XLSX'" class="resource-img py-5" src="WebCore/Images/Resources/XLS.png" />
+                                                        <img ng-if="resource.resourceFormat.toUpperCase() == '.TXT' || resource.resourceFormat.toUpperCase() == '.RTF'" class="resource-img py-5" src="WebCore/Images/Resources/TXT.png" />
+                                                      </div>
+                                                      <div class="font-lg text-center text-truncate" data-toggle="tooltip" title="{{resource.resourceName}}">{{resource.resourceName}}</div>
+                                                      <div class="text-muted text-center mb-4 font-xs">Uploaded: {{resource.modified | date:'MM/dd/yy h:mm a'}}</div>
+                                                  </div>
+                                              </div>
+                                            </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                            </div>
+                        </div>                    
+                    </div>
+                </div>
+                <div class="form-group" ng-show="showFiles && (resources | filter: {resourceTypeId : 2}).length > 0">
+                    <h3>Links</h3>
+                    <!-- Links -->
+                    <div class="overflow-list">                        
+                        <div class="row">
+                            <div class="col-6 col-md-4 col-lg-3" ng-repeat="resource in resources | filter: {resourceTypeId : 2}">
+                                <div class="ds-card ds-card-widget actionable primary">
+                                    <div class="ds-card-container"> 
+                                      <div class="ds-card-header d-block align-y-top">
+                                          <div class="ds-card-header-row">
+                                              <div class="ds-card-title">
+                                                  <div class="ds-card-inline-content"></div>
+                                              </div>
+                                              <div class="ds-card-action">
+                                                <div ng-class="{'hover-show': true, 'nested-cog': true, 'dropdown': true}" dropdown>
+                                                    <button type="button" class="btn btn-icon" dropdown-toggle ng-click="$event.stopPropagation()" title="">
+                                                        <i class="material-icons">more_vert</i>
+                                                    </button>
+                                                    <div class="dropdown-menu" role="menu">
+                                                        <button type="button" class="dropdown-item w-100"
+                                                        g-click="popupEditResourceDialog(resource, selectedFolder); $event.stopPropagation()" title="Edit {{resource.resourceName}}">
+                                                            Edit
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                              </div>
+                                          </div>
+                                          <div class="ds-card-subtitle">
+                                              <div  class="split-content">
+                                                  <div class="top">
+                                                    <a class="anchor-reset d-block p-3" ng-href="{{resource.source}}" target="_blank" title="Visit {{resource.resourceName}}">
+                                                      <div  class="object-card-avatar">
+                                                        <img class="resource-img py-5" src="WebCore/Images/Resources/Link.png" />
+                                                      </div>
+                                                      <div class="font-lg text-center text-truncate" data-toggle="tooltip" title="{{resource.resourceName}}">{{resource.resourceName}}</div>
+                                                      <div class="text-muted text-center mb-4 font-xs">Uploaded: {{resource.modified | date:'MM/dd/yy h:mm a'}}</div>
+                                                    </a>
+                                                  </div>
+                                              </div>
+                                            </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group" ng-show="showFiles && (resources | filter: {resourceTypeId : 4}).length > 0">
+                    <h3>Videos</h3>
+                    <!-- Videos -->
+                    <div class="overflow-list">                        
+                        <div class="row">
+                            <div class="col-6 col-md-4 col-lg-3" ng-repeat="resource in resources | filter: {resourceTypeId : 4}">
+                                <div class="ds-card ds-card-widget actionable ds-object primary">
+                                    <div class="ds-card-container"> 
+                                      <div class="ds-card-header d-block align-y-top">
+                                          <div class="ds-card-header-row">
+                                              <div class="ds-card-title">
+                                                  <div class="ds-card-inline-content"></div>
+                                              </div>
+                                              <div class="ds-card-action">
+                                                <div ng-class="{'hover-show': true, 'nested-cog': true, 'dropdown': true}" dropdown>
+                                                    <button type="button" class="btn btn-icon" dropdown-toggle ng-click="$event.stopPropagation()" title="">
+                                                        <i class="material-icons">more_vert</i>
+                                                    </button>
+                                                    <div class="dropdown-menu" role="menu">
+                                                        <button type="button" class="dropdown-item w-100"
+                                                        ng-click="popupEditResourceDialog(resource, selectedFolder); $event.stopPropagation()" title="Edit {{resource.resourceName}}">
+                                                            Edit
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                              </div>
+                                          </div>
+                                          <div class="ds-card-subtitle">
+                                              <div  class="split-content">
+                                                  <div class="top">
+                                                    <a class="anchor-reset d-block p-3" ng-href="{{resource.source}}" target="_blank" title="Visit {{resource.source}}">
+                                                      <div  class="object-card-avatar">
+                                                        <img class="resource-img py-5" src="WebCore/Images/Resources/Vid.png" />
+                                                      </div>
+                                                      <div class="font-lg text-center text-truncate" data-toggle="tooltip" title="{{resource.resourceName}}">{{resource.resourceName}}</div>
+                                                      <div class="text-muted text-center mb-4 font-xs">Uploaded: {{resource.modified | date:'MM/dd/yy h:mm a'}}</div>
+                                                      </a>
+                                                  </div>
+                                              </div>
+                                            </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- No Resources-->
+                <div class="empty-state" ng-show="showFiles && resources.length == 0"> You do not currently have any resources in this folder. You can begin adding them by clicking the <a href="javascript:;" ng-click="popupResourceDialog(null, selectedFolder)">Add Resource</a> button.</div>
+            </div>
+        </div>
+    </div>
+</div>

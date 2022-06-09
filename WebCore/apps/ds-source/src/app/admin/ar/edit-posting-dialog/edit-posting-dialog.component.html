@@ -1,0 +1,188 @@
+<ng-container *ngIf="isLoading$ | async"></ng-container>
+
+<div mat-dialog-header>
+    <h2 class="dialog-title">
+        Edit Posting
+    </h2>
+    <button type="button" class="close" (click)="close()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</div>
+<div *ngIf="isLoading; else showPageContent">
+    <ds-loading-message></ds-loading-message>
+</div>
+<ng-template #showPageContent>
+    <div mat-dialog-content>
+        <form [formGroup]="formGroup">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-table">
+                        <div class="table-responsive">
+                            <table mat-table [dataSource]="postingsDatasource" class="table"
+                                [hidden]="postings.length == 0">
+                                <ng-container matColumnDef="arDepositId">
+                                    <th mat-header-cell *matHeaderCellDef>Deposit No.</th>
+                                    <td mat-cell *matCellDef="let posting">
+                                        {{posting.arDepositId}} </td>
+                                    <td mat-footer-cell *matFooterCellDef></td>
+                                </ng-container>
+                                <ng-container matColumnDef="type">
+                                    <th mat-header-cell *matHeaderCellDef>Type</th>
+                                    <td mat-cell *matCellDef="let posting">
+                                        {{posting.type}} </td>
+                                    <td mat-footer-cell *matFooterCellDef></td>
+                                </ng-container>
+                                <ng-container matColumnDef="createdDate">
+                                    <th mat-header-cell *matHeaderCellDef>Created</th>
+                                    <td mat-cell *matCellDef="let posting">
+                                        {{posting.createdDate | date: 'MM/dd/yyyy'}} </td>
+                                    <td mat-footer-cell *matFooterCellDef></td>
+                                </ng-container>
+                                <ng-container matColumnDef="createdByUsername">
+                                    <th mat-header-cell *matHeaderCellDef>Created By</th>
+                                    <td mat-cell *matCellDef="let posting">
+                                        {{posting.createdByUsername}} </td>
+                                    <td mat-footer-cell *matFooterCellDef></td>
+                                </ng-container>
+                                <ng-container matColumnDef="postedDate">
+                                    <th mat-header-cell *matHeaderCellDef [hidden]="!postings[0].postedDate">Closed</th>
+                                    <td mat-cell *matCellDef="let posting" [hidden]="!postings[0].postedDate">
+                                        <div class="input-group">
+                                            <input class="form-control" [class.is-invalid]="PostingEndDate.hasError('required')" [matDatepicker]="postedDate"
+                                                mask="00/00/0000" formControlName="postedDate" required/>
+                                            <div class="input-group-append">
+                                                <mat-datepicker-toggle matSuffix [for]="postedDate" class="input-group-text date">
+                                                    <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                                                </mat-datepicker-toggle>
+                                            </div>
+                                            <!-- <div class="invalid-feedback" *ngIf="PostingEndDate.hasError('required')">
+                                                Please enter a valid posted date.
+                                            </div> -->
+                                            <mat-datepicker #postedDate></mat-datepicker>
+                                        </div>
+                                    <td mat-footer-cell *matFooterCellDef></td>
+                                </ng-container>
+                                <ng-container matColumnDef="postedByUsername">
+                                    <th mat-header-cell *matHeaderCellDef [hidden]="!postings[0].postedDate">Closed By</th>
+                                    <td mat-cell *matCellDef="let posting" [hidden]="!postings[0].postedDate">
+                                        <span class="text-truncate">{{posting.postedByUsername}} </span>
+                                    </td>
+                                    <td mat-footer-cell *matFooterCellDef></td>
+                                </ng-container>
+                                <ng-container matColumnDef="total">
+                                    <th mat-header-cell *matHeaderCellDef class="table-text-right">Deposit Amount</th>
+                                    <td mat-cell *matCellDef="let posting" class="table-text-right">
+                                        {{posting.total | currency}} </td>
+                                    <td mat-footer-cell *matFooterCellDef></td>
+                                </ng-container>
+                                <tr mat-header-row *matHeaderRowDef="postingsColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: postingsColumns;" class="hoverable"></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-table">
+                        <div class="table-responsive">
+                            <table mat-table [dataSource]="paymentsDatasource" formArrayName="arpayments" class="table">
+                                <ng-container matColumnDef="clientCode">
+                                    <th mat-header-cell *matHeaderCellDef>Code</th>
+                                    <td mat-cell *matCellDef="let payment; let index = index" [formGroupName]="index">
+                                        {{payment.clientCode}}
+                                    </td>
+                                    <td mat-footer-cell *matFooterCellDef></td>
+                                </ng-container>
+                                <ng-container matColumnDef="clientName">
+                                    <th mat-header-cell *matHeaderCellDef>Name</th>
+                                    <td mat-cell *matCellDef="let payment; let index = index" [formGroupName]="index">
+                                        {{payment.clientName}} </td>
+                                    <td mat-footer-cell *matFooterCellDef></td>
+                                </ng-container>
+                                <ng-container matColumnDef="invoiceNum">
+                                    <th mat-header-cell *matHeaderCellDef>Invoice #</th>
+                                    <td mat-cell *matCellDef="let payment; let index = index" [formGroupName]="index">
+                                        {{payment.invoiceNum}} </td>
+                                    <td mat-footer-cell *matFooterCellDef></td>
+                                </ng-container>
+                                <ng-container matColumnDef="invoiceDate">
+                                    <th mat-header-cell *matHeaderCellDef>Invoice Date</th>
+                                    <td mat-cell *matCellDef="let payment; let index = index" [formGroupName]="index">
+                                        {{payment.invoiceDate | date: 'MM/dd/yyyy'}} </td>
+                                    <td mat-footer-cell *matFooterCellDef></td>
+                                </ng-container>
+                                <ng-container matColumnDef="checkNumber">
+                                    <th mat-header-cell *matHeaderCellDef>Check #</th>
+                                    <td mat-cell *matCellDef="let payment; let index = index" [formGroupName]="index">
+                                        {{payment.checkNumber}} </td>
+                                    <td mat-footer-cell *matFooterCellDef></td>
+                                </ng-container>
+                                <ng-container matColumnDef="amount">
+                                    <th mat-header-cell *matHeaderCellDef>Amount</th>
+                                    <td mat-cell *matCellDef="let payment; let index = index" [formGroupName]="index">
+                                        {{payment.amount | currency}} </td>
+                                    <td mat-footer-cell *matFooterCellDef></td>
+                                </ng-container>
+                                <ng-container matColumnDef="isNsf">
+                                    <th mat-header-cell *matHeaderCellDef [hidden]="!postings[0].postedDate" class="text-center">Is NSF</th>
+                                    <td mat-cell *matCellDef="let payment; let index = index" [formGroupName]="index" [hidden]="!postings[0].postedDate">
+                                        <div class="table-checkbox">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="isNsf_{{index}}" formControlName="isNsf">
+                                                <label class="custom-control-label" for="isNsf_{{index}}"></label>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td mat-footer-cell *matFooterCellDef></td>
+                                </ng-container>
+                                <ng-container matColumnDef="paymentDate">
+                                    <th mat-header-cell *matHeaderCellDef [hidden]="!postings[0].postedDate">Payment Date</th>
+                                    <td mat-cell *matCellDef="let payment; let index = index" [formGroupName]="index" [hidden]="!postings[0].postedDate">
+                                        <div class="input-group">
+                                            <input class="form-control" [class.is-invalid]="paymentsFormArray.controls[index]?.controls['paymentDate']?.hasError('required')" [matDatepicker]="paymentDate"
+                                                mask="00/00/0000"
+                                                formControlName="paymentDate"
+                                                required />
+                                            <div class="input-group-append">
+                                                <mat-datepicker-toggle matSuffix [for]="paymentDate" class="input-group-text date">
+                                                    <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                                                </mat-datepicker-toggle>
+                                            </div>
+                                            <!-- <div class="invalid-feedback" *ngIf="paymentsFormArray.controls[index]?.controls['paymentDate']?.hasError('required')">
+                                                Please enter a valid payment date.
+                                            </div> -->
+                                            <mat-datepicker #paymentDate></mat-datepicker>
+                                        </div>
+                                    </td>
+                                    <td mat-footer-cell *matFooterCellDef></td>
+                                </ng-container>
+                                <ng-container matColumnDef="delete">
+                                    <th mat-header-cell *matHeaderCellDef [hidden]="postings[0].postedDate"></th>
+                                    <td mat-cell *matCellDef="let posting" [hidden]="postings[0].postedDate">
+                                        <a (click)="deletePayment(posting)" class="btn btn-icon table-edit-icon">
+                                            <mat-icon>delete</mat-icon>
+                                          </a>
+                                    <td mat-footer-cell *matFooterCellDef></td>
+                                </ng-container>
+                                <ng-container matColumnDef="isDataAvailable">
+                                    <td mat-footer-cell *matFooterCellDef colspan="6">
+                                       No Data found
+                                    </td>
+                                 </ng-container>
+                                <tr mat-header-row *matHeaderRowDef="paymentsColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: paymentsColumns;" class="hoverable"></tr>
+                                <mat-footer-row *matFooterRowDef="['isDataAvailable']" [ngClass]="{'hide':!(payments!=null && payments.length==0)}"></mat-footer-row>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- </form> -->
+    <div mat-dialog-actions>
+        <button type="submit" class="btn btn-save" (click)="saveForm()" [hidden]="!postings[0].postedDate">Save</button>
+        <button type="button" class="btn btn-cancel" (click)="close()">Cancel</button>
+    </div>
+</ng-template>

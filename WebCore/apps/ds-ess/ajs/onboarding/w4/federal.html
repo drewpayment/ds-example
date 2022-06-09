@@ -1,0 +1,292 @@
+﻿<div ng-show="isLoading">W4 State Loading...</div>
+<div ng-show="!isLoading">
+    <div class="ess-container">
+        <div class="panel clearfix">
+            <div class="panel-body">
+                <div class="d-flex flex-wrap on-header">
+                    <div class="circle-sm on-pager">{{circleNumber}}</div>
+                    <div class="top-constant">
+                        <h1>Federal W-4</h1>
+                        <div class="row">
+                            <div class="col-sm-11">
+                                <p> <!--Please review the suggested allowances and filing status below. -->
+                                    If you need to reference the W-4 for the Two-Earners/Multiple Jobs or Deductions and Adjustments Worksheets, <a ng-click="downloadForm(form)">click here.</a>
+                                </p>
+                            </div>
+                        </div>
+                     </div>
+                </div>
+                <form name="frm">
+                    <div id="myForm" class="form-group">
+                        <div class="row form-group" ng-show="federalW4Year == '2019'">
+                            <div class="col-sm-4">
+                                <h3 class="">Federal Tax Exempt</h3>
+                            </div>
+                            <div class="col-sm-8">
+                                <div style="max-width:92px;" ng-class="{ 'required-field' : frm.isTaxExempt.$invalid && (isSoftWarned || !isCompleted) && federalW4Year == '2019'}">
+                                    <input name="isTaxExempt"
+                                        type="radio"
+                                        id="2019Yes"
+                                        ng-model="employeeW4FederalData.isTaxExempt"
+                                        ng-required="federalW4Year == '2019'"
+                                        ng-change="CheckExemptStatus()"
+                                        ng-value="true">
+                                    <label for="2019Yes" class="form-label">
+                                        Yes&nbsp;
+                                    </label>
+                                    <input name="isTaxExempt"
+                                        type="radio"
+                                        id="2019No"
+                                        ng-model="employeeW4FederalData.isTaxExempt"
+                                        ng-required="federalW4Year == '2019'"
+                                        ng-change="CheckExemptStatus()"
+                                        ng-value="false">
+                                    <label for="2019No" class="form-label">
+                                        No&nbsp;
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" ng-show="employeeW4FederalData.isTaxExempt && federalW4Year == '2019'">
+                            <div class="col-sm-10">
+                                <p style="font-style:italic;">Did either of these statements apply to you last year?</p>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="on-checkbox"
+                                     ng-class="{ 'mandatory-field' : !employeeW4FederalData.isTaxExemptionCurrYr  && employeeW4FederalData.isTaxExempt && (isSoftWarned || !isCompleted)}">
+                                     <span>
+                                        <input name="TaxExemptionCurrYr"
+                                            type="checkbox"
+                                            id="lastyear"
+                                            ng_model="employeeW4FederalData.isTaxExemptionCurrYr"
+                                            ng-required="employeeW4FederalData.isTaxExempt && federalW4Year == '2019'" />
+                                    </span>
+                                    <label for="lastyear" class="form-label">
+                                        Last year I had a right to a refund of all income tax withheld because I had no tax liability.
+                                    </label>
+                                </div>
+                                <div class="on-checkbox"
+                                     ng-class="{ 'mandatory-field' : !employeeW4FederalData.isTaxExemptionLastYr && employeeW4FederalData.isTaxExempt && (isSoftWarned || !isCompleted)}">
+                                     <span>
+                                        <input name="TaxExemptionLastYr"
+                                            type="checkbox"
+                                            id="thisyear"
+                                            ng_model="employeeW4FederalData.isTaxExemptionLastYr"
+                                            ng-required="employeeW4FederalData.isTaxExempt && federalW4Year == '2019'" />
+                                    </span>
+                                    <label for="thisyear" class="form-label">
+                                        This year I expect a refund of all income tax withheld because I expect to have no tax liability.
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div ng-if="!employeeW4FederalData.isTaxExempt">
+                            <div class="row" ng-show="federalW4Year == '2019'">
+                                <div class="col-sm-4">
+                                    <h3 class="">Allowances</h3>
+                                </div>
+                                <div class="col-sm-6 form-group">
+                                    <input name="Allowances" type="text" class="form-control" style="text-align: right; display:inline-block; width: 45px"
+                                           ds-mask="00" ng-model="employeeW4FederalData.allowances"
+                                           ng-required="!employeeW4FederalData.isTaxExempt && federalW4Year == '2019'"
+                                           ng-class="{ 'required-field' : frm.Allowances.$invalid && (isSoftWarned || !isCompleted) && federalW4Year == '2019'}" />
+                                    &nbsp;
+                                    <!-- <span class="text-muted" style="display:inline-block; font-style:italic;"> Your personal withholding worksheet suggests you claim <b>{{employeeW4FederalData.totalExemptions}} allowances.</b></span> -->
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-sm-4">
+                                    <h3 class="">Filing Status</h3>
+                                </div>
+                                <div class="col-sm-8 col-md-4">
+                                    <select name="FilingStatus" class="form-control"
+                                            data-ng-model="employeeW4FederalData.filingStatus"
+                                            data-ng-options="elm.id as elm.desc for elm in filingStatuses"
+                                            ng-required="!employeeW4FederalData.isTaxExempt"
+                                            ng-class="{ 'required-field' : frm.FilingStatus.$invalid && (isSoftWarned || !isCompleted) && federalW4Year == '2019'}"></select>
+                                </div>
+                            </div>
+
+                            <div class="row form-group"  ng-show="federalW4Year == '2020' || federalW4Year == '2021' || federalW4Year == '2022'">
+                                <div class="col-sm-4">
+                                    <h3 class="">Multiple Jobs or Spouse Works</h3>
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="on-checkbox">
+                                        <span>
+                                            <input id="CB1" type="checkbox" ng_model="employeeW4FederalData.hasMoreThanOneJob" />
+                                        </span>
+                                        <label for="CB1" class="form-label">
+                                            If you or you and your spouse together have two jobs total, you may check this box. Do the same on Form W-4 for the other job. This option is accurate for jobs with similar pay; otherwise, more tax than necessary may be withheld.
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row form-group"  ng-show="federalW4Year == '2020' || federalW4Year == '2021' || federalW4Year == '2022'">
+                                <div class="col-sm-4">
+                                    <h3 class="">Claim Dependents</h3>
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="on-checkbox">
+                                        <span>
+                                            <input id="CB2" type="checkbox" ng_model="incomeUnderDependentThreshold" ng-click="toggleCheckbox($event, 'incomeUnderDependentThreshold')" />
+                                        </span>
+                                        <label for="CB2" class="form-label">
+                                            Will your income be less than $200,000 ($400,000 if married filing jointly)
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row form-group" ng-show="incomeUnderDependentThreshold && (federalW4Year == '2020' || federalW4Year == '2021' || federalW4Year == '2022')">
+                                <div class="col-sm-4">
+                                    <h3 class="">Qualifying children</h3>
+                                </div>
+                                <div class="col-sm-8">
+                                    <input name="qualifyingChildren" type="text" class="form-control" style="text-align: right; display:inline-block; width: 45px"
+                                           ds-mask="00" ng-model="employeeW4FederalData.qualifyingChildren"
+                                           ng-required="incomeUnderDependentThreshold && (federalW4Year == '2020' || federalW4Year == '2021' || federalW4Year == '2022')"
+                                           ng-class="{ 'required-field' : frm.qualifyingChildren.$invalid && (isSoftWarned || !isCompleted) && (federalW4Year == '2020' || federalW4Year == '2021' || federalW4Year == '2022')}" />
+                                    &nbsp;
+                                </div>
+                            </div>
+
+                            <div class="row form-group" ng-show="incomeUnderDependentThreshold && (federalW4Year == '2020' || federalW4Year == '2021' || federalW4Year == '2022')">
+                                <div class="col-sm-4">
+                                    <h3 class="">Other Dependents</h3>
+                                </div>
+                                <div class="col-sm-8">
+                                    <input name="otherDependents" type="text" class="form-control" style="text-align: right; display:inline-block; width: 45px"
+                                           ds-mask="00" ng-model="employeeW4FederalData.otherDependents"
+                                           ng-required="incomeUnderDependentThreshold && (federalW4Year == '2020' || federalW4Year == '2021' || federalW4Year == '2022')"
+                                           ng-class="{ 'required-field' : frm.otherDependents.$invalid && (isSoftWarned || !isCompleted) && (federalW4Year == '2020' || federalW4Year == '2021' || federalW4Year == '2022')}" />
+                                    &nbsp;
+                                </div>
+                            </div>
+
+                            <div class="row form-group" ng-show="federalW4Year == '2020' || federalW4Year == '2021' || federalW4Year == '2022'">
+                                <div class="col-sm-4">
+                                    <h3 class="">Other Income</h3>
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="on-checkbox">
+                                        <span>
+                                            <input id="CB3" type="checkbox" ng_model="hasOtherTaxableIncome" ng-click="toggleCheckbox($event, 'hasOtherTaxableIncome')"/>
+                                        </span>
+                                        <label for="CB3" class="form-label">
+                                            I want tax withheld for other income I am expecting this year that won't have witholding.
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row form-group" ng-show="hasOtherTaxableIncome && (federalW4Year == '2020' || federalW4Year == '2021' || federalW4Year == '2022')">
+                                <div class="col-sm-4">
+                                    <h3 class="">Amount</h3>
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="input-group" style="float: left; width: 150px">
+                                        <span class="input-group-addon">$</span>
+                                        <input name="otherTaxableIncome"
+                                               type="text" class="form-control" style="text-align: right" ds-mask="99990"
+                                               ng-model="employeeW4FederalData.otherTaxableIncome"
+                                               aria-label="Per pay(to the nearest dollar)"
+                                               ng-required="hasOtherTaxableIncome && (federalW4Year == '2020' || federalW4Year == '2021' || federalW4Year == '2022')"
+                                               ng-class="{ 'required-field' : frm.otherTaxableIncome.$invalid && (isSoftWarned || !isCompleted) && (federalW4Year == '2020' || federalW4Year == '2021' || federalW4Year == '2022')}" />
+                                        <span class="input-group-addon">.00</span>
+                                    </div>
+                                    <div class="form-group">&nbsp;</div>
+                                </div>
+                            </div>
+
+                            <div class="row form-group" ng-show="federalW4Year == '2020' || federalW4Year == '2021' || federalW4Year == '2022'">
+                                <div class="col-sm-4">
+                                    <h3 class="">Deductions</h3>
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="on-checkbox">
+                                        <span>
+                                            <input id="CB4" type="checkbox" ng-model="hasWageDeduction" ng-click="toggleCheckbox($event, 'hasWageDeduction')" />
+                                        </span>
+                                        <label for="CB4" class="form-label">
+                                            I expect to claim deductions other than the standard deduction and want to reduce my withholding.
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row form-group" ng-show="hasWageDeduction && (federalW4Year == '2020' || federalW4Year == '2021' || federalW4Year == '2022')">
+                                <div class="col-sm-4">
+                                    <h3 class="">Amount</h3>
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="input-group" style="float: left; width: 150px">
+                                        <span class="input-group-addon">$</span>
+                                        <input name="wageDeduction"
+                                               type="text" class="form-control" style="text-align: right" ds-mask="99990"
+                                               ng-model="employeeW4FederalData.wageDeduction"
+                                               aria-label="Per pay(to the nearest dollar)"
+                                               ng-required="hasWageDeduction && (federalW4Year == '2020' || federalW4Year == '2021' || federalW4Year == '2022')"
+                                               ng-class="{ 'required-field' : frm.wageDeduction.$invalid && (isSoftWarned || !isCompleted) && (federalW4Year == '2020' || federalW4Year == '2021' || federalW4Year == '2022')}" />
+                                        <span class="input-group-addon">.00</span>
+                                    </div>
+                                    <div class="form-group">&nbsp;</div>
+                                </div>
+                            </div>
+
+                            <div class="row form-group" >
+                                <div class="col-sm-4">
+                                    <h3 class="">Additional Withholding</h3>
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="on-checkbox">
+                                        <span>
+                                            <input id="CB5" type="checkbox" ng_model="employeeW4FederalData.isAdditionalAmountWithheld" ng-click="toggleCheckbox($event, 'isAdditionalAmountWithheld')" />
+                                        </span>
+                                        <label for="CB5" class="form-label">
+                                            I want additional income withheld from each paycheck towards federal tax.
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row form-group" ng-show="employeeW4FederalData.isAdditionalAmountWithheld">
+                                <div class="col-sm-4">
+                                    <h3 class="">Amount</h3>
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="input-group" style="float: left; width: 150px">
+                                        <span class="input-group-addon">$</span>
+                                        <input name="Amount"
+                                               type="text" class="form-control" style="text-align: right" ds-mask="99990"
+                                               ng-model="employeeW4FederalData.additionalWithholdingAmt"
+                                               aria-label="Per pay(to the nearest dollar)"
+                                               ng-required="!employeeW4FederalData.isTaxExempt && employeeW4FederalData.isAdditionalAmountWithheld"
+                                               ng-class="{ 'required-field' : frm.Amount.$invalid && (isSoftWarned || !isCompleted)}" />
+                                        <span class="input-group-addon">.00</span>
+                                    </div>
+                                    <div class="form-group">&nbsp;per paycheck.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--myForm-->
+                </form>
+                <div class="row">
+                    <hr />
+                </div>
+
+
+                <ds-nav-workflow-footer workflow-Hide-Next="false" workflow-Hide-Prev="false"
+                    my-Workflow="myWorkflow"
+                    on-save="$ctrl.clickSavePageData($direction)" />
+
+
+            </div>
+        </div>
+
+
+    </div>
+</div>

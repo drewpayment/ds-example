@@ -1,0 +1,109 @@
+<markdown ngPreserveWhitespaces>    
+# Change Track 
+
+Change tracking monitors a user's interaction with forms within the app. If changes are made and the user attempts to leave the page they are prompted to confirm leaving with unsaved changes.
+
+Below are the ways to apply change tracking within app.
+</markdown>
+
+<markdown ngPreserveWhitespaces>
+# Angular (ngx)
+</markdown>
+
+<markdown ngPreserveWhitespaces>
+## Template Driven Forms
+In Angular [template-driven forms](https://angular.io/guide/forms) add the `dsTrackFormChanges` directive to the `form` element with the `#myForm=ngForm` declaration.
+When any form control is [dirty](https://angular.io/api/forms/AbstractControl#dirty) and the overall form is not [submitted](https://angular.io/api/forms/NgForm#onsubmit) 
+the user will be prompted if they attempt to leave the page.
+
+Use the `ngForm`'s `resetForm()` method to reset its `dirty` and `submitted` values to a pristine state.  For example, use `resetForm()` after a successful save so the user
+will no longer be prompted if they attempt to navigate away from the page.
+</markdown>
+<div class="button-bar">
+    <button class="btn btn-icon" (click)="toggle1 = !toggle1">
+        <i class="material-icons">code</i>
+        View Code
+    </button>
+</div>
+<div class="example-block" [class.open]="toggle1">
+    <div class="ui mb-4">
+        <div class="overflow-list">
+          <ds-template-form-change-track></ds-template-form-change-track>
+        </div>
+    </div>
+    <markdown [src]="'app/forms/change-track/template-form-change-track/template-form-change-track.component.html'" ngPreserveWhitespaces>
+    </markdown>
+    <markdown [src]="'app/forms/change-track/template-form-change-track/template-form-change-track.component.ts'" ngPreserveWhitespaces>
+    </markdown>
+</div>
+
+<markdown ngPreserveWhitespaces>
+## Reactive Forms
+In Angular [reactive forms](https://angular.io/guide/reactive-forms) add the `dsTrackFormChanges` directive to the element containing the form's `[formGroup]`.
+`dsTrackFormChanges` will monitor the `dirty` state of the form.  In addition, you can also bind a custom `[submitted]='myCustomSubmitted'` variable to track 
+if the form has been submitted or not.  Similar to template-driven forms then, when any form control is [dirty](https://angular.io/api/forms/AbstractControl#dirty) 
+and the overall form is not `[submitted]` the user will be prompted if they attempt to leave the page.
+
+Use a `FormGroup`'s [`reset()`](https://angular.io/api/forms/FormGroup#reset) method to reset the form to a pristine state (usually after save or cancel).
+</markdown>
+
+<div class="button-bar">
+    <button class="btn btn-icon" (click)="toggle2 = !toggle2">
+        <i class="material-icons">code</i>
+        View Code
+    </button>
+</div>
+<div class="example-block" [class.open]="toggle2">
+    <div class="ui mb-4">
+      <div class="overflow-list">
+        <ds-reactive-form-change-track></ds-reactive-form-change-track>
+      </div>
+    </div>
+    <markdown [src]="'app/forms/change-track/reactive-form-change-track/reactive-form-change-track.component.html'" ngPreserveWhitespaces>
+    </markdown>
+    <markdown [src]="'app/forms/change-track/reactive-form-change-track/reactive-form-change-track.component.ts'" ngPreserveWhitespaces>
+    </markdown>
+</div>
+
+<markdown ngPreserveWhitespaces>
+## Custom Change Logic 
+Finally, you can also apply change tracking without forms using the `dsTrackChanges` directive along with the `[hasChanges]` attribute.  
+This allows any custom logic to be applied to trigger a "change". See example below.
+</markdown>
+
+<div class="button-bar">
+    <button class="btn btn-icon" (click)="toggle3 = !toggle3">
+        <i class="material-icons">code</i>
+        View Code
+    </button>
+</div>
+<div class="example-block" [class.open]="toggle3">
+    <div class="ui mb-4">
+      <div class="overflow-list">
+        <ds-custom-change-track></ds-custom-change-track>
+      </div>
+    </div>
+    <markdown [src]="'app/forms/change-track/custom-change-track/custom-change-track.component.html'" ngPreserveWhitespaces>
+    </markdown>
+    <markdown [src]="'app/forms/change-track/custom-change-track/custom-change-track.component.ts'" ngPreserveWhitespaces>
+    </markdown>
+</div>
+
+<markdown ngPreserveWhitespaces>
+## Angular Routing
+By default, change-tracking in angular will prompt the user only if they navigate to a URL that is **not** handled by Angular Routing.  
+To apply change tracking to Angular Routing add the `CheckDeactivatorGuard` to a route's `canDeactivate` gaurds.  See example below.
+</markdown>
+
+    <markdown [src]="'app/forms/forms-routing.module.ts'" ngPreserveWhitespaces>
+    </markdown>
+
+<markdown ngPreserveWhitespaces>
+# Angular-Js (1.x)
+See [`ds-beforeunload` Notion Docs](https://www.notion.so/dominionsystems/ds-beforeunload-1cce8b957d364c2c9affa997e17f83a2)
+</markdown>
+
+<markdown ngPreserveWhitespaces>
+# Legacy WebForms (ASPX)
+See [`dominion.trackChanges()` Notion Docs](https://www.notion.so/dominionsystems/Change-Tracking-3e7599d5132948949409c1dca4e9d440)
+</markdown>

@@ -1,0 +1,33 @@
+// Split width inputs
+.grid-input-group {
+  .grid-input {
+    width: calc(100% - 30px); // Standard width for inputs
+    left: 30px;
+  }
+
+  .grid-append,
+  .grid-prepend {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+
+    .currency,
+    .percent {
+      width: 20px;
+    }
+  }
+
+  .grid-prepend {
+    left: 1%;
+  }
+}
+.grid-select {
+  right: 0%;
+}
+.grid-input {
+  .mat-select {
+    width: 98%;
+  }
+}

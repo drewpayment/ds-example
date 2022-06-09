@@ -1,0 +1,494 @@
+<div mat-dialog-header>
+    <ng-container
+        *ngIf="selectedReviewTemplateDetail?.referenceDateTypeId === ReferenceDate.DateOfHire; else calendarYearHeader">
+        <h2 class="dialog-title">
+            Schedule {{selectedReviewTemplateDetail.name}}
+        </h2>
+        <button type="button" class="close" (click)="onNoClick()">
+            <mat-icon>clear</mat-icon>
+        </button>
+        <div class="dialog-subtitle">
+            <div class="instruction-text">
+                Schedule a review for {{employeeCount}} of {{totalEmps}} Employees. In order to continue, please
+                identify users for the fields below.
+            </div>
+        </div>
+    </ng-container>
+
+    <ng-template #calendarYearHeader>
+        <h2 class="dialog-title">
+            Schedule Reviews for {{employeeCount}} Employees
+        </h2>
+        <button type="button" class="close" (click)="onNoClick()">
+            <mat-icon>clear</mat-icon>
+        </button>
+        <div class="dialog-subtitle">
+            <div class="instruction-text">
+                Select a Review Profile from the dropdown list to assign to the group of
+                employees.
+            </div>
+        </div>
+    </ng-template>
+</div>
+<div mat-dialog-content>
+    <ng-container *ngIf="selectedReviewTemplateDetail.reviewTemplateId; else loading">
+        <div [formGroup]="dateOfHireForm"
+            *ngIf="selectedReviewTemplateDetail?.referenceDateTypeId === ReferenceDate.DateOfHire; else calendarYear">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="form-control-label">Review Owner <span class="form-help-text">Optional; select an
+                                individual that should have
+                                full access to this review.</span></label>
+                        <select class="form-control custom-select" formControlName="owner">
+                            <option></option>
+                            <option *ngFor="let o of owners | sortContacts" [value]="o.userId">
+                                {{o | contactToName}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="form-control-label">Supervisor Evaluations Conducted By</label>
+                        <select class="form-control custom-select" formControlName="supervisor">
+                            <option value="-1">Direct Supervisor</option>
+                            <option *ngFor="let o of supervisors" [value]="o.userId">
+                                {{o | contactToName}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <ng-template #calendarYear>
+            <ng-container *ngIf="form; else loading">
+                <form [formGroup]="form">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-control-label">Review</label>
+                                <select class="form-control custom-select" formControlName="reviewTemplate"
+                                    dsFormControlValidator [dsFormControlSubmitted]="formSubmitted" required>
+                                    <option *ngFor="let o of reviewTemplates" [value]="o.reviewTemplateId">
+                                        {{o.name}}
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Please select a review.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-control-label">Review Owner </label>
+                                <div class="instruction-text">
+                                    Optional; the Review Owner will receive notifications for this review.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-control-label">Review Owner</label>
+                                <select class="form-control custom-select" formControlName="owner">
+                                    <option *ngFor="let o of owners | sortContacts" [value]="o.userId">
+                                        {{o | contactToName}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-control-label">Review Process</label>
+                                <div class="instruction-text">
+                                    Please provide a timeline to complete this process. The timeline should
+                                    include any review step dates entered below.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Starts</label>
+                                <div class="input-group">
+                                    <input matInput class="form-control" dsFormControlValidator
+                                        [dsFormControlSubmitted]="formSubmitted"
+                                        [matDatepicker]="processStartDatepicker" 
+                                        [min]="01/01/2018"
+                                        formControlName="processStartDate" />
+                                    <div class="input-group-append">
+                                        <mat-datepicker-toggle matSuffix [for]="processStartDatepicker"
+                                            class="input-group-text date">
+                                            <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #processStartDatepicker></mat-datepicker>
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        <ng-container *ngIf="processStartDate?.hasError('maxDateError')">
+                                            Please enter a date before 
+                                            {{processEndDate.value | convertToMoment | momentFormat :
+                                            momentFormatString}}
+                                        </ng-container>
+                                        <ng-container *ngIf="processStartDate?.hasError('required')">
+                                            Please enter a date.</ng-container>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Ends</label>
+                                <div class="input-group">
+                                    <input matInput class="form-control" dsFormControlValidator
+                                        [dsFormControlSubmitted]="formSubmitted" [matDatepicker]="processEndDatepicker"
+                                        formControlName="processEndDate" />
+                                    <div class="input-group-append">
+                                        <mat-datepicker-toggle matSuffix [for]="processEndDatepicker"
+                                            class="input-group-text date">
+                                            <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #processEndDatepicker></mat-datepicker>
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        <ng-container *ngIf="processEndDate?.hasError('minDateError')">
+                                            Please enter a date after the review process starts
+                                            ({{processStartDate.value | convertToMoment | momentFormat :
+                                            momentFormatString}}).
+                                        </ng-container>
+                                        <ng-container *ngIf="processEndDate?.hasError('required')">
+                                            Please enter a date. 
+                                        </ng-container>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="form-control-label">Evaluation Period</label>
+                                <div class="instruction-text">
+                                    Please define a period of employment time for all parties to reference
+                                    during evaluations.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>From</label>
+                                <div class="input-group">
+                                    <input matInput class="form-control" dsFormControlValidator
+                                        [dsFormControlSubmitted]="formSubmitted" [matDatepicker]="evalStartDatePicker"
+                                        formControlName="evalStartDate" />
+                                    <div class="input-group-append">
+                                        <mat-datepicker-toggle matSuffix [for]="evalStartDatePicker"
+                                            class="input-group-text date">
+                                            <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #evalStartDatePicker></mat-datepicker>
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        <ng-container *ngIf="evalStartDate?.hasError('required')">
+                                            Please enter a date.</ng-container>
+                                        <ng-container *ngIf="evalStartDate?.hasError('maxDateError')">
+                                            Please enter a date before the review process ends
+                                            ({{evalEndDate.value | convertToMoment | momentFormat :
+                                            momentFormatString}}).
+                                        </ng-container>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>To</label>
+                                <div class="input-group">
+                                    <input matInput class="form-control" dsFormControlValidator
+                                        [dsFormControlSubmitted]="formSubmitted" [matDatepicker]="evalEndDatePicker"
+                                        formControlName="evalEndDate" />
+                                    <div class="input-group-append">
+                                        <mat-datepicker-toggle matSuffix [for]="evalEndDatePicker"
+                                            class="input-group-text date">
+                                            <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #evalEndDatePicker></mat-datepicker>
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        <ng-container *ngIf="evalEndDate?.hasError('minDateError')">
+                                            Please enter a date after the evaluation period starts
+                                            ({{evalStartDate.value | convertToMoment | momentFormat : momentFormatString}}).
+                                        </ng-container>
+                                        <ng-container *ngIf="evalEndDate?.hasError('maxDateError')">
+                                            Please enter a date before the review period ends 
+                                            ({{processStartDate.value | convertToMoment | momentFormat : momentFormatString}}).
+                                        </ng-container>
+                                        <ng-container *ngIf="evalEndDate?.hasError('required')">Please enter a date.</ng-container>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="reviewProfileHasEvaluations">
+                        <div class="col-md-12">
+                            <hr />
+                            <h3>Schedule Evaluation</h3>
+                        </div>
+                    </div>
+                    <div formArrayName="evaluations">
+                        <ng-container *ngFor="let e of evaluations?.controls; let i = index">
+                            <!-- SUPERVISOR EVALUATION -->
+                            <div class="row" [formGroupName]="i+''"
+                                *ngIf="evaluations?.controls[i]?.value?.evaluationType == 1; else notSupervisorEval">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Supervisor Evaluation Starts</label>
+                                        <div class="input-group">
+                                            <input matInput 
+                                                class="form-control" 
+                                                dsFormControlValidator
+                                                [dsFormControlSubmitted]="formSubmitted"
+                                                [matDatepicker]="supStartDatepicker" 
+                                                formControlName="startDate"
+                                                required />
+                                            <div class="input-group-append">
+                                                <mat-datepicker-toggle matSuffix [for]="supStartDatepicker"
+                                                    class="input-group-text date">
+                                                    <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                                                </mat-datepicker-toggle>
+                                                <mat-datepicker #supStartDatepicker></mat-datepicker>
+                                            </div>
+                                            <div class="invalid-feedback">
+                                                <ng-contaienr
+                                                    *ngIf="evaluations?.controls[i]?.controls['startDate']?.errors?.required">
+                                                    Please enter a date.</ng-contaienr>
+                                                <ng-container
+                                                    *ngIf="evaluations?.controls[i]?.controls['startDate']?.errors?.minDateError">
+                                                    Please enter a date after the start
+                                                    ({{processStartDate.value | convertToMoment | momentFormat : momentFormatString}})
+                                                </ng-container>
+                                                <ng-container
+                                                    *ngIf="evaluations?.controls[i]?.controls['startDate']?.errors?.maxDateError">
+                                                    Please enter a date before the review process ends
+                                                    ({{evaluations?.controls[i]?.controls['endDate']?.value | findMinDate
+                                                    : processEndDate.value : defaultMaxMoment | convertToMoment |
+                                                    momentFormat : momentFormatString}})
+                                                </ng-container>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Supervisor Evaluation Due</label>
+                                        <div class="input-group">
+                                            <input matInput class="form-control" 
+                                                dsFormControlValidator
+                                                [dsFormControlSubmitted]="formSubmitted"
+                                                [matDatepicker]="supEndDatepicker" 
+                                                formControlName="endDate" 
+                                                required />
+                                            <div class="input-group-append">
+                                                <mat-datepicker-toggle matSuffix [for]="supEndDatepicker"
+                                                    class="input-group-text date">
+                                                    <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                                                </mat-datepicker-toggle>
+                                                <mat-datepicker #supEndDatepicker></mat-datepicker>
+                                            </div>
+                                            <div class="invalid-feedback">
+                                                <ng-container
+                                                    *ngIf="evaluations?.controls[i]?.controls['endDate']?.errors?.required">
+                                                    Please enter a date.</ng-container>
+                                                <ng-container
+                                                    *ngIf="evaluations?.controls[i]?.controls['endDate']?.errors?.minDateError">
+                                                    Please enter a date after the start
+                                                    ({{evaluations?.controls[i]?.controls['startDate']?.value |
+                                                    findMaxDate : processStartDate.value : defaultMinMoment |
+                                                    convertToMoment | momentFormat : momentFormatString}})
+                                                </ng-container>
+                                                <ng-container
+                                                    *ngIf="evaluations?.controls[i]?.controls['endDate']?.errors?.maxDateError">
+                                                    Please enter a date before the review process ends 
+                                                    ({{processEndDate.value | convertToMoment | momentFormat :
+                                                    momentFormatString}})
+                                                </ng-container>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-control-label">Supervisor</label>
+                                        <select class="form-control custom-select" formControlName="supervisor">
+                                            <option value="-1">Direct Supervisor</option>
+                                            <option *ngFor="let o of supervisors | sortContacts" [value]="o.userId">
+                                                {{o | contactToName}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <ng-template #notSupervisorEval>
+                                <!-- SELF EVALUATION -->
+                                <div class="row" [formGroupName]="i"
+                                    *ngIf="evaluations?.controls[i]?.value?.evaluationType == 2; else notSelfEval">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Employee Evaluation Starts</label>
+                                            <div class="input-group">
+                                                <input matInput class="form-control" 
+                                                    dsFormControlValidator
+                                                    [dsFormControlSubmitted]="formSubmitted"
+                                                    [matDatepicker]="empStartDatepicker" formControlName="startDate"
+                                                    required />
+                                                <div class="input-group-append">
+                                                    <mat-datepicker-toggle matSuffix [for]="empStartDatepicker"
+                                                        class="input-group-text date">
+                                                        <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                                                    </mat-datepicker-toggle>
+                                                    <mat-datepicker #empStartDatepicker></mat-datepicker>
+                                                </div>
+                                                <div class="invalid-feedback"
+                                                    *ngIf="evaluations?.controls[i]?.controls['startDate']?.errors?.required">
+                                                    Please enter a date.
+                                                </div>
+                                                <div class="invalid-feedback"
+                                                    *ngIf="evaluations?.controls[i]?.controls['startDate']?.errors?.minDateError">
+                                                    Please enter a date after the start
+                                                    ({{processStartDate.value | convertToMoment | momentFormat :
+                                                    momentFormatString}})
+                                                </div>
+                                                <div class="invalid-feedback"
+                                                    *ngIf="evaluations?.controls[i]?.controls['startDate']?.errors?.maxDateError">
+                                                    Please enter a date before the review process ends 
+                                                    ({{evaluations?.controls[i]?.controls['endDate']?.value | findMinDate
+                                                    : processEndDate.value : defaultMaxMoment | convertToMoment |
+                                                    momentFormat : momentFormatString}})
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label>Employee Evaluation Due</label>
+                                            <div class="input-group">
+                                                <input matInput class="form-control" dsFormControlValidator
+                                                    [dsFormControlSubmitted]="formSubmitted"
+                                                    [matDatepicker]="empEndDatepicker" formControlName="endDate"
+                                                    required />
+                                                <div class="input-group-append">
+                                                    <mat-datepicker-toggle matSuffix [for]="empEndDatepicker"
+                                                        class="input-group-text date">
+                                                        <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                                                    </mat-datepicker-toggle>
+                                                    <mat-datepicker #empEndDatepicker></mat-datepicker>
+                                                </div>
+                                                <div class="invalid-feedback"
+                                                    *ngIf="evaluations?.controls[i]?.controls['endDate']?.errors?.required">
+                                                    Please enter a date.
+                                                </div>
+                                                <div class="invalid-feedback"
+                                                    *ngIf="evaluations?.controls[i]?.controls['endDate']?.errors?.minDateError">
+                                                    Please enter a date after the start
+                                                    ({{evaluations?.controls[i]?.controls['startDate']?.value |
+                                                    findMaxDate : processStartDate.value : defaultMinMoment |
+                                                    convertToMoment | momentFormat : momentFormatString}})
+                                                </div>
+                                                <div class="invalid-feedback"
+                                                    *ngIf="evaluations?.controls[i]?.controls['endDate']?.errors?.maxDateError">
+                                                    Please enter a date before the review process ends 
+                                                    ({{processEndDate.value | convertToMoment | momentFormat :
+                                                    momentFormatString}})
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <ng-template #notSelfEval>
+                                    <!-- PEER EVALUATION -->
+                                    <div class="row" [formGroupName]="i"
+                                        *ngIf="evaluations?.controls[i]?.value?.evaluationType == 3; else broken">
+                                        do we ever use this?
+                                    </div>
+                                    <!-- TESTING ONLY -->
+                                    <ng-template #broken>
+                                        <div class="row">
+                                            it didn't work...
+                                            {{ evaluations.controls[i].value | json }}
+                                        </div>
+                                    </ng-template>
+                                </ng-template>
+                            </ng-template>
+
+
+                        </ng-container>
+                    </div>
+                    <!-- PAYROLL REQUESTS -->
+                    <ng-container *ngIf="reviewProfileHasPayrollRequests">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <hr />
+                                <h3>Payroll Requests</h3>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Merit Increase Effective Date</label>
+                                    <div class="input-group">
+                                        <input matInput class="form-control" dsFormControlValidator
+                                            [dsFormControlSubmitted]="formSubmitted"
+                                            [matDatepicker]="empEvalEndDatePicker" formControlName="empEvalEndDate"
+                                            required />
+                                        <div class="input-group-append">
+                                            <mat-datepicker-toggle matSuffix [for]="empEvalEndDatePicker"
+                                                class="input-group-text date">
+                                                <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                                            </mat-datepicker-toggle>
+                                            <mat-datepicker #empEvalEndDatePicker></mat-datepicker>
+                                        </div>
+                                        <div class="invalid-feedback">
+                                            Please enter a date.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <span class="instruction-text">
+                                    This date will apply to all merit increases for this review.
+                                </span>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <div class="row" *ngIf="reviewProfileHasMeeting">
+                        <div class="col-md-12">
+                            <hr />
+                            <span class="font-weight-bold">
+                                Review Meeting required for this profile
+                            </span>
+                            <span class="instruction-text">
+                                This will send notifications to the appropriate user to schedule review meetings.
+                            </span>
+                        </div>
+                    </div>
+                </form>
+            </ng-container>
+        </ng-template>
+    </ng-container>
+</div>
+<ng-template #loading>
+    <ds-loading-message></ds-loading-message>
+</ng-template>
+<div mat-dialog-actions>
+    <button type="button" class="btn btn-save" (click)="save()">
+        Save
+    </button>
+    <button type="button" class="btn btn-cancel" (click)="onNoClick()">
+        Cancel
+    </button>
+</div>

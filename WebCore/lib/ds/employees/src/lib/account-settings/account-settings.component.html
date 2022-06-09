@@ -1,0 +1,78 @@
+<ds-card border="top" mode="nobody">
+    <ds-card-header>
+        <ds-card-header-title>
+          Account Settings
+        </ds-card-header-title>
+    </ds-card-header>
+</ds-card>
+<!-- Angular -->
+<div class="ds-card">
+    <div class="card-body">
+      <ng-container *ngIf="isLoading">
+        <div class="col">
+            <ds-loading-message></ds-loading-message>
+        </div>
+      </ng-container>
+        <div class="overflow-list" [class.d-none]="isLoading">
+            <div class="row" >
+                
+                <ng-container *ngIf="siteConfig$|async">
+                    <div class="col-sm-6 col-xl-4">
+                        <ds-card (click)="gotoQA()" hover="true"
+                                    mode="object" x-align="center" color="info">
+                            <div ds-card-header>
+                                <ds-card-subtitle>
+                                    <div class="split-content">
+                                        <div class="top text-center">
+                                            <div class="object-card-avatar">
+                                                <mat-icon class="avatar">forum</mat-icon>
+                                            </div>
+                                            <div class="font-lg text-center text-truncate">Questions & Email</div>
+                                            <div class="text-truncate">Update your security questions and account email.</div>
+                                        </div>
+                                    </div>
+                                </ds-card-subtitle>
+                            </div>
+                        </ds-card>
+                    </div>
+                    <div class="col-sm-6 col-xl-4">
+                        <ds-card (click)="gotoResetPasword()" hover="true"
+                                    mode="object" x-align="center" color="info">
+                            <div ds-card-header>
+                                <ds-card-subtitle>
+                                    <div class="split-content">
+                                        <div class="top text-center">
+                                            <div class="object-card-avatar">
+                                                <mat-icon class="avatar">lock_open</mat-icon>
+                                            </div>
+                                            <div class="font-lg text-center text-truncate">Reset Password</div>
+                                            <div class="text-truncate">Change your current password.</div>
+                                        </div>
+                                    </div>
+                                </ds-card-subtitle>
+                            </div>
+                        </ds-card>
+                    </div>
+                    <div class="col-sm-6 col-xl-4" *ngIf="mfa.clientRequiresMfa">
+                        <ds-card (click)="gotoMfa()" hover="true"
+                                    mode="object" x-align="center" color="info">
+                            <div ds-card-header>
+                                <ds-card-subtitle>
+                                    <div class="split-content">
+                                        <div class="top text-center">
+                                            <div class="object-card-avatar">
+                                                <mat-icon class="avatar">assignment_ind</mat-icon>
+                                            </div>
+                                            <div class="font-lg text-center text-truncate">2-Factor Authentication</div>
+                                            <div class="text-truncate">Update your 2-Factor method or phone number.</div>
+                                        </div>
+                                    </div>
+                                </ds-card-subtitle>
+                            </div>
+                        </ds-card>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>

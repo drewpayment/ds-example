@@ -1,0 +1,34 @@
+<ds-card border="top" color="primary" mode="nav">
+  <div ds-card-header>
+      <ds-card-header-title>
+          Card Header   
+      </ds-card-header-title>  
+  </div>
+  <ds-card-nav>
+    <div class="ds-tabs d-none d-lg-flex" role="navigation">
+      <button class="tab" (click)="showTab('porkChop')" [class.active]="selected == 'porkChop'">Pork Chop</button>
+      <button class="tab" (click)="showTab('bacon')" [class.active]="selected == 'bacon'">Bacon</button>
+      <button class="tab" (click)="showTab('honeyHam')" [class.active]="selected == 'honeyHam'">Honey Ham</button>
+      <button class="tab" (click)="showTab('pulledPork')" [class.active]="selected == 'pulledPork'">Pulled Pork</button>
+    </div>
+
+    <mat-form-field class="ds-tabs-select d-lg-none">
+      <mat-select role="navigation" [(value)]="selected">
+        <mat-option value="porkChop">Pork Chop</mat-option>
+        <mat-option value="bacon">Bacon</mat-option>
+        <mat-option value="honeyHam">Honey Ham</mat-option>
+        <mat-option value="pulledPork">Pulled Pork</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+  </ds-card-nav>
+</ds-card>
+
+<ds-card mode="noheader">
+  <ds-card-content>
+    <p *ngIf="selected == 'porkChop'">Pork Chop Content</p>
+    <p *ngIf="selected == 'bacon'">Bacon Content</p>
+    <p *ngIf="selected == 'honeyHam'">Honey Ham Content</p>
+    <p *ngIf="selected == 'pulledPork'">Pulled Pork Content</p>
+  </ds-card-content>
+</ds-card>

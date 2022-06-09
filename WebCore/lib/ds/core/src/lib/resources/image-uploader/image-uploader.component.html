@@ -1,0 +1,173 @@
+<div class="modal-header pb-0">
+    <h2 class="modal-title">
+        {{modalTitle}}
+    </h2>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancel()">
+        <i class="material-icons">clear</i>
+    </button>
+</div>
+<div class="modal-body">
+    <ng-container *ngIf="imageType == 1">
+    <!-- SELECT AVATAR OR PROFILE IMAGE -->
+        <div class="form-group">
+            <div class="custom-control custom-radio">
+            <input type="radio" id="uploadselect" name="customRadio" [value]="true" [ngModel]="useEmployeeAvatar" class="custom-control-input" (click)="toggleEmployeeAvatar(true)"> 
+                <label class="custom-control-label" for="uploadselect">Use my initials</label>
+            </div>
+            <div class="custom-control custom-radio">
+                <input type="radio" id="photoselect" name="customRadio" [value]="false" [ngModel]="useEmployeeAvatar" class="custom-control-input" (click)="toggleEmployeeAvatar(false)">
+            <label class="custom-control-label" for="photoselect">Upload a photo</label> 
+            </div>
+        </div>
+    </ng-container>
+    <!-- EMPLOYEE AVATAR TEMPLATE -->
+    <ng-container *ngIf="useEmployeeAvatar">
+        <div class="form-group d-flex justify-content-center">
+            <ds-avatar
+                [firstName]="avatarFirstName"
+                [lastName]="avatarLastName"
+                [size]="216"
+                [color]="employeeAvatarColor">
+            </ds-avatar>
+        </div>
+        <!-- COLOR SELECT -->
+        <div class="">
+          <label>Background Color</label>
+          <div class="avatar-grid">
+            <ng-container *ngFor="let backgroundColor of backgroundColors">
+                <label class="custom-color-picker" [for]="'radio_' + backgroundColor" [ngClass]="backgroundColor">
+                  <input type="radio" [id]="'radio_' + backgroundColor" name="color" class="custom-control-input" [value]="backgroundColor" [(ngModel)]="employeeAvatarColor" (click)="changeEmployeeAvatarColor(backgroundColor)">
+                  <div class="svg">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="22px" viewBox="0 0 24 24" width="22px" fill="#FFFFFF"><path d="M0 0h24v24H0z" fill="none"/><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
+                  </div>
+                </label>
+            </ng-container>
+          </div>
+
+        </div>
+    </ng-container>
+    <div id="image-editor" class="image-editor" *ngIf="!useEmployeeAvatar">
+        <!-- PROFILE IMAGE TEMPLATE -->
+        <div class="cropit-preview profile-modal"
+             [ngClass]="{'cropit-preview-color':!isWrongFileType, 'clickable':true}"
+             *ngIf="imageType == 1">
+            <div *ngIf="!isExistingImage && !isWrongFileType"
+                 [hidden]="hideZoom"
+                 class="d-flex align-items-center h-100 text-center text-muted">
+                <div class="px-3">
+                    <div><i class="material-icons md-48">backup</i></div>
+                    <div class="font-lg">Drag and drop image here or click to browse</div>
+                </div>
+            </div>
+            <div *ngIf="isWrongFileType" class="d-flex align-items-center h-100 text-center">
+                <div>
+                    <div><i class="material-icons md-48 text-danger">warning</i></div>
+                    <div class="font">It looks like an incorrect file type was chosen. Please use a JPEG or PNG.</div>
+                </div>
+            </div>
+        </div>
+        <!-- COMPANY PHOTO/LOGO -->
+        <div class="cropit-preview"
+             [ngClass]="{'cropit-preview-color':!isWrongFileType, 'company-logo':imageType == 2, 'company-hero':imageType == 3, 'clickable':true}"
+             *ngIf="imageType == 2 || imageType == 3">
+            <div *ngIf="!isExistingImage && !isWrongFileType && !hasImageChanged"
+                 [hidden]="hideZoom"
+                 class="d-flex align-items-center h-100 text-center text-muted">
+                <div class="mx-auto">
+                    <div><i class="material-icons md-48">backup</i></div>
+                    <div class="font-lg px-4">Drag and drop image here or click to browse</div>
+                </div>
+            </div>
+            <div *ngIf="isWrongFileType" class="d-flex align-items-center h-100 text-center">
+                <div>
+                    <div><i class="material-icons md-48 text-danger">warning</i></div>
+                    <div class="font">It looks like an incorrect file type was chosen. Please use a JPEG or PNG.</div>
+                </div>
+            </div>
+        </div>
+        <!-- CONTROLS ROW -->
+        <div id="cropit-btns" class="mt-3" [hidden]="!showEditControls">
+            <div class="row pt-1" *ngIf="hideZoom">
+                <div class="col">
+                    <div class="py-2 d-flex align-items-center">
+                        <div class="pl-3">
+                            <i class="material-icons md-36 text-warning">warning</i>
+                        </div>
+                        <p class="ml-2 mb-0 line-height-lg">
+                            The file chosen is too small to fit the frame.
+                            <span *ngIf="imageType == 1">Recommended image size 223px x 223px.</span>
+                            <span *ngIf="imageType == 2">Recommended minimum logo width is 150px.</span>
+                            <span *ngIf="imageType == 3">Recommended minimum photo width is 400px.</span>
+                        </p>
+                    </div>
+                    <hr class="mt-0 mb-2" />
+                </div>
+            </div>
+            <div class="w-100 text-center help-text pt-2" *ngIf="!hideZoom">
+                Drag photo to reposition
+            </div>
+            
+            <!-- <hr class="my-2" /> -->
+            <div class="d-flex align-items-flex-end">
+                <button type="button" class="btn btn-icon p-1 rotate-icons mr-4" (click)="methods.rotate(false)">
+                  <mat-icon>rotate_left</mat-icon>
+                </button>
+                <div class="flex-1-1-100">
+                    <div class="slider-wrapper pb-1">
+                        <input type="file" id="cropit-image-input" class="cropit-image-input" accept="image/jpeg,image/jpg,image/png" />
+                        <label [hidden]="hideZoom" for="cropit-image-zoom-input" class="rotate-icons line-height-sm">Zoom</label>
+                        <input [hidden]="hideZoom" type="range" id="cropit-image-zoom-input" class="cropit-image-zoom-input form-control p-0" min="0" max="100" step="1" />
+                        <div *ngIf="hideZoom" class="col-auto text-center help-text pt-2 px-0">
+                          Drag photo to reposition
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-icon p-1 ml-4 rotate-icons" (click)="methods.rotate(true)">
+                  <mat-icon>rotate_right</mat-icon>
+                </button>
+            </div>
+            <hr *ngIf="showEditControls" class="mt-2 mb-0" />
+        </div>
+    </div>
+</div>
+<div mat-dialog-actions [ngClass]="{'justify-content-center': (!showEditControls && !hasImageChanged && !isExistingImage && !useEmployeeAvatar)}">
+    <ng-container *ngIf="!useEmployeeAvatar">
+        <div>
+            <button type="button"
+                    [ngClass]="{'btn': true, 'btn-outline-primary': outlinePrimaryClass, 'btn-primary': !outlinePrimaryClass}"
+                    (click)="change()"
+                    ds-auto-focus="model.focused">
+                {{imagePickerButtonText}}
+            </button>
+            <button class="btn btn-save"
+                    *ngIf="showEditControls && hasImageChanged"
+                    (click)="confirmSave()">
+                Save
+            </button>
+        </div>
+        <div [hidden]="!showEditControls && !hasImageChanged && !isExistingImage">
+            <button class="btn btn-cancel"
+                    (click)="cancel()"
+                    *ngIf="hasImageChanged">
+                {{closeCancelButtonText}}
+            </button>
+            <button class="btn btn-delete"
+                    (click)="confirmDelete()"
+                    *ngIf="isExistingImage && !hasImageChanged">
+                Delete
+            </button>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="useEmployeeAvatar">
+        <!-- Use Employee Avatar Selected -->
+        <button 
+          [disabled]="saved"
+          class="btn btn-save" 
+          (click)="confirmSave()">
+            Save
+        </button>
+        <button class="btn btn-cancel" (click)="cancel()">
+            {{closeCancelButtonText}}
+        </button>
+    </ng-container>
+</div>

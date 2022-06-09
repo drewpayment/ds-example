@@ -1,0 +1,730 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3767F5C3-97C2-40E4-80D6-9C9D16C0E7DC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Dominion.Utility</RootNamespace>
+    <AssemblyName>Dominion.Utility</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Production|AnyCPU'">
+    <OutputPath>bin\Production\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Production|x86'">
+    <OutputPath>bin\x86\Production\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Production|x64'">
+    <OutputPath>bin\x64\Production\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Project QA|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Project QA\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Project QA|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Project QA\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Project QA|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Project QA\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ZMonster2|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ZMonster2\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ZMonster2|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\ZMonster2\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ZMonster2|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\ZMonster2\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Staging|AnyCPU'">
+    <OutputPath>bin\Staging\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Staging|x86'">
+    <OutputPath>bin\x86\Staging\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Staging|x64'">
+    <OutputPath>bin\x64\Staging\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EnhancementQA|AnyCPU'">
+    <OutputPath>bin\EnhancementQA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EnhancementQA|x86'">
+    <OutputPath>bin\x86\EnhancementQA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EnhancementQA|x64'">
+    <OutputPath>bin\x64\EnhancementQA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'MobileQA|AnyCPU'">
+    <OutputPath>bin\MobileQA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'MobileQA|x86'">
+    <OutputPath>bin\x86\MobileQA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'MobileQA|x64'">
+    <OutputPath>bin\x64\MobileQA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AutoMapper, Version=3.2.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\AutoMapper.3.2.1\lib\net40\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoMapper.Net4">
+      <HintPath>..\..\packages\AutoMapper.3.2.1\lib\net40\AutoMapper.Net4.dll</HintPath>
+    </Reference>
+    <Reference Include="BCrypt.Net-Core, Version=1.3.0.0, Culture=neutral, PublicKeyToken=4d63bfbfdfd3c6e4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\BCrypt.Net-Core.1.4.0\lib\net452\BCrypt.Net-Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="CsvHelper, Version=12.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\CsvHelper.12.1.2\lib\net45\CsvHelper.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml">
+      <HintPath>..\..\packages\DocumentFormat.OpenXml.2.8.1\lib\net40\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="Elmah, Version=1.2.14706.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
+    </Reference>
+    <Reference Include="FastMapper">
+      <HintPath>..\..\packages\FastMapper.1.2.0\lib\net40\FastMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="FluentValidation">
+      <HintPath>..\..\packages\FluentValidation.4.0.0.1\lib\Net40\FluentValidation.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\..\packages\NPOI.2.1.3.1\lib\net40\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="iTextSharp, Version=4.1.6.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca">
+      <HintPath>..\..\packages\iTextSharp-LGPL.4.1.6\lib\iTextSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Protocol.Extensions, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Microsoft.IdentityModel.Protocol.Extensions.1.0.1\lib\net45\Microsoft.IdentityModel.Protocol.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin">
+      <HintPath>..\..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Microsoft.Owin.Security.3.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NLog.4.5.0\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI">
+      <HintPath>..\..\packages\NPOI.2.1.3.1\lib\net40\NPOI.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OOXML">
+      <HintPath>..\..\packages\NPOI.2.1.3.1\lib\net40\NPOI.OOXML.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXml4Net">
+      <HintPath>..\..\packages\NPOI.2.1.3.1\lib\net40\NPOI.OpenXml4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXmlFormats">
+      <HintPath>..\..\packages\NPOI.2.1.3.1\lib\net40\NPOI.OpenXmlFormats.dll</HintPath>
+    </Reference>
+    <Reference Include="NReco.PdfGenerator, Version=1.1.15.0, Culture=neutral, PublicKeyToken=231663d50a41b451, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NReco.PdfGenerator.1.1.15\lib\net20\NReco.PdfGenerator.dll</HintPath>
+    </Reference>
+    <Reference Include="Omu.ValueInjecter">
+      <HintPath>..\..\packages\valueinjecter.2.3.3\lib\net35\Omu.ValueInjecter.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenXmlPowerTools">
+      <HintPath>..\..\packages\Open-Xml-PowerTools.4.4.0\lib\net45\OpenXmlPowerTools.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin">
+      <HintPath>..\..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="PDFClown">
+      <HintPath>..\.lib\PDFClown.dll</HintPath>
+    </Reference>
+    <Reference Include="Renci.SshNet">
+      <HintPath>..\..\packages\SSH.NET.2016.1.0\lib\net40\Renci.SshNet.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Serilog.2.10.0\lib\net45\Serilog.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Formatting.Compact, Version=1.1.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Serilog.Formatting.Compact.1.1.0\lib\net452\Serilog.Formatting.Compact.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.File, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Serilog.Sinks.File.4.0.0\lib\net45\Serilog.Sinks.File.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.PeriodicBatching, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Serilog.Sinks.PeriodicBatching.2.3.0\lib\net45\Serilog.Sinks.PeriodicBatching.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.Seq, Version=5.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Serilog.Sinks.Seq.5.0.0\lib\net45\Serilog.Sinks.Seq.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IdentityModel" />
+    <Reference Include="System.identitymodel.services" />
+    <Reference Include="System.IdentityModel.Tokens.Jwt, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\System.IdentityModel.Tokens.Jwt.4.0.1\lib\net45\System.IdentityModel.Tokens.Jwt.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Abstractions">
+      <HintPath>..\..\packages\System.IO.Abstractions.1.4.0.86\lib\net35\System.IO.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Cache\InMemoryCache.cs" />
+    <Compile Include="Configs\ChangeAppConfigFile.cs" />
+    <Compile Include="Configs\ConfigValues.cs" />
+    <Compile Include="Constants\CommonConstants.cs" />
+    <Compile Include="Constants\ConfigurationFileConstants.cs" />
+    <Compile Include="Constants\DateTimeFormatStrings.cs" />
+    <Compile Include="Constants\DeviceCommandConstants.cs" />
+    <Compile Include="Constants\MessageConstants.cs" />
+    <Compile Include="Constants\NotificationConstants.cs" />
+    <Compile Include="Constants\RegexPatternConstants.cs" />
+    <Compile Include="Constants\ValidationConstants.cs" />
+    <Compile Include="Containers\PropertyFactory.cs" />
+    <Compile Include="Containers\PropertyList.cs" />
+    <Compile Include="Containers\PropertyList`.cs" />
+    <Compile Include="Csv\CsvTextReaderConverter.cs" />
+    <Compile Include="Csv\CsvStreamConverter.cs" />
+    <Compile Include="Csv\CsvFileConverter.cs" />
+    <Compile Include="Csv\CsvHelperExceptionMsg.cs" />
+    <Compile Include="Csv\CsvConverter.cs" />
+    <Compile Include="Csv\CsvUtilities.cs" />
+    <Compile Include="Csv\ICsvConverter.cs" />
+    <Compile Include="DataExport\ExMeths\JsonSerializationExtensionMethods.cs" />
+    <Compile Include="DataExport\ExMeths\ObjectExtensionMethods.cs" />
+    <Compile Include="DataExport\ExMeths\StringExtensionMethods.cs" />
+    <Compile Include="DataExport\Exporters\DLog.cs" />
+    <Compile Include="DataExport\Exporters\DLogExMeths.cs" />
+    <Compile Include="DataExport\Exporters\DsDt.cs" />
+    <Compile Include="DataExport\Exporters\FileExportBase.cs" />
+    <Compile Include="DataExport\Exporters\Json.cs" />
+    <Compile Include="DataExport\Exporters\PathGen.cs" />
+    <Compile Include="DataExport\Exporters\SqlInsert.cs" />
+    <Compile Include="DataExport\Exporters\SqlQry.cs" />
+    <Compile Include="DataExport\Misc\Common.cs" />
+    <Compile Include="DataExport\Misc\Enums.cs" />
+    <Compile Include="DataExport\Misc\JsonExporting.cs" />
+    <Compile Include="DataExport\SftpExportConfiguration.cs" />
+    <Compile Include="DataGeneration\ObjectGeneratorExtensions.cs" />
+    <Compile Include="DataGeneration\StringWriterWithEncoding.cs" />
+    <Compile Include="DataImport\SftpImportConfiguration.cs" />
+    <Compile Include="DateAndTime\DateRange.cs" />
+    <Compile Include="DateAndTime\TimeFrame.cs" />
+    <Compile Include="Dto\DtoState.cs" />
+    <Compile Include="Dto\FInalizeCompletionStatusCheckDto.cs" />
+    <Compile Include="Dto\IStateManagedDto.cs" />
+    <Compile Include="Dto\IStateManagedDtoExtensions.cs" />
+    <Compile Include="Dto\StateManagedDto.cs" />
+    <Compile Include="Dto\W4TotalExemptionsDto.cs" />
+    <Compile Include="EntityDataStore\DataStoreEntityChanges\BasicPropertyComparer.cs" />
+    <Compile Include="EntityDataStore\DataStoreEntityChanges\GenericPropertyComparer.cs" />
+    <Compile Include="EntityDataStore\DataStoreEntityChanges\IPropertyComparer.cs" />
+    <Compile Include="EntityDataStore\DataStoreEntityChanges\PropertyComparers.cs" />
+    <Compile Include="EntityDataStore\DataStoreEntityChanges\TrimmedNullOrEmptyStringComparer.cs" />
+    <Compile Include="EntityDataStore\DataStoreEntityChanges\TypedPropertyComparer.cs" />
+    <Compile Include="EnumUtils.cs" />
+    <Compile Include="Enums\EnumHelper.cs" />
+    <Compile Include="Excel\ExcelNpoi.cs" />
+    <Compile Include="Excel\IExcelNpoi.cs" />
+    <Compile Include="ExtensionMethods\ByteArrExtensionMethods.cs" />
+    <Compile Include="ExtensionMethods\DataSetTableExtensionMethods.cs" />
+    <Compile Include="ExtensionMethods\DateTimeExtensionMethods.cs" />
+    <Compile Include="ExtensionMethods\EntityExtensionMethods.cs" />
+    <Compile Include="ExtensionMethods\ExpressionExtensionMethods.cs" />
+    <Compile Include="ExtensionMethods\HttpContentCollectionExtensions.cs" />
+    <Compile Include="ExtensionMethods\HttpRequestMessageExtensions.cs" />
+    <Compile Include="ExtensionMethods\JsonSerializationExtensionMethods.cs" />
+    <Compile Include="ExtensionMethods\NpoiExtensionMethods.cs" />
+    <Compile Include="ExtensionMethods\RegularExpressionExtentionMethods.cs" />
+    <Compile Include="ExtensionMethods\SpecializedStringsExtensionMethods.cs" />
+    <Compile Include="ExtensionMethods\StringArrayExtensionMethods.cs" />
+    <Compile Include="ExtensionMethods\WebStuffExtensionMethods.cs" />
+    <Compile Include="ExtensionMethods\XDocExtensionMethods.cs" />
+    <Compile Include="ImageUtils.cs" />
+    <Compile Include="Io\DsIO.cs" />
+    <Compile Include="Dto\DtoMapping.cs" />
+    <Compile Include="Dto\UserDtos.cs" />
+    <Compile Include="Dto\ValueInjectorDtoMapping.cs" />
+    <Compile Include="EntityDataStore\DataStoreEntityChanges\IPropertyChangeComparator.cs" />
+    <Compile Include="EntityDataStore\DataStoreEntityChanges\PropertyChangeData.cs" />
+    <Compile Include="EntityDataStore\DataStoreEntityChanges\PropertyChangeComparator.cs" />
+    <Compile Include="DependencyInjection\UnitOfWorkInjectionKeys.cs" />
+    <Compile Include="Dto\DtoList.cs" />
+    <Compile Include="Dto\DtoObject.cs" />
+    <Compile Include="ExtensionMethods\AutoMapperExtentionMethods.cs" />
+    <Compile Include="ExtensionMethods\CsvHelperExtensionMethods.cs" />
+    <Compile Include="ExtensionMethods\DataReaderExtensionMethods.cs" />
+    <Compile Include="ExtensionMethods\EnumExtensionMethods.cs" />
+    <Compile Include="ExtensionMethods\ExceptionExtensionMethods.cs" />
+    <Compile Include="ExtensionMethods\IEnumerableExtensionMethods.cs" />
+    <Compile Include="ExtensionMethods\StringBuilderExtensionMethods.cs" />
+    <Compile Include="ExtensionMethods\StringExtensionMethods.cs" />
+    <Compile Include="Io\CompressionHelpers.cs" />
+    <Compile Include="Io\EmbeddedResourceLoader.cs" />
+    <Compile Include="Logging\DsLogger.cs" />
+    <Compile Include="Logging\DsLogEvent.cs" />
+    <Compile Include="Logging\DsLogIdentity.cs" />
+    <Compile Include="Logging\IDsLogEvent.cs" />
+    <Compile Include="Logging\IDsLogger.cs" />
+    <Compile Include="Logging\ILogIdentity.cs" />
+    <Compile Include="Logging\LogUtil.cs" />
+    <Compile Include="Mapping\AutoMapper.cs" />
+    <Compile Include="Mapping\DataReader\IPropertyMapCreator.cs" />
+    <Compile Include="Mapping\DataReader\PropertyMapper.cs" />
+    <Compile Include="Mapping\DataReader\FieldNameAttribute.cs" />
+    <Compile Include="Mapping\DataReader\IDataReaderMapper.cs" />
+    <Compile Include="Mapping\DataReader\QuickDataReaderMapper.cs" />
+    <Compile Include="Mapping\DataReader\QuickDataReaderMapperCache.cs" />
+    <Compile Include="Mapping\FastMapperDs.cs" />
+    <Compile Include="Mapping\ExpressionMapper.cs" />
+    <Compile Include="Mapping\IMapperBuilder.cs" />
+    <Compile Include="Mapping\IExpressionMapper.cs" />
+    <Compile Include="Mapping\IMapper.cs" />
+    <Compile Include="Mapping\Mapper.cs" />
+    <Compile Include="Io\EmbeddedResourceUtil.cs" />
+    <Compile Include="Io\TwoPartEmbeddedPath.cs" />
+    <Compile Include="MathExt\RoundingRule.cs" />
+    <Compile Include="MathExt\RoundingUtils.cs" />
+    <Compile Include="Msg\Specific\ItemImportMessage.cs" />
+    <Compile Include="Msg\Identifiers\EntityValidationTypes.cs" />
+    <Compile Include="Msg\Identifiers\MsgCodes.cs" />
+    <Compile Include="Msg\Identifiers\MsgLevels.cs" />
+    <Compile Include="Msg\IMsgInfo.cs" />
+    <Compile Include="Msg\MsgBase.cs" />
+    <Compile Include="Msg\MsgDto.cs" />
+    <Compile Include="Msg\MsgList.cs" />
+    <Compile Include="Msg\Specific\BasicExceptionMsg.cs" />
+    <Compile Include="Msg\Specific\GenericMsg.cs" />
+    <Compile Include="Msg\Specific\DataColumnNotFoundMsg.cs" />
+    <Compile Include="Msg\Specific\DataNotFoundMsg.cs" />
+    <Compile Include="Msg\Specific\EntityFrameworkConfigValidationMsg.cs" />
+    <Compile Include="Msg\Specific\FileNotFoundMsg.cs" />
+    <Compile Include="Msg\Specific\IPropertyValidatorMsg.cs" />
+    <Compile Include="Msg\Specific\ObjectComparisonErrorMsg.cs" />
+    <Compile Include="Msg\Specific\NullReferenceMsg.cs" />
+    <Compile Include="Msg\Specific\PropertyValidationContainerMsg.cs" />
+    <Compile Include="Msg\Specific\SchemaValidationErrMsg.cs" />
+    <Compile Include="Msg\Specific\UnitOfWorkCommitMsg.cs" />
+    <Compile Include="OpResult\IGroupedOpResults.cs" />
+    <Compile Include="OpResult\OpResultException.cs" />
+    <Compile Include="OpResult\OpResult`.cs" />
+    <Compile Include="OpResult\IOpResult.cs" />
+    <Compile Include="OpResult\IOpResult`.cs" />
+    <Compile Include="OpResult\OpResult.cs" />
+    <Compile Include="OpResult\OpResultBase.cs" />
+    <Compile Include="OpResult\OpResultExtensions.cs" />
+    <Compile Include="OpResult\GroupedOpResults.cs" />
+    <Compile Include="OpTasks\IAdHocAction.cs" />
+    <Compile Include="OpTasks\IAdHocFunc.cs" />
+    <Compile Include="OpResult\IOpResultFactory.cs" />
+    <Compile Include="OpTasks\IOpTasksFactory.cs" />
+    <Compile Include="OpTasks\IVerifyMap.cs" />
+    <Compile Include="OpTasks\OpTasksFactory.cs" />
+    <Compile Include="OpTasks\VerifyMap.cs" />
+    <Compile Include="Pdf\CheckBoxPdfFieldMap.cs" />
+    <Compile Include="Pdf\DocxToPdf\DocxToPdfConverter.cs" />
+    <Compile Include="Pdf\DocxToPdf\IDocxToPdfConverter.cs" />
+    <Compile Include="Pdf\HtmlToPdf\HtmlToPdfConverter.cs" />
+    <Compile Include="Pdf\HtmlToPdf\IHtmlToPdfConverter.cs" />
+    <Compile Include="Pdf\IPdfBuilder.cs" />
+    <Compile Include="Pdf\IPdfBuilderFactory.cs" />
+    <Compile Include="Pdf\IPdfFieldMap.cs" />
+    <Compile Include="Pdf\IPdf.cs" />
+    <Compile Include="Pdf\IPdfFormFiller.cs" />
+    <Compile Include="Pdf\IPdfFormMapper.cs" />
+    <Compile Include="Pdf\IPdfTemplateProvider.cs" />
+    <Compile Include="Pdf\ItemPdfFieldMap.cs" />
+    <Compile Include="Pdf\PdfBuilderFactory.cs" />
+    <Compile Include="Pdf\PdfClownBuilder.cs" />
+    <Compile Include="Pdf\PdfClownForm.cs" />
+    <Compile Include="Pdf\PdfExtensions.cs" />
+    <Compile Include="Pdf\iTextPdfBuilder.cs" />
+    <Compile Include="Pdf\PdfClownFormFiller.cs" />
+    <Compile Include="Pdf\PdfFieldMap.cs" />
+    <Compile Include="Pdf\iTextPdfForm.cs" />
+    <Compile Include="Pdf\PdfFormMapper.cs" />
+    <Compile Include="Pdf\PdfReaderFactory.cs" />
+    <Compile Include="Pdf\iTextFormFiller.cs" />
+    <Compile Include="Pdf\PropertyTextTransformPdfFieldMap.cs" />
+    <Compile Include="Pdf\TextPdfFieldMap.cs" />
+    <Compile Include="Query\AdoLogic\AdoLogicBase.cs" />
+    <Compile Include="Query\AdoLogic\AdoLogicWithMessgesBase.cs" />
+    <Compile Include="Query\AdoLogic\ExecSqlCmd.cs" />
+    <Compile Include="Query\AdoLogic\IAdoLogic.cs" />
+    <Compile Include="Query\BasicQueryResultFactory.cs" />
+    <Compile Include="Query\IEnumerableSorter.cs" />
+    <Compile Include="Query\IGroupExpressions.cs" />
+    <Compile Include="Query\IInnerJoinExpressions.cs" />
+    <Compile Include="Query\IQuery.cs" />
+    <Compile Include="Query\IQueryResult.cs" />
+    <Compile Include="Query\IQueryResultFactory.cs" />
+    <Compile Include="Query\ISqlParameter.cs" />
+    <Compile Include="Query\ISqlParameterBuilder.cs" />
+    <Compile Include="Query\ISprocParameters.cs" />
+    <Compile Include="Query\NoSprocParamsDto.cs" />
+    <Compile Include="Query\Query.cs" />
+    <Compile Include="Query\QueryResult.cs" />
+    <Compile Include="Query\QueryTestingTools.cs" />
+    <Compile Include="Query\Query`.cs" />
+    <Compile Include="Query\SortFunc.cs" />
+    <Compile Include="Query\SprocBaseNonQuery.cs" />
+    <Compile Include="Query\SprocParametersBase.cs" />
+    <Compile Include="Query\SprocBase.cs" />
+    <Compile Include="Query\SqlParameterBuilder.cs" />
+    <Compile Include="Query\ThreadSafeQueryResult.cs" />
+    <Compile Include="Query\ThreadSafeQueryResultFactory.cs" />
+    <Compile Include="Security\ActionRemover.cs" />
+    <Compile Include="Security\ActionTypeAuthorizerInMem.cs" />
+    <Compile Include="Security\ClaimsTransformer.cs" />
+    <Compile Include="Security\IActionType.cs" />
+    <Compile Include="Security\IUser.cs" />
+    <Compile Include="Security\LegacyRole.cs" />
+    <Compile Include="Security\Msg\ActionNotAllowedMsg.cs" />
+    <Compile Include="Security\Msg\NotYourResourceMsg.cs" />
+    <Compile Include="Security\Msg\PolicyResultMessage.cs" />
+    <Compile Include="Security\Msg\SecurityMessageType.cs" />
+    <Compile Include="Security\Msg\SecurityMsg.cs" />
+    <Compile Include="Security\RandomPassword.cs" />
+    <Compile Include="Security\ResourceAccessRules.cs" />
+    <Compile Include="Security\ResourceAccessType.cs" />
+    <Compile Include="Sts\DominionStsErrorCode.cs" />
+    <Compile Include="Sts\Owin\DominionStsErrorCodeLogger.cs" />
+    <Compile Include="Sts\Owin\DominionStsOwinExtensions.cs" />
+    <Compile Include="DataGeneration\DateTimeRandomizer.cs" />
+    <Compile Include="DataGeneration\ObjectGenerator.cs" />
+    <Compile Include="DataGeneration\PhoneNumberRandomizer.cs" />
+    <Compile Include="DataGeneration\StringRandomizer.cs" />
+    <Compile Include="DataGeneration\TestObjectGenerator.cs" />
+    <Compile Include="Sts\Owin\UserHomesiteValidation.cs" />
+    <Compile Include="Sts\Owin\WSignoutCleanupMiddleware.cs" />
+    <Compile Include="Sts\PassInator.cs" />
+    <Compile Include="Sts\StsSecurity.cs" />
+    <Compile Include="Threading\IPadlock.cs" />
+    <Compile Include="Threading\Padlock.cs" />
+    <Compile Include="Transform\AdHocRegEx.cs" />
+    <Compile Include="Transform\TransformExMethods.cs" />
+    <Compile Include="Transform\EmptyToNullTransform.cs" />
+    <Compile Include="Transform\TrimTransform.cs" />
+    <Compile Include="Transform\ZipCodeFiveDigitsOnly.cs" />
+    <Compile Include="Transform\EinNoDashes.cs" />
+    <Compile Include="Transform\PhoneNumberTenNumbersOnly.cs" />
+    <Compile Include="Transform\Extensions.cs" />
+    <Compile Include="Transform\GenericTransformer.cs" />
+    <Compile Include="Transform\ITransformRuleBuilder.cs" />
+    <Compile Include="Transform\PhoneNumberTenNumbersWithDashes.cs" />
+    <Compile Include="Transform\PropertyTransformer.cs" />
+    <Compile Include="Transform\ITransformer.cs" />
+    <Compile Include="Transform\RegexTransformer.cs" />
+    <Compile Include="Transform\SocialSecurityNumberMask.cs" />
+    <Compile Include="Transform\Transformer.cs" />
+    <Compile Include="Transform\ObjectTransformer.cs" />
+    <Compile Include="Transform\TransformRule.cs" />
+    <Compile Include="Validation\DataAnnotateValidate.cs" />
+    <Compile Include="Validation\DataAnnotateValidate2.cs" />
+    <Compile Include="Validation\FluentValidate\FluentValidatorWrapper.cs" />
+    <Compile Include="Validation\FluentValidate\IsDecimalValidator.cs" />
+    <Compile Include="Validation\FluentValidate\IsAlphanumericValidator.cs" />
+    <Compile Include="Validation\FluentValidate\ArrayLengthValidator.cs" />
+    <Compile Include="Validation\FluentValidate\OneOfValidator.cs" />
+    <Compile Include="Validation\FluentValidate\PropertyValidate\CollectionAllowedMatches.cs" />
+    <Compile Include="Validation\FluentValidate\FluentValidator.cs" />
+    <Compile Include="Validation\FluentValidate\IsIntValidator.cs" />
+    <Compile Include="Validation\FluentValidate\RoutingNumberValidator.cs" />
+    <Compile Include="Validation\IVerify.cs" />
+    <Compile Include="Validation\IVerifyExtensions.cs" />
+    <Compile Include="Validation\LetterValidationRule.cs" />
+    <Compile Include="Validation\FluentValidationCustomContext.cs" />
+    <Compile Include="Validation\FluentValidationCustomContextExtensions.cs" />
+    <Compile Include="Validation\ITextValidationRule.cs" />
+    <Compile Include="Validation\ITextValidationRuleSet.cs" />
+    <Compile Include="Validation\IValidationObject.cs" />
+    <Compile Include="EntityDataStore\EntityMetadata\EntityDataStoreFieldMetadata.cs" />
+    <Compile Include="EntityDataStore\EntityMetadata\Interfaces\IEntityDataStoreFieldMetadata.cs" />
+    <Compile Include="EntityDataStore\EntityMetadata\Interfaces\IEntityDataStoreMetadata.cs" />
+    <Compile Include="ExtensionMethods\ClaimsPrincipalExtensionMethods.cs" />
+    <Compile Include="ExtensionMethods\ListExtensionMethods.cs" />
+    <Compile Include="ExtensionMethods\ObjectExtensionMethods.cs" />
+    <Compile Include="ExtensionMethods\PropertyExpressions\PropertyExpressionExtensionMethods.cs" />
+    <Compile Include="ExtensionMethods\TypeExtensionMethods.cs" />
+    <Compile Include="ExtensionMethods\ValidatableExtensionMethods.cs" />
+    <Compile Include="Factories\ObjectFactory.cs" />
+    <Compile Include="LegacySupport\DataTypes.cs" />
+    <Compile Include="Messaging\IValidationStatusMessage.cs" />
+    <Compile Include="Messaging\IValidationStatusMessageList.cs" />
+    <Compile Include="Messaging\ValidationStatusMessage.cs" />
+    <Compile Include="Messaging\ValidationStatusMessageList.cs" />
+    <Compile Include="Messaging\ValidationStatusMessenger.cs" />
+    <Compile Include="Pagination\PaginationHelper.cs" />
+    <Compile Include="Query\LinqKit\ExpandableQuery.cs" />
+    <Compile Include="Query\LinqKit\ExpressionExpander.cs" />
+    <Compile Include="Query\LinqKit\ExpressionVisitor.cs" />
+    <Compile Include="Query\LinqKit\QueryExtensions.cs" />
+    <Compile Include="Query\LinqKit\Linq.cs" />
+    <Compile Include="Query\LinqKit\PredicateBuilder.cs" />
+    <Compile Include="Query\QueryBuilder.cs" />
+    <Compile Include="Query\QueryBuilderAutoMap.cs" />
+    <Compile Include="Query\QueryBuilderFactory.cs" />
+    <Compile Include="Query\QueryBuilder`.cs" />
+    <Compile Include="Query\SortExpression.cs" />
+    <Compile Include="Pagination\PaginationInfo.cs" />
+    <Compile Include="Messaging\IStatusMessageList.cs" />
+    <Compile Include="Messaging\IStatusMessage.cs" />
+    <Compile Include="Messaging\LoggingMessage.cs" />
+    <Compile Include="Messaging\StatusMessage.cs" />
+    <Compile Include="Messaging\StatusMessageList.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\ActionType.cs" />
+    <Compile Include="Security\ClaimsPrincipalExtensions.cs" />
+    <Compile Include="Security\DominionClaimTypes.cs" />
+    <Compile Include="Security\EditPermissions.cs" />
+    <Compile Include="Security\IActionTypeAuthorizer.cs" />
+    <Compile Include="Security\PrincipalDominion.cs" />
+    <Compile Include="Validation\NoSpaceValidationRule.cs" />
+    <Compile Include="Validation\NumericValidationRule.cs" />
+    <Compile Include="Validation\PropertyValidationMessage.cs" />
+    <Compile Include="Validation\SinglePropValidationDto.cs" />
+    <Compile Include="Validation\TextLengthValidationRule.cs" />
+    <Compile Include="Validation\TextValidationRuleSet.cs" />
+    <Compile Include="Validation\TextPredicateValidationRule.cs" />
+    <Compile Include="Validation\RegularExpressionValidationRule.cs" />
+    <Compile Include="Validation\SocialSecurityNumberValidator.cs" />
+    <Compile Include="Validation\EnumValidator.cs" />
+    <Compile Include="Validation\SpecialCharacterValidationRule.cs" />
+    <Compile Include="Validation\ValidationReason.cs" />
+    <Compile Include="Validation\ValidatorBuilder.cs" />
+    <Compile Include="Validation\ValidatorExtensions.cs" />
+    <Compile Include="Web\CacheBuster.cs" />
+    <Compile Include="Web\Class1.cs" />
+    <Compile Include="Web\ConfigFiles\WcAppSettings.cs" />
+    <Compile Include="Web\ConfigFiles\WcConnStrings.cs" />
+    <Compile Include="Web\ConfigFiles\WcSimSettings.cs" />
+    <Compile Include="Web\ConfigFiles\WebConfig.cs" />
+    <Compile Include="Web\ConfigFiles\WebConfigReport.cs" />
+    <Compile Include="Web\DsMvc\ModelMsgBase.cs" />
+    <Compile Include="Web\MimeTypeMap.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Libs\Nlog.DsElmah.1.0.0\Nlog.DsElmah.1.0.0.nupkg" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Libs\Nlog.DsElmah.1.0.0\lib\net452\Nlog.DsElmah.dll" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

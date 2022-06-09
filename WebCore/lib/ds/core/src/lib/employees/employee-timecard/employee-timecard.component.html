@@ -1,0 +1,112 @@
+<ng-container *ngIf="subscriptionHandler$ | async">
+<ds-card border="top" [color]="isUserEmployee ? '':'secondary'">
+    <ds-card-header>
+        <ds-card-header-title>EMPLOYEE TIME CARD HISTORY</ds-card-header-title>
+        <ds-card-bread-crumb *ngIf="!isUserEmployee">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="ChangeEmployee.aspx?Submenu=Employee&URL=ClockEmployeePunchHistory.aspx">Employee List</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Employee Time Card History</li>
+                </ol>
+            </nav>
+        </ds-card-bread-crumb>
+    </ds-card-header>
+    <ds-card-content>		
+		<ng-container>
+			<div class="row">
+				<div class="col-md-4 col-xl-3">
+					<div class="form-group">
+						<label class="form-control-label">Pay Period</label>
+						<select [(ngModel)]="selectedPayrollId" (change)="payPeriodSelectionChanged()"
+							class="form-control custom-select">
+							<option  value="0">&lt;Current Pay Period&gt;</option>
+							<option  value="-1">Custom Date Range</option>
+							<option *ngFor="let n of payPeriods" [value]="n.payrollId">{{renderDateRange(n)}}</option>
+						</select>
+					</div>
+				</div>
+				<ng-container *ngIf="isCustomPeriod">
+					<div class="col-6 col-md-3 col-xl-2">
+						<div class="form-group">
+							<label class="form-control-label">Display From</label>
+							<div class="input-group">
+								<input matInput #fromInput
+									class="form-control"
+									[max]="toDate"
+									[matDatepicker]="fromDatePicker"
+									[(ngModel)]="fromDate"
+									name="fromDatePicker"
+									dsFormControlValidator
+									#fromDateNgModel="ngModel" />
+								<div class="input-group-append">
+									<mat-datepicker-toggle matSuffix [for]="fromDatePicker" class="input-group-text date">
+										<mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+									</mat-datepicker-toggle>
+									<mat-datepicker #fromDatePicker></mat-datepicker>
+								</div>
+
+								<div *ngIf="fromDateNgModel?.invalid" class="invalid-feedback">
+									<div *ngIf="!(fromDateNgModel?.hasError('matDatepickerMax'));">
+										Please enter a date.
+									</div>
+									<div *ngIf="fromDateNgModel?.hasError('matDatepickerMax');">
+										Please enter a date on or before
+										{{ toDate | date: 'MM/dd/yyyy'}}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-6 col-md-3 col-xl-2">
+						<div class="form-group">
+							<label class="form-control-label">To</label>
+							<div class="input-group">
+								<input matInput #toInput
+									class="form-control"
+									[min]="fromDate"
+									[matDatepicker]="toDatePicker"
+									[(ngModel)]="toDate"
+									name="toDatePicker"
+									dsFormControlValidator
+									#toDateNgModel="ngModel" />
+								<div class="input-group-append">
+									<mat-datepicker-toggle matSuffix [for]="toDatePicker" class="input-group-text date">
+										<mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+									</mat-datepicker-toggle>
+									<mat-datepicker #toDatePicker></mat-datepicker>
+								</div>
+								<div *ngIf="toDateNgModel?.invalid" class="invalid-feedback">
+									<div *ngIf="!(toDateNgModel?.hasError('matDatepickerMin'));">
+										Please enter a date.
+									</div>
+									<div *ngIf="toDateNgModel?.hasError('matDatepickerMin');">
+										Please enter a date on or after
+										{{ fromDate  | date: 'MM/dd/yyyy'}}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-auto inline-md-control">
+						<div class="form-group d-flex justify-content-end">
+                            <button type="button" class="btn btn-outline-primary"	(click)="goClick()">Filter</button>
+						</div>
+					</div>
+				</ng-container>
+			</div>
+		</ng-container>
+    </ds-card-content>
+</ds-card>
+
+<ds-employee-clock-timecard-widget 
+	[employeeId]="employeeId" isLoading="loading">
+</ds-employee-clock-timecard-widget>
+</ng-container>
+
+<ng-container *ngIf="loading">
+	<ds-card mode="noheader">
+	<ds-card-content>
+		<ds-loading-message></ds-loading-message>
+	</ds-card-content>
+	</ds-card>
+</ng-container>

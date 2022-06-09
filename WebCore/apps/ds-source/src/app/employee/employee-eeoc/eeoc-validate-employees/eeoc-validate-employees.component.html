@@ -1,0 +1,147 @@
+<form [formGroup]="thirdFormGroup">
+    <ng-container *ngIf="!isLoading">
+        <div class="instruction-text form-group">
+            Enter any missing data in the fields below. Any fields updated on this page will also populate that employee's record. After any missing information is entered for each employee, select "Continue" to go to Step 4: Create Report.
+        </div>
+    </ng-container>
+
+    <ng-container *ngIf="formInit|async as init">
+        <div [hidden]="isLoading">
+            <div class="form-group inline-form-elements">
+                <div class="custom-control custom-checkbox mr-2">
+                    <input type="checkbox" class="custom-control-input" id="showCompleteCheckbox"
+                        [checked]="!showComplete" (click)="showComplete = !showComplete; filterByCompletionStatus()">
+                    <label class="custom-control-label" for="showCompleteCheckbox">
+                        Show employees with errors only ({{this.incompleteRecordsCount}})
+                    </label>
+                </div>
+            </div>
+
+            <div class="card card-table">
+                <div class="table-responsive">
+                    <table mat-table [dataSource]="dataSource" class="grid">
+
+                        <ng-container matColumnDef="avi" sticky>
+                            <th mat-header-cell *matHeaderCellDef class="td-profile-width text-center">
+                                <mat-icon>person</mat-icon>
+                            </th>
+                            <td mat-cell *matCellDef="let element" class="td-profile-width text-center">
+                                <ds-avatar
+                                  size="24"
+                                  name="{{element.name}}"
+                                  resource="{{element.profileImage?.extraLarge?.url}}"
+                                >
+
+                                </ds-avatar>
+                            </td>
+
+                        </ng-container>
+
+                        <ng-container matColumnDef="name" sticky>
+                            <th mat-header-cell *matHeaderCellDef class="mat-column-name"> Name </th>
+                            <td mat-cell *matCellDef="let element" class="mat-column-name"> {{element.name}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="number" sticky>
+                            <th mat-header-cell *matHeaderCellDef class="table-text-right mat-column-number"> Number
+                            </th>
+                            <td mat-cell *matCellDef="let element" class="table-text-right mat-column-number">
+                                {{element.number}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="clientCode" sticky>
+                            <th mat-header-cell *matHeaderCellDef
+                                class="table-text-right mat-table-sticky-border mat-column-clientCode"> Client Code
+                            </th>
+                            <td mat-cell *matCellDef="let element"
+                                class="table-text-right mat-table-sticky-border mat-column-clientCode">
+                                {{element.clientCode}} </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="gender">
+                            <th mat-header-cell *matHeaderCellDef class="mat-column-dropdown"> Gender </th>
+                            <td mat-cell *matCellDef="let element" class="grid-input-container mat-column-dropdown">
+                                <select class="grid-select custom-select"
+                                    (change)="saveDropdownChange(element, $event, 'gender')"
+                                    [ngClass]="{'is-invalid': element.gender != 'M' && element.gender != 'F'}">
+                                    <option *ngIf="element.gender != 'M' && element.gender !='F'" [selected]="true">
+                                    </option>
+                                    <option *ngFor="let gender of genderDropdownList" value="{{gender.value}}"
+                                        [selected]="element.gender == gender.value">
+                                        {{gender.designation}}
+                                    </option>
+                                </select>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="race">
+                            <th mat-header-cell *matHeaderCellDef class="mat-column-dropdown"> Race </th>
+                            <td mat-cell *matCellDef="let element" class="grid-input-container mat-column-dropdown">
+                                <select class="grid-select custom-select"
+                                    (change)="saveDropdownChange(element, $event, 'race')"
+                                    [ngClass]="{'is-invalid': element.race == null || element.race == 0}">
+                                    <option *ngIf="element.race == null || element.race == 0" [selected]="true">
+                                    </option>
+                                    <option *ngFor="let race of raceDropdownList" value="{{race.raceId}}"
+                                        [selected]="race.raceId == element.race">
+                                        {{race.description}}
+                                    </option>
+                                </select>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="location">
+                            <th mat-header-cell *matHeaderCellDef class="mat-column-dropdown"> Location </th>
+                            <td mat-cell *matCellDef="let element" class="grid-input-container mat-column-dropdown">
+                                <select class="grid-select custom-select"
+                                    (change)="saveDropdownChange(element, $event, 'location')"
+                                    [ngClass]="{'is-invalid': element.locationId == null || checkHasLocationNotInActiveLocations(element)}">
+                                    <option *ngIf="element.locationId ==  null || checkHasLocationNotInActiveLocations(element) " [selected]="true"></option>
+                                    <option *ngFor="let location of activeLocationsByClientId | locationFilter:element"
+                                        value="{{location.eeocLocationId}}"
+                                        [selected]="element.locationId == location.eeocLocationId">
+                                        {{location.eeocLocationDescription}}
+                                    </option>
+                                </select>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="jobCategory">
+                            <th mat-header-cell *matHeaderCellDef class="mat-column-dropdown"> Job Category </th>
+                            <td mat-cell *matCellDef="let element" class="grid-input-container mat-column-dropdown">
+                                <select class="grid-select custom-select"
+                                    (change)="saveDropdownChange(element, $event, 'jobCategory')"
+                                    [ngClass]="{'is-invalid': element.jobCategory == null || element.jobCategory == 0}">
+                                    <option *ngIf="element.jobCategory == null || element.jobCategory == 0"
+                                        [selected]="true"></option>
+                                    <option *ngFor="let jobCategory of jobCategoriesDropdownList"
+                                        value="{{jobCategory.jobCategoryId}}"
+                                        [selected]="element.jobCategory == jobCategory.jobCategoryId">
+                                        {{jobCategory.description}}
+                                    </option>
+                                </select>
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hoverable"></tr>
+                    </table>
+                </div>
+                <mat-paginator [length]="0" [pageSizeOptions]="[5, 10, 25]"></mat-paginator>
+            </div>
+
+            <div class="d-flex justify-content-between flex-row-reverse">
+                <div class="d-flex align-items-center">
+                    <div class="text-danger mr-2" *ngIf="incompleteRecordsCount > 0 && continueButtonClicked"> Please enter missing data for all employees.</div>
+                    <button mat-button matStepperNext class="btn btn-save" (click)="continueClicked()">
+                        Continue
+                    </button>
+                </div>
+                <button matStepperPrevious class="btn btn-cancel">Back</button>
+            </div>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="isLoading">
+        <ds-loading-message></ds-loading-message>
+    </ng-container>
+</form>

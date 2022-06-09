@@ -1,0 +1,15 @@
+<mat-dialog-content >
+    <button type="button" class="close nested-cog" (click)="close()">
+      <i class="material-icons">clear</i>
+    </button>
+    <div class="confirm-dialog text-center" *ngIf="!isLoading">
+        <mat-icon class="confirm-icon text-success">check</mat-icon>
+        <div class="confirm-title">Your {{ review.title }} for {{ review.reviewedEmployeeContact.firstName }} {{ review.reviewedEmployeeContact.lastName }} is submitted 
+            to {{ approver.firstName }} {{ approver.lastName }}.
+        </div>
+        <p class="confirm-subtitle" *ngIf="user.userId == evaluation.evaluatedByUserId">You will receive a notification on this review's status. This notification summarizes direct changes made as well as any requested edits you need 
+            to make to the review.
+        </p>
+    </div>
+    <div class="loading-message" *ngIf="isLoading">Loading...</div>
+</mat-dialog-content>

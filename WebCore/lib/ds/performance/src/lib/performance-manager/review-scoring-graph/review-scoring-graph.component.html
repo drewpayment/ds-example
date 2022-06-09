@@ -1,0 +1,59 @@
+<ds-card class="card-height-fix-sm" *ngIf="isScoringEnabled">
+    <ds-card-header>
+        <ds-card-sub-header-title>
+            Overall {{totalEmployees}}
+        </ds-card-sub-header-title>
+    </ds-card-header>
+    <ds-card-content>
+        <div class="score-pie-chart row justify-content-center">
+            <div class="col-auto">
+                <div class="donut-chart-wrapper mb-4">
+                    <div>
+                        <ng-template #ratingPieChartDiv>
+                            <canvas width="50" height="50"
+                                    baseChart
+                                    [datasets]="chartDataSet"
+                                    [labels]="chartLabels"
+                                    [chartType]="chartType"
+                                    [colors]="chartColors"
+                                    [options]="chartOptions"
+                                    #ratingPieChart="base-chart"
+                                    responsive="false"></canvas>
+                        </ng-template>
+                        <ng-container *ngIf="showChart" [ngTemplateOutlet]="ratingPieChartDiv"></ng-container>
+                    </div>
+                    <div *ngIf="showChart" #ratingAverage class="cutout-callout-wrapper">
+                        <div class="cutout-callout">{{averageScore}}</div>
+                        <div class="instruction-text">{{averageScoreLabel}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-auto justify-content-center align-self-center">
+                <div class="ds-legend-group mb-0">
+                    <div class="ds-legend-group">
+                    <div *ngFor="let legendItem of legendData.items; index as i" class="ds-legend align-items-center pl-0 mb-2" [matTooltip]="legendItem.description" [matTooltipDisabled]="!legendItem.description">
+                        <div class="ds-legend-color" [attr.style]="'background-color: ' + backgroundColors[i % backgroundColors.length] + '!important' | safeStyle"></div>
+                        <div class="ds-legend-label text-truncate">
+                            <span class='percent-width d-inline-block mr-1'>{{(legendItem.item.value * 100 / legendData.total) | number : '1.0-2'}}%</span>
+                            <span class="text-truncate">{{legendItem.item.name}}</span>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="col-lg-12 col-xl-auto justify-content-center align-self-center">
+                <div class="ds-legend-group mb-0 d-flex justify-content-center">
+                    <div class="ds-legend-group">
+                    <div *ngFor="let legendItem of legendData.items; index as i" class="ds-legend pl-0 mb-2" [matTooltip]="legendItem.description" [matTooltipDisabled]="!legendItem.description">
+                        <div class="ds-legend-color" [attr.style]="'background-color: ' + backgroundColors[i % backgroundColors.length] + '!important' | safeStyle"></div>
+                        <div class="d-flex overflow-hidden text-truncate">
+                            <div class='percent-width mr-1'>{{(legendItem.item.value * 100 / legendData.total) | number : '1.0-2'}}%</div>
+                            <div class="text-truncate">{{legendItem.item.name}}</div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+    </ds-card-content>
+</ds-card>

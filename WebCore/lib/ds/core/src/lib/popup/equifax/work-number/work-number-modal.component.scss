@@ -1,0 +1,39 @@
+@import '../../../../../../../../Styles/scss/bootstrap-variables';
+
+$equifax-red: #981E32;
+
+.ds-dialog-header {
+    background-color: $equifax-red;
+    margin: -1rem -1rem 0 -1rem;
+    padding: 1rem 1rem 0 1rem;
+
+    .material-icons {
+        color: #FFF;
+    }
+}
+
+.mat-dialog-container {
+    padding: 0px;
+}
+
+.work-number-logo {
+    width: 80px;
+}
+
+.detail {
+    color: $text-muted;
+    font-style: italic;
+    line-height: 1.25;
+    margin-bottom: 0;
+}
+
+.work-number-description {
+    flex: 1 1 60%;
+}
+
+.close {
+    &:hover,
+    &:focus {
+        background-color: #63121f;
+    }
+}

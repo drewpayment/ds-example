@@ -1,0 +1,226 @@
+<ds-card border="top" mode="nobody">
+    <ds-card-header>
+        <ds-card-header-title>
+            Custom Page
+        </ds-card-header-title>
+        <ds-card-subtitle>
+            <nav aria-label="breadcrumb" class="form-group">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a routerLink="/admin/onboarding/custom-pages">Custom Pages</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Custom {{routeText}} Page</li>
+                </ol>
+            </nav>
+            <div class="instruction-text">
+                Custom pages allow you to create custom tasks for new hires to complete in Onboarding.
+            </div>
+        </ds-card-subtitle>
+    </ds-card-header>
+</ds-card>
+<ng-container *ngIf="!isLoading; else loading">
+    <div [formGroup]="form" *ngIf="form">
+        <ds-card>
+            <ds-card-header>
+                <ds-card-sub-header-title>
+                    Custom {{routeText}} Page
+                </ds-card-sub-header-title>
+                <ds-card-title-action>
+                    <button class="btn btn-primary" (click)="popupDocumentsDialog()">
+                        <i class="material-icons">add</i> {{routeText}}
+                    </button>
+                </ds-card-title-action>
+            </ds-card-header>
+            <ds-card-content>
+                <div class="form-group">
+                    <label class="form-control-label">Name</label>
+                    <input type="text" formControlName="workflowTitle" class="form-control" maxlength="50"
+                        [class.is-invalid]="(form.controls.workflowTitle.touched || formSubmitted) && 
+                        (form.controls.workflowTitle.errors?.required || 
+                        form.controls.workflowTitle.errors?.maxlength)" />
+                    <div class="invalid-feedback">
+                        <span *ngIf="form.controls.workflowTitle.errors?.required">Please enter a name.</span>
+                        <span *ngIf="form.controls.workflowTitle.errors?.maxlength">Maxlength allowed is
+                            50.</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label">Instructions <span class="help-text">Optional</span></label>
+                    <textarea formControlName="description" class="form-control" maxlength="1024"></textarea>
+                </div>
+
+                <!--Documents List-->
+                <div class="row" *ngIf="selectedResources.length > 0 && pageType == 1">
+                    <div class="col-md-8">
+                        <div class="form-group iframe-wrapper">
+                            <iframe name="filePreview" [cachedSrc]="previewResource" class="iframesize"
+                                frameborder="0"></iframe>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="aw-doc-wrapper form-group clickable hoverable"
+                            [ngClass]="{'active': selectedResource.previewResourceCssClass}"
+                            (click)="setPreviewResource(selectedResource)"
+                            *ngFor="let selectedResource of selectedResources">
+                            <div class="clickable font-lg text-truncate pr-4" data-toggle="tooltip"
+                            matTooltip="{{selectedResource.resourceName}}">
+                                {{selectedResource.resourceName}}
+                            </div>
+                            <!-- <div class="text-muted clickable">
+                                {{ selectedResource.source ? selectedResource.source.split('\\').pop() : ""}}
+                            </div> -->
+                            <div class="nested-cog">
+                                <button [matMenuTriggerFor]="menu" class="btn btn-icon" type="button"
+                                    (click)="$event.stopPropagation();">
+                                    <i class="material-icons">more_vert</i>
+                                </button>
+                                <mat-menu #menu="matMenu">
+                                    <button type="button" (click)="download(selectedResource)" mat-menu-item>Download</button>
+                                    <button type="button" (click)="removeResource(selectedResource)" mat-menu-item>Remove</button>
+                                </mat-menu>
+                            </div>
+                        </div> 
+                    </div>
+                </div>
+
+                <!--Links-->
+                <div *ngIf="selectedResources.length > 0 && pageType==2">
+                        <div class="row">
+                            <div class="col-md-3 col-sm-6" *ngFor="let selectedResource of selectedResources">
+                                <ds-card hover="true" mode="object" x-align="center" matchHeight="true">
+                                    <ds-card-header>
+                                        <ds-card-title-action>
+                                            <div class="nested-cog" [class.hover-show]="true">
+                                                <button type="button" class="close" (click)="removeResource(selectedResource)">
+                                                    <mat-icon>clear</mat-icon>
+                                                </button>                                                
+                                            </div>
+                                        </ds-card-title-action>
+                                        <ds-card-subtitle>
+                                            <div class="split-content">
+                                                <div class="top">
+                                                  <div class="object-card-avatar">
+                                                      <div class="aw-link mb-0 mr-3">
+                                                        <div class="aw-img color"></div>
+                                                      </div>
+                                                  </div>
+                                                  <div class="font-lg text-center mb-1 text-truncate font-weight-bold" matTooltip="{{selectedResource.resourceName}}">    
+                                                    {{selectedResource.resourceName}}
+                                                  </div>
+                                                  <div class="text-muted text-truncate text-center" matTooltip="{{ selectedResource.source ? selectedResource.source.split('\\').pop() : ''}}">
+                                                    <a [routerLink]="" (click)="openSite(selectedResource.source.split('\\').pop())">{{ selectedResource.source ? selectedResource.source.split('\\').pop() : ""}}</a>
+                                                  </div>
+                                                </div>
+                                              </div> 
+                                        </ds-card-subtitle>
+                                    </ds-card-header>
+                                </ds-card>
+                            </div>
+                        </div>
+                </div>
+
+                <!--Videos-->
+                <div *ngIf="selectedResources.length > 0 && pageType==4">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group iframe-wrapper">
+                                <iframe name="filePreview" [cachedSrc]="previewResource" class="aw-iframe"
+                                    frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="aw-doc-wrapper form-group hoverable clickable"
+                                [ngClass]="{'active': selectedResource.previewResourceCssClass}"
+                                (click)="setPreviewResource(selectedResource)"
+                                *ngFor="let selectedResource of selectedResources">
+                                <div class="clickable font-lg text-truncate pr-4" data-toggle="tooltip"
+                                matTooltip="{{selectedResource.resourceName}}">
+                                    {{selectedResource.resourceName}}
+                                </div>
+                                <div class="text-muted clickable">
+                                    {{ selectedResource.source ? selectedResource.source.split('\\').pop() : ""}}
+                                </div>
+                                <div class="nested-cog">
+                                    <button type="button" class="close" (click)="removeResource(selectedResource)">
+                                        <mat-icon>clear</mat-icon>
+                                    </button>                                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="d-flex">
+                                <label class="switch switch-default switch-sm switch-pill switch-success mt-1">
+                                    <input type="checkbox" class="switch-input" id="cbEmpDocUpload"
+                                        formControlName="cbEmpDocUpload" (change)="toggleCbEmpDocUpload($event)">
+                                    <span class="switch-label"></span>
+                                    <span class="switch-handle"></span>
+                                    <span class="ds-switch-off">Off</span>
+                                    <span class="ds-switch-on">On</span>
+                                </label>
+                                <h3>Employee Document Upload</h3>
+                            </div>
+                            <div class="instruction-text form-group">
+                                Requires the Employee to upload a document to complete this custom page.
+                            </div>
+                            <div *ngIf="currentTask.userMustUpload">
+                                <label class="form-control-label">Instructions</label>
+                                <textarea formControlName="uploadDescription" class="form-control" maxlength="1024"
+                                    [class.is-invalid]="(form.controls.uploadDescription.touched || formSubmitted) && 
+                                        (form.controls.uploadDescription.errors?.required)">
+                                </textarea>
+                                <div class="invalid-feedback">
+                                    <span *ngIf="form.controls.uploadDescription.errors?.required">Please enter instructions.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="d-flex">
+                                <label class="switch switch-default switch-sm switch-pill switch-success mt-1">
+                                    <input type="checkbox" class="switch-input" id="cbAgreement"
+                                        formControlName="cbAgreement" (change)="toggleCbAgreement($event)">
+                                    <span class="switch-label"></span>
+                                    <span class="switch-handle"></span>
+                                    <span class="ds-switch-off">Off</span>
+                                    <span class="ds-switch-on">On</span>
+                                </label>
+                                <h3>Agreement Checkbox</h3>
+                            </div>
+                            <div class="instruction-text form-group">
+                                Requires the Employee to check an agreement checkbox to complete this custom page.
+                            </div>
+                            <div *ngIf="currentTask.userMustCheckAgreement">
+                                <label class="form-control-label">Instructions</label>
+                                <textarea formControlName="signatureDescription" class="form-control" maxlength="1024"
+                                    [class.is-invalid]="(form.controls.signatureDescription.touched || formSubmitted) && 
+                                    (form.controls.signatureDescription.errors?.required)">
+                                </textarea>
+                                <div class="invalid-feedback">
+                                    <span *ngIf="form.controls.signatureDescription.errors?.required">Please enter instructions.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ds-card-content>
+        </ds-card>
+    </div>
+    <ds-card>
+        <ds-card-footer>
+            <button class="btn btn-save" (click)="save(currentTask)">Save</button>
+            <button class="btn btn-cancel" (click)="redirectToCustomPages()">Cancel</button>
+        </ds-card-footer>
+    </ds-card>
+</ng-container>
+<ng-template #loading>
+  <div class="card">
+    <div class="card-body">
+      <ds-loading-message>
+      </ds-loading-message>
+    </div>
+  </div>
+</ng-template>

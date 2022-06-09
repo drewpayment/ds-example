@@ -1,0 +1,66 @@
+<ds-card border="top">
+    <div ds-card-header>
+        <ds-card-header-title>
+            Feedback
+        </ds-card-header-title>
+        <ds-card-title-right-content>
+          <div class="custom-control custom-checkbox mr-2">
+            <input type="checkbox" class="custom-control-input" id="archive-checkbox" (click)="toggleArchivedFeedback()" [checked]="displayArchived" />
+            <label class="custom-control-label" for="archive-checkbox">
+                Include Archive
+            </label>
+          </div>
+          <button class="btn btn-outline-primary white-space-nowrap"
+                  type="button"
+                  color="primary"
+                  (click)="openAvailableFeedbacksDialog()">
+              Available Feedback
+          </button>
+        </ds-card-title-right-content>
+        <ds-card-title-action>
+            <button type="button" class="btn btn-primary" (click)="addFeedback()">
+                <i class="material-icons">add</i> Feedback
+            </button>
+        </ds-card-title-action>
+        <ds-card-subtitle>
+            <span class="instruction-text">
+                Feedback can be used to collect day-to-day performance,
+                job satisfaction and teamwork information.  
+            </span>
+        </ds-card-subtitle>
+    </div>
+    <div ds-card-content>
+        <ng-container *ngIf="feedbackList.length; else noFeedback">
+            <div *ngFor="let feedback of feedbackList">
+            <ds-card [color]="feedback.isArchived ? 'archive' : 'info'" mode="widget-nobody" *ngIf="!feedback.isArchived || (feedback.isArchived && displayArchived)" color="info"  class="hoverable" hover="true">
+            <div ds-card-icon>360</div>
+                <div ds-card-header>
+                    <ds-card-inline-content>
+                        <div class="flex-1-0-100">
+                            {{ feedback.body }}  <div *ngIf="feedback.isSupervisor && !feedback.isVisibleToEmployee"><span class="instruction-text"> Supervisor's response is hidden from employee</span></div>
+                        </div>
+                    </ds-card-inline-content>
+                    <ds-card-title-action>
+                        <span *ngIf="feedback.isArchived" class="badge badge-pill badge-disabled">Inactive</span>
+                        <span class="badge badge-pill badge-info ml-1" *ngIf="feedback.isSupervisor">Supervisor</span>
+                        <span class="badge badge-pill badge-success ml-1" *ngIf="feedback.isSelf">Employee</span>
+
+                        <mat-menu #toggleMenu="matMenu">
+                            <button mat-menu-item type="button" (click)="editFeedback(feedback)">Edit</button>
+                            <button mat-menu-item type="button" (click)="copyFeedback(feedback)">Copy</button>
+                            <button *ngIf="!feedback.isArchived" mat-menu-item type="button" (click)="deleteFeedback(feedback)">{{(feedback | shouldArchiveFeedback) ? 'Archive' : 'Remove'}}</button>
+                            <button *ngIf="feedback.isArchived" mat-menu-item type="button" (click)="restoreFeedback(feedback)">Restore</button>
+                        </mat-menu>
+                        <button [matMenuTriggerFor]="toggleMenu" type="button" class="btn btn-icon hover-show pr-0" (click)="$event.stopPropagation()">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                    </ds-card-title-action>
+                </div>
+            </ds-card>
+        </div>
+        </ng-container>
+        <ng-template #noFeedback>
+            <div class="empty-state">A default list of feedback is available for reference or use in your company’s Feedback section. Click the “Available Feedback” button to select and add feedback here. Feedback selected from the available list is editable once they are added to this page. You may also create custom feedback. Click the “+ Feedback” button in the top right to begin building your Feedback section.</div>
+        </ng-template>
+    </div>
+</ds-card>

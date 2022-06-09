@@ -1,0 +1,177 @@
+<ds-card mode="nobody" border="top">
+  <div ds-card-header>
+    <ds-card-header-title>
+      Notifications
+    </ds-card-header-title>
+  </div>
+  <div ds-card-content *ngIf="!hasPreferences()">
+    <div class="empty-state">
+      There are currently no notifications for your account.
+    </div>
+  </div>
+</ds-card>
+<form #form="ngForm">
+  <div class="row"
+    *ngIf="contactPreferenceInfo != null && contactPreferenceInfo.contactInfo != null && hasPreferences()">
+    <div class="col-md-6">
+      <ds-card class="card-height-fix-sm">
+        <div ds-card-header>
+          <ds-card-sub-header-title>
+            Email
+          </ds-card-sub-header-title>
+          <ds-card-subtitle>
+            <div class="instructional-title-text">Select the email you would like to receive email notifications.</div>
+          </ds-card-subtitle>
+        </div>
+        <div ds-card-content>
+          <div class="row">
+            <div class="col-sm-8 col-md-12 col-xl-8">
+              <div class="form-group" *ngFor="let e of contactPreferenceInfo.emailAddresses; let i = index;">
+                <div class="custom-control custom-radio">
+                  <input type="radio" id="email_{{i}}" name="email" class="custom-control-input"
+                    [value]="e.emailAddress" [checked]="e.isPreferred" (change)="emailSelectionChanged($event)">
+                  <label class="custom-control-label" for="email_{{i}}">{{ e.emailAddress }}</label>
+                </div>
+              </div>
+              <div class="d-flex">
+                <div class="form-group">
+                  <div class="custom-control custom-radio mt-1">
+                    <input type="radio" id="email_add" name="email" class="custom-control-input" value="addEmail"
+                      [checked]="isNewEmailSelected" (click)="focusEmailOnRadio()"
+                      (change)="emailSelectionChanged($event)">
+                    <label class="custom-control-label" for="email_add"></label>
+                  </div>
+                </div>
+                <div class="form-group flex-1">
+                  <input class="form-control" #email type="text" placeholder="New Email" [(ngModel)]="newEmailAddress"
+                    name="newEmail" (focus)="newEmailFocused()" dsFormControlValidator pattern="[^@]+@[^\.]+\..+" />
+                  <div class="invalid-feedback">
+                    Please enter a valid email address.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ds-card>
+    </div>
+    <div class="col-md-6">
+      <ds-card class="card-height-fix-sm">
+        <div ds-card-header>
+          <ds-card-sub-header-title>
+            Text
+          </ds-card-sub-header-title>
+          <ds-card-subtitle>
+            <div class="instructional-title-text">Select the number you would like to receive text notifications. Make
+              sure the number used can receive text messages. Standard message and data rates may apply.</div>
+          </ds-card-subtitle>
+        </div>
+        <div ds-card-content>
+          <div class="form-group" *ngFor="let p of contactPreferenceInfo.phoneNumbers; let j = index;">
+            <div class="custom-control custom-radio d-inline-block">
+              <input type="radio" id="Phone_{{j}}" name="text" class="custom-control-input" [value]="p.phoneNumber"
+                [checked]="p.isPreferred" (change)="phoneNumberSelectionChanged($event)">
+              <label class="custom-control-label" for="Phone_{{j}}">{{ p.phoneNumber }}</label>
+            </div>
+          </div>
+          <div class="d-flex">
+            <div class="form-group">
+              <div class="custom-control custom-radio mt-1">
+                <input type="radio" id="phone_add" name="text" class="custom-control-input" value="addPhone"
+                  [checked]="isNewPhoneSelected" (click)="focusTextOnRadio()"
+                  (change)="phoneNumberSelectionChanged($event)">
+                <label class="custom-control-label" for="phone_add"></label>
+              </div>
+            </div>
+            <div class="form-group">
+              <input class="form-control txtPhone" #text maxlength="12" type="text" placeholder="New Number"
+                [(ngModel)]="newPhoneNumber" name="newPhone" (focus)="newPhoneFocused()" dsFormControlValidator
+                pattern="\d{3}\-\d{3}\-\d{4}" />
+              <div class="invalid-feedback">
+                Please enter a valid phone number (e.g. 555-555-5555).
+              </div>
+            </div>
+          </div>
+        </div>
+      </ds-card>
+    </div>
+  </div>
+  <div class="card" *ngIf="hasPreferences()">
+    <h2 class="card-header">Preferences</h2>
+    <div class="card-body">
+      <div class="card card-table">
+        <mat-table [dataSource]="contactPreferenceInfo.preferences" class="table">
+          <ng-container matColumnDef="notificationType">
+            <mat-header-cell *matHeaderCellDef>Notification</mat-header-cell>
+            <mat-cell *matCellDef="let element">
+              <div class="mr-2">{{element.contactLabel}}</div>
+              <div class="instruction-text font-sm">{{element.contactDescription}}</div>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="preferenceEmail">
+            <mat-header-cell *matHeaderCellDef class="notification-table-action">
+              <label class="circle-checkbox clickable" *ngIf="hasPreferences()">
+                <input type="checkbox" id="email_check_all" [checked]="selectAllEmailIsChecked"
+                  (change)="selectAllEmail()">
+                <ng-container *ngTemplateOutlet="itemSvg"></ng-container>
+                <div class="circle-checkbox-label text-white" for="email_check_all">Email</div>
+              </label>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element" class="notification-table-action">
+              <label class="circle-checkbox clickable">
+                <input type="checkbox" [checked]="element.sendEmail"
+                  (change)="element.sendEmail = !element.sendEmail; isAllEmailSelected()">
+                <ng-container *ngTemplateOutlet="itemSvg"></ng-container>
+              </label>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="preferenceText">
+            <mat-header-cell *matHeaderCellDef class="notification-table-action">
+              <label class="circle-checkbox" [ngClass]="!isTextDisabled() ? 'clickable' : ''" *ngIf="hasPreferences()">
+                <input type="checkbox" id="text_check_all" [checked]="selectAllTextIsChecked" (change)="selectAllText()"
+                  [disabled]="isTextDisabled()">
+                <ng-container *ngTemplateOutlet="itemSvg"></ng-container>
+                <div class="circle-checkbox-label text-white" for="text_check_all">Text</div>
+              </label>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let element" class="notification-table-action">
+              <label class="circle-checkbox" [ngClass]="!isTextDisabled() ? 'clickable' : ''">
+                <input type="checkbox" [checked]="element.sendSms" [disabled]="isTextDisabled()"
+                  (change)="element.sendSms = !element.sendSms; isAllTextSelected()">
+                <ng-container *ngTemplateOutlet="itemSvg"></ng-container>
+              </label>
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: columnsToDisplay"></mat-row>
+        </mat-table>
+      </div>
+    </div>
+  </div>
+  <ds-card mode="nobody"
+    *ngIf="contactPreferenceInfo != null && contactPreferenceInfo.contactInfo != null && hasPreferences()">
+    <div ds-card-header>
+      <ds-card-title-action>
+        <input type="button" class="btn btn-save" (click)="save(form)" value="save" />
+      </ds-card-title-action>
+    </div>
+  </ds-card>
+</form>
+
+<ng-template #itemSvg>
+  <div class="svg">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="checked">
+      <path d="M0 0h24v24H0z" fill="none" />
+      <path
+        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+    </svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="enabled">
+      <path d="M0 0h24v24H0z" fill="none" />
+      <path
+        d="M7 11v2h10v-2H7zm5-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+    </svg>
+  </div>
+</ng-template>

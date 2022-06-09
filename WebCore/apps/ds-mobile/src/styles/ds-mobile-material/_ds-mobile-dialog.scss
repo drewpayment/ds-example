@@ -1,0 +1,33 @@
+.ds-dialog-header {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+    h2 {
+        margin: 0;
+    }
+
+    .ds-subtitle {
+        flex: 1 1 100%;
+    }
+}
+
+.ds-dialog-subtitle {
+    flex: 1 1 100%;
+}
+
+.close {
+    // DEFAULT BUTTON OVERRIDES
+    background: none;
+    border: none;
+    padding: 0;
+    &:focus {
+        border: none;
+        box-shadow: none;
+        background: $icon-focus-background;
+        border-radius: 50%;
+        outline: none;
+    }
+}
+
+

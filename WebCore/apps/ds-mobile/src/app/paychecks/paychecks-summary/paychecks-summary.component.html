@@ -1,0 +1,69 @@
+<mat-card *ngIf='isLoading'>
+  <mat-card-header>
+    <mat-card-title *ngIf='employeeCurrentPaycheck != null'>Check Date {{employeeCurrentPaycheck.payrollCheckDate | date:'MMM dd yyyy'}}</mat-card-title>
+    <mat-card-title *ngIf='employeeCurrentPaycheck == null'>Check Date </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="instruction-text text-center mb-4" *ngIf='currentPayroll != null'>
+      Pay Period {{currentPayroll.periodStart | date:'MMM dd yyyy'}} - {{currentPayroll.periodEnded | date:'MMM dd yyyy'}}</div>
+      <div class="instruction-text text-center mb-4" *ngIf='currentPayroll == null'>
+        Pay Period </div>
+      <div *ngIf='currentPaycheckDetail != null'>
+        <div class="text-center">
+          <span class="ds-callout mr-2">{{((currentPaycheckDetail?.netPay == null ? 0: currentPaycheckDetail.netPay)) | currency}}</span>
+          <span class="ds-callout-detail">NET</span>
+        </div>
+        <div class="ds-callout-detail text-center mb-4">
+          Gross Pay: {{(currentPaycheckDetail?.grossPay == null ? 0: currentPaycheckDetail.grossPay) | currency}}
+        </div>
+        <div class="ds-callout-detail text-center mb-4">
+          Select an item below to view it.
+        </div>
+      </div>
+      <div *ngIf='currentPaycheckDetail == null'>
+        <div class="text-center form-group">
+          <div class="font-xl bold mb-2">Congratulations on your new job</div>
+          <div class='italic'>Come back after your first pay date<br/> to view your paycheck.</div>
+      </div>
+      </div>
+    <mat-nav-list class="mobile-nav-list" role="navigation">
+      <mat-list-item *ngIf='showCheckDetails' [routerLink]="['details', '1']" >
+        Check Details
+        <button mat-icon-button>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+        </button>
+      </mat-list-item>
+      <mat-list-item *ngIf='showEarnings' [routerLink]="['details', '2']" >
+        Earnings Details
+        <button mat-icon-button>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+        </button>
+      </mat-list-item>
+      <mat-list-item *ngIf='showEarningsHours' [routerLink]="['details', '3']" >
+        Earnings Hours
+        <button mat-icon-button>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+        </button>
+      </mat-list-item>
+      <mat-list-item *ngIf='showEmployerBenefits' [routerLink]="['details', '4']" >
+        Employer Paid Benefits
+        <button mat-icon-button>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+        </button>
+      </mat-list-item>
+      <mat-list-item *ngIf='showOptions' [routerLink]="['details', '5']" >
+        Other Information
+        <button mat-icon-button>
+          <mat-icon>keyboard_arrow_right</mat-icon>
+        </button>
+      </mat-list-item>
+    </mat-nav-list>
+  </mat-card-content>
+</mat-card>  
+
+
+<ng-container *ngIf="!isLoading">
+<div class="d-flex justify-content-center">
+  <mat-spinner></mat-spinner>
+</div>
+</ng-container>

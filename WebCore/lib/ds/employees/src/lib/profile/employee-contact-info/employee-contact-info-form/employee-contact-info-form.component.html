@@ -1,0 +1,322 @@
+<div mat-dialog-header>
+    <h2 class="dialog-title">
+        {{pageTitle}}
+    </h2>
+    <button type="button" class="close" (click)="onNoClick()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</div>
+<div mat-dialog-content>
+    <form [formGroup]="f">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label class="form-control-label">First Name</label>
+                    <input type="text"
+                            dsFormControlValidator 
+                            [dsFormControlSubmitted]="formSubmitted"
+                           class="form-control"
+                           formControlName="firstName" cdkFocusInitial/>
+                    <div class="invalid-feedback" *ngIf="f.controls.firstName.errors?.required">
+                        Please enter a first name.
+                    </div>
+                    <div class="invalid-feedback" *ngIf="f.controls.firstName.errors?.maxlength">
+                        First name should be of max 25 characters.
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label class="form-control-label">MI</label>
+                    <input type="text"
+                            dsFormControlValidator 
+                            [dsFormControlSubmitted]="formSubmitted"
+                           class="form-control"
+                           formControlName="middleInitial"
+                            />
+                    <div class="invalid-feedback" *ngIf="f.controls.middleInitial.errors?.maxlength">
+                        Middle initial should be of max 1 character.
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="form-control-label">Last Name</label>
+                    <input type="text"
+                            dsFormControlValidator 
+                            [dsFormControlSubmitted]="formSubmitted"
+                           class="form-control"
+                           formControlName="lastName" />
+                    <div class="invalid-feedback" *ngIf="f.controls.lastName.errors?.required">
+                        Please enter a last name.
+                    </div>
+                    <div class="invalid-feedback" *ngIf="f.controls.lastName.errors?.maxlength">
+                        Last name should be of max 25 characters.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-control-label">Primary Phone <span class="form-help-text">Optional</span></label>
+                    <input type="text"
+                           mask="000-000-0000" [dropSpecialCharacters]="false"
+                           dsFormControlValidator 
+                           [dsFormControlSubmitted]="formSubmitted"
+                           class="form-control"
+                           formControlName="homePhone" />
+                    <div class="invalid-feedback" *ngIf="f.controls.homePhone.errors?.required">
+                        Please enter a primary phone.
+                    </div>
+                    <div class="invalid-feedback" *ngIf="f.controls.homePhone.errors?.pattern">
+                        Please enter a valid primary phone.
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-control-label">Secondary Phone <span class="form-help-text">Optional</span></label>
+                    <input type="text"
+                           mask="000-000-0000" [dropSpecialCharacters]="false"
+                           dsFormControlValidator 
+                           [dsFormControlSubmitted]="formSubmitted"
+                           class="form-control"
+                           formControlName="cellPhone" />
+                    <div class="invalid-feedback" *ngIf="f.controls.cellPhone.errors?.pattern">
+                        Please enter a valid secondary phone.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-control-label">Email</label>
+                    <input type="email"
+                            dsFormControlValidator 
+                            [dsFormControlSubmitted]="formSubmitted"
+                           class="form-control"
+                           formControlName="emailAddress"
+                           required />
+                    <div class="invalid-feedback" *ngIf="f.controls.emailAddress.errors?.required">
+                        Please enter an email address.
+                    </div>
+                    <div class="invalid-feedback" *ngIf="f.controls.emailAddress.errors?.pattern">
+                        Please enter a valid email address.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-control-label">Country</label>
+                    <select (change)="loadStates($event)"
+                            class="form-control custom-select"
+                            formControlName="country"
+                            dsFormControlValidator 
+                            [dsFormControlSubmitted]="formSubmitted"
+                            required>
+                        <option value=""></option>
+                        <option *ngFor="let country of countries"
+                                [value]="country.countryId">
+                            {{country.name}}
+                        </option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a country.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <label class="form-control-label">Address</label>
+                <div class="form-group">
+                    <input type="text"
+                            dsFormControlValidator 
+                            [dsFormControlSubmitted]="formSubmitted"
+                           class="form-control"
+                           formControlName="addressLine1" />
+                    <div class="invalid-feedback" *ngIf="f.controls.addressLine1.errors?.maxlength">
+                        Address line 1 should be of max 50 characters.
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="text"
+                            dsFormControlValidator 
+                            [dsFormControlSubmitted]="formSubmitted"
+                           class="form-control"
+                           formControlName="addressLine2" />
+                    <div class="invalid-feedback" *ngIf="f.controls.addressLine2.errors?.maxlength">
+                        Address line 2 should be of max 50 characters.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-control-label">City</label>
+                    <input type="text"
+                            dsFormControlValidator 
+                            [dsFormControlSubmitted]="formSubmitted"
+                           class="form-control"
+                           formControlName="city" />
+                    <div class="invalid-feedback" *ngIf="f.controls.city.errors?.maxlength">
+                        City should be of max 25 characters.
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-control-label">State</label>
+                    <select dsFormControlValidator 
+                            [dsFormControlSubmitted]="formSubmitted"
+                            (change)="loadCounties($event)"
+                            class="form-control custom-select"
+                            formControlName="state"
+                            required>
+                        <option value=""></option>
+                        <option *ngFor="let state of states"
+                                [value]="state.stateId">
+                            {{state.name}}
+                        </option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a state.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-control-label">County</label>
+                    <select class="form-control custom-select"
+                            formControlName="county">
+                        <option value=""></option>
+                        <option *ngFor="let county of counties"
+                                [value]="county.countyId">
+                            {{county.name}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-control-label">Zip Code</label>
+                    <input type="text"
+                           dsFormControlValidator 
+                           [dsFormControlSubmitted]="formSubmitted"
+                           class="form-control"
+                           formControlName="postalCode" />
+                    <div class="invalid-feedback" *ngIf="f.controls.postalCode.errors?.required">
+                        Please enter a zip code.
+                    </div>
+                    <div class="invalid-feedback" *ngIf="f.controls.postalCode.errors?.maxlength">
+                        Zip code should be of max 25 characters.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-control-label">Driver's License #</label>
+                    <input type="text"
+                           dsFormControlValidator 
+                           [dsFormControlSubmitted]="formSubmitted"
+                           class="form-control"
+                           formControlName="driversLicenseNumber" />
+                    <div class="invalid-feedback" *ngIf="f.controls.driversLicenseNumber.errors?.maxlength">
+                        Driver's license # should be of max 20 characters.
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-control-label">Issuing State</label>
+                    <select dsFormControlValidator 
+                            [dsFormControlSubmitted]="formSubmitted"
+                            class="form-control custom-select"
+                            formControlName="driversLicenseIssuingState"
+                            >
+                        <option value=""></option>
+                        <option *ngFor="let state of states"
+                                [value]="state.stateId">
+                            {{state.name}}
+                        </option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select issuing state.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-control-label">Expiration Date</label>
+                    <div class="input-group">
+                        <input matInput class="form-control"
+                               dsFormControlValidator 
+                               [dsFormControlSubmitted]="formSubmitted"
+                               [matDatepicker]="driversLicenseExpirationDate"
+                               formControlName="driversLicenseExpirationDate" />
+                        <div class="input-group-append">
+                            <mat-datepicker-toggle matSuffix [for]="driversLicenseExpirationDate" class="input-group-text date">
+                                <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #driversLicenseExpirationDate></mat-datepicker>
+                        </div>
+                        <div class="invalid-feedback">
+                            Please enter a expiration date.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+            </div>
+        </div>
+        <div class="row" >
+            <div class="col-md-12">
+                <label class="form-control-label">Marital Status</label>
+                <div class="form-group inline-radio w-100">
+                    <div class="custom-control custom-radio mr-4">
+                        <input id="radioInline" type="radio" name="maritalStatus" [value]="1"
+                            class="custom-control-input" formControlName="maritalStatus">
+                        <label class="custom-control-label" for="radioInline">Married</label>
+                        <div class="custom-bg"></div>
+                    </div>
+                    <div class="custom-control custom-radio mr-4">
+                        <input id="radioInline2" type="radio" name="maritalStatus" [value]="2" 
+                            class="custom-control-input" formControlName="maritalStatus">
+                        <label class="custom-control-label" for="radioInline2">Single</label>
+                        <div class="custom-bg"></div>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input id="radioInline3" type="radio" name="maritalStatus" [value]="0" 
+                            class="custom-control-input" formControlName="maritalStatus">
+                        <label class="custom-control-label" for="radioInline3">Not Specified</label>
+                        <div class="custom-bg"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div mat-dialog-actions>
+    <button type="button"
+            class="btn btn-primary"
+            [disabled]="f.hasError('required')"
+            (click)="saveEmployeeContactInfo()">
+        {{hasEditPermissions ? 'Save' : 'Request Change'}}
+    </button>
+    <button type="button"
+            class="btn btn-cancel"
+            (click)="onNoClick()">
+        Cancel
+    </button>
+</div>

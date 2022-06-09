@@ -1,0 +1,176 @@
+<div [formGroup]="filterForm">
+  <ng-container *ngIf="reportParamSvc.reportParams$ | async"></ng-container>
+  <ds-card border="top" mode="nav" color="primary">
+    <ds-card-header>
+      <ds-card-header-title>
+        Performance Manager
+      </ds-card-header-title>
+      <ds-card-bread-crumb>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">Performance</li>
+            <li class="breadcrumb-item active" aria-current="page">Performance Manager</li>
+          </ol>
+        </nav>
+      </ds-card-bread-crumb>
+      <ds-card-title-right-content>
+        <div [@searchText]="showFilterAndSearchFields" *ngIf="showFilterAndSearchFields">
+          <div class="row align-items-end">
+            <div class="col-md-auto">
+              <div class="pm-filter hoverable">
+                <!-- Repeat this for each filter -->
+                <ng-container *ngIf="employeeFilters && employeeFilters.length; else noEmployeeFilters">
+                  <div *ngFor="let f of employeeFilters; let isLast = last;"
+                                    class="d-inline-block text-muted mr-3 font-xs"
+                                    [class.clickable]="!f.notMutable"
+                                    [class.hoverable]="!f.notMutable"
+                                    (click)="!f.notMutable && clearFilterSelection(f)"
+                                >
+                                {{f.filterName}} <i *ngIf="!f.notMutable" class="material-icons md-12 text-muted hover-show">clear</i> {{ !isLast ? '/': ''}}
+                                </div>
+                </ng-container>
+                <ng-template #noEmployeeFilters>
+                  <!-- If not enabled -->
+                  <div class="d-inline-block text-muted mr-3 font-xs">
+                    Filters Off
+                  </div>
+                </ng-template>
+                <button class="btn" [class.btn-icon-outline-primary]="filtersEnabled"
+                  [class.btn-icon-primary]="!filtersEnabled" type="button" (click)="showFilterDialog()">
+                  <i class="material-icons">filter_list</i>
+                </button>
+              </div>
+            </div>
+            <div class="col-md-auto">
+              <!-- Search -->
+              <div class="search-container float-right">
+                <label class="instruction-text font-xs">
+                  <ng-container *ngIf="(searchResponse$|async) as resp; else loadingEmployeesSearchText">Search
+                    {{resp.filterCount}} of {{resp.totalCount}} employees</ng-container>
+                </label>
+                <div class="input-group">
+                  <input class="form-control" type="search" name="employeeSearch" [formControl]="searchText" />
+                  <div class="input-group-append">
+                    <button type="button" class="search">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="24" viewBox="0 0 24 24">
+                        <path
+                          d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                        <path d="M0 0h24v24H0z" fill="none" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ds-card-title-right-content>
+      <ds-card-subtitle>
+        <div class="instruction-text">Please select a date range and a review to schedule employees.</div>
+      </ds-card-subtitle>
+    </ds-card-header>
+    <ds-card-content>
+      <div *ngIf="(reviewProfsAndHasPermission$ | async) as data, else loading">
+        <div [formGroup]="filterForm">
+          <div class="row">
+            <div class="col-6 col-md-3">
+              <div class="form-group">
+                <label>Display From</label>
+                <div class="input-group">
+                  <input matInput class="form-control" [matDatepicker]="StartDatePicker" formControlName="StartDate"
+                    [max]="EndDate.value" [class.is-invalid]="StartDate.hasError('required')" />
+                  <div class="input-group-append">
+                    <mat-datepicker-toggle matSuffix [for]="StartDatePicker" class="input-group-text date">
+                      <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #StartDatePicker></mat-datepicker>
+                  </div>
+                  <div class="invalid-feedback" *ngIf="StartDate.hasError('maxDateError')">
+                    Please enter a date on or before {{EndDate.value | convertToMoment | momentFormat :
+                    momentFormatString}}
+                  </div>
+                  <div class="invalid-feedback" *ngIf="StartDate.hasError('required')">
+                    Please enter a start date.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="form-group">
+                <label>To</label>
+                <div class="input-group">
+                  <input matInput class="form-control" [matDatepicker]="EndDatePicker" formControlName="EndDate"
+                    [min]="StartDate.value" [class.is-invalid]="EndDate.hasError('required')" />
+                  <div class="input-group-append">
+                    <mat-datepicker-toggle matSuffix [for]="EndDatePicker" class="input-group-text date">
+                      <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #EndDatePicker></mat-datepicker>
+                  </div>
+                  <div class="invalid-feedback" *ngIf="EndDate.hasError('minDateError')">
+                    Please enter a date on or after {{StartDate.value | convertToMoment | momentFormat :
+                    momentFormatString}}
+                  </div>
+                  <div class="invalid-feedback" *ngIf="EndDate.hasError('required')">
+                    Please enter a to date.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 col-xl-3">
+              <div class="form-group">
+                <label class="form-control-label">Review Name</label>
+                <select class="form-control custom-select" [class.is-invalid]="ReviewCtrl.hasError('required') && isFiltered" formControlName="Review" name="reviewProfile">
+                  <option [ngValue]="null"></option>
+                  <option [ngValue]="review" *ngFor="let review of reviewTemplates"
+                    [disabled]="(data.reviewProfs[(review || {}).reviewProfileId] || {}).includePayrollRequests === false && router.url.indexOf('manage/approval') > 0">
+                    {{ review.name }}
+                  </option>
+                </select>
+                <div class="invalid-feedback" *ngIf="ReviewCtrl.hasError('required')">
+                  Please select a review template.
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-auto">
+              <div class="form-group inline-xl-control">
+                <button class="btn btn-outline-primary" (click)="applyFilter()" type="button">Filter</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ds-tabs d-none d-md-flex">
+          <a class="tab" routerLink="/performance/manage/schedule" routerLinkActive="active">Schedule Reviews</a>
+          <a class="tab" routerLink="/performance/manage/status" routerLinkActive="active">Status</a>
+          <a class="tab" routerLink="/performance/manage/analytics" routerLinkActive="active">Analytics</a>
+          <a class="tab"
+            *ngIf="UserInfoFn | canUserViewPayrollRequests : ReviewTemplatesFn : ReviewProfileSetupsFn : selectedRCR$ : doNothing : true : null : null : null | async"
+            routerLink="/performance/manage/approval" routerLinkActive="active">Payroll Requests</a>
+          <!-- <a class="tab" routerLink="/performance/manage/archive" routerLinkActive="active">Archive</a> -->
+        </div>
+        <!-- Tabs turn into a select to remain usable on devices smaller than 768px -->
+        <mat-form-field class="ds-tabs-select d-md-none w-100">
+          <mat-select role="navigation" (selectionChange)="navigateTo($event.value);" [(value)]="activeRoute">
+            <mat-option value="/performance/manage/schedule" selected>Schedule Reviews</mat-option>
+            <mat-option value="/performance/manage/status">Status</mat-option>
+            <mat-option value="/performance/manage/analytics">Analytics</mat-option>
+            <mat-option
+              *ngIf="UserInfoFn | canUserViewPayrollRequests : ReviewTemplatesFn : ReviewProfileSetupsFn : selectedRCR$ : doNothing : true : null : null : null | async"
+              value="/performance/manage/approval">Payroll Requests</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <ng-template #loading>
+        <ds-loading-message></ds-loading-message>
+      </ng-template>
+    </ds-card-content>
+  </ds-card>
+</div>
+<ng-container *ngIf="(reviewProfsAndHasPermission$ | async) as data">
+  <router-outlet></router-outlet>
+</ng-container>
+
+<!-- search text loader -->
+<ng-template #loadingEmployeesSearchText>
+  loading...
+</ng-template>

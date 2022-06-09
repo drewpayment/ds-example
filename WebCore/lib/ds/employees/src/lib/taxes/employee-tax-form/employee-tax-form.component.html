@@ -1,0 +1,332 @@
+<div mat-dialog-header>
+    <h2>
+        {{pageTitle}}
+    </h2>
+    <button type="button" class="close" (click)="onNoClick()">
+        <mat-icon>clear</mat-icon>
+    </button>
+    <div class="dialog-subtitle" *ngIf="this.use2020FederalForm">
+        <div class="instruction-text">
+            If you need assistance completing this form, please reference the <button class="btn btn-anchor" (click)="viewOriginalForm()"> {{currentYear}} Federal W4 form</button>.
+        </div>
+    </div>
+</div>
+<div mat-dialog-content>
+    <form *ngIf="this.use2020FederalForm == false" [formGroup]="f">
+        <!-- <div class="row">
+            <div class="col-12">
+                If you need assistance completing this form, please <button class="btn btn-anchor" (click)="viewOriginalForm()">view the 2019 Federal W4 form</button>.
+            </div>
+        </div> -->
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-control-label">Filing Status</label>
+                    <select [class.is-invalid]="getFormControlError('maritalStatus', ['required'])"
+                            class="form-control custom-select"
+                            formControlName="maritalStatus"
+                            (change)="filingOptionChange()"
+                            required cdkFocusInitial>
+                        <option *ngFor="let maritalStatus of maritalStatusList" [value]="maritalStatus.filingStatus">{{maritalStatus.description}}</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a filing status.
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-control-label">Exemptions</label>
+                    <input type="number"
+                           [class.is-invalid]="getFormControlError('exemptions', ['required', 'pattern'])"
+                           class="form-control"
+                           formControlName="exemptions"
+                           required />
+                    <div class="invalid-feedback" *ngIf="f.controls.exemptions.errors?.required">
+                        Please enter an exemption.
+                    </div>
+                    <div class="invalid-feedback" *ngIf="f.controls.exemptions.errors?.pattern">
+                        Please enter a valid exemption.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-control-label">Additional Percent</label>
+                    <div class="input-group">
+                        <input type="number"
+                               [class.is-invalid]="getFormControlError('percent', ['required', 'pattern'])"
+                               class="form-control"
+                               formControlName="percent"
+                               required />
+                        <div class="input-group-append">
+                            <span class="input-group-text percent">%</span>
+                        </div>
+                        <div class="invalid-feedback" *ngIf="f.controls.percent.errors?.required">
+                            Please enter a percent.
+                        </div>
+                        <div class="invalid-feedback" *ngIf="f.controls.percent.errors?.pattern">
+                            Please enter a valid percent.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-control-label">Additional Flat</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text currency">$</span>
+                        </div>
+                        <input type="number"
+                               [class.is-invalid]="getFormControlError('flat', ['required', 'pattern'])"
+                               class="form-control"
+                               formControlName="flat"
+                               required />
+                        <div class="invalid-feedback" *ngIf="f.controls.flat.errors?.required">
+                            Please enter a flat.
+                        </div>
+                        <div class="invalid-feedback" *ngIf="f.controls.flat.errors?.pattern">
+                            Please enter a valid flat.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form *ngIf="this.use2020FederalForm" [formGroup]="fed2020FormGroup">
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-control-label">Filing Status</label>
+                    <select formControlName="maritalStatus"
+
+                            [class.is-invalid]="(fed2020FormGroup.controls['maritalStatus'].touched || formSubmitted) && fed2020FormGroup.controls['maritalStatus'].invalid"
+                            class="form-control custom-select"
+                            required #maritalStatus>
+                        <option *ngFor="let maritalStatus of maritalStatusList" [value]="maritalStatus.filingStatus">{{maritalStatus.description}}</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a filing status.
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="col-6">
+                <div class="form-group">
+                    <label class="form-control-label">Exemptions</label>
+                    <input type="number"
+                           [class.is-invalid]="getFormControlError('exemptions', ['required', 'pattern'])"
+                           class="form-control"
+                           formControlName="exemptions"
+                           required />
+                    <div class="invalid-feedback" *ngIf="f.controls.exemptions.errors?.required">
+                        Please enter an exemption.
+                    </div>
+                    <div class="invalid-feedback" *ngIf="f.controls.exemptions.errors?.pattern">
+                        Please enter a valid exemption.
+                    </div>
+                </div>
+            </div> -->
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <div class="custom-control custom-checkbox">
+                        <input class="custom-control-input" type="checkbox" formControlName="hasMoreThanOneJob" id="hasMoreThanOneJobCheck"/>
+                        <label class="custom-control-label" for="hasMoreThanOneJobCheck">
+                            Check this box if you (1) hold more than one job at a time, or (2) are married filing jointly and your spouse also works.
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="custom-control custom-checkbox">
+                    <input class="custom-control-input" type="checkbox"
+                        (click)="this.toggleDependentsQuestions($event.target.checked)" id="dependentsQuestion" />
+                    <label class="custom-control-label" for="dependentsQuestion">
+                        Check this box if your income will be $200,000 or less ($400,000 or less if married filing jointly).
+                    </label>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-12">
+                <div for="" class="form-control-label">Do you have any other adjustments?</div>
+                <div for="" class="instruction-text mb-2">This includes non-job income, deductions, or extra tax withholdings.</div>
+                <div class="form-group inline-radio">
+                    <div class="custom-control custom-radio custom-control-bg primary">
+                        <input id="adjustmentsyes" type="radio" name="otheradjustments" value="true" (change)="toggleHasAdjusments(true)" [checked]="hasAdjusments"
+                            class="custom-control-input">
+                        <label class="custom-control-label" for="adjustmentsyes">Yes</label>
+                        <div class="custom-bg"></div>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-bg primary">
+                        <input id="adjustmentsno" type="radio" name="otheradjustments" value="false" (change)="toggleHasAdjusments(false)" [checked]="!hasAdjusments" class="custom-control-input">
+                        <label class="custom-control-label" for="adjustmentsno">No</label>
+                        <div class="custom-bg"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="this.showDependentsQuestions" class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-control-label">Enter the number of qualifying children under 17 you are claiming</label>
+                    <input
+                        type="number"
+                        class="form-control"
+                        [ngClass]="{'is-invalid': fed2020FormGroup.controls['qualifyingChildren'].hasError('pattern') && fed2020FormGroup.controls['qualifyingChildren'].touched}"
+                        formControlName="qualifyingChildren"
+                    />
+                    <div class="invalid-feedback" *ngIf="fed2020FormGroup.controls['qualifyingChildren'].hasError('pattern') && fed2020FormGroup.controls['qualifyingChildren'].touched">
+                        Please enter a valid number of qualifying children.
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-control-label">Enter the number of other dependents you are claiming</label>
+                    <input
+                        type="number"
+                        class="form-control"
+                        [ngClass]="{'is-invalid': fed2020FormGroup.controls['otherDependents'].hasError('pattern') && fed2020FormGroup.controls['otherDependents'].touched}"
+                        formControlName="otherDependents"
+                    />
+                    <div class="invalid-feedback" *ngIf="fed2020FormGroup.controls['otherDependents'].hasError('pattern') && fed2020FormGroup.controls['otherDependents'].touched">
+                        Please enter a valid number of other dependents.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="this.hasAdjusments">
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label class="form-control-label">Enter Any Other (Non-Job) Income <span class="form-help-text">Optional</span></label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text currency">$</span>
+                            </div>
+                            <input
+                                type="number"
+                                class="form-control"
+                                [ngClass]="{'is-invalid': fed2020FormGroup.controls['otherIncome'].hasError('pattern') && fed2020FormGroup.controls['otherIncome'].touched}"
+                                formControlName="otherIncome"
+                            />
+                            <div class="invalid-feedback" *ngIf="fed2020FormGroup.controls['otherIncome'].hasError('pattern') && fed2020FormGroup.controls['otherIncome'].touched">
+                                Please enter a valid amount of other income you want tax withheld from.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label class="form-control-label">Enter Any Extra Wage Deductions <span class="form-help-text">Optional</span></label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text currency">$</span>
+                            </div>
+                            <input
+                                type="number"
+                                class="form-control"
+                                [ngClass]="{'is-invalid': fed2020FormGroup.controls['wageDeduction'].hasError('pattern') && fed2020FormGroup.controls['wageDeduction'].touched}"
+                                formControlName="wageDeduction"
+                            />
+                            <div class="invalid-feedback" *ngIf="fed2020FormGroup.controls['wageDeduction'].hasError('pattern') && fed2020FormGroup.controls['wageDeduction'].touched">
+                                Please enter a valid amount of wage deductions.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label class="form-control-label">Enter Any Additional Tax Withheld From Each Pay <span class="form-help-text">Optional</span></label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text currency">$</span>
+                            </div>
+                            <input
+                                type="number"
+                                class="form-control"
+                                [ngClass]="{'is-invalid': fed2020FormGroup.controls['extraWithholding'].hasError('pattern') && fed2020FormGroup.controls['extraWithholding'].touched}"
+                                formControlName="extraWithholding"
+                            />
+                            <div class="invalid-feedback" *ngIf="fed2020FormGroup.controls['extraWithholding'].hasError('pattern') && fed2020FormGroup.controls['extraWithholding'].touched">
+                                Please enter a valid amount of additional withholding.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <h3 class="form-group">Disclaimer and E-Signature</h3>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <div class="custom-control custom-checkbox">
+                        <input class="custom-control-input" type="checkbox" (click)="waiverCheck($event.target.checked)" id="submitWaiver"
+                        [class.is-invalid]="getFormControlError('submitWaiver', ['required'], fed2020FormGroup)"
+                        formControlName="submitWaiver" required/>
+                        <label class="custom-control-label" for="submitWaiver">Under penalties of perjury, I declare that this certificate, to the best of my knowledge and belief, is true, correct, and complete.</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-control-label">Please Enter Your First and Last Name </label>
+                    <input type="text" class="form-control"
+                    [class.is-invalid]="getFormControlError('esign', ['required'], fed2020FormGroup)"
+                    formControlName="esign" required>
+
+                    <div class="invalid-feedback" *ngIf="fed2020FormGroup.controls.esign.errors?.required">
+                        Please enter your first and last name.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div mat-dialog-actions>
+    <!-- <button type="button"
+            class="btn btn-primary"
+            [disabled]="f.hasError('required')"
+            (click)="saveEmployeeTax()">
+        Save
+    </button> -->
+    <div>
+        <button *ngIf="this.use2020FederalForm" type="button" class="btn btn-outline-primary" (click)="previewForm()">Preview Form</button>
+        <button *ngIf="this.use2020FederalForm" (click)="saveEmployeeTax()" type="button"  class="btn btn-save">
+            Submit W4
+        </button>
+        <button *ngIf="this.use2020FederalForm == false" (click)="saveEmployeeTax()" type="button"  class="btn btn-save">
+            Submit Tax Change Request
+        </button>
+    </div>
+
+    <button type="button"
+            class="btn btn-cancel"
+            (click)="onNoClick()">
+        Cancel
+    </button>
+</div>

@@ -1,0 +1,40 @@
+<ng-content *ngIf="searchOptions$|async"></ng-content>
+
+<ng-container *ngIf="isLoading">
+    <ds-card mode="noheader">
+        <ds-card-content>
+            <ds-loading-message></ds-loading-message>
+        </ds-card-content>
+    </ds-card>
+</ng-container>
+
+<ng-container *ngIf="!isLoading">
+    <div *ngIf="reviewGroups && reviewGroups.length > 0; else noReviewsFound">
+        <ds-review-group-status-view 
+            *ngFor="let group of reviewGroups; let isFirst = first" 
+            [reviewGroup]="group" 
+            [expanded]="isFirst"
+            (reviewChange)="reviewChanged($event)" 
+            (evaluationSelect)="evaluationSelected($event)"
+            [statuses]="statuses"
+            [mode]="'analytics'"
+            [allowAnalyticsView]="true"
+            [allowKanbanView]="true"
+            [csvDownloadLink]="csvDownloadLink"
+            [competencyModels]="competencyModels"
+            [allRatings]="allRatings"
+            [allFeedbackQuestions]="allFeedbackQuestions"
+            [scoreModel]="scoreModel"
+            >
+        </ds-review-group-status-view>
+    </div>
+    <ng-template #noReviewsFound>
+        <ds-card mode="noheader">
+            <ds-card-content>
+                <div class="empty-state">
+                    There are no reviews to display with the current filters selected.
+                </div>
+            </ds-card-content>
+        </ds-card>
+    </ng-template>
+</ng-container>

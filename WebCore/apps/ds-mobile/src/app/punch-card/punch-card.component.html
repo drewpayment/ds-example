@@ -1,0 +1,338 @@
+<ng-template #pageContent>
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>
+                Punch
+            </mat-card-title>
+            <mat-card-subtitle *ngIf="serverClockTime$|async" class="text-light instruction-text">
+                {{ serverClockTime$|async | date:'mediumTime' }}
+            </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+            <div [formGroup]="form" class="ds-mobile-grid">
+
+                <ng-container *ngIf="punchView != formTypes.punches && punchView != formTypes.hours">
+                    <ng-container *ngTemplateOutlet="punchType; context: { $implicit: form }"></ng-container>
+                </ng-container>
+
+                <ng-container *ngIf="showDepartment">
+                    <ng-container *ngTemplateOutlet="department; context: { $implicit: form }"></ng-container>
+                </ng-container>
+
+                <ng-container *ngIf="showCostCenter">
+                    <ng-container *ngTemplateOutlet="costCenter; context: { $implicit: form }"></ng-container>
+                </ng-container>
+
+                <ng-container *ngIf="useJobCosting">
+                    <!-- JOB COSTING -->
+                    <ng-container *ngTemplateOutlet="jobCosting; context: { $implicit: form }"></ng-container>
+                </ng-container>
+
+                <!-- INPUT PUNCHES -->
+                <ng-container *ngIf="punchView == formTypes.punches">
+                    <!-- <div class="row" *ngIf="showEarning">
+                        <ng-container *ngTemplateOutlet="punchType; context: { $implicit: form }"></ng-container>
+                    </div> -->
+
+                    <div class="row col-2">
+                        <ng-container *ngTemplateOutlet="startDate; context: { $implicit: form }"></ng-container>
+                        <ng-container *ngTemplateOutlet="startTime; context: { $implicit: form }"></ng-container>
+                    </div>
+
+                    <ng-container *ngIf="!punchDetail.shouldHideEmployeeNotes">
+                        <ng-container *ngTemplateOutlet="startPunchNote; context: { $implicit: form }"></ng-container>
+                    </ng-container>
+
+                    <div class="row col-2">
+                        <ng-container *ngTemplateOutlet="endDate; context: { $implicit: form }"></ng-container>
+                        <ng-container *ngTemplateOutlet="endTime; context: { $implicit: form }"></ng-container>
+                    </div>
+
+                    <ng-container *ngIf="!punchDetail.shouldHideEmployeeNotes">
+                        <ng-container *ngTemplateOutlet="endPunchNote; context: { $implicit: form }"></ng-container>
+                    </ng-container>
+                </ng-container>
+
+                <!-- INPUT HOURS -->
+                <ng-container *ngIf="punchView == formTypes.hours">
+                    <div class="row" *ngIf="showEarning">
+                        <ng-container *ngTemplateOutlet="clientEarning; context: { $implicit: form }"></ng-container>
+                    </div>
+
+                    <div class="row col-2">
+                        <ng-container *ngTemplateOutlet="startDate; context: { $implicit: form }"></ng-container>
+                        <ng-container *ngTemplateOutlet="hours; context: { $implicit: form }"></ng-container>
+                    </div>
+                </ng-container>
+
+                <ng-container *ngIf="!punchDetail.shouldHideEmployeeNotes && punchView != 'punches'">
+                    <ng-container *ngTemplateOutlet="employeeNote; context: { $implicit: form }"></ng-container>
+                </ng-container>
+
+            </div>
+
+            <ng-container *ngIf="punchDetail.canPunchFromIp && punchView != formTypes.hours">
+                <div class="text-center w-100 " *ngIf="punchDetail.lastPunchTime != null">
+                    Last punch recorded at: {{ formatDate(punchDetail.lastPunchTime) }}
+                </div>
+            </ng-container>
+            <ng-container *ngIf="!punchDetail.canPunchFromIp">
+                <div class="text-center text-danger w-100">
+                    Punch disabled due to invalid IP ({{punchDetail.ipAddress}})
+                </div>
+            </ng-container>
+            <ng-container *ngIf="blockPunching">
+                <div class="text-center text-danger w-100">
+                    Your Time Policy does not allow mobile punching. Please punch using a time clock.
+                </div>
+            </ng-container>
+        </mat-card-content>
+        <mat-card-actions class="d-flex justify-content-center">
+            <button type="button" mat-flat-button color="accent" class="card-submit-btn text-capitalize w-100"
+                (click)="savePunch()" [disabled]="saving || !punchDetail.canPunchFromIp || blockPunching">
+                <mat-icon>alarm_add</mat-icon>
+                <span>Punch&nbsp;
+                    <ng-container *ngIf="punchView != formTypes.hours">
+                        {{ punchDetail?.isOutPunch ? 'Out' : 'In' }}
+                    </ng-container>
+                </span>
+            </button>
+        </mat-card-actions>
+    </mat-card>
+</ng-template>
+
+<ng-container *ngIf="pageLoading; else pageContent">
+    <div class="d-flex justify-content-center">
+        <mat-spinner></mat-spinner>
+    </div>
+</ng-container>
+
+<ng-template #punchType>
+    <ng-container [formGroup]="form">
+        <mat-form-field class="row">
+            <mat-label>Punch Type</mat-label>
+            <mat-select formControlName="punchType" [required]="punchView == formTypes.normal" [compareWith]="comparePunchTypes">
+                <mat-option *ngFor="let p of punchTypes; let i = index" [value]="p.id">
+                    {{ p.name }}
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="form.controls['punchType'].hasError('required')">
+                Please select a punch type.
+            </mat-error>
+        </mat-form-field>
+    </ng-container>
+</ng-template>
+
+<ng-template #department>
+    <ng-container [formGroup]="form">
+        <mat-form-field class="row">
+            <mat-label>Department</mat-label>
+            <mat-select formControlName="department">
+                <mat-option *ngFor="let d of departments" [value]="d.clientDepartmentId">
+                    <ng-container *ngIf="!d.clientDepartmentId || d.clientDepartmentId == -1; else nameWithCode">
+                        {{ d.name }}
+                    </ng-container>
+                    <ng-template #nameWithCode>
+                        {{ d.name }} ({{ d.code }})
+                    </ng-template>
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-error *ngIf="form.get('department').hasError('required')">
+            Please select a department.
+        </mat-error>
+    </ng-container>
+</ng-template>
+
+<ng-template #costCenter>
+    <ng-container [formGroup]="form">
+        <mat-form-field class="row">
+            <mat-label>Cost Center</mat-label>
+            <mat-select formControlName="costCenter" [required]="punchDetail?.isCostCenterSelectionRequired">
+                <mat-option *ngFor="let c of costCenters" [value]="c.clientCostCenterId">
+                    <ng-container *ngIf="!c.clientCostCenterId || c.clientCostCenterId == -1; else descWithCode">
+                        {{ c.description }}
+                    </ng-container>
+                    <ng-template #descWithCode>
+                        {{ c.description }} ({{ c.code }})
+                    </ng-template>
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="form.get('costCenter').hasError('required')">
+                Please select a cost center.
+            </mat-error>
+        </mat-form-field>
+    </ng-container>
+</ng-template>
+
+<ng-template #clientEarning>
+    <ng-container [formGroup]="form">
+        <mat-form-field class="row">
+            <mat-label>Earning Type</mat-label>
+            <mat-select formControlName="clientEarning" [required]="showEarning || punchView == formTypes.hours" [compareWith]="compareClientEarnings">
+                <mat-option *ngFor="let e of earnings" [value]="e.clientEarningId">
+                    {{ e.description }}
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="form.get('clientEarning').hasError('required')">
+                Please select a client earning.
+            </mat-error>
+        </mat-form-field>
+    </ng-container>
+</ng-template>
+
+<ng-template #startDate>
+    <ng-container [formGroup]="form">
+        <mat-form-field>
+            <mat-label>Start Date</mat-label>
+            <input matInput [matDatepicker]="startDatepicker" formControlName="startDate" [min]="getMinDate()" />
+            <mat-datepicker-toggle matSuffix [for]="startDatepicker"></mat-datepicker-toggle>
+            <mat-datepicker #startDatepicker></mat-datepicker>
+            <mat-error *ngIf="form.get('startDate').hasError('minDate')">
+                Minimum date allowed is today.
+            </mat-error>
+        </mat-form-field>
+    </ng-container>
+</ng-template>
+
+<ng-template #startTime>
+    <ng-container [formGroup]="form">
+        <mat-form-field>
+            <mat-label>Time</mat-label>
+            <input matInput type="text" formControlName="startTime" placeholder="Enter Start Time" />
+            <svg matSuffix xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
+                <path d="M0 0h24v24H0z" fill="none"/>
+                <path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+            </svg>
+            <mat-error *ngIf="form.get('startTime').hasError('required')">
+                Please enter time.
+            </mat-error>
+        </mat-form-field>
+    </ng-container>
+</ng-template>
+
+<ng-template #endDate>
+    <ng-container [formGroup]="form">
+        <mat-form-field>
+            <mat-label>End Date</mat-label>
+            <input matInput [matDatepicker]="endDatepicker" formControlName="endDate" required />
+            <mat-datepicker-toggle matSuffix [for]="endDatepicker"></mat-datepicker-toggle>
+            <mat-datepicker #endDatepicker></mat-datepicker>
+        </mat-form-field>
+    </ng-container>
+</ng-template>
+
+<ng-template #endTime>
+    <ng-container [formGroup]="form">
+        <mat-form-field>
+            <mat-label>Time</mat-label>
+            <input matInput type="text" formControlName="endTime" placeholder="Enter End Time" />
+            <svg matSuffix xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
+                <path d="M0 0h24v24H0z" fill="none"/>
+                <path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+            </svg>
+            <mat-error *ngIf="form.get('endTime').hasError('required')">
+                Please enter time.
+            </mat-error>
+        </mat-form-field>
+    </ng-container>
+</ng-template>
+
+<ng-template #endPunchNote>
+    <ng-container [formGroup]="form">
+        <mat-form-field class="row">
+            <mat-label>Note</mat-label>
+            <input matInput type="text" formControlName="endPunchNote" class="form-control" placeholder="Note"
+                max-length="200" />
+        </mat-form-field>
+    </ng-container>
+</ng-template>
+
+<ng-template #startPunchNote>
+    <ng-container [formGroup]="form">
+        <mat-form-field class="row">
+            <mat-label>Note</mat-label>
+            <input matInput type="text" formControlName="startPunchNote" class="form-control" placeholder="Note"
+                max-length="200" />
+        </mat-form-field>
+    </ng-container>
+</ng-template>
+
+<ng-template #employeeNote>
+    <ng-container [formGroup]="form">
+        <mat-form-field class="row">
+            <mat-label>Note</mat-label>
+            <input matInput type="text" formControlName="employeeNote" class="form-control" placeholder="Note"
+                max-length="200" />
+        </mat-form-field>
+    </ng-container>
+</ng-template>
+
+<ng-template #hours>
+    <ng-container [formGroup]="form">
+        <mat-form-field>
+            <mat-label>Hours</mat-label>
+            <input matInput type="number" formControlName="hours" placeholder="Enter hours" />
+            <svg matSuffix xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M0 0h24v24H0z" fill="none"/>
+                <path d="M16.24 7.76C15.07 6.59 13.54 6 12 6v6l-4.24 4.24c2.34 2.34 6.14 2.34 8.49 0 2.34-2.34 2.34-6.14-.01-8.48zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
+            </svg>
+            <mat-error *ngIf="form.get('hours').hasError('required')">
+                Please enter hours worked.
+            </mat-error>
+        </mat-form-field>
+    </ng-container>
+</ng-template>
+
+<ng-template #jobCosting>
+    <ng-container [formGroup]="form">
+        <ng-container *ngFor="let jc of filteredJobCostingList; let i = index;">
+            <ng-container [ngSwitch]="jc.jobCostingTypeId">
+                <ng-container *ngSwitchCase="4">
+                    <ng-container *ngTemplateOutlet="jobCostingSelector; context: { form: form, jc: jc, formControlName: 'jobCostingCostCenter' }"></ng-container>
+                </ng-container>
+                <ng-container *ngSwitchCase="3">
+                    <ng-container *ngTemplateOutlet="jobCostingSelector; context: { form: form, jc: jc, formControlName: 'jobCostingDepartment' }"></ng-container>
+                </ng-container>
+                <ng-container *ngSwitchCase="2">
+                    <ng-container *ngTemplateOutlet="jobCostingSelector; context: { form: form, jc: jc, formControlName: 'jobCostingDivision' }"></ng-container>
+                </ng-container>
+                <ng-container *ngSwitchCase="6">
+                    <ng-container *ngIf="!jc.hideOnScreen">
+                        <ng-container *ngTemplateOutlet="jobCostingSelector; context: { form: form, jc: jc, formControlName: 'jobCostingEmployee' }"></ng-container>
+                    </ng-container>
+                </ng-container>
+                <ng-container *ngSwitchDefault>
+                    <ng-container *ngTemplateOutlet="jobCostingSelector; context: { form: form, jc: jc, formControlName: jc.formName }"></ng-container>
+                </ng-container>
+            </ng-container>
+
+        </ng-container>
+    </ng-container>
+</ng-template>
+
+<ng-template #jobCostingSelector let-form="form" let-jc="jc" let-formControlName="formControlName">
+    <ng-container [formGroup]="form">
+        <mat-form-field class="row">
+            <mat-label>{{ jc.description }}</mat-label>
+            <input matInput [matAutocomplete]="auto" [formControlName]="formControlName" [required]="jc.isRequired" />
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayJobCostingAssignment"
+                (optionSelected)="jobCostingAssignmentSelected($event, jc)">
+                <mat-option *ngFor="let jca of jc.availableAssignments$|async" [value]="jca">
+                    <ng-container *ngIf="!jca.code; else nameWithCode">
+                        {{ jca.description }}
+                    </ng-container>
+                    <ng-template #nameWithCode>
+                        {{ jca.description }} ({{ jca.code }})
+                    </ng-template>
+                </mat-option>
+            </mat-autocomplete>
+            <mat-error *ngIf="form.get(formControlName).hasError('notAnObject') || 
+                              form.get(formControlName).hasError('required')">
+                Please select a valid option.
+            </mat-error>
+        </mat-form-field>
+    </ng-container>
+</ng-template>

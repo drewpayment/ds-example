@@ -1,0 +1,64 @@
+<ng-container *ngIf="resource">
+  <img class="initial-avatar avatar-{{ size }}" [src]="resource" />
+</ng-container>
+<ng-container *ngIf="!resource">
+  <div
+    class="initial-avatar avatar-{{ size }}"
+    [ngClass]="this._color ? this._color : 'teal'"
+    *ngIf="vendor == 'false'"
+  >
+    <ng-container *ngIf="firstName">
+      {{ firstName | slice: 0:1 }}{{ lastName | slice: 0:1 }}
+    </ng-container>
+    <ng-container *ngIf="name">
+      {{ this.nameSplitFirst | slice: 0:1 }}{{ this.nameSplitLast | slice: 0:1 }}
+    </ng-container>
+  </div>
+  <ng-container *ngIf="vendor == 'true'">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      class="avatar-company"
+      [style.width]="size + 'px'"
+      [style.height]="size + 'px'"
+      viewBox="0 0 24 24"
+      version="1.1"
+    >
+      <g
+        id="Payroll-Dashboard-Revisions"
+        stroke="none"
+        stroke-width="1"
+        fill="none"
+        fill-rule="evenodd"
+      >
+        <g
+          id="Payroll-Dashboard-2-JIRA-Pay-642-04192018"
+          transform="translate(-227.000000, -869.000000)"
+        >
+          <g id="payroll-table" transform="translate(173.000000, 441.000000)">
+            <g id="photos" transform="translate(54.000000, 161.000000)">
+              <g id="vendor-icon" transform="translate(0.000000, 267.000000)">
+                <g id="vendor">
+                  <ellipse
+                    id="Oval-3-Copy-10"
+                    fill="#6D6C6C"
+                    cx="12"
+                    cy="11.8062112"
+                    rx="12"
+                    ry="11.8062112"
+                  />
+                  <path
+                    d="M12.5,8.0173913 L12.5,5.30434783 L6,5.30434783 L6,17.5130435 L19,17.5130435 L19,8.0173913 L12.5,8.0173913 Z M8.6,16.1565217 L7.3,16.1565217 L7.3,14.8 L8.6,14.8 L8.6,16.1565217 Z M8.6,13.4434783 L7.3,13.4434783 L7.3,12.0869565 L8.6,12.0869565 L8.6,13.4434783 Z M8.6,10.7304348 L7.3,10.7304348 L7.3,9.37391304 L8.6,9.37391304 L8.6,10.7304348 Z M8.6,8.0173913 L7.3,8.0173913 L7.3,6.66086957 L8.6,6.66086957 L8.6,8.0173913 Z M11.2,16.1565217 L9.9,16.1565217 L9.9,14.8 L11.2,14.8 L11.2,16.1565217 Z M11.2,13.4434783 L9.9,13.4434783 L9.9,12.0869565 L11.2,12.0869565 L11.2,13.4434783 Z M11.2,10.7304348 L9.9,10.7304348 L9.9,9.37391304 L11.2,9.37391304 L11.2,10.7304348 Z M11.2,8.0173913 L9.9,8.0173913 L9.9,6.66086957 L11.2,6.66086957 L11.2,8.0173913 Z M17.7,16.1565217 L12.5,16.1565217 L12.5,14.8 L13.8,14.8 L13.8,13.4434783 L12.5,13.4434783 L12.5,12.0869565 L13.8,12.0869565 L13.8,10.7304348 L12.5,10.7304348 L12.5,9.37391304 L17.7,9.37391304 L17.7,16.1565217 Z M16.4,10.7304348 L15.1,10.7304348 L15.1,12.0869565 L16.4,12.0869565 L16.4,10.7304348 Z M16.4,13.4434783 L15.1,13.4434783 L15.1,14.8 L16.4,14.8 L16.4,13.4434783 Z"
+                    id="Shape"
+                    fill="#FFFFFF"
+                    fill-rule="nonzero"
+                  />
+                </g>
+              </g>
+            </g>
+          </g>
+        </g>
+      </g>
+    </svg>
+  </ng-container>
+</ng-container>

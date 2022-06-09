@@ -1,0 +1,32 @@
+<mat-nav-list>
+    <mat-list-item aria-label="Chat" class="btn-chat" onclick="SnapEngage.startLink();"
+        *ngIf="isSysAdmin || isCompanyAdmin">
+        <div class="menu-spacer">
+            <mat-icon class="icon" matTooltip="Chat with a representative">question_answer</mat-icon>
+        </div>
+        <span class="menu-label slow-opacity-transition"
+            [class.slow-opacity]="isSidenavOpen && !isSideNavDrilled">Chat</span>
+    </mat-list-item>
+    <mat-list-item aria-label="Help" [matMenuTriggerFor]="helpLinks">
+        <div class="menu-spacer">
+            <mat-icon class="icon" aria-label="Side nav toggle icon" matTooltip="Help">help</mat-icon>
+        </div>
+        <span class="menu-label slow-opacity-transition"
+            [class.slow-opacity]="isSidenavOpen && !isSideNavDrilled">Help</span>
+    </mat-list-item>
+</mat-nav-list>
+
+<mat-menu #helpLinks="matMenu">
+    <a mat-menu-item href="https://live.dominionsystems.com/Payroll/Alerts/Calendar2022.pdf" target="_blank">2022
+        Calendar</a>
+    <a mat-menu-item href="https://dominionsystems.helpdocsonline.com/home" target="_blank">Online Help Documentation</a>
+    <ng-container *ngIf="this.isCompanyAdmin || this.isSysAdmin">
+        <a mat-menu-item href="https://dominionsystems.portal.zywave.com" target="_blank">HR Resource Center</a>
+    </ng-container>
+    <ng-container *ngIf="this.isCompanyAdmin">
+        <ds-work-number-trigger></ds-work-number-trigger>
+    </ng-container>
+    <ng-container *ngIf="this.isCompanyAdmin || this.isSysAdmin">
+        <a mat-menu-item (click)="openDialog()" id="TermsAndConditions">Terms and Conditions</a>
+    </ng-container>
+</mat-menu>

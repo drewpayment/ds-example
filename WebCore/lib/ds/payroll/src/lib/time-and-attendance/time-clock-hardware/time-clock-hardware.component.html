@@ -1,0 +1,95 @@
+<ds-card border="top">
+  <ds-card-header>
+        <ds-card-header-title>
+          Time Clock Hardware
+        </ds-card-header-title>
+        <ds-card-title-action>
+            <button class="btn btn-primary" 
+                type="button" 
+                (click)="showUpdateHardwareDialog(null)"
+                *ngIf="hasFullUpdateAccess">
+                <i class="material-icons">add</i> Hardware
+            </button>
+        </ds-card-title-action>
+        <ds-card-subtitle>
+            <div class="instruction-text">
+              Client ID: {{clientId}}
+            </div>
+        </ds-card-subtitle>
+      </ds-card-header>
+      <ds-card-content>
+        <div class="empty-state" *ngIf="hasFullUpdateAccess && !dataSource.data?.length">
+          Click "+ Hardware" to begin adding hardware.
+        </div>
+        <div class="card card-table" *ngIf="dataSource.data?.length > 0">
+            <div class="table-responsive">
+
+                <div class="mat-elevation-z8">
+                    <table mat-table [dataSource]="dataSource" class="table">
+                  
+                      <!-- Name Column -->
+                      <ng-container matColumnDef="description">
+                        <th mat-header-cell *matHeaderCellDef > Name </th>
+                        <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+                      </ng-container>
+                  
+                      <!--Purchase / Rental -->
+                      <ng-container matColumnDef="isRental">
+                        <th mat-header-cell *matHeaderCellDef > Purchase / Rental </th>
+                        <td mat-cell *matCellDef="let element"> {{element.isRental ? 'Rental' : 'Purchase'}} </td>
+                      </ng-container>
+
+                      <!--Serial Number Column -->
+                      <ng-container matColumnDef="serialNumber">
+                        <th mat-header-cell *matHeaderCellDef > Serial Number </th>
+                        <td mat-cell *matCellDef="let element"> {{element.serialNumber}} </td>
+                      </ng-container>
+
+                      <!-- IP Address Column -->
+                      <ng-container matColumnDef="ipAddress">
+                        <th mat-header-cell *matHeaderCellDef class="table-text-right"> IP Address </th>
+                        <td mat-cell *matCellDef="let element" class="table-text-right"> {{element.ipAddress}} </td>
+                      </ng-container>
+                      
+                      <ng-container matColumnDef="actionBtn">
+                        <th mat-header-cell *matHeaderCellDef class="td-action-icon-width"></th>
+                        <td mat-cell *matCellDef="let element" class="td-action-icon-width">
+                          <button type="button" [matMenuTriggerFor]="menu" class="btn btn-icon hover-show" type="button" *ngIf="hasPartialUpdateAccess">
+                            <mat-icon>more_vert</mat-icon>
+                          </button>
+                          <mat-menu #menu="matMenu">
+                            <button mat-menu-item (click)="showUpdateHardwareDialog(element)" type="button" *ngIf="hasPartialUpdateAccess">Edit</button>
+                            <button mat-menu-item type="button" (click)="deleteClockHardware(element)" *ngIf="hasFullUpdateAccess">Delete</button>
+                          </mat-menu>                          
+                        </td>
+                      </ng-container>
+
+                      <!-- <ng-container matColumnDef="action" stickyEnd>
+                        <th mat-header-cell *matHeaderCellDef class="td-action-icon-width mat-table-sticky-border-end d-none">
+                        </th>
+                        <td mat-cell *matCellDef="let element" class="td-action-icon-width mat-table-sticky-border-end d-none">
+                            <button [matMenuTriggerFor]="menu" class="btn btn-icon hover-show p-2" type="button">
+                                <mat-icon>more_vert</mat-icon>
+                            </button>
+                            <mat-menu #menu="matMenu">
+                                <button type="button" mat-menu-item>Action</button>
+                                <button type="button" mat-menu-item>Action</button>
+                            </mat-menu>
+                        </td>
+                    </ng-container> -->
+    
+
+
+      
+                      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                      <tr mat-row class="hoverable" *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
+                  
+                    <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+                  </div>
+                      
+
+            </div>
+        </div>
+      </ds-card-content>
+</ds-card>

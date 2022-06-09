@@ -1,0 +1,18 @@
+export interface IEmployeeDirectDepositInfo {
+    employeeId:number,
+    employeeDeductionId?: number,
+    employeeBankId?:number,
+    accountType:number,
+    nickname:string,
+    amount:number,
+    amountType: number,
+    accountName: string,
+    isPrenote?: boolean,
+    accountNumber: string,
+    maskedAccountNumber?: string,
+    routingNumber: string,
+    maskedRoutingNumber?: string,
+    sortOrderIndex:number,
+    confirmAccountNumber: string,
+    confirmRoutingNumber: string,
+}

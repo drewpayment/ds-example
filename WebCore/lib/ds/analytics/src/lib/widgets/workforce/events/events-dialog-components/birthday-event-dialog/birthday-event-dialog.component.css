@@ -1,0 +1,19 @@
+.mat-column-Name {
+    flex: 1 1 250px;
+}
+
+.mat-column-Department {
+    flex: 0 1 200px;
+}
+
+.mat-column-Cost-Center {
+    flex: 0 1 150px;
+}
+
+.mat-column-Birthdate {
+    flex: 0 0 105px;
+}
+
+.mat-column-Age {
+    flex: 0 0 70px;
+}

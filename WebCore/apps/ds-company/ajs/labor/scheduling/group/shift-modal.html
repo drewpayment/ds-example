@@ -1,0 +1,146 @@
+﻿<div class="modal-header">
+    <h2>{{ scheduleGroup.description }} Shifts</h2>
+    <button type="button" class="close" ng-click="cancel()">
+      <i class="material-icons">clear</i>
+    </button>
+</div>
+<div class="modal-body">
+
+    <div class="row">
+        <div class="col-5" >
+            <div class="form-group" ng-show="scheduleGroup.subgroups.length > 1">
+                <select class="form-control custom-select"
+                        ng-model="subgroup"
+                        ng-options="sub as (sub.name ? sub.name : 'Unassigned') for sub in scheduleGroup.subgroups | orderBy:['name']">
+                    <option value="">- Move Shifts -</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-7 d-flex justify-content-end" ng-show="subgroup">
+            <div class="form-group">
+                <div class="dropdown open-position-right" dropdown>
+                    <button type="button" class="btn btn-outline-primary dropdown-toggle" dropdown-toggle
+                        ng-click="$event.stopPropagation()">
+                        <i class="material-icons">add</i> Day
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" role="menu">
+                            <button type="button" class="dropdown-item w-100" ng-repeat="day in week.$days" id="{{ day.$moment.format('ddd') }}"
+                            ng-click="addShift(day.$dayOfWeek)" ng-disabled="!subgroup">
+                            {{ day.$moment.format('dddd')}}
+                            </button>
+                    </div>
+                </div>
+            </div>
+        </div>        
+    </div>
+
+    <div class="shift-editor overflow-list overflow-auto" style="max-height: 300px;" ng-form="masterForm">
+        <div ng-if="!shiftsActive || shiftsActive.length == 0" class="empty-state">Please add a shift using "+ Day" button.</div>
+        <div ng-repeat="shift in activeShifts()">
+            <div class="form-row justify-content-center" ng-form="shiftForm">
+
+                <div class="col-auto">
+                    <div class="form-group" ng-show="!subgroup">
+                        <select class="custom-select form-control"
+                                ng-class="{'input-sm': !subgroup}"
+                                ng-model="shift.$selectedSubgroup"
+                                ng-change="switchShiftSubgroup(shift)"
+                                ng-options="sub as (sub.name ? sub.name : 'Unassigned') for sub in scheduleGroup.subgroups | orderBy:['name']"></select>
+                    </div>
+                 </div>
+                <div class="col-auto">
+                    <div class="form-group">
+                        <select class="custom-select form-control"
+                                ng-class="{'input-sm': !subgroup}"
+                                ng-model="shift.dayOfWeek"
+                                ng-disabled="!subgroup"
+                                ng-options="day.$dayOfWeek as day.$moment.format('dddd') for day in week.$days"></select>
+                    </div>
+                </div>
+                <div class="col-auto">
+
+                    <div class="form-row">
+                        <div class="col-auto">
+                            <div class="form-group" ng-class="{ 'is-invalid': shiftForm.startTime.$invalid && (shiftForm.startTime.$dirty || masterForm.$validationSubmitted) }">
+                                <div class="input-group time" ng-class="{'input-group-sm': !subgroup}">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text schedule">
+                                            <i class="material-icons">schedule</i>
+                                        </span>
+                                    </div>
+                                    <input name="startTime"
+                                           type="text"
+                                           class="form-control time-picker"
+                                           placeholder="Start"
+                                           ng-model="shift.$startMoment"
+                                           ng-blur="shift.syncTimes()"
+                                           ng-disabled="!subgroup"
+                                           ds-auto-focus="shift.$active"
+                                           moment-time-input
+                                           moment-validate />
+                                    <span class=" px-2 py-1">
+                                        to
+                                    </span>
+                                    <input name="endTime"
+                                           type="text"
+                                           class="form-control time-picker"
+                                           placeholder="End"
+                                           ng-model="shift.$endMoment"
+                                           ng-blur="shift.syncTimes()"
+                                           ng-disabled="!subgroup"
+                                           moment-time-input
+                                           moment-meridiem-default="PM"
+                                           moment-validate />
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <div class="form-group">
+                        <div ng-class="{ 'is-invalid': shiftForm.numberOfEmployees.$invalid && (shiftForm.numberOfEmployees.$dirty || masterForm.$validationSubmitted) }">
+                            <div class="input-group" ng-class="{'input-group-sm': !subgroup}">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text person">
+                                        <i class="material-icons">person</i>
+                                    </span>
+                                </div>
+                                <input name="numberOfEmployees"
+                                       class="form-control employee-count"
+                                       ng-model="shift.numberOfEmployees"
+                                       ng-disabled="!subgroup"
+                                       ds-number
+                                       number-validate
+                                       number-mask
+                                       number-required
+                                       number-min="1"
+                                       number-max="99"
+                                       number-decimals="0" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-auto" ng-show="subgroup">
+                    <button class="btn btn-primary" title="Add Shift" ng-click="!subgroup || addShift(shift.dayOfWeek)">
+                        <i class="material-icons">add</i>
+                    </button>
+                </div>
+                <div class="col-auto" ng-show="subgroup" >
+                    <a href="" class="btn btn-link" title="Copy Shift"ng-click="!subgroup || duplicateShift(shift)">
+                        <i class="material-icons">content_copy</i> Copy
+                    </a>
+                </div>
+                <div class="col-auto" ng-show="subgroup" >
+                    <a href="" class="btn btn-link" ng-click="!subgroup || subgroup.removeShift(shift)" ng-if="subgroup">
+                        <i class="material-icons">clear</i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer flex-row-reverse">
+    <button class="btn btn-save" ds-validation-submit="masterForm" ng-click="save()">Continue</button>
+    <button class="btn btn-cancel" ng-click="cancel()">Cancel</button>
+</div>

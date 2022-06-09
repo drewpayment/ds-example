@@ -1,0 +1,43 @@
+<ds-card mode="noheader">
+  <ds-card-content>
+    <form [formGroup]="form">
+      <div class="row">
+          <div class="col-md-6">
+              <div class="form-group">
+                  <label>Favorite Bill Murray Movies</label>
+                  <mat-form-field class="form-control">
+                    <mat-chip-list #chipList>
+                      <mat-chip
+                        *ngFor="let m of selectedMovies"
+                        removable="true"
+                        disableRipple="true"
+                        (removed)="remove(m)">
+                        {{m}}
+                        <mat-icon matChipRemove>clear</mat-icon>
+                      </mat-chip>
+                      <input
+                        #input
+                        [formControl]="movieName"
+                        [matAutocomplete]="auto"
+                        [matChipInputFor]="chipList"
+                        (matChipInputTokenEnd)="add($event)"
+                        #trigger="matAutocompleteTrigger">
+                    </mat-chip-list>
+                  </mat-form-field>
+                  <mat-autocomplete 
+                    autoActiveFirstOption 
+                    #auto="matAutocomplete" 
+                    (optionSelected)="selected($event)">
+                    <mat-option 
+                      *ngFor="let m of filteredMovies | async"
+                      [value]="m.movie"
+                      (click)="selectOption($event, trigger)">
+                      {{m.movie}}
+                    </mat-option>
+                  </mat-autocomplete>
+              </div>
+          </div>
+      </div>
+    </form>
+  </ds-card-content>
+</ds-card>

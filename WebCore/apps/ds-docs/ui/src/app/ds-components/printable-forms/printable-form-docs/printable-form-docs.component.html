@@ -1,0 +1,35 @@
+<markdown ngPreserveWhitespaces>
+  # Printable Form Elements
+
+  ## Behavior
+  A window should pop out with the print function triggered. Once the user prints, the pop out window would close. Baseline size is 950 wide by 650 high.
+
+  Headers will show in the UI as a dark header. This option is turned off for printing to save the user ink.
+
+  ## Overall Structure
+  `.print-header` adds the background color to allow for multiple UI elements. There is no spacing on the sides of the document. It will be covered by print margins. 
+  <br/>
+  Supported elements have been styled to look like the printed version in a web enviornment. 
+</markdown>
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="togglePrint = !togglePrint">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="togglePrint">
+  <div class="ui">
+    <ds-printable-form></ds-printable-form>
+  </div>
+  <div class="example">
+    <markdown src="app/ds-components/printable-forms/printable-form/printable-form.component.html"></markdown>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+|Class                        | Effect                                                                                          |
+|-----------------------------|-------------------------------------------------------------------------------------------------|
+|`.break-avoid`               | Prevents print breaks in the middle of content.                                                 |
+|`.print-page-section-group`  | Adds consistent spacing between form elements.                                                  |
+|`.print-header`              | adds dark background (or border if print bg is off). Can be used on title elements or wrap them.|
+</markdown>

@@ -1,0 +1,90 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href routerLink="../../..">Profile</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href routerLink="../..">Emergency Contacts</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Add/Edit</li>
+    </ol>
+</nav>
+
+<ng-template #showPageContent>
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>{{pageTitle}}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div [formGroup]="form">
+                <div class="ds-mobile-grid col-2 form-group">
+                    <div class="row col-2">
+                        <mat-form-field>
+                            <mat-label>First Name</mat-label>
+                            <input type="text" matInput formControlName="firstName" />
+                            <mat-error *ngIf="form.get('firstName').hasError">
+                                First name is required.
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field>
+                            <mat-label>Last Name</mat-label>
+                            <input type="text" matInput formControlName="lastName" />
+                            <mat-error *ngIf="form.get('lastName').hasError">
+                                Last name is required.
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <mat-form-field class="row">
+                        <mat-label>Relationship</mat-label>
+                        <input type="text" matInput formControlName="relationship" />
+                        <mat-error *ngIf="form.get('relationship').hasError">
+                            Relationship is required.
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="row">
+                        <mat-label>Home Phone</mat-label>
+                        <input type="text" matInput formControlName="homePhone" 
+                            mask="000-000-0000" [dropSpecialCharacters]="false" />
+                        <mat-error *ngIf="form.get('homePhone').hasError('oneRequired')">
+                            Please enter at least one phone number.
+                        </mat-error>
+                        <mat-error *ngIf="form.get('homePhone').hasError('pattern')">
+                            Please enter a valid phone number.
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="row">
+                        <mat-label>Mobile Phone</mat-label>
+                        <input type="text" matInput formControlName="mobilePhone"
+                            mask="000-000-0000" [dropSpecialCharacters]="false" />
+                        <mat-error *ngIf="form.get('mobilePhone').hasError('oneRequired')">
+                            Please enter at least one phone number.
+                        </mat-error>
+                        <mat-error *ngIf="form.get('mobilePhone').hasError('pattern')">
+                            Please enter a valid phone number.
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="row">
+                        <mat-label>Email</mat-label>
+                        <input type="text" matInput formControlName="email" />
+                        <mat-error *ngIf="form.get('email').hasError">
+                            Please enter a valid email.
+                        </mat-error>
+                    </mat-form-field>
+
+                </div>
+            </div>
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-flat-button color="accent" (click)="saveContact()" [disabled]="clicked"> 
+                <mat-icon>group_add</mat-icon>
+                {{ hasEditPermissions === true ? 'Save' : 'Request Change' }}
+            </button>
+        </mat-card-actions>
+    </mat-card>
+</ng-template>
+<ng-container *ngIf="isLoading$|async as isLoading; else showPageContent">
+    <div class="d-flex justify-content-center">
+        <mat-spinner></mat-spinner>
+    </div>
+</ng-container>

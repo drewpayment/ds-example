@@ -1,0 +1,269 @@
+<ng-container *ngIf="initLists$ | async"></ng-container>
+<ng-container *ngIf="changeClient$ | async"></ng-container>
+<ds-card border="top">
+    <ds-card-header>
+      <ds-card-header-title>
+          AR Reporting
+      </ds-card-header-title>
+    </ds-card-header>
+
+    <ds-card-content>
+        <div [formGroup]="reportFormGroup" class="row">
+            <div class="col-xl-8">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="form-group">
+                            <label class="form-control-label">Report</label>
+                            <select class="custom-select form-control"
+                                    formControlName="report"
+                                    (change)="changeReport()"
+                                    required
+                                    dsFormControlValidator
+                                    [dsFormControlSubmitted]="formSubmitted"
+                            >
+                                <option *ngFor="let report of reports" [value]="report.arReportId">{{report.name}}</option>
+                            </select>
+                            <div class="invalid-feedback">
+                                Please select a report.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" *ngIf="formControlObject.clientDropdown">
+                    <div class="col-lg-8">
+                        <div class="form-group">
+                            <label class="form-control-label">Client</label>
+                            <ds-client-selector [clientSelectorFormGroup]="reportFormGroup" [options]="clients" [defaultOption]="defaultOption"></ds-client-selector>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" *ngIf="formControlObject.manualInvoiceDropdown">
+                    <div class="col-xl-8">
+                        <div class="form-group">
+                            <label class="form-control-label">Invoice</label>
+                            <select class="custom-select form-control" formControlName="manualInvoice">
+                                <option *ngFor="let manualInvoice of manualInvoices" [value]="manualInvoice.arManualInvoiceId">{{manualInvoice.invoiceNumAndDate}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" *ngIf="formControlObject.dateRange">
+                    <div class="col-sm-6 col-md-4 col-xl-3">
+                        <div class="form-group">
+                            <label class="form-control-label">Start Date</label>
+                            <div class="input-group">
+                                <input matInput
+                                    class="form-control"
+                                    [matDatepicker]="startDatePicker"
+                                    formControlName="StartDate"
+                                    required name="startDatePicker"
+                                    [max]="EndDate.value"
+                                    required
+                                    dsFormControlValidator
+                                    [dsFormControlSubmitted]="formSubmitted"
+                                />
+                                <div class="input-group-append">
+                                    <mat-datepicker-toggle matSuffix [for]="startDatePicker" class="input-group-text date">
+                                        <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #startDatePicker></mat-datepicker>
+                                </div>
+                                <div class="invalid-feedback" *ngIf="StartDate?.hasError('required')">
+                                    Please enter a valid start date.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-4 col-xl-3">
+                        <div class="form-group">
+                            <label class="form-control-label">End Date</label>
+                            <div class="input-group">
+                                <input matInput
+                                    class="form-control"
+                                    [matDatepicker]="endDatePicker"
+                                    formControlName="EndDate"
+                                    [min]="StartDate.value"
+                                    required
+                                    dsFormControlValidator
+                                    [dsFormControlSubmitted]="formSubmitted"
+                                />
+                                <div class="input-group-append">
+                                    <mat-datepicker-toggle matSuffix [for]="endDatePicker" class="input-group-text date">
+                                        <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #endDatePicker></mat-datepicker>
+                                </div>
+                                <div class="invalid-feedback">
+                                    Please enter a valid end date.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" *ngIf="formControlObject.billingItemDropdown">
+                    <div class="col-lg-8">
+                        <div class="form-group">
+                            <label class="form-control-label">Billing Item</label>
+                            <select class="custom-select form-control" formControlName="billingItem">
+                                <option *ngFor="let billingItemDescription of billingItemDescriptions"
+                                                [value]="billingItemDescription.billingItemDescriptionId">
+                                                {{billingItemDescription.description}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" *ngIf="formControlObject.payrollDropdown">
+                    <div class="col-lg-8">
+                        <div class="form-group">
+                            <label class="form-control-label">Payroll</label>
+                            <select class="custom-select form-control" formControlName="payroll">
+                                <option *ngFor="let payroll of payrolls" [value]="payroll.payrollId">{{payroll.checkDateDesc}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" *ngIf="formControlObject.reportTypeDropdown">
+                    <div class="col-sm-6 col-md-4 col-xl-3">
+                        <div class="form-group">
+                            <label class="form-control-label">Report Type</label>
+                            <select class="custom-select form-control" formControlName="reportType">
+                                <option value="1">Summary</option>
+                                <option value="0">Detail</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" *ngIf="formControlObject.agingControls">
+                    <div class="col-sm-6 col-md-4 col-xl-3">
+                        <div class="form-group">
+                            <label class="form-control-label">Aging Date</label>
+                            <div class="input-group">
+                                <input matInput
+                                    class="form-control"
+                                    [matDatepicker]="agingDatePicker"
+                                    formControlName="agingDate"
+                                    required name="agingDatePicker"
+                                    required
+                                    dsFormControlValidator
+                                    [dsFormControlSubmitted]="formSubmitted"
+                                />
+                                <div class="input-group-append">
+                                    <mat-datepicker-toggle matSuffix [for]="agingDatePicker" class="input-group-text date">
+                                        <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #agingDatePicker></mat-datepicker>
+                                </div>
+                                <div class="invalid-feedback">
+                                    Please enter a valid aging date.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-4 col-xl-3">
+                        <div class="form-group">
+                            <label class="form-control-label">Aging Period</label>
+                            <select class="custom-select form-control" formControlName="agingPeriod">
+                                <option value="0">0</option>
+                                <option value="30">30</option>
+                                <option value="60">60</option>
+                                <option value="90">90</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <ng-container *ngIf="formControlObject.gainsLossesControls">
+                    <div class="row" >
+                        <div class="col-sm-6 col-md-4 col-xl-3">
+                            <div class="form-group">
+                                <label class="form-control-label">Lookback Date</label>
+                                <div class="input-group">
+                                    <input matInput
+                                        class="form-control"
+                                        [matDatepicker]="lookbackDatePicker"
+                                        formControlName="lookbackDate"
+                                        required name="lookbackDatePicker"
+                                        required
+                                        dsFormControlValidator
+                                        [dsFormControlSubmitted]="formSubmitted"
+                                    />
+                                    <div class="input-group-append">
+                                        <mat-datepicker-toggle matSuffix [for]="lookbackDatePicker" class="input-group-text date">
+                                            <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #lookbackDatePicker></mat-datepicker>
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        Please enter a valid lookback date.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" >
+                        <div class="col-sm-6 col-md-4 col-xl-3">
+                            <div class="form-group">
+                                <label class="form-control-label">Gains / Losses</label>
+                                <select class="custom-select form-control" formControlName="gainsLosses">
+                                    <option value="0">All</option>
+                                    <option value="1">Gains</option>
+                                    <option value="-1">Losses</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-4 col-xl-3">
+                            <div class="form-group">
+                                <label class="form-control-label">Order By</label>
+                                <select class="custom-select form-control" formControlName="orderBy">
+                                    <option value="0">Client Name</option>
+                                    <option value="1">Client Code</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+
+                <div class="row">
+                    <div class="col-sm-6 col-md-4 col-xl-3">
+                        <div class="form-group">
+                            <label class="form-control-label">Format</label>
+                            <select class="custom-select form-control" formControlName="fileFormat">
+                                <option *ngFor="let fileFormat of fileFormats"
+                                        [value]="fileFormat.scheduledReportFileFormatId">
+                                        {{fileFormat.scheduledReportFileFormat}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="form-group inline-form-elements inline-control">
+                            <div class="custom-control custom-radio">
+                                <input type="radio" id="viewRadio" formControlName="saveReport" class="custom-control-input" value="false">
+                                <label class="custom-control-label" for="viewRadio">View</label>
+                            </div>
+                            <div class="custom-control custom-radio">
+                                <input type="radio" id="saveRadio" formControlName="saveReport" class="custom-control-input" value="true">
+                                <label class="custom-control-label" for="saveRadio">Save</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ds-card-content>
+    <ds-card-footer>
+        <div>
+            <button class="btn btn-outline-primary" type="button" (click)="generateAchDepositCsv()" *ngIf="formControlObject.csvExportButton">Export CSV</button>
+            <button class="btn btn-save" type="button" (click)="generateReport()">Submit</button>
+        </div>
+    </ds-card-footer>
+</ds-card>
+

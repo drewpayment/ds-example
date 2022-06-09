@@ -1,0 +1,54 @@
+﻿<div ng-show="!isLoaded">Loading Links...</div>
+<div ng-show="isLoaded">
+    <div class="container-new">
+        <div class="panel clearfix">
+            <div class="panel-body">
+                <div class="d-flex flex-wrap on-header">
+                    <div class="circle-sm on-pager">{{circleNumber}}</div>
+                    <div class="top-constant">
+                        <h1>{{currWorkflowTitle}}</h1>
+                        <p>{{description}}</p>
+                    </div>
+                </div>
+                <form name="frmLink">
+                    <div id="myForm" class="form-group">
+                            <div class="no-margin" ng-if="selectedResources.length>0">
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-5" ng-repeat="selectedResource in selectedResources">
+                                        <div class="Acme-Documents text-center">
+                                            <img src="WebCore/Images/OnboardingWorkflow/CustomLink-Teal.png" width="50px" class="form-group" style="margin-top :8px"/>
+                                            <h3 class="res-label text-truncate" data-toggle="tooltip" title="{{selectedResource.resourceName}}">
+                                                {{selectedResource.resourceName}}
+                                            </h3>
+                                            <a class="text-primary clickable res-text-label text-truncate" ng-href="{{selectedResource.source}}" target="_blank">
+                                                {{ selectedResource.source ? selectedResource.source.split('\\').pop() : ""}}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" ng-if="considerSignatureDescription">
+                                <div class="col-sm-12">
+                                    <div class="on-checkbox" ng-class="{ 'required-field' : isSoftWarned && !isCompleted}">
+                                        <span>
+                                            <input id="check" type="checkbox"
+                                               ng-model="document.isCompleted"
+                                               ng-change="changeSignatureState($event)">
+                                        </span>
+                                        <label for="check" class="form-label" >
+                                            {{signatureDescription}}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                    <hr style="height: 1px; border: none; color: lightgrey; background-color: lightgrey;" />
+                    <ds-nav-workflow-footer workflow-Hide-Next="false" workflow-Hide-Prev="false"
+                        my-Workflow="myWorkflow"
+                        on-save="$ctrl.clickSavePageData($direction)" />
+                    <br />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

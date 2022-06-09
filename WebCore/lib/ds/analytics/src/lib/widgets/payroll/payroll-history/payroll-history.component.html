@@ -1,0 +1,52 @@
+<ds-dashboard-widget [cardType]="cardType" [loaded]="loaded" skeleton="table-view-skeleton">
+    <ds-dashboard-widget-header [title]="title">
+    </ds-dashboard-widget-header>
+    
+    <ds-dashboard-widget-content>
+        <div *ngIf=emptyState>
+            <div class="empty-state">
+                No data available to display
+            </div>
+        </div>
+        <div [hidden]="emptyState" class="card card-table">
+            <mat-table [dataSource]="data" color="primary" matSort>
+                <ng-container matColumnDef="payrollId">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="table-text-right"> Payroll Id </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="table-text-right">
+                        <a href='PayrollChecks.aspx?Submenu=Payroll#/payroll/{{element.payrollId}}/paycheck/list'>{{element.payrollId}} </a> </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="checkDate">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="table-text-right"> Check Date </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="table-text-right"> {{element.checkDate | date:'MM/dd/yyyy'}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="periodStart">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="table-text-right"> Period Start Date </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="table-text-right"> {{element.periodStart | date:'MM/dd/yyyy'}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="periodEnded">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="table-text-right"> Period End Date </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="table-text-right"> {{element.periodEnded | date:'MM/dd/yyyy'}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="totalGross">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="table-text-right"> Total Gross </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="table-text-right"> {{element.totalGross | currency}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="totalNet">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="table-text-right"> Total Net </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="table-text-right"> {{element.totalNet | currency}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="payrollRunDescription">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Payroll Run Type </mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.payrollRunDescription}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="acceptedDate">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="table-text-right"> Accepted Date </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="table-text-right"> {{element.isOpen ? '' :  element.runDate | date:'MM/dd/yyyy h:mm a'}} </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+            <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons></mat-paginator>
+        </div>
+    </ds-dashboard-widget-content>
+</ds-dashboard-widget>

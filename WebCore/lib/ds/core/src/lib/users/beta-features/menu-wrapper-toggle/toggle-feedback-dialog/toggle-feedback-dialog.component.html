@@ -1,0 +1,57 @@
+<div mat-dialog-header>
+    <h2 class="modal-title">
+        Give Feedback
+    </h2>
+    <button type="button" class="close" (click)="clear()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</div>
+<div mat-dialog-content>
+    <form [formGroup]="form">
+        <div class="row">
+            <div class="col-sm-12 text-center">
+                <div class="mb-4">
+                    Why are you choosing to go back to the old site design?
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="dislikeOption" checked formControlName="activeOption"
+                            class="custom-control-input" value="1" />
+                        <label class="custom-control-label" for="dislikeOption">I don't like the new look/I prefer the old look</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="difficultOption" formControlName="activeOption"
+                            class="custom-control-input"  value="2" />
+                        <label class="custom-control-label" for="difficultOption">It was difficult to find what I was looking for in the new layout</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="errorOption" formControlName="activeOption"
+                            class="custom-control-input"  value="3" />
+                        <label class="custom-control-label" for="errorOption">I kept getting errors</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="otherOption" formControlName="activeOption"
+                            class="custom-control-input"  value="4" />
+                        <label class="custom-control-label" for="otherOption">Other</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label class="form-control-label">Comments</label><span class="form-help-text">&nbsp;Optional</span>
+                    <textarea class="form-control" formControlName="comments"></textarea>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div mat-dialog-actions>
+    <button type="button" class="btn btn-save" (click)="submit()">Submit</button>
+    <button type="button" class="btn btn-cancel" (click)="clear()">Cancel</button>
+</div>

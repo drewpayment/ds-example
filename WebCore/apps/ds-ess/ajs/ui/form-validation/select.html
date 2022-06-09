@@ -1,0 +1,24 @@
+﻿<div class="form-group">
+
+    <label class="control-label">
+        <span ng-show="dsRequired" class="required-star">*</span>{{labelText}}</label>
+
+    <div>
+
+        <select
+            ng-model="dsModel"
+            class="form-control">
+            <option ng-show="dsIncludeDefaultOption" value="">{{dsDefaultOptionText}}</option>
+        </select>
+
+    </div>
+
+    <div ng-show="showMessages" class="message-area">
+
+        <div ng-repeat="error in dsMessages">
+            <span>{{error}}</span>
+        </div>
+
+    </div>
+
+</div>

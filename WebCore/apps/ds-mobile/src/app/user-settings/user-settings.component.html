@@ -1,0 +1,55 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href routerLink="..">Profile</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">User Settings</li>
+    </ol>
+</nav>
+
+<mat-card *ngIf="!isLoading">
+    <mat-card-header>
+        <mat-card-title>
+            User Settings
+        </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <div [formGroup]="form" class="ds-mobile-grid">
+            <div class="row text-muted form-group text-center">
+                Username:<span class="bold"> {{user?.userName}}</span>
+            </div>
+
+            <div class="row col-2">
+                <mat-form-field>
+                    <mat-label>First Name</mat-label>
+                    <input type="text" matInput formControlName="firstName" />
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-label>Last Name</mat-label>
+                    <input type="text" matInput formControlName="lastName" />
+                </mat-form-field>
+            </div>
+
+            <mat-form-field class="row">
+                <mat-label>Email</mat-label>
+                <input type="text" matInput formControlName="email" required />
+                <mat-error *ngIf="form.get('email').hasError">
+                    Email is required.
+                </mat-error>
+            </mat-form-field>
+        </div>
+    </mat-card-content>
+    <mat-card-actions>
+        <button type="button" mat-flat-button (click)="saveForm()" color="accent"
+            class="update-user-settings-btn text-capitalize">
+                {{changeRequestRequired ? 'Request Change' : 'Save'}}
+        </button>
+    </mat-card-actions>
+</mat-card>
+
+<ng-container *ngIf="isLoading">
+    <div class="d-flex justify-content-center">
+        <mat-spinner></mat-spinner>
+    </div>
+</ng-container>

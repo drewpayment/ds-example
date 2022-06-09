@@ -1,0 +1,26 @@
+<h1 id="overview">Overview</h1>
+<p>The following docs describe our approach to migrating from Angular JS (1x) to Angular (6+).  </p>
+<p>This is currently in <em>very</em> early phases of development, so things will probably change.  Therefore, when attempting to adopt anything here please be sure to review and discuss any changes with the team to be sure current best practices are followed and new patterns can be adopted by all. </p>
+<p>While there is much hype over the use of the <code>angular-cli</code>, our current implementation does not use it.  This is primarily due to the fact our current build relies heavily on a custom webpack config that we currently don&#39;t know how to integrate with the CLI, and the unknowns of getting the CLI working within a .NET hosted app.</p>
+<h1 id="resources">Resources</h1>
+<p>The process we&#39;ve adopted relies heavily on approaches recommended by the larger development community.  </p>
+<p>Particularly, the following resources have been very helpful:</p>
+<h2 id="ngupgrade-docs">ngUpgrade Docs</h2>
+<p><a href="https://angular.io/guide/upgrade">Official Angular ngUpgrade Documentation</a></p>
+<p><a href="https://scotch.io/@samjulien">scotch.io ngUpgrade Series</a></p>
+<p><a href="https://blog.nrwl.io/ngupgrade-in-depth-436a52298a00">ngUpgrade Examples for Various AngularJs Items</a></p>
+<h2 id="webpack-docs">WebPack Docs</h2>
+<p><a href="https://angular.io/guide/webpack">Official Angular Webpack Docs</a></p>
+<p><a href="https://medium.com/@UpgradingAJS/baby-steps-to-webpack-for-ngupgrade-535265194852">ngUpgrade Webpack Series</a></p>
+<h1 id="example">Example</h1>
+<p>Below is a working example based on the <code>hero</code> examples in the <a href="https://angular.io/guide/upgrade">Official Angular ngUpgrade Documentation</a>.  </p>
+<p><span class="text-info">Blue zones</span> are managed by AngularJs (AJS) and <span class='text-danger'>Red zones</span> are managed by Angular (NGX).</p>
+<p>View the source in the <code>Scripts\app\ngx-migration\demo</code> folder.</p>
+<div class="card border-info">
+    <div class="card-header">
+        {{ $ctrl.ajsTitle }}
+    </div>
+    <div class="card-body">
+        <demo></demo>
+    </div>
+</div>

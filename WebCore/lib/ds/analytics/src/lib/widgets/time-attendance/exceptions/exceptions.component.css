@@ -1,0 +1,5 @@
+.exception-height {
+    max-height: 540px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}

@@ -1,0 +1,51 @@
+
+<ng-container [ngSwitch]="user?.userTypeId">
+  <!-- EMPLOYEE VIEW -->
+  <ng-container *ngSwitchCase="3">
+    <ds-employee-contact-info></ds-employee-contact-info>
+    <ds-employee-bio></ds-employee-bio>
+    <ds-employee-dependents></ds-employee-dependents>
+    <ds-emergency-contact-list></ds-emergency-contact-list>
+  </ng-container>
+
+  <!-- SYSTEM ADMIN, COMPANY ADMIN OR SUPERVISOR -->
+  <ng-container *ngSwitchDefault>
+    <div class="row">
+      <div class="col-md-12">
+        <ng-container *ngTemplateOutlet="header"></ng-container>
+      </div>
+      <div class="col-md-12">
+        <ds-user-profile-form></ds-user-profile-form>
+      </div>
+    </div>
+  </ng-container>
+</ng-container>
+
+<ng-template #header>
+  <ds-card mode="nobody" border="top">
+    <div ds-card-header>
+      <ds-card-header-title>User Profile</ds-card-header-title>
+      <ds-card-title-right-content>
+        <div class="custom-control custom-checkbox" *ngIf="!isAddUserView">
+          <input type="checkbox" class="custom-control-input" id="header-check" [formControl]="includeTerminatedSearch" />
+          <label for="header-check" class="custom-control-label">
+            Include Inactive
+          </label>
+        </div>
+      </ds-card-title-right-content>
+      <div ds-card-title-action>
+        <ng-container *ngIf="userSupCanEnableEmps">
+          <button class="btn btn-primary" (click)="addUser()" *ngIf="!lastUserProfile && !isAddUserView && canResetPws()">
+            <mat-icon>add</mat-icon>
+            User
+          </button>
+
+          <button class="btn btn-outline-primary" (click)="cancel()" *ngIf="(isAddUserView || !!lastUserProfile) && canResetPws()">
+            <mat-icon>restart_alt</mat-icon>
+            Reset
+          </button>
+        </ng-container>
+      </div>
+    </div>
+  </ds-card>
+</ng-template>

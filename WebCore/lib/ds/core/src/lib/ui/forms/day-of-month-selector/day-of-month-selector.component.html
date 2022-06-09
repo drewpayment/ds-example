@@ -1,0 +1,36 @@
+<ng-container [formGroup]="form">
+  <div class="form-group">
+    <div class="d-flex">
+      <div class="form-group mb-0 mr-2">
+          <label class="form-control-label">Starts Month</label>
+          <select [ngClass]="{'is-invalid': (month.invalid && (month.touched || submitted)) || form.hasError('maxDate')}" class="form-control custom-select" formControlName="month">
+              <option></option>
+              <option [value]="month.id" *ngFor="let month of months">
+                  {{month.name}}
+              </option>
+          </select>
+          <div class="invalid-feedback" *ngIf="month.hasError('required')">
+              Please select a month.
+          </div>
+          
+      </div>
+      <div class="form-group mb-0">
+        <label class="form-control-label">Date</label>
+        <input type="number" class="form-control hoursbox" mask="99" formControlName="date" [ngClass]="{'is-invalid': (date.invalid && (date.touched || submitted)) || form.hasError('maxDate')}" step="1"/>
+          <div class="invalid-feedback" *ngIf="date.hasError('min')">
+                  Please enter a date that is greater than or equal to 1.
+          </div>
+          <div class="invalid-feedback" *ngIf="date.hasError('pattern')">
+                  Please enter a whole number.
+          </div>
+          <div class="invalid-feedback" *ngIf="date.hasError('required')">
+                  Please enter a date.
+          </div>
+      </div>
+    </div>
+    <div class="invalid-feedback d-block" *ngIf="form.hasError('maxDate')">
+        {{form.errors.maxDate}}
+    </div>
+  </div>
+</ng-container>
+<ng-container *ngIf="subscriptionManager$ | async"></ng-container>

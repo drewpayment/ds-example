@@ -1,0 +1,11 @@
+body {
+  font-family: $font-family-base;
+}
+.new-file{
+    background-image: url("../../WebCore/Images/Resources/NewFile.png");
+    background-position: center;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    min-width: 92px;
+    min-height: 109px;
+}

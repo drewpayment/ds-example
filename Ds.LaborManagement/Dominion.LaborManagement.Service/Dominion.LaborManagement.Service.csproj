@@ -1,0 +1,450 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{05BB2D58-6EC8-4C42-89F2-C653665E3846}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Dominion.LaborManagement.Service</RootNamespace>
+    <AssemblyName>Dominion.LaborManagement.Service</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Production|AnyCPU'">
+    <OutputPath>bin\Production\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Production|x86'">
+    <OutputPath>bin\x86\Production\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Production|x64'">
+    <OutputPath>bin\x64\Production\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Staging|AnyCPU'">
+    <OutputPath>bin\Staging\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Staging|x86'">
+    <OutputPath>bin\x86\Staging\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Staging|x64'">
+    <OutputPath>bin\x64\Staging\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EnhancementQA|AnyCPU'">
+    <OutputPath>bin\EnhancementQA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EnhancementQA|x86'">
+    <OutputPath>bin\x86\EnhancementQA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EnhancementQA|x64'">
+    <OutputPath>bin\x64\EnhancementQA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'MobileQA|AnyCPU'">
+    <OutputPath>bin\MobileQA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'MobileQA|x86'">
+    <OutputPath>bin\x86\MobileQA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'MobileQA|x64'">
+    <OutputPath>bin\x64\MobileQA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AutoMapper, Version=3.2.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\AutoMapper.3.2.1\lib\net40\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoMapper.Net4">
+      <HintPath>..\..\packages\AutoMapper.3.2.1\lib\net40\AutoMapper.Net4.dll</HintPath>
+    </Reference>
+    <Reference Include="Fare, Version=2.1.0.0, Culture=neutral, PublicKeyToken=ea68d375bf33a7c8, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Fare.2.1.1\lib\net35\Fare.dll</HintPath>
+    </Reference>
+    <Reference Include="FastMapper">
+      <HintPath>..\..\packages\FastMapper.1.2.0\lib\net40\FastMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="FluentValidation, Version=4.0.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\FluentValidation.4.0.0.1\lib\Net40\FluentValidation.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Omu.ValueInjecter">
+      <HintPath>..\..\packages\valueinjecter.2.3.3\lib\net35\Omu.ValueInjecter.dll</HintPath>
+    </Reference>
+    <Reference Include="Renci.SshNet, Version=2016.1.0.0, Culture=neutral, PublicKeyToken=1cee9f8bde3db106, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SSH.NET.2016.1.0\lib\net40\Renci.SshNet.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\RestSharp.105.2.3\lib\net452\RestSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10">
+      <HintPath>..\..\packages\Serilog.2.10.0\lib\net45\Serilog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Microsoft.AspNet.WebApi.Core.5.0.0\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Api\ApplicantAppHistoryService.cs" />
+    <Compile Include="Api\ApplicantTrackingHomeService.cs" />
+    <Compile Include="Api\ApplicantTrackingService.cs" />
+    <Compile Include="Api\ApplicationDisclaimerService.cs" />
+    <Compile Include="Api\ApprovalStatusService.cs" />
+    <Compile Include="Api\ClockException\ClockEmployeeExceptionService.cs" />
+    <Compile Include="Api\ClockSyncService.cs" />
+    <Compile Include="Api\FunctionalAuthorizationService.cs" />
+    <Compile Include="Api\DataServicesInjectors\IDsDataServiceClockClientService.cs" />
+    <Compile Include="Api\GeoService.cs" />
+    <Compile Include="Api\IApplicantPostingCategoriesService.cs" />
+    <Compile Include="Api\IApprovalStatusService.cs" />
+    <Compile Include="Api\ClockException\IClockEmployeeExceptionService.cs" />
+    <Compile Include="Api\IClockSyncService.cs" />
+    <Compile Include="Api\IGeoService.cs" />
+    <Compile Include="Api\ILaborManagementService.cs" />
+    <Compile Include="Api\ITimeClockHardwareService.cs" />
+    <Compile Include="Api\ITimeCardAuthorizationService.cs" />
+    <Compile Include="Api\LaborManagementService.cs" />
+    <Compile Include="Api\IIndeedXMLService.cs" />
+    <Compile Include="Api\IndeedXMLService.cs" />
+    <Compile Include="Api\Notification\ApplicantTrackingNotificationService.cs" />
+    <Compile Include="Api\Notification\IApplicantTrackingNotificationService.cs" />
+    <Compile Include="Api\Popup.cs" />
+    <Compile Include="Api\TimeClockHardwareService.cs" />
+    <Compile Include="Api\TimeCardAuthorizationService.cs" />
+    <Compile Include="Internal\Notification\ApplicantTrackingSubmittedApplicationNotificationBuilder.cs" />
+    <Compile Include="Internal\Notification\ApplicantTrackingPostingOwnerApplicantNoteNotificationBuilder.cs" />
+    <Compile Include="Internal\ClockException\ClockEmployeeExceptionProvider.cs" />
+    <Compile Include="Internal\ClockException\IClockEmployeeExceptionProvider.cs" />
+    <Compile Include="Internal\Providers\ApplicantTrackingProvider.cs" />
+    <Compile Include="Internal\Providers\ClockSyncProvider.cs" />
+    <Compile Include="Internal\Providers\IClockSyncProvider.cs" />
+    <Compile Include="Internal\Providers\GeoProvider.cs" />
+    <Compile Include="Internal\Providers\IApplicantTrackingProvider.cs" />
+    <Compile Include="Internal\Providers\IGeoProvider.cs" />
+    <Compile Include="Internal\Providers\ITimeCardAuthorizationProvider.cs" />
+    <Compile Include="Internal\Providers\TimeCardAuthorizationProvider.cs" />
+    <Compile Include="Internal\Security\ClockActionTypeRegulator.cs" />
+    <Compile Include="Internal\Security\Filter\IFilterWithBusinessApiSession.cs" />
+    <Compile Include="Internal\Security\Filter\IndeedAuthorizationFilter.cs" />
+    <Compile Include="Internal\Security\Filter\EnsureRequestIsFromIndeedAttribute.cs" />
+    <Compile Include="Internal\Providers\IIndeedApplicationProvider.cs" />
+    <Compile Include="Internal\Providers\IXMLDataService.cs" />
+    <Compile Include="Internal\Providers\IXMLGeneratorService.cs" />
+    <Compile Include="Internal\Providers\IndeedXMLDataService.cs" />
+    <Compile Include="Internal\Providers\IndeedXMLGeneratorService.cs" />
+    <Compile Include="Internal\Indeed\IndeedXmlJobPost.cs" />
+    <Compile Include="Internal\CustomMultipartFormDataStreamProvider.cs" />
+    <Compile Include="Internal\Notification\ApplicantTrackingCorrespondenceNotificationBuilder.cs" />
+    <Compile Include="Internal\Notification\ApplicantTrackingHiringWorkflowTaskNotificationBuilder.cs" />
+    <Compile Include="Internal\Notification\ApplicantTrackingPostingOwnerNotificationBuilder.cs" />
+    <Compile Include="Internal\Providers\ApplicantTrackingAuthProvider.cs" />
+    <Compile Include="Internal\Providers\ApplicantTrackingHomeProvider.cs" />
+    <Compile Include="Internal\Providers\EmployeeLaborManagementProvider.cs" />
+    <Compile Include="Internal\Providers\IApplicantTrackingAuthProvider.cs" />
+    <Compile Include="Internal\Providers\IApplicantTrackingHomeProvider.cs" />
+    <Compile Include="Internal\Providers\IndeedApplicationProvider.cs" />
+    <Compile Include="Internal\Providers\IEmployeeLaborManagementProvider.cs" />
+    <Compile Include="Internal\Providers\ILaborManagementProvider.cs" />
+    <Compile Include="Internal\Providers\LaborManagementProvider.cs" />
+    <Compile Include="Internal\Security\ClockActionType.cs" />
+    <Compile Include="Api\DataServicesInjectors\IDsDataServicesClockService.cs" />
+    <Compile Include="Api\EmployeeLaborManagementService.cs" />
+    <Compile Include="Api\ClockService.cs" />
+    <Compile Include="Api\GroupScheduleService.cs" />
+    <Compile Include="Api\IClockAuthorizer.cs" />
+    <Compile Include="Api\IEmployeeLaborManagementService.cs" />
+    <Compile Include="Api\IClockService.cs" />
+    <Compile Include="Api\IGroupScheduleService.cs" />
+    <Compile Include="Api\ApplicantPostingCategoriesService.cs" />
+    <Compile Include="Internal\AuthorizationStreamExtensions.cs" />
+    <Compile Include="Internal\Providers\EmployeePunchProvider.cs" />
+    <Compile Include="Internal\Providers\GroupScheduleProvider.cs" />
+    <Compile Include="Internal\Providers\IEmployeePunchProvider.cs" />
+    <Compile Include="Internal\Providers\IGroupScheduleProvider.cs" />
+    <Compile Include="Internal\Providers\IJobCostingProvider.cs" />
+    <Compile Include="Internal\Providers\IScheduleGroupProvider.cs" />
+    <Compile Include="Internal\Providers\ISchedulingProvider.cs" />
+    <Compile Include="Internal\Providers\JobCostingProvider.cs" />
+    <Compile Include="Internal\Providers\ScheduleGroupProvider.cs" />
+    <Compile Include="Internal\Providers\SchedulingProvider.cs" />
+    <Compile Include="Internal\Security\AppliantTracking\ApplicantTrackingActionType.cs" />
+    <Compile Include="Internal\Security\AppliantTracking\ApplicantTrackingActionTypeRegulator.cs" />
+    <Compile Include="Internal\Security\BudgetingActionType.cs" />
+    <Compile Include="Internal\Security\LaborManagementActionType.cs" />
+    <Compile Include="Internal\Security\BudgetingActionTypeRegulator.cs" />
+    <Compile Include="Internal\Security\LaborManagementActionTypeRegulator.cs" />
+    <Compile Include="Internal\Validation\ClockClientExceptionDetailValidator.cs" />
+    <Compile Include="Internal\Validation\ClockClientExceptionValidator.cs" />
+    <Compile Include="Internal\Validation\ClockClientHolidayDetailValidator.cs" />
+    <Compile Include="Internal\Validation\ClockClientHolidayValidator.cs" />
+    <Compile Include="Internal\Validation\ClockClientNoteValidator.cs" />
+    <Compile Include="Internal\Validation\ClockClientOvertimeValidator.cs" />
+    <Compile Include="Mapping\IndeedApplicationMaps.cs" />
+    <Compile Include="Mapping\AppHistoryMaps.cs" />
+    <Compile Include="Internal\Validation\ILaborManagementValidationProvider.cs" />
+    <Compile Include="Internal\Validation\LaborManagementValidationProvider.cs" />
+    <Compile Include="Mapping\ApplicantApplicationHeaderMaps.cs" />
+    <Compile Include="Mapping\ApplicantEducationHistoryMapper.cs" />
+    <Compile Include="Mapping\ApplicantSkillMapper.cs" />
+    <Compile Include="Mapping\ApplicantLicenseMapper.cs" />
+    <Compile Include="Mapping\ApplicantTrackingMaps.cs" />
+    <Compile Include="Mapping\ClientMaps.cs" />
+    <Compile Include="Mapping\ClockClientTimePolicyMaps.cs" />
+    <Compile Include="Mapping\ClientCostCenterMaps.cs" />
+    <Compile Include="Mapping\Clock\ClockClientExceptionDetailMaps.cs" />
+    <Compile Include="Mapping\Clock\ClockClientExceptionMaps.cs" />
+    <Compile Include="Mapping\Clock\ClockClientHolidayMaps.cs" />
+    <Compile Include="Mapping\Clock\ClockClientLunchMaps.cs" />
+    <Compile Include="Mapping\Clock\ClockClientOvertimeMaps.cs" />
+    <Compile Include="Mapping\Clock\ClockClientNoteMaps.cs" />
+    <Compile Include="Mapping\Clock\ClockClientRulesMaps.cs" />
+    <Compile Include="Mapping\ClockClientScheduleMaps.cs" />
+    <Compile Include="Mapping\Clock\ClockEmployeeBenefitMaps.cs" />
+    <Compile Include="Mapping\Clock\ClockEmployeePunchMaps.cs" />
+    <Compile Include="Mapping\Clock\ClockEmployeeScheduleMaps.cs" />
+    <Compile Include="Mapping\Clock\ClockExceptionMaps.cs" />
+    <Compile Include="Mapping\GroupScheduleMaps.cs" />
+    <Compile Include="Mapping\SchedulingMaps.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Ds.Authentication\Dominion.Authentication\Dominion.Authentication.csproj">
+      <Project>{ED5A134A-EE92-4158-8B72-F0915A7D6B84}</Project>
+      <Name>Dominion.Authentication</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Ds.Core\Dominion.Core.Dto\Dominion.Core.Dto.csproj">
+      <Project>{918955ad-8918-4b6b-bf4d-56a3484079e1}</Project>
+      <Name>Dominion.Core.Dto</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Ds.Core\Dominion.Core.Services\Dominion.Core.Services.csproj">
+      <Project>{3a995dbf-e3ce-479f-bf80-c87de914e8f8}</Project>
+      <Name>Dominion.Core.Services</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Ds.Core\Dominion.Domain\Dominion.Domain.csproj">
+      <Project>{592ed34c-a176-464a-bc8b-9f813a3ba6b8}</Project>
+      <Name>Dominion.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Ds.Payroll\Dominion.Pay.Dto\Dominion.Pay.Dto.csproj">
+      <Project>{828B3E11-FDBB-4552-870D-A025D0210897}</Project>
+      <Name>Dominion.Pay.Dto</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Ds.Payroll\Dominion.Pay.Services\Dominion.Pay.Services.csproj">
+      <Project>{65B03E84-900E-4CF0-BA8D-42E1ECDD36C0}</Project>
+      <Name>Dominion.Pay.Services</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Ds.Taxes\Dominion.Taxes.Dto\Dominion.Taxes.Dto.csproj">
+      <Project>{B4860B48-E16E-489C-A870-B750FD89309B}</Project>
+      <Name>Dominion.Taxes.Dto</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Ds.Utility\Dominion.Utility\Dominion.Utility.csproj">
+      <Project>{CC558777-0E1A-456B-A4E0-226BBE34F433}</Project>
+      <Name>Dominion.Utility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Dominion.LaborManagement.Dto\Dominion.LaborManagement.Dto.csproj">
+      <Project>{7e28572d-f226-43c4-ab8c-b003079ebe58}</Project>
+      <Name>Dominion.LaborManagement.Dto</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <Import Project="..\..\packages\AutoMapper.3.2.1\tools\AutoMapper.targets" Condition="Exists('..\..\packages\AutoMapper.3.2.1\tools\AutoMapper.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

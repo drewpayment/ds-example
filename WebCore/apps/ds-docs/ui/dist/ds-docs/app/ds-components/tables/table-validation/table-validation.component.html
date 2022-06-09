@@ -1,0 +1,89 @@
+<ds-card>
+    <ds-card-header>
+      <ds-card-header-title>Table</ds-card-header-title>
+      <ds-card-title-action>
+      </ds-card-title-action>
+    </ds-card-header>
+    <ds-card-content>
+      <ds-table-container [formGroup]="form">
+        <table
+          ds-table
+          formArrayName="items"
+          [dataSource]="dataSource">
+          <ng-container dsColumnDef="character">
+            <th ds-header-cell *dsHeaderCellDef class="ds-column-character"> Character </th>
+            <td ds-cell
+              *dsCellDef="let element, let i = index"
+              [formGroupName]="i+((paginator?.pageIndex)*paginator?.pageSize)">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="character"
+                [autoFocus]="newRow && (this.formItems.length-1) == i+((paginator?.pageIndex)*paginator?.pageSize)"/>
+              <ng-container *ngIf="form.get('items').at(i+((paginator?.pageIndex)*paginator?.pageSize)).get('character').touched">
+                <mat-icon
+                  class="invalid-feedback"
+                  *ngIf="form.get('items').at(i+((paginator?.pageIndex)*paginator?.pageSize)).get('character').hasError('required')"
+                  matTooltip="Please enter a character."
+                  showTooltipOnLoad> warning </mat-icon>
+                <mat-icon
+                  class="invalid-feedback"
+                  *ngIf="form.get('items').at(i+((paginator?.pageIndex)*paginator?.pageSize)).get('character').hasError('pattern')"
+                  matTooltip="Please use characters and numbers only."
+                  showTooltipOnLoad> warning </mat-icon>
+              </ng-container>
+            </td>
+          </ng-container>
+          <ng-container dsColumnDef="movie">
+            <th ds-header-cell *dsHeaderCellDef> Movie </th>
+            <td ds-cell
+              *dsCellDef="let element, let i = index"
+              [formGroupName]="i+((paginator?.pageIndex)*paginator?.pageSize)">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="movie"/>
+              <ng-container *ngIf="form.get('items').at(i+((paginator?.pageIndex)*paginator?.pageSize)).get('movie').touched">
+                <mat-icon
+                  class="invalid-feedback"
+                  *ngIf="form.get('items').at(i+((paginator?.pageIndex)*paginator?.pageSize)).get('movie').hasError('required')"
+                  matTooltip="Please enter a character."
+                  showTooltipOnLoad> warning </mat-icon>
+              </ng-container>
+            </td>
+          </ng-container>
+          <ng-container dsColumnDef="year">
+            <th ds-header-cell *dsHeaderCellDef alignViewCenter> Year </th>
+            <td ds-cell
+              *dsCellDef="let element, let i = index"
+              [formGroupName]="i+((paginator?.pageIndex)*paginator?.pageSize)"
+              alignViewCenter>
+              <mat-select
+                class="form-control custom-select"
+                formControlName="year">
+                <mat-option
+                  *ngFor="let year of years"
+                  [value]="year.id">{{ year.year }}</mat-option>
+              </mat-select>
+              <ng-container *ngIf="form.get('items').at(i+((paginator?.pageIndex)*paginator?.pageSize)).get('year').touched">
+                <mat-icon
+                  class="invalid-feedback"
+                  *ngIf="form.get('items').at(i+((paginator?.pageIndex)*paginator?.pageSize)).get('year').hasError('required')"
+                  matTooltip="Please enter a character."
+                  showTooltipOnLoad> warning </mat-icon>
+              </ng-container>
+            </td>
+          </ng-container>
+          <tr ds-header-row *dsHeaderRowDef="displayedColumns; sticky: true"></tr>
+          <tr ds-row *dsRowDef="let row; columns: displayedColumns; let i = index"></tr>
+        </table>
+        <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons></mat-paginator>
+        <add-button (click)="addRow()">
+          <mat-icon>add</mat-icon> Row
+        </add-button>
+      </ds-table-container>
+    </ds-card-content>
+    <ds-card-footer>
+      <button class="btn btn-save" (click)="save()">Save</button>
+    </ds-card-footer>
+  </ds-card>

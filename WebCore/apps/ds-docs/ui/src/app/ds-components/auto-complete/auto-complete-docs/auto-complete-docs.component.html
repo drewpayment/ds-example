@@ -1,0 +1,103 @@
+<markdown ngPreserveWhiteSpace>
+  # Auto Complete
+</markdown>
+<markdown ngPreserveWhiteSpace>
+  ## Single
+</markdown>
+
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleAutoComplete = !toggleAutoComplete">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleAutoComplete">
+  <div class="ui">
+    <div class="overflow-list">
+      <ds-auto-complete></ds-auto-complete>
+    </div>
+  </div>
+  <div class="example">
+    <div class="ds-tabs">
+        <button class="tab" role="navigation" [class.active]="AutoCompleteExample == 1" (click)="AutoCompleteExample = 1">HTML</button>
+        <button class="tab" role="navigation" [class.active]="AutoCompleteExample == 2" (click)="AutoCompleteExample = 2">TS</button>
+        <button class="tab" role="navigation" [class.active]="AutoCompleteExample == 3" (click)="AutoCompleteExample = 3">Module</button>
+      </div>
+      <ng-container *ngIf="AutoCompleteExample == 1">
+        <markdown src="app/ds-components/auto-complete/auto-complete/auto-complete.component.html"></markdown>
+      </ng-container>
+      <ng-container *ngIf="AutoCompleteExample == 2">
+        <markdown src="app/ds-components/auto-complete/auto-complete/auto-complete.component.ts"></markdown>
+      </ng-container>
+      <ng-container *ngIf="AutoCompleteExample == 3">
+        <markdown src="app/ds-components/auto-complete/auto-complete-example.module.ts" lineHighlight [line]="'3, 25'"></markdown>
+      </ng-container>
+  </div>
+</div>
+
+<markdown ngPreserveWhiteSpace>
+  ## Multiple
+</markdown>
+
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleAutoCompleteMultiple = !toggleAutoCompleteMultiple">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleAutoCompleteMultiple">
+  <div class="ui">
+    <div class="overflow-list">
+      <ds-auto-complete-multiple></ds-auto-complete-multiple>
+    </div>
+  </div>
+  <div class="example">
+    <div class="ds-tabs">
+        <button class="tab" role="navigation" [class.active]="AutoCompleteMultipleExample == 1" (click)="AutoCompleteMultipleExample = 1">HTML</button>
+        <button class="tab" role="navigation" [class.active]="AutoCompleteMultipleExample == 2" (click)="AutoCompleteMultipleExample = 2">TS</button>
+        <button class="tab" role="navigation" [class.active]="AutoCompleteMultipleExample == 3" (click)="AutoCompleteMultipleExample = 3">Module</button>
+      </div>
+      <ng-container *ngIf="AutoCompleteMultipleExample == 1">
+        <markdown src="app/ds-components/shared-components/auto-complete-multiple/auto-complete-multiple.component.html"></markdown>
+      </ng-container>
+      <ng-container *ngIf="AutoCompleteMultipleExample == 2">
+        <markdown src="app/ds-components/shared-components/auto-complete-multiple/auto-complete-multiple.component.ts"></markdown>
+      </ng-container>
+      <ng-container *ngIf="AutoCompleteMultipleExample == 3">
+        <markdown src="app/ds-components/auto-complete/auto-complete-example.module.ts" lineHighlight [line]="'3, 25'"></markdown>
+      </ng-container>
+  </div>
+</div>
+
+<markdown ngPreserveWhiteSpace>
+  ## Contact AutoComplete
+</markdown>
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleAutoCompleteContact = !toggleAutoCompleteContact">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleAutoCompleteContact">
+  <div class="ui">
+    <div class="overflow-list">
+      <ds-auto-complete-contact-example></ds-auto-complete-contact-example>
+    </div>
+  </div>
+  <div class="example">
+    <div class="ds-tabs">
+        <button class="tab" role="navigation" [class.active]="AutoCompleteContactExample == 1" (click)="AutoCompleteContactExample = 1">HTML</button>
+        <button class="tab" role="navigation" [class.active]="AutoCompleteContactExample == 2" (click)="AutoCompleteContactExample = 2">TS</button>
+        <button class="tab" role="navigation" [class.active]="AutoCompleteContactExample == 3" (click)="AutoCompleteContactExample = 3">Module</button>
+      </div>
+      <ng-container *ngIf="AutoCompleteContactExample == 1">
+        <markdown src="app/ds-components/shared-components/auto-contact-complete-example/auto-complete-contact-example.component.html"></markdown>
+      </ng-container>
+      <ng-container *ngIf="AutoCompleteContactExample == 2">
+        <markdown src="app/ds-components/shared-components/auto-contact-complete-example/auto-complete-contact-example.component.ts"></markdown>
+      </ng-container>
+      <ng-container *ngIf="AutoCompleteContactExample == 3">
+        <markdown src="app/ds-components/shared-components/shared-components.module.ts"  lineHighlight [line]="'8, 22'"></markdown>
+      </ng-container>
+  </div>
+</div>

@@ -1,0 +1,123 @@
+<markdown ngPreserveWhitespaces>
+  # Avatars
+</markdown>
+
+<div class="row">
+  <div class="col-xl-8">
+    <p>Simple component that shows a profile photo if one is uploaded, or a color circle with the employee initials inside. </p>
+    <div class="button-bar">
+        <button class="btn btn-icon" (click)="toggleAvatar = !toggleAvatar">
+            <i class="material-icons">code</i>
+            View Code
+        </button>
+    </div>
+    <div class="example-block" [class.open]="toggleAvatar">
+        <div class="ui">
+            <ds-avatar-example></ds-avatar-example>
+        </div>
+        <div>
+            <markdown src="app\ds-components\avatar\avatar\avatar.component.html"></markdown>
+        </div>
+    </div>
+
+<markdown>
+Input             | Type                 | Description                                                                                        | Default value
+----------------- | -------------------- |--------------------------------------------------------------------------------------------------- | --------------
+`size`            | `number` _Required_  | Starts at 24 (pixels), and iterates by 12                                                          | none
+`firstName`       | `string` _Optional_  | first initial reference                                                                            | none
+`lastName`        | `string` _Optional_  | last initial reference                                                                             |
+`name`            | `string` _Optional_  | Allows a full name to ba passed in. It must be in Last name, First name format to get the initials |
+`color`           | `string` _Optional_  | Color avatar should take                                                                           | Blue `#0A7595`
+`resource`        | `string` _Optional_  | Path to image avatar                                                                               |
+`vendor`          | `boolean` _Optional_ | If vendor is added as true, the avatar will show the business icon rather than an avatar.          |
+</markdown>
+
+    <div class="button-bar">
+      <button class="btn btn-icon" (click)="toggleAvatarTable = !toggleAvatarTable">
+          <i class="material-icons">code</i>
+          View Code
+      </button>
+    </div>
+    <div class="example-block" [class.open]="toggleAvatarTable">
+      <div class="ui overflow-list">
+          <ds-avatar-table></ds-avatar-table>
+      </div>
+      <div class="example">
+        <div class="ds-tabs">
+          <button class="tab" role="navigation" [class.active]="avatarTableExample == 1" (click)="avatarTableExample = 1">HTML</button>
+          <button class="tab" role="navigation" [class.active]="avatarTableExample == 2" (click)="avatarTableExample = 2">TS</button>
+        </div>
+        <ng-container *ngIf="avatarTableExample == 1">
+          <markdown src="app\ds-components\shared-components\avatar-shared\avatar-table\avatar-table.component.html"></markdown>
+        </ng-container>
+        <ng-container *ngIf="avatarTableExample == 2">
+          <markdown src="app\ds-components\shared-components\avatar-shared\avatar-table\avatar-table.component.ts"></markdown>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="button-bar">
+      <button class="btn btn-icon" (click)="toggleAvatarOnbaording = !toggleAvatarOnbaording">
+          <i class="material-icons">code</i>
+          View Code
+      </button>
+    </div>
+    <div class="example-block" [class.open]="toggleAvatarOnbaording">
+      <div class="ui overflow-list">
+        <div class="row">
+          <div class="col-md-6">
+            <ds-onboarding-card></ds-onboarding-card>
+          </div>
+        </div>
+      </div>
+      <div class="example">
+        <div class="ds-tabs">
+          <button class="tab" role="navigation" [class.active]="avatarOnboardingExample == 1" (click)="avatarOnboardingExample = 1">HTML</button>
+          <button class="tab" role="navigation" [class.active]="avatarOnboardingExample == 2" (click)="avatarOnboardingExample = 2">TS</button>
+        </div>
+        <ng-container *ngIf="avatarOnboardingExample == 1">
+          <markdown src="app\ds-components\shared-components\avatar-shared\onboarding-card\onboarding-card.component.html"></markdown>
+        </ng-container>
+        <ng-container *ngIf="avatarOnboardingExample == 2">
+          <markdown src="app\ds-components\shared-components\avatar-shared\onboarding-card\onboarding-card.component.ts"></markdown>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="button-bar">
+      <button class="btn btn-icon" (click)="toggleAvatarCallout = !toggleAvatarCallout">
+          <i class="material-icons">code</i>
+          View Code
+      </button>
+    </div>
+    <div class="example-block" [class.open]="toggleAvatarCallout">
+      <div class="ui overflow-list">
+        <div class="row">
+          <div class="col-md-6">
+            <ds-avatar-callout></ds-avatar-callout>
+          </div>
+        </div>
+      </div>
+      <div class="example">
+        <div class="ds-tabs">
+          <button class="tab" role="navigation" [class.active]="avatarCalloutExample == 1" (click)="avatarCalloutExample = 1">HTML</button>
+          <button class="tab" role="navigation" [class.active]="avatarCalloutExample == 2" (click)="avatarCalloutExample = 2">TS</button>
+        </div>
+        <ng-container *ngIf="avatarCalloutExample == 1">
+          <markdown src="app\ds-components\shared-components\avatar-shared\avatar-callout\avatar-callout.component.html"></markdown>
+        </ng-container>
+        <ng-container *ngIf="avatarCalloutExample == 2">
+          <markdown src="app\ds-components\shared-components\avatar-shared\avatar-callout\avatar-callout.component.ts"></markdown>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-2">
+    <div class="example-block">
+      <div class="ui">
+        <ds-avatar-colors></ds-avatar-colors>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,53 @@
+@import '../../../../../../../Styles/scss/bootstrap-variables';
+@import '../../../../../../../Styles/scss/ds/typography';
+
+.title {
+  @extend .font-lg;
+}
+
+@media (min-width: 769px)  {
+
+  .project {
+    width: 120px;
+  }
+
+  .sequence {
+    width: 70px;
+  }
+
+  .gen-ledger,
+  .class-group {
+    max-width: 250px;
+    //min-width: 180px;
+    min-width: 130px;
+  }
+}
+
+::ng-deep .mat-select-placeholder {
+  color: inherit;
+}
+
+.gl-viewport {
+  min-height: 256px;
+  min-width: 400px;
+  overflow-x: hidden;
+
+  .gl-item {
+    line-height: 26px;
+    height: 26px;
+    width: 415px;
+  }
+}
+
+::ng-deep .gl-assignment-panel.mat-select-panel {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+@media (max-width: 768px)  {
+  .title {
+    padding-top: 0.5rem;
+  }
+}
+
+

@@ -1,0 +1,330 @@
+<markdown ngPreserveWhitespaces>
+  # Buttons
+
+  ## Terminology and Placement
+  Placed in the last card on the page. In some cases, the buttons will go in a seperate card, like the employee section.
+
+  ### Positive
+  Position in the lower right corner. Primary color denotes a primary action on a page. Outline-primary denotes a secondary action on a page.
+  - **Save** Saving to the database. User can immediately see and edit results.
+  - **Continue** Moving to another page of the same form or workflow. No database call happens.
+  - **Submit** User enters data into system, usually into a function or something less tangible than a form. User will not be able to easily see results.
+  - **Create** Used when running a report.
+</markdown>
+
+<div class="button-bar">
+    <button class="btn btn-icon" (click)="togglePositive = !togglePositive">
+        <i class="material-icons">code</i>
+        View Code
+    </button>
+</div>
+<div class="example-block" [class.open]="togglePositive">
+    <div class="ui">
+        <ds-positive-btns></ds-positive-btns>
+    </div>
+    <div>
+        <markdown src="app\ds-components\buttons\positive-btns\positive-btns.component.html"></markdown>
+    </div>
+</div>
+    
+<markdown ngPreserveWhitespaces>
+    ### Negative
+    Position in the lower left corner. While the classes look the same, using the approriate class will give flexibility to make a future change.
+    - **Cancel** Used to cancel a pending action.
+    - **Delete** Removing data from database.
+</markdown>
+
+<div class="button-bar">
+    <button class="btn btn-icon" (click)="toggleNegative = !toggleNegative">
+        <i class="material-icons">code</i>
+        View Code
+    </button>
+</div>
+<div class="example-block" [class.open]="toggleNegative">
+    <div class="ui">
+        <ds-negative-btns></ds-negative-btns>
+    </div>
+    <div>
+        <markdown src="app\ds-components\buttons\negative-btns\negative-btns.component.html"></markdown>
+    </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+    ### Icon
+</markdown>
+
+<div class="button-bar">
+    <button class="btn btn-icon" (click)="toggleIcon = !toggleIcon">
+        <i class="material-icons">code</i>
+        View Code
+    </button>
+</div>
+<div class="example-block" [class.open]="toggleIcon">
+    <div class="ui">
+        <ds-icon-btns></ds-icon-btns>
+    </div>
+    <div>
+        <markdown src="app\ds-components\buttons\icon-btns\icon-btns.component.html"></markdown>
+    </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+    ## Dropdowns
+    ### Vertical Ellipsis
+    Used to convey 'More'. Typically used inside a card or element with limited space. Able to be shown only on hover or constantly.
+</markdown>
+
+<div class="button-bar">
+    <button class="btn btn-icon" (click)="toggleIconDropdown = !toggleIconDropdown">
+        <i class="material-icons">code</i>
+        View Code
+    </button>
+</div>
+<div class="example-block" [class.open]="toggleIconDropdown">
+    <div class="ui">
+        <ds-icon-dropdown-btns></ds-icon-dropdown-btns>
+    </div>
+    <div>
+        <markdown src="app\ds-components\buttons\icon-dropdown-btns\icon-dropdown-btns.component.html"></markdown>
+        <markdown src="app\ds-components\buttons\icon-dropdown-btns\icon-dropdown-legacy.html"></markdown>
+    </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+    ### Button Dropdowns
+    When more space is available, this can be used.
+</markdown>
+
+<div class="button-bar">
+    <button class="btn btn-icon" (click)="toggleDropdown = !toggleDropdown">
+        <i class="material-icons">code</i>
+        View Code
+    </button>
+</div>
+<div class="example-block" [class.open]="toggleDropdown">
+    <div class="ui">
+        <ds-dropdown-btns></ds-dropdown-btns>
+    </div>
+    <div>
+        <markdown src="app\ds-components\buttons\dropdown-btns\dropdown-btns.component.html"></markdown>
+        <markdown src="app\ds-components\buttons\dropdown-btns\dropdown-legacy.html"></markdown>
+    </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+    ## Status / Action Buttons
+    Communicates status with a red light, yellow light, green light approach.
+</markdown>
+
+<div class="button-bar">
+    <button class="btn btn-icon" (click)="toggleAction = !toggleAction">
+        <i class="material-icons">code</i>
+        View Code
+    </button>
+</div>
+<div class="example-block" [class.open]="toggleAction">
+    <div class="ui">
+        <ds-action-btns></ds-action-btns>
+    </div>
+    <div>
+        <markdown src="app\ds-components\buttons\action-btns\action-btns.component.html"></markdown>
+    </div>
+</div>
+
+
+<markdown ngPreserveWhitespaces>
+    ## Special Cases
+    ### Icons within Bordered Buttons
+    Icon is always before the text.
+</markdown>
+
+<div class="button-bar">
+    <button class="btn btn-icon" (click)="toggleOutlineIcon = !toggleOutlineIcon">
+        <i class="material-icons">code</i>
+        View Code
+    </button>
+</div>
+<div class="example-block" [class.open]="toggleOutlineIcon">
+    <div class="ui">
+        <ds-outline-icon-btns></ds-outline-icon-btns>
+    </div>
+    <div>
+        <markdown src="app\ds-components\buttons\outline-icon-btns\outline-icon-btns.component.html"></markdown>
+    </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+  ## Toggles
+  Active background works if `active` or `mat-button-toggle-checked` is added to the button element. If selection is not required, clear the value on a second click. 
+
+  ### Material 
+  [Material Docs](https://material.angular.io/components/button-toggle/overview)
+</markdown>
+<div class="row">
+    <div class="col-xl-6">
+        <markdown ngPreserveWhitespaces>
+            #### Material Multiple Selection
+            Works like a checkbox.
+        </markdown>
+        <div class="button-bar">
+            <button class="btn btn-icon" (click)="toggleToggleBtnMatMultiple = !toggleToggleBtnMatMultiple">
+                <i class="material-icons">code</i>
+                View Code
+            </button>
+          </div>
+          <div class="example-block" [class.open]="toggleToggleBtnMatMultiple">
+            <div class="ui">
+                <ds-toggle-btns></ds-toggle-btns>
+            </div>
+            <div class="example">
+                <markdown src="app\ds-components\buttons\toggle-btns\toggle-btns.component.html"></markdown>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <markdown ngPreserveWhitespaces>
+            #### Material Single Selection
+            Works like a radio set
+        </markdown>
+        <div class="button-bar">
+            <button class="btn btn-icon" (click)="toggleToggleBtnMatSingle = !toggleToggleBtnMatSingle">
+                <i class="material-icons">code</i>
+                View Code
+            </button>
+          </div>
+          <div class="example-block" [class.open]="toggleToggleBtnMatSingle">
+            <div class="ui">
+                <ds-toggle-btns-mat-single></ds-toggle-btns-mat-single>
+            </div>
+            <div class="example">
+                <markdown src="app\ds-components\buttons\toggle-btns-mat-single\toggle-btns-mat-single.component.html"></markdown>
+            </div>
+        </div>
+    </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+    ### Legacy 
+    Use buttons with click events. We can't control the CSS based on the input in this case. 
+</markdown>
+<div class="row">
+    <div class="col-xl-6">
+        <markdown ngPreserveWhitespaces>
+            #### Legacy Multiple Selection
+        </markdown>
+        <div class="button-bar">
+            <button class="btn btn-icon" (click)="toggleToggleBtnLegacyMultiple = !toggleToggleBtnLegacyMultiple">
+                <i class="material-icons">code</i>
+                View Code
+            </button>
+          </div>
+          <div class="example-block" [class.open]="toggleToggleBtnLegacyMultiple">
+            <div class="ui">
+                <ds-toggle-btns-legacy-multiple></ds-toggle-btns-legacy-multiple>
+            </div>
+            <div class="example">
+                <markdown src="app\ds-components\buttons\toggle-btns-legacy-multiple\toggle-btns-legacy-multiple.component.html"></markdown>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <markdown ngPreserveWhitespaces>
+            #### Legacy Single Selection
+            If you are unable to use the material component, you can create a single selection button toggle group with radio inputs and labels. 
+        </markdown>
+        <div class="button-bar">
+            <button class="btn btn-icon" (click)="toggleToggleBtnLegacySingle = !toggleToggleBtnLegacySingle">
+                <i class="material-icons">code</i>
+                View Code
+            </button>
+          </div>
+          <div class="example-block" [class.open]="toggleToggleBtnLegacySingle">
+            <div class="ui">
+                <ds-toggle-btns-legacy-single></ds-toggle-btns-legacy-single>
+            </div>
+            <div class="example">
+                <markdown src="app\ds-components\buttons\toggle-btns-legacy-single\toggle-btns-legacy-single.component.html"></markdown>
+            </div>
+        </div>
+    </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+    ### Input with button group
+  </markdown>
+  <div class="button-bar">
+    <button class="btn btn-icon" (click)="toggleTimeSpanSelector = !toggleTimeSpanSelector">
+      <mat-icon>code</mat-icon>
+      View Code
+    </button>
+  </div>
+  <div class="example-block" [class.open]="toggleTimeSpanSelector">
+    <div class="ui">
+      <ds-input-button-group></ds-input-button-group>
+    </div>
+    <div class="example">
+      <markdown src="app\ds-components\form-elements\input-button-group\input-button-group.component.html"></markdown>
+    </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+    ## Pills
+    Used to communicate status.
+
+    ### Actionable
+</markdown>
+
+<div class="button-bar">
+    <button class="btn btn-icon" (click)="togglePills = !togglePills">
+        <i class="material-icons">code</i>
+        View Code
+    </button>
+</div>
+<div class="example-block" [class.open]="togglePills">
+    <div class="ui">
+        <ds-pill-btns></ds-pill-btns>
+    </div>
+    <div>
+        <markdown src="app\ds-components\buttons\pill-btns\pill-btns.component.html"></markdown>
+    </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+    ### Badges
+    Used to communicate status or as a filter.
+</markdown>
+
+<div class="button-bar">
+    <button class="btn btn-icon" (click)="toggleBadges = !toggleBadges">
+        <i class="material-icons">code</i>
+        View Code
+    </button>
+</div>
+<div class="example-block" [class.open]="toggleBadges">
+    <div class="ui">
+        <ds-badge-btns></ds-badge-btns>
+    </div>
+    <div>
+        <markdown src="app\ds-components\buttons\badge-btns\badge-btns.component.html"></markdown>
+    </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+    ### Static
+    Static badges are displayed on an object that is filtered. The color of the badge and the filter should match.
+</markdown>
+
+<div class="button-bar">
+    <button class="btn btn-icon" (click)="toggleStaticBadges = !toggleStaticBadges">
+        <i class="material-icons">code</i>
+        View Code
+    </button>
+</div>
+<div class="example-block" [class.open]="toggleStaticBadges">
+    <div class="ui">
+        <ds-static-badge-btns></ds-static-badge-btns>
+    </div>
+    <div>
+        <markdown src="app\ds-components\buttons\static-badge-btns\static-badge-btns.component.html"></markdown>
+    </div>
+</div>

@@ -1,0 +1,102 @@
+<div class="app-body design">
+  <div class="sidebar">
+    <ul class="nav">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/standards">Standards</a>
+      </li>
+      <li class="nav-item nav-dropdown" [class.open]="toggleNav">
+        <a class="nav-link nav-dropdown-toggle" routerLink="/ds-components"
+          (click)="toggleNav = !toggleNav">Components</a>
+        <ul class="nav-dropdown-items">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/ds-components/autocomplete">Autocomplete</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/ds-components/avatar">Avatars</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/ds-components/breadcrumbs">Breadcrumbs</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/ds-components/buttons">Buttons</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/ds-components/chips">Chips</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/ds-components/calendar">Calendar</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/ds-components/card">Card</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/ds-components/charts">Charts</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/ds-components/confirm-dialog">Confirm Dialogs</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/ds-components/date-picker">Date Picker</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/ds-components/empty-states">Empty States</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/ds-components/form-elements">Form Elements</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/ds-components/grid">Grid</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/ds-components/layouts">Layouts</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/ds-components/lists">Lists</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/ds-components/multi-selects">Multi-Selects</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/ds-components/nav">Navigation</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/ds-components/print">Print</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/ds-components/progress">Progress</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/ds-components/skeletons">Skeletons</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/ds-components/sidenav">Sidenav</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/ds-components/switch">Switch</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/ds-components/tables">Tables</a>
+          </li>
+        </ul>
+      </li>
+      <li class="nav-item nav-dropdown" [class.open]="toggleForms">
+        <a class="nav-link nav-dropdown-toggle" routerLink="/forms" (click)="toggleForms = !toggleForms">Forms</a>
+        <ul class="nav-dropdown-items">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/forms/change-track">Change Track</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/forms/validation">Validation</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <div class="main">
+    <div class="container">
+      <!-- <div ui-view=""></div> -->
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

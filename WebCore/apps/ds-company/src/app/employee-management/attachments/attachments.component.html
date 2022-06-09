@@ -1,0 +1,206 @@
+<ds-employee-header *ngIf="!isCompanyAttachments" (employeeNavigated)="!isLoading"></ds-employee-header>
+
+<ng-container *ngIf="!isSupervisorOnHimself; else onHimself">
+
+<ds-card border="top" color="{{isCompanyAttachments ? 'primary' : 'secondary'}}">
+    <ds-card-header>
+        <ds-card-header-title>
+            {{pageTitle}}
+        </ds-card-header-title>
+        <ds-card-title-action>
+            <button type="button" class="btn btn-outline-primary" [class.d-none]="showFiles || !accessRights.canCreateFolder"
+                (click)="popupFolderDialog(null)">
+                <i class="material-icons">add</i> Folder
+            </button>
+            <button type="button" class="btn btn-primary" (click)="popupAttachmentDialog(null, selectedFolder)"
+                *ngIf="folders.length > 0 && (accessRights.addEditAttachment || accessRights.addAttachment)">
+                <i class="material-icons">add</i> Attachment
+            </button>
+        </ds-card-title-action>
+        <ds-card-bread-crumb *ngIf="!showFiles && !isCompanyAttachments">
+            <nav aria-label="breadcrumb" role="navigation">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"> <a [href]="breadcrumb">Employee List</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Attachments</li>
+                </ol>
+            </nav>
+        </ds-card-bread-crumb>
+        <ds-card-bread-crumb *ngIf="showFiles">
+            <nav aria-label="breadcrumb" role="navigation">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <button type="button" class="btn btn-anchor" (click)="backToFolders()">Folders</button>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">{{selectedFolder.description}}</li>
+                </ol>
+            </nav>
+        </ds-card-bread-crumb>
+    </ds-card-header>
+</ds-card>
+
+<ds-card>
+    <ds-card-content>
+        <ng-container *ngIf="!isLoading; else loading">
+            <div class="empty-state" [class.d-none]="folders.length > 0">
+                You do not currently have any folders.
+                <span *ngIf="accessRights.canCreateFolder">You can begin adding them by clicking the <a href="javascript:;" (click)="accessRights.canCreateFolder && popupFolderDialog()">Add Folder</a> button.</span>
+            </div>
+            <div *ngIf="(!showFiles && folders.length > 0) || (showFiles)">
+                <div [class.d-none]="showFiles" class="overflow-list">
+                    <div class="row">
+                        <div class="col-6 col-md-4 col-lg-3 " *ngFor="let folder of folders">
+                            <ds-card hover="true" color="info" mode="object" x-align="center"
+                                (click)="folderClicked(folder)" [title]="folder.description"
+                                (mouseover)="makeHovered(folder)" (mouseleave)="folder.hovered=false">
+                                <ds-card-header>
+                                    <ds-card-title-action 
+                                        *ngIf="showEditFolder(folder)">
+                                        <div class="nested-cog" [class.hover-show]="!folder.hovered">
+                                            <button [matMenuTriggerFor]="menu" class="btn btn-icon" type="button"
+                                                (click)="$event.stopPropagation();cogClicked(folder)">
+                                                <i class="material-icons">more_vert</i>
+                                            </button>
+                                            <mat-menu #menu="matMenu">
+                                                <button type="button" mat-menu-item *ngIf="accessRights.canCreateFolder" (click)="popupFolderDialog(folder)">Edit</button>
+                                            </mat-menu>
+                                        </div>
+                                    </ds-card-title-action>
+                                    <ds-card-subtitle>
+                                        <div class="split-content">
+                                            <div class="top">
+                                                <div class="object-card-avatar">
+                                                    <mat-icon class="avatar text-info">folder_open</mat-icon>
+                                                </div>
+                                                <div class="font-lg text-center mb-4">
+                                                    <div class="text-truncate" data-toggle="tooltip"
+                                                        [title]="folder.description">
+                                                        {{folder.description}}
+                                                    </div>
+                                                    <div class="text-muted font-xs">
+                                                        {{folder.attachmentCount}} files
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </ds-card-subtitle>
+                                </ds-card-header>
+                            </ds-card>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="showFiles && (attachments).length > 0">
+                    <div class="form-group inline-form-elements">
+                        <label class="form-control-label">Sort By:</label>
+                        <div class="custom-control custom-radio custom-control-bg primary">
+                            <input id="sortByName" type="radio" name="sortBy" value="name" class="custom-control-input" [(ngModel)]="sort.by">
+                            <label class="custom-control-label" for="sortByName">Name</label>
+                            <div class="custom-bg"></div>
+                        </div>
+                        <div class="custom-control custom-radio custom-control-bg primary">
+                            <input id="sortByDate" type="radio" name="sortBy" value="addedDate" class="custom-control-input" [(ngModel)]="sort.by">
+                            <label class="custom-control-label" for="sortByDate">Date</label>
+                            <div class="custom-bg"></div>
+                        </div>
+                    </div>
+                    <div class="overflow-list">
+                        <div class="row">
+                            <div class="col-6 col-md-4 col-lg-3 " *ngFor="let attachment of attachments"
+                                (click)="$event.stopPropagation()">
+                                <ds-card hover="true" color="info" mode="object" x-align="center"
+                                    (click)="download(attachment)" [title]="attachment.name"
+                                    (mouseover)="makeAttachmentHovered(attachment)" (mouseleave)="attachment.hovered=false">
+                                    <ds-card-header>
+                                        <ds-card-title-action>
+                                            <div *ngIf="(accessRights.addEditAttachment || accessRights.addAttachment) && !attachment.isATFile" class="nested-cog" [class.hover-show]="!attachment.hovered">
+                                                <button [matMenuTriggerFor]="menu" class="btn btn-icon" type="button"
+                                                    (click)="$event.stopPropagation();">
+                                                    <i class="material-icons">more_vert</i>
+                                                </button>
+                                                <mat-menu #menu="matMenu">
+                                                    <button type="button" mat-menu-item
+                                                        *ngIf="accessRights.addEditAttachment"
+                                                        (click)="popupAttachmentDialog(attachment)">Edit</button>
+                                                    <button type="button" mat-menu-item 
+                                                        (click)="download(attachment)">Download</button>
+                                                </mat-menu>
+                                            </div>
+                                        </ds-card-title-action>
+                                        <ds-card-subtitle>
+                                            <div class="split-content">
+                                                <div class="top">
+                                                    <div class="object-card-avatar">
+                                                        <img *ngIf="(attachment.extension.toUpperCase() == '.DOC' || attachment.extension.toUpperCase() == '.DOCX')"
+                                                            class="resource-img py-5"
+                                                            src="WebCore/Images/Resources/DOC.png" />
+                                                        <img *ngIf="attachment.extension.toUpperCase() == '.PDF'"
+                                                            class="resource-img py-5"
+                                                            src="WebCore/Images/Resources/PDF.png" />
+                                                        <img *ngIf="(attachment.extension.toUpperCase() == '.XLS' || attachment.extension.toUpperCase() == '.XLSX')"
+                                                            class="resource-img py-5"
+                                                            src="WebCore/Images/Resources/XLS.png" />
+                                                        <img *ngIf="(attachment.extension.toUpperCase() == '.TXT' || attachment.extension.toUpperCase() == '.RTF')"
+                                                            class="resource-img py-5"
+                                                            src="WebCore/Images/Resources/TXT.png" />
+                                                        <img *ngIf="(attachment.extension.toUpperCase() == '.JPEG' || attachment.extension.toUpperCase() == '.JPG' || attachment.extension.toUpperCase() == '.JFIF' || attachment.extension.toUpperCase() == '.PNG')"
+                                                            class="resource-img py-5"
+                                                            src="WebCore/Images/Resources/PNG.png" />
+                                                    </div>
+                                                    <div class="font-lg text-center mb-4">
+                                                        <div class="text-truncate" data-toggle="tooltip"
+                                                            [title]="attachment.name">
+                                                            {{attachment.name}}
+                                                        </div>
+                                                        <div class="text-truncate text-muted font-xs"
+                                                            [title]="attachment.addedDate | date:'MM/dd/yy h:mm a'">
+                                                            Uploaded: {{attachment.addedDate | date:'MM/dd/yy h:mm a'}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </ds-card-subtitle>
+                                    </ds-card-header>
+                                </ds-card>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="empty-state"
+                                *ngIf="showFiles && (attachments.length <= 0 || attachments == null) ">You do not
+                                currently have any attachments in this folder. You can begin adding them by clicking the
+                                <a href="javascript:;" (click)="popupAttachmentDialog(null, selectedFolder)">Add Attachment</a> button
+                </div>
+            </div>
+        </ng-container>
+        <ng-template #loading>
+            <ds-loading-message>
+            </ds-loading-message>
+        </ng-template>
+    </ds-card-content>
+</ds-card>
+
+</ng-container>
+<ng-template #onHimself>
+    <!-- ESS REDIRECT - SUPERVISOR VIEWING THEIR TAX INFO, isSupervisorOnHimself -->
+    <ds-card>
+        <ds-card-content>
+        <div class="row justify-content-center">
+            <div class="col-auto">
+                <div class="empty-state-cycle warning">
+                    <mat-icon class="material-icons">warning</mat-icon>
+                    <div class="title">
+                        Your attachments are only available in ESS.
+                    </div>
+                    <p>
+                        Go to your ESS Resources page to view your attachments.
+                    </p>
+                    <a type="button" class="btn btn-primary" [href]="essResource">
+                        <mat-icon>account_circle</mat-icon>
+                        My ESS
+                    </a>
+                </div>
+            </div>
+        </div>
+    </ds-card-content>
+    </ds-card>
+  </ng-template>

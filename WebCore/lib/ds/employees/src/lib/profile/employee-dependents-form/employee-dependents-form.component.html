@@ -1,0 +1,226 @@
+<div mat-dialog-header>
+    <h2 class="dialog-title">
+        {{pageTitle}}
+    </h2>
+    <button type="button" class="close" (click)="onNoClick()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</div>
+<div mat-dialog-content>
+    <form [formGroup]="f">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label class="form-control-label">First Name</label>
+                    <input type="text"
+                           [class.is-invalid]="getFormControlError('firstName', ['required', 'maxlength'])"
+                           class="form-control"
+                           formControlName="firstName"
+                           required cdkFocusInitial/>
+                    <div class="invalid-feedback" *ngIf="f.controls.firstName.errors?.required">
+                        Please enter a first name.
+                    </div>
+                    <div class="invalid-feedback" *ngIf="f.controls.firstName.errors?.maxlength">
+                        First Name should be of max 25 characters.
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label class="form-control-label">MI <span class="form-help-text">Optional</span></label>
+                    <input type="text"
+                           [class.is-invalid]="getFormControlError('middleInitial', ['maxlength'])"
+                           class="form-control"
+                           formControlName="middleInitial" />
+                    <div class="invalid-feedback" *ngIf="f.controls.middleInitial.errors?.maxlength">
+                        Middle Initial should be a max 1 character.
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="form-control-label">Last Name</label>
+                    <input type="text"
+                           [class.is-invalid]="getFormControlError('lastName', ['required', 'maxlength'])"
+                           class="form-control"
+                           formControlName="lastName"
+                           required />
+                    <div class="invalid-feedback" *ngIf="f.controls.lastName.errors?.required">
+                        Please enter a last name.
+                    </div>
+                    <div class="invalid-feedback" *ngIf="f.controls.lastName.errors?.maxlength">
+                        Last Name should be of max 25 characters.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">            
+            <div class="col-12">
+                <div class="form-group">
+                    <mat-label>Relationship</mat-label>
+                    <mat-select class="form-control custom-select" 
+                        [class.is-invalid]="getFormControlError('relationshipId', ['required'])"
+                        formControlName="relationshipId">
+                        <mat-option *ngFor="let r of employeeDependentRelationshipsList; let i = index" [value]="r.employeeDependentsRelationshipId">
+                            {{ r.description }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="f.get('relationshipId').hasError('required') && (formSubmitted || f.get('relationshipId').touched)">
+                        Please enter a relationship.
+                    </mat-error>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-control-label">Social Security Number</label>
+                    <input type="text"
+                           mask="000-00-0000" [dropSpecialCharacters]="false"
+                           [class.is-invalid]="getFormControlError('ssn', ['required', 'pattern'])"
+                           class="form-control"
+                           (focus)="isConfirmSSNValid=true"
+                           formControlName="ssn"
+                           required />
+                    <div class="invalid-feedback" *ngIf="f.controls.ssn.errors?.required">
+                        Please enter a social security number.
+                    </div>
+                    <div class="invalid-feedback" *ngIf="f.controls.ssn.errors?.pattern">
+                        Please enter a valid SSN.
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-control-label">Confirm Social Security Number</label>
+                    <input type="text"
+                           mask="000-00-0000" [dropSpecialCharacters]="false"
+                           [class.is-invalid]="f.controls.ssn.value!=f.controls.confirmssn.value && !isConfirmSSNValid"
+                           class="form-control"
+                           (focus)="isConfirmSSNValid=true"
+                           (blur)="isConfirmSSNValid=false"
+                           formControlName="confirmssn" />
+                    <div class="invalid-feedback" *ngIf="f.controls.ssn.value!=f.controls.confirmssn.value && !isConfirmSSNValid">
+                        Social Security Numbers do not match.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-control-label">Gender</label>
+                    <select [class.is-invalid]="getFormControlError('gender', ['required'])"
+                            class="form-control custom-select"
+                            formControlName="gender"
+                            required>
+                        <option value=""></option>
+                        <option value="M"> Male </option>
+                        <option value="F"> Female </option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a gender.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label class="form-control-label">Date of Birth</label>
+                    <div class="input-group">
+                        <input matInput class="form-control" [class.is-invalid]="getFormControlError('birthDate', ['required'])" [matDatepicker]="birthDate"
+                               required formControlName="birthDate" (dateChange)="calculateAge()" />
+                        <div class="input-group-append">
+                            <mat-datepicker-toggle matSuffix [for]="birthDate" class="input-group-text date">
+                                <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #birthDate></mat-datepicker>
+                        </div>
+                        <div class="invalid-feedback" *ngIf="f.controls.birthDate.errors?.required">
+                            Please enter a date of birth.
+                        </div>
+                        <div class="invalid-feedback" *ngIf="f.controls.birthDate.errors?.validDate">
+                            Please enter a valid date of birth.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group" *ngIf="age != ''">
+                    <label class="form-control-label">Age</label>
+                    <div>{{age}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                    <div class="switch-title">
+                        <label for="isAStudent">Is A Student</label>
+                        <label class="switch switch-default switch-sm switch-pill switch-success">
+                            <input id="isAStudent" class="switch-input" type="checkbox"
+                                   formControlName="isAStudent" aria-describedby="Is A Student" />
+                            <span class="switch-label"></span>
+                            <span class="switch-handle"></span>
+                            <span class="ds-switch-off">no</span>
+                            <span class="ds-switch-on">yes</span>
+                        </label>
+                    </div>
+            </div>
+            <div class="col-6">
+                    <div class="switch-title">
+                        <label for="hasADisability">Has A Disability</label>
+                        <label class="switch switch-default switch-sm switch-pill switch-success">
+                            <input id="hasADisability" class="switch-input" type="checkbox"
+                                   formControlName="hasADisability" aria-describedby="Has A Disability" />
+                            <span class="switch-label"></span>
+                            <span class="switch-handle"></span>
+                            <span class="ds-switch-off">no</span>
+                            <span class="ds-switch-on">yes</span>
+                        </label>
+                    </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                    <div class="switch-title">
+                        <label for="tobaccoUser">Uses Tobacco Products</label>
+                        <label class="switch switch-default switch-sm switch-pill switch-success">
+                            <input id="tobaccoUser" class="switch-input" type="checkbox"
+                                   formControlName="tobaccoUser" aria-describedby="Uses Tobacco Products" />
+                            <span class="switch-label"></span>
+                            <span class="switch-handle"></span>
+                            <span class="ds-switch-off">no</span>
+                            <span class="ds-switch-on">yes</span>
+                        </label>
+                    </div>
+            </div>
+            <div class="col-6">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-control-label">Comments <span class="form-help-text">Optional</span></label>
+                    <textarea rows="2" style="overflow:hidden"
+                              [class.is-invalid]="getFormControlError('comments', ['maxlength'])"
+                              class="form-control"
+                              formControlName="comments"></textarea>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div mat-dialog-actions>
+    <button type="button"
+            class="btn btn-primary"
+            [disabled]="f.hasError('required')"
+            (click)="saveEmployeeDependent()">
+        {{hasEditPermissions ? 'Save' : 'Request Change'}}
+    </button>
+    <button type="button"
+            class="btn btn-cancel"
+            (click)="onNoClick()">
+        Cancel
+    </button>
+</div>

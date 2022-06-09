@@ -1,0 +1,10 @@
+<div class="btn-group btn-toggle-group">
+    <button type="button" 
+        class="btn btn-legacy-toggle"
+        *ngFor="let item of items"
+        (click)="changeToggle(this.item)"
+        [class.active]="this.item.selected"
+        [disabled]="item.disabled"> 
+        {{item.lengthOfTime}} 
+    </button>
+</div>

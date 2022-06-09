@@ -1,0 +1,229 @@
+@charset "UTF-8";
+.main {
+  background-color: #fff;
+}
+.container {
+  padding: 1rem 3rem;
+}
+.nav-logo {
+  background: url("/Images/DominionLogo.png") no-repeat;
+  background-size: 110px;
+  background-position: 15px;
+  height: 40px;
+  text-indent: -9999px;
+}
+.button-bar {
+  display: flex;
+  align-items: center;
+}
+.button-bar .btn {
+  font-size: 16px;
+}
+.example-block {
+  margin: 0.5rem 0 1rem 0;
+  transition: all 0.2s ease;
+  clear: both;
+}
+.example-block pre,
+.example-block .example {
+  height: 0;
+  opacity: 0;
+  transition: all 0.2s ease;
+  margin-bottom: 1rem;
+}
+.example-block pre {
+  padding: 0;
+}
+.example-block .ds-tabs {
+  display: none;
+}
+.example-block .ui {
+  transition: all 0.2s ease;
+  padding: 0.5rem;
+}
+.example-block > p {
+  font-size: 16px;
+  margin-bottom: 0;
+}
+.example-block .card-table {
+  margin: 0.25rem;
+}
+.example-block.open {
+  border: 1px solid #e7e7e7;
+}
+.example-block.open .ui {
+  padding: 1rem;
+  border-bottom: 1px solid #e7e7e7;
+}
+.example-block.open pre,
+.example-block.open .example {
+  height: auto;
+  opacity: 1;
+}
+.example-block.open .ds-tabs {
+  display: block;
+}
+.example-block.open pre {
+  padding: 1rem;
+}
+/* Typography */
+.design > .main markdown > h1 {
+  color: #000;
+  font-weight: 700;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  text-transform: capitalize;
+}
+.design > .main markdown h2 {
+  color: #000;
+  font-weight: 700;
+  font-size: 1.75rem;
+  margin-bottom: 0.75rem;
+  text-transform: capitalize;
+}
+.design > .main markdown h3 {
+  color: #000;
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  text-transform: capitalize;
+}
+.design > .main markdown h4 {
+  color: #000;
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  text-transform: capitalize;
+}
+.design > .main markdown p {
+  font-size: 1rem;
+}
+.design > .main markdown > .description {
+  font-size: 16px;
+  margin-bottom: 3rem;
+}
+.design > .main markdown ul,
+.design > .main markdown li {
+  font-size: 16px;
+}
+/* Layout */
+.app-body {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  min-height: 100vh;
+}
+.app-body .main {
+  flex: 1;
+  min-width: 0;
+}
+.app-body .sidebar {
+  padding: 0;
+  overflow: hidden;
+  color: #fff;
+  background-color: #333333;
+  flex: 0 0 200px;
+  order: -1;
+}
+.app-body .nav {
+  list-style: none;
+  padding-left: 0;
+  flex-direction: column;
+}
+.app-body .nav .nav-title {
+  color: #fff;
+  text-decoration: none;
+  background: transparent;
+}
+.app-body .nav:hover {
+  color: #fff !important;
+  background: theme-color("primary") !important;
+}
+.app-body .nav.active {
+  color: #fff;
+  background: #404040;
+}
+.app-body .nav .nav-link {
+  color: #fff;
+  padding: 0.75rem 1rem;
+  font-size: 15px;
+}
+.app-body .nav .nav-link:hover {
+  color: #fff !important;
+  background: #04b5b0 !important;
+}
+.app-body .nav-dropdown-items {
+  list-style: none;
+  padding-left: 0;
+}
+.app-body .nav-dropdown-toggle::before {
+  position: absolute;
+  top: 0.96875rem;
+  right: 1rem;
+  display: block;
+  width: 0.875rem;
+  height: 0.875rem;
+  padding: 0;
+  font-size: 0.875rem;
+  line-height: 0.65625rem;
+  text-align: center;
+  content: "‹";
+  transition: 0.3s;
+}
+.app-body .nav .nav-item {
+  position: relative;
+}
+.app-body .nav .nav-item ul {
+  max-height: 0;
+  padding: 0;
+  margin: 0;
+  overflow-y: hidden;
+  transition: max-height 0.3s ease-in-out;
+}
+.app-body .nav .nav-item.nav-dropdown.open {
+  background: rgba(0, 0, 0, 0.2);
+}
+.app-body .nav .nav-item.nav-dropdown.open ul {
+  max-height: 500px;
+  overflow: auto;
+}
+.app-body .nav .nav-item.nav-dropdown.open .nav-link.nav-dropdown-toggle::before {
+  transform: rotate(-90deg);
+}
+.sidebar,
+.main {
+  transition: margin-left 0.25s, margin-right 0.25s, width 0.25s, flex 0.25s;
+}
+.demo-table-no {
+  flex: 0 1 10%;
+}
+.demo-table-name {
+  flex: 0 1 40%;
+}
+.demo-table-weight {
+  flex: 0 1 25%;
+}
+.demo-table-symbol {
+  flex: 0 1 25%;
+}
+table:not(.table):not(.mat-table):not(.grid):not(.ds-table) {
+  border: 1px solid #ddd;
+  margin-bottom: 1rem;
+}
+table:not(.table):not(.mat-table):not(.grid):not(.ds-table) thead {
+  border-bottom: 2px solid #ddd;
+}
+table:not(.table):not(.mat-table):not(.grid):not(.ds-table) th, table:not(.table):not(.mat-table):not(.grid):not(.ds-table) td {
+  padding: 0.5rem 0.75rem;
+}
+table:not(.table):not(.mat-table):not(.grid):not(.ds-table) td + td {
+  border-left: 1px solid #ddd;
+}
+table:not(.table):not(.mat-table):not(.grid):not(.ds-table) tbody tr + tr {
+  border-top: 1px solid #ddd;
+}
+@media screen and (max-width: 750px) {
+  .app-body .sidebar {
+    display: none;
+  }
+}

@@ -1,0 +1,132 @@
+<mat-dialog-header>
+    <h2 class="dialog-title">Order Form</h2>
+    <button type="button" class="close" (click)="cancel()">
+        <!-- <mat-icon>clear</mat-icon> -->
+        <i class="material-icons">clear</i>
+    </button>
+    <div class="modal-subtitle">
+        <div class="instruction-text">Use the table below to select the products you would like to order.</div>
+    </div>
+</mat-dialog-header>
+<mat-dialog-content *ngIf="!isLoading">
+    <form [formGroup]="form">
+        <div class="card card-table">
+            <div class="table-responsive">
+                <mat-table [dataSource]="supplyMatList" formArrayName="items" class="table-no-border align-top">
+                    <ng-container matColumnDef="include">
+                        <mat-header-cell *matHeaderCellDef class="mat-td-checkbox-width justify-content-center">
+                            <div class="table-checkbox" >
+                                <div class="custom-control custom-checkbox">
+                                    <input id="chkAll" 
+                                            type="checkbox" 
+                                            name="chkAll"
+                                            class="custom-control-input" 
+                                            [value]="includeAll"
+                                            (click)="checkAll()"
+                                    />
+                                    <label class="custom-control-label" for="chkAll"></label>
+                                </div>
+                            </div>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let element; let i = index" [formGroupName]="i" class="mat-td-checkbox-width justify-content-center">
+                            <div class="table-checkbox" [ngClass]="{'mt-2': element.id == 0}">
+                                <div class="custom-control custom-checkbox">
+                                    <input  type="checkbox" 
+                                            [id]="'chkOne_'+i"
+                                            class="custom-control-input"
+                                            formControlName="include"
+                                    />
+                                    <label class="custom-control-label" [for]="'chkOne_'+i"></label>
+                                </div>
+                            </div>
+                        </mat-cell>
+                        <mat-footer-cell *matFooterCellDef class="mat-td-checkbox-width"></mat-footer-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="product">
+                        <mat-header-cell *matHeaderCellDef class="">Product</mat-header-cell>
+                        <mat-cell *matCellDef="let element; let i = index;" [formGroupName]="i" >
+                            <ng-container *ngIf="element.id == 0">
+                                <div class="text-truncate w-100">
+                                    <div class="row align-items-center justify-content-between mb-1">
+                                        <div class="col-sm-6">
+                                            {{element.name}}
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-inline form-group">
+                                                <label class="form-control-label mr-2">Check Number</label>
+                                                <input type="text" class="form-control w-100px" maxlength="9" formControlName="checkNumber" 
+                                                dsFormControlValidator
+                                                [dsFormControlSubmitted]="formSubmitted"/>
+                                                <div *ngIf="form.get(['items', i, 'checkNumber']).errors?.required" class="invalid-feedback">
+                                                    Please enter a check number.
+                                                </div>
+                                                <div *ngIf="form.get(['items', i, 'checkNumber']).errors?.pattern" class="invalid-feedback">
+                                                    Check number must be a number.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="instruction-text text-truncate font-sm">
+                                        Changing the check number could result in duplicate or skipped check numbers.
+                                    </div>
+                                </div>
+                            </ng-container>
+                            <ng-container *ngIf="element.id == 3">
+                                <div class="text-truncate w-100">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        {{element.name}}
+                                    </div>
+                                    <div class="instruction-text text-truncate font-sm">
+                                        Dominion will hold your order if you prefer pick up instead of delivery.
+                                    </div>
+                                </div>
+                            </ng-container>
+                            <ng-container *ngIf="element.id != 0 && element.id != 3">
+                                {{element.name}}
+                            </ng-container>
+                        </mat-cell>
+                        <mat-footer-cell *matFooterCellDef class=""></mat-footer-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="quantity" >
+                        <mat-header-cell *matHeaderCellDef class="checkstock-table-quantity">Quantity</mat-header-cell>
+                        <mat-cell *matCellDef="let element; let i = index" [formGroupName]="i" class="checkstock-table-quantity">
+                            <ng-container *ngIf="element.id != 3">
+                                <div class="form-group w-100">
+                                    <select class="custom-select form-control"
+                                        (change)="setAmount(i)"
+                                        formControlName="selectedQuantity"
+                                        dsFormControlValidator
+                                        [dsFormControlSubmitted]="formSubmitted">
+                                        <option [ngValue]="null" ></option>
+                                        <option *ngFor="let bi of element.quantity" [ngValue]="bi" >{{bi?.quantity}}</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Please select a quantity.
+                                    </div>
+                                </div>
+                            </ng-container> 
+                        </mat-cell>
+                        <mat-footer-cell *matFooterCellDef class="table-text-right checkstock-table-quantity">Total: </mat-footer-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="amount">
+                        <mat-header-cell *matHeaderCellDef class="table-text-right checkstock-table-amount">Amount</mat-header-cell>
+                        <mat-cell *matCellDef="let element; let i = index;" [formGroupName]="i" class="table-text-right checkstock-table-amount">
+                            <span class="mt-2">{{form.get(['items', i, 'amount']).value || defaultPrice | currency}}</span>
+                        </mat-cell>
+                        <mat-footer-cell *matFooterCellDef class="table-text-right checkstock-table-amount">{{ totalPrice | currency }}</mat-footer-cell>
+                    </ng-container>
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns; let i = index; let element;" [ngClass]="{'border-bottom': element.id == 0, 'border-top': element.id == 3}"></mat-row>
+                    <mat-footer-row *matFooterRowDef="displayedColumns"></mat-footer-row>
+                </mat-table>
+            </div>
+        </div>
+    </form>
+</mat-dialog-content>
+<mat-dialog-content *ngIf="isLoading">
+    <div class="loading-message">Loading...</div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button type="submit" class="btn btn-save" [disabled]="!itemSelected" [ngClass]="{'disabled' : (form.invalid && formSubmitted) || !itemSelected}" CausesValidation="True" (click)="save()">Submit</button>
+    <button type="button" class="btn btn-cancel" (click)="cancel()">Cancel</button>
+</mat-dialog-actions>

@@ -1,0 +1,57 @@
+<ng-template #loadingScreen>
+    <ds-loading-message></ds-loading-message>
+</ng-template>
+<ng-container *ngIf="!isLoading else loadingScreen">
+    <div mat-dialog-header>
+        <div class="modal-title-content">
+            <h2 class="modal-title">
+                Assign Client Code
+            </h2>
+        </div>
+        <button type="button" class="close nested-cog" (click)="onNoClick()">
+            <mat-icon>clear</mat-icon>
+        </button>
+    </div>
+    <div mat-dialog-content>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group input-group">
+                    <input type="text" name="SearchResources" class="form-control" [(ngModel)]="searchText">
+                    <div class="input-group-append">
+                        <button class="search" type="button">
+                            <i class="material-icons">search</i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="empty-state" *ngIf="unAssignedClientsFiltered() == 0">There are no clients available for
+                    assignment.</div>
+                <div class="overflow-auto overflow-list" style="max-height: 300px;"
+                    [class.d-none]="unAssignedClientsFiltered() == 0">
+                    <div class="chip w-100 clickable p-0"
+                        [ngClass]="{'chip-primary': organizationClient.isSelected, 'chip-white': !organizationClient.isSelected }"
+                        *ngFor="let organizationClient of unAssignedClientsFiltered() "
+                        (click)="selectClient(organizationClient)">
+                        <div class="d-flex flex-column p-3">
+                            <div>
+                                <b>{{organizationClient.clientCode}}</b>
+                            </div>
+                            <div>
+                                <div class="text-truncate" title="{{organizationClient.clientName}}">
+                                    {{organizationClient.clientName}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div mat-dialog-actions class="ds-dialog-footer">
+        <button [class.d-none]="unAssignedClientsFiltered() == 0" type="button" class="btn btn-primary"
+            (click)="save()">Save</button>
+        <button type="button" class="btn btn-cancel" (click)="onNoClick()">Cancel</button>
+    </div>
+</ng-container>

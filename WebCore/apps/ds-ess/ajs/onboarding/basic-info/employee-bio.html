@@ -1,0 +1,117 @@
+﻿<style>
+    .modal-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        border: none; /* Cropper goes above */
+    }
+    .modal-body {
+        position: relative;
+        flex: 1 1 auto;
+        padding: 1rem;
+    }
+    .modal-footer {
+        display: flex;
+        justify-content: space-between;
+        padding: 1rem;
+        border: none;
+    }
+    .modal-footer:before, .modal-footer:after {
+        display: none;
+    }
+
+    .modal .col, .modal .col-suto {
+        position: relative;
+        width: 100%;
+        min-height: 1px;
+        padding-right: 15px;
+        padding-left: 15px;
+    }
+    .modal .col {
+        flex-basis: 0;
+        flex-grow: 1;
+        max-width: 100%;
+    }
+    .modal .col-auto {
+        flex: 0 0 auto;
+        width: auto;
+        max-width: none;
+    }
+    .modal .col-8 {
+        flex: 0 0 66.66667%;
+        max-width: 66.66667%;
+    }
+    .modal .form-control {
+        display: block;
+        width: 100%;
+        padding: .375rem .75rem;
+        font-size: .875rem;
+        line-height: 1.5;
+        color: #6D6C6C;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: transparent;
+        border-radius: .15rem;
+        box-shadow: none;
+        transition: border-color 0.15s ease-in-out,box-shadow 0.15s ease-in-out;
+    }
+
+    .modal-sm {
+        width: 350px;
+    }
+
+    .modal-dialog {
+        margin: 30px auto;
+    }
+
+</style>
+<div ng-show="isLoading">EmployeeBio Loading...</div>
+<div ng-show="!isLoading">
+    <div class="ess-container emp-bio">
+        <div class="panel clearfix">
+            <div class="panel-body">
+                <div class="d-flex flex-wrap on-header">
+                    <div class="circle-sm on-pager">{{circleNumber}}</div>
+                        <div class="top-constant">
+                            <h1>Employee Bio</h1>
+                        </div>
+                </div>
+                <form name="frmEmployeeBio">
+                    <div class="row pt-lg">
+                        <div class="col-md-4 col-lg-3 text-center">
+                            <label>Profile Picture</label>
+                            <div class="form-group">
+                                <profile-image 
+                                  employee="employeeImage" 
+                                  image-type="1" 
+                                  image-size="1" 
+                                  first-name="{{userData.firstName}}"
+                                  last-name="{{userData.lastName}}"></profile-image>
+                            </div>
+                        </div>
+                        <div class="col-md-8 col-lg-9 border-md-left">
+                            <div class="text-center">
+                                <div>
+                                    <label>Tell Us A Little Bit About Yourself</label>
+                                    <div class="form-group">
+                                        <textarea rows="10" name="EmployeeDetail"
+                                                  class="form-control"
+                                                  ng-model="employeePersonalInfo.bio"
+                                                  ng-required="true"
+                                                  ng-class="{ 'required-field' : frmEmployeeBio.EmployeeDetail.$invalid && (isSoftWarned || isCompleted==false)}">
+                                        </textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <ds-nav-workflow-footer workflow-hide-next="false" workflow-hide-prev="false"
+                        my-workflow="myWorkflow"
+                        on-save="$ctrl.clickSavePageData($direction)" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--col-md-9-->

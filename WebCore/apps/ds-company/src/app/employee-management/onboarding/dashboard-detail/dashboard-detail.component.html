@@ -1,0 +1,286 @@
+<ds-card border="top" mode="nobody">
+    <ds-card-header>
+        <ds-card-header-title>Onboarding</ds-card-header-title>
+        <ds-card-bread-crumb>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a routerLink="/manage/onboarding/dashboard">Onboarding</a>
+                    </li>
+                    <li class="breadcrumb-item active">Detail</li>
+                </ol>
+            </nav>
+        </ds-card-bread-crumb>
+        <ds-card-title-action *ngIf="employee">  
+            <button [matMenuTriggerFor]="menu" type="button" class="btn btn-outline-primary text-nowrap dropdown-toggle">
+                    Options
+            </button>
+            <mat-menu #menu="matMenu">
+                <button *ngIf="employee.employeeStarted==null && employee.invitationSent != null"  mat-menu-item (click)="resendEmail()">Resend Invitation</button>
+                <button mat-menu-item (click)="deleteEmployee()">Delete Employee</button>
+            </mat-menu>
+        </ds-card-title-action>
+    </ds-card-header>
+</ds-card>
+
+<ng-container *ngIf="!isLoading; else eeLoading">
+    <ds-employee-header [hideFilter]="true" [externalInput]="searchList" (employeeNavigated)="refresh($event)" [hideFilter]="true"></ds-employee-header>
+</ng-container>
+
+<ng-container *ngIf="!isLoading; else loadingScreen">
+  <div class="row">
+    <div class="col-xl-8">
+      <ds-card class="card-height-fix-sm">
+        <ds-card-header>
+            <ds-card-header-title>Admin</ds-card-header-title>
+            <ds-card-inline-content>
+                <ds-progress 
+                  color="info" 
+                  mode="determinate" 
+                  [value]="employee?.adminPctComplete" 
+                  [label]="employee.adminPctComplete + '% Complete'" 
+                  labelPosition="left"></ds-progress>
+            </ds-card-inline-content>
+        </ds-card-header>
+        <ds-card-content *ngIf="employee">
+            <div class="row justify-content-between">
+                <div class="col-auto">
+                  <div class="form-group">
+                    <button type="button"
+                            class="btn btn-action"
+                            *ngIf="employee.isI9Required &&  enableCertifyI9"
+                            [class.done]="employee.isI9AdminComplete"
+                            (click)="displayI9Modal()"
+                            [disabled]="!employee.isFinalized || employee.isI9AdminComplete">
+                        <mat-icon *ngIf="employee.isI9AdminComplete">done</mat-icon> Certify I-9
+                    </button>
+                    <button type="button"
+                            class="btn btn-action"
+                            *ngIf="allowMarkEmployeePayrollReady"
+                            [class.done]="(completedPct==100 && employee.essActivated!=null)"
+                            [disabled]="completedPct < 100"
+                            (click)="payrollReady()">
+                        <mat-icon *ngIf="completedPct==100 && employee.essActivated!=null">done</mat-icon> Payroll Ready
+                    </button>
+                  </div>
+                </div>
+                <div class="col-auto">
+                    <button type="button"
+                      class="btn btn-primary"
+                      [disabled]="employee.isOnboardingCompleted"
+                      (click)="completeOnboarding(employee)">
+                        Close Onboarding
+                    </button>
+                </div>
+            </div>
+            <div [formGroup]="form" class="list-bordered">
+                <div class="header">
+                    <div class="header-col">
+                        <div>ASSIGNED TASKS</div>
+                        <div [hidden]="employee.taskList.length==0" >DUE DATE</div>
+                        <div></div>
+                    </div>
+                </div>
+                <div class="body" formArrayName="tasks">
+                    <ng-container *ngIf="employee.taskList.length>0; else noAdminTasks">
+                    <div class="hoverable item-group admin-grid" *ngFor="let task of employee.taskList; let i=index" [formGroupName]="i+''">
+                        <div class="ds-item">
+                          <div class="form-group">
+                            <div class="custom-control custom-checkbox">
+                                <input class="custom-control-input" type="checkbox" formControlName="chkComplete" id="ccview{{i}}" (change)="updateAdminTaskStatus(task, i)" />
+                                <label class="custom-control-label" for="ccview{{i}}"><span>Completed</span></label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="ds-item">
+                            <div [hidden]="task.isEditing" class="item-label"><label for="ccview{{i}}">{{ task.description }}</label></div>
+                            <ng-container *ngIf="task.isEditing">
+                                <div class="form-group">
+                                    <label class="form-control-label">Assigned Task</label>
+                                    <input type="text" class="form-control" id="name{{i}}" formControlName="inpDesc" 
+                                      [class.is-invalid]="tasksFormArray.at(i).get('inpDesc').invalid && tasksFormArray.at(i).get('inpDesc').touched" />
+                                    <div class="invalid-feedback">
+                                        Please enter a task description.
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </div>
+                        <div class="ds-item">
+                            <div class="item-label" [hidden]="task.isEditing">{{ task.dueDate | date:'MM/dd/yyyy' }}</div>
+                            <ng-container *ngIf="task.isEditing">
+                              <div class="form-group">
+                                <label class="form-control-label">Assigned Task</label>
+                                <div class="input-group form-group">
+                                  <input matInput class="form-control" [matDatepicker]="dueDatePicker" formControlName="inpDueDate" />
+                                  <div class="input-group-append">
+                                      <mat-datepicker-toggle matSuffix [for]="dueDatePicker" class="input-group-text date">
+                                          <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                                      </mat-datepicker-toggle>
+                                      <mat-datepicker #dueDatePicker></mat-datepicker>
+                                  </div>
+                                </div>
+                              </div>
+                            </ng-container>
+                        </div>
+                        <div class="ds-item">
+                            <button [matMenuTriggerFor]="menuTask" type="button" class="btn btn-icon nested-cog hover-show float-right" [hidden]="task.isEditing">
+                              <mat-icon>more_vert</mat-icon>
+                            </button>
+                            <mat-menu #menuTask="matMenu">
+                                <button mat-menu-item (click)="editTask(task, i)">Edit</button>
+                                <button mat-menu-item (click)="deleteTask(task, i)">Remove</button>
+                            </mat-menu>
+                            <div [hidden]="!task.isEditing" class="float-right">
+                                <button type="button" class="btn btn-icon-primary d-inline-block" (click)="saveTask(task, i)">
+                                    <mat-icon>done</mat-icon>
+                                </button>
+                                <button type="button" class="btn btn-icon-outline-primary d-inline-block" (click)="cancelEditTask(task, i)">
+                                    <mat-icon>clear</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    </ng-container>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between">
+              <button class="btn btn-list" (click)="addTask()">
+                  <mat-icon>add</mat-icon> Task
+              </button>
+              <button class="btn btn-list" [hidden]="employee.taskList.length>0" (click)="importTaskList()">
+                  <mat-icon>add</mat-icon> Task List
+              </button>
+            </div>
+        </ds-card-content>
+      </ds-card>
+    </div>
+    <div class="col-xl-4">
+      <ds-card class="card-height-fix-sm">
+        <ds-card-header>
+            <ds-card-header-title>Employee</ds-card-header-title>
+            <ds-card-inline-content>
+                <ds-progress 
+                  color="success" 
+                  mode="determinate" 
+                  class="ee-progress"
+                  [value]="employee.pctComplete"  
+                  [label]="employee.pctComplete + '% Complete'" 
+                  labelPosition="left"></ds-progress>
+            </ds-card-inline-content>
+        </ds-card-header>
+        <ds-card-content>
+          <div class="form-group">
+            <button type="button" class="btn btn-outline-primary" (click)="editWorkflow()" *ngIf="showEditWorkflow">
+              <mat-icon>edit</mat-icon> Manage Employee Tasks
+            </button>
+          </div>
+            <div class="list-bordered">
+                <div class="header">
+                    <div class="ee-grid">
+                        <div>ASSIGNED TASKS</div>
+                        <div>STATUS</div>
+                    </div>
+                </div>
+                <div class="body">
+                    <div class="item-group ee-grid" *ngFor="let empTask of workflowData">
+                        <div class="ds-item">
+                            <div class="item-label">{{ empTask.onboardingTask.workflowTitle }}</div>
+                        </div>
+                        <div class="ds-item">
+                            <div class="item-label status text-success" *ngIf="empTask.isCompleted==true">Complete</div>
+                            <div class="item-label status" *ngIf="empTask.isCompleted==false">In Progress</div>
+                            <div class="item-label status text-danger" *ngIf="empTask.isCompleted==null">Not Started</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ds-card-content>
+      </ds-card>
+    </div>
+  </div>
+  <div class="row">
+      <div class="col-md-12 ">
+        <ds-card *ngIf="!isLoadingAttachments; else loadingScreen">
+            <ds-card-header>
+                <ds-card-header-title>Attachments</ds-card-header-title>
+                <ds-card-title-action>
+                    <button type="button" *ngIf="employee.employeeSignoff" class="btn btn-outline-primary" (click)="summarize()">
+                        Summary
+                    </button>
+                    <button type="button" *ngIf="onboardingFolders.length>0" class="btn btn-primary" (click)="addAttacment(null)">
+                        <mat-icon>add</mat-icon>Attachment
+                    </button>
+                </ds-card-title-action>
+            </ds-card-header>
+            <ds-card-content>
+                <div *ngIf="resources.length == 0" class="empty-state">There are no attachments to display. Click the "+ Attachment" button to add one for this employee.</div>
+                <div *ngIf="resources.length > 0" class="overflow-list">
+                    <div class="row">
+                        <div class="col-6 col-md-4 col-xl-3 " *ngFor="let resource of resources" >
+                            <ds-card hover="true" color="info" mode="object" x-align="center"
+                                (click)="downloadResource(resource)" [title]="resource.name">
+                                <ds-card-header>
+                                    <ds-card-subtitle>
+                                        <div class="split-content">
+                                            <div class="top">
+                                                <div class="object-card-avatar">
+                                                    <ng-container *ngIf="([1,3,7].indexOf(resource.sourceType) > -1)">
+                                                        <img *ngIf="(resource.extension.toUpperCase() == '.DOC' || resource.extension.toUpperCase() == '.DOCX')"
+                                                            class="resource-img py-5"
+                                                            src="WebCore/Images/Resources/DOC.png" />
+                                                        <img *ngIf="resource.extension.toUpperCase() == '.PDF'"
+                                                            class="resource-img py-5"
+                                                            src="WebCore/Images/Resources/PDF.png" />
+                                                        <img *ngIf="(resource.extension.toUpperCase() == '.XLS' || resource.extension.toUpperCase() == '.XLSX')"
+                                                            class="resource-img py-5"
+                                                            src="WebCore/Images/Resources/XLS.png" />
+                                                        <img *ngIf="(resource.extension.toUpperCase() == '.TXT' || resource.extension.toUpperCase() == '.RTF')"
+                                                            class="resource-img py-5"
+                                                            src="WebCore/Images/Resources/TXT.png" />
+                                                    </ng-container>
+                                                    <img *ngIf="(resource.sourceType == 2 )"
+                                                        class="resource-img py-5" src="WebCore/Images/Resources/Link.png" />
+                                                    <img *ngIf="(resource.sourceType == 4 )"
+                                                        class="resource-img py-5" src="WebCore/Images/Resources/Vid.png" />
+                                                </div>
+                                                <div class="font-lg text-center mb-4">
+                                                    <div class="text-truncate" data-toggle="tooltip"
+                                                        [title]="resource.name">
+                                                        {{resource.name}}
+                                                    </div>
+                                                    <div class="text-truncate text-muted font-xs"
+                                                        [title]="resource.addedDate | date:'MM/dd/yy h:mm a'">
+                                                        {{resource.addedDate | date:'MM/dd/yy h:mm a'}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </ds-card-subtitle>
+                                </ds-card-header>
+                            </ds-card>
+                        </div>
+                    </div>
+                </div>
+            </ds-card-content>
+          </ds-card>
+      </div>
+  </div>
+</ng-container>
+
+<ng-template #loadingScreen>
+    <ds-card>
+        <ds-card-content>
+            <ds-loading-message></ds-loading-message>
+        </ds-card-content>
+    </ds-card>
+</ng-template>
+
+<ng-template #noAdminTasks>
+    <div class="pt-2 empty-state">
+        There are no admin tasks assigned for this employee. <br/>Use the buttons below to add an individual task or import an existing task list.
+    </div>
+</ng-template>
+
+<ng-template #eeLoading>
+  <ds-employee-header [hideFilter]="true"></ds-employee-header>
+</ng-template>

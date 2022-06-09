@@ -1,0 +1,32 @@
+<div id="SummaryDiv" *ngIf="(isLoading$ | async) === false">
+    <ds-scoring-graph [evaluationId]="evaluationDetail.evaluationId" [reviewId]="review.reviewId" (overallScore)="overallScore = $event"></ds-scoring-graph>
+        
+    <ds-evaluation-payroll-request 
+        *ngIf="evaluationDetail != null" 
+        [form]="myForm"
+        [defaultMeritIncreaseInfo]="evaluationDetail.meritIncreaseInfo"
+        [defaultOneTimeEarning]="onetimeEarning"
+        [savedMeritIncreaseInfo]="review.meritIncreases"
+        [readOnly]="evaluationDetail.isReadOnly"
+        [review]="review.reviewId"
+        [employee]="review.reviewedEmployeeId"
+        [score]="overallScore"
+        [Submitted]="submitted"
+    ></ds-evaluation-payroll-request>
+        
+    <div class="ds-card">
+        <div class="ds-card-footer" [class.d-block]="evaluationDetail && evaluationDetail.isReadOnly && !evaluationDetail.isEvalComplete">
+            <button type="button" class="btn btn-save" *ngIf="!evaluationDetail.isReadOnly; else signatureInfo" (click)="submitEvaluation(true)" #save>Submit</button>                
+            <ng-template #signatureInfo>
+                <div>
+                    <span class="instruction-text" *ngIf="evaluationDetail.isEvalComplete">
+                        Evaluation Submitted: {{ evaluationDetail.completedDate | date:'MM/dd/yyyy hh:mm a' }} 
+                        by {{ evaluationDetail.evaluatedByContact.firstName }} {{ evaluationDetail.evaluatedByContact.lastName }}
+                    </span>
+                </div>
+            </ng-template>
+            <button type="button" class="btn btn-outline-primary" (click)="returnLink()">Return to Review List</button>
+        </div>
+    </div>
+
+</div>

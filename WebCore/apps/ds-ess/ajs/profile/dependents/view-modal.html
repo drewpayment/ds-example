@@ -1,0 +1,98 @@
+﻿<div class="panel panel-default">
+
+    <div class="panel-heading">
+        <button
+            type="button"
+            class="close"
+            ng-click="close()">
+            &times;
+        </button>
+
+        <h2 class="panel-title">
+            Dependent Detail
+        </h2>
+    </div>
+
+    <div carousel
+         no-transition="false">
+        
+        <div slide
+             ng-repeat="dependent in dependents"
+             active="dependent.active">
+            
+            <div class="panel-body">
+
+                <a
+                    ng-click="edit(dependent)"
+                    ng-show="hasEditPermission(dependent)">
+
+                    <i class="icon-pencil pull-right icon-xs"></i>
+
+                </a>
+
+                <h3 class="mb-0">{{ getFirstMidLastName(dependent) }}</h3>
+                <div class="mb-10"><em>{{ dependent.relationship }}</em></div>
+
+                <div class="row">
+
+                    <div class="col-md-12">
+                        <table class="form-view">
+                            <tr>
+                                <td>
+                                    <label class="text-primary">Born</label>
+                                </td>
+                                <td>
+                                    {{dependent.birthDate | date:'longDate'}} 
+                                    ({{calculateAge(dependent.birthDate)}}&nbsp;old)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="text-primary">Gender</label>
+                                </td>
+                                <td>
+                                    {{ dependent.gender }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="text-primary">SSN</label>
+                                </td>
+                                <td
+                                    ng-mouseenter="enableMaskSelection(dependent, true)"
+                                    ng-mouseleave="enableMaskSelection(dependent, false)">
+
+                                    <span>{{ getSsn(dependent) }}
+                                    </span>
+
+                                    <a
+                                        ng-show="dependent.showMaskSelection"
+                                        ng-mousedown="showUnmaskedSsn(dependent, true)"
+                                        ng-mouseup="showUnmaskedSsn(dependent, false)">
+
+                                        <i class="icon-eye-open"></i>
+
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-12">
+                        <div class="contact-comments">Comments: {{ dependent.comments }}</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="panel-footer">
+        </div>
+
+    </div>
+
+
+</div>

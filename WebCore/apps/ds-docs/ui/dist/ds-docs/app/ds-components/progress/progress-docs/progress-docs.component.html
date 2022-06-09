@@ -1,0 +1,73 @@
+<markdown ngPreserveWhitespaces>
+  # Progress
+  <p class="description">Show progress on tasks and loading</p>
+
+  ## Logo Animation
+</markdown>
+
+<div class="button-bar">
+  <button class="btn btn-icon">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block">
+  <div class="ui">
+    <ds-logo></ds-logo>
+  </div>
+</div>
+
+<markdown ngPreserceWhiteapces>
+  ## Progress Bar
+</markdown>
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleProgress = !toggleProgress">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleProgress">
+  <div class="ui">
+    <ds-progress></ds-progress>
+  </div>
+  <div class="example">
+    <ng-container>
+      <markdown src="app/ds-components/progress/progress/progress.component.html"></markdown>
+    </ng-container>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespacess>
+  ### Position
+  <p>Some layouts will require the label to stack above the progress bar, with the label centered.</p>
+</markdown>
+
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleProgressPosition = !toggleProgressPosition">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleProgressPosition">
+  <div class="ui">
+    <ds-progress-position></ds-progress-position>
+  </div>
+  <div class="example">
+    <ng-container>
+      <markdown src="app/ds-components/progress/progress-position/progress-position.component.html"></markdown>
+    </ng-container>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+  ### Size
+  #### Medium (default)
+  #### Small
+
+  ### Colors
+
+  ### Modes
+  #### Buffer
+  #### Indeterminate
+  #### Query
+</markdown>

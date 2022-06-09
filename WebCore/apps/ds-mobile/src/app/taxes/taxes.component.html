@@ -1,0 +1,38 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a routerLink="../..">Profile</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Taxes</li>
+    </ol>
+</nav>
+
+<mat-card *ngIf="!isLoading">
+    <mat-card-header>
+        <mat-card-title>Taxes</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <ng-container *ngIf="taxInfo && taxInfo.length; else noTaxInfo">
+            <div class="instruction-text text-center mb-4">Select an item below to edit it.</div>
+            <mat-nav-list class="mobile-nav-list" role="navigation">
+                <mat-list-item *ngFor="let t of taxInfo" [routerLink]="['edit', t.employeeTaxId]">
+                    {{t.description}}
+                    <button mat-icon-button>
+                        <mat-icon>keyboard_arrow_right</mat-icon>
+                    </button>
+                </mat-list-item>
+            </mat-nav-list>
+        </ng-container>
+        <ng-template #noTaxInfo>
+            <div class="empty-state">
+                There are no tax items to display.
+            </div>
+        </ng-template>
+    </mat-card-content>
+</mat-card>
+
+<ng-container *ngIf="isLoading">
+    <div class="d-flex justify-content-center">
+        <mat-spinner></mat-spinner>
+    </div>
+</ng-container>

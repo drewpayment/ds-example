@@ -1,0 +1,43 @@
+<ds-card>
+    <div ds-card-header>
+        <ds-card-section-title>
+            Resources
+        </ds-card-section-title>
+        <ds-card-title-action>
+            <button type="button" class="btn btn-primary" (click)="addResource()">
+                <i class="material-icons">add</i>
+                Resource
+            </button>
+        </ds-card-title-action>
+    </div>
+    <div ds-card-content>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label>Search</label>
+                    <input type="text" class="form-control" [(ngModel)]="searchText" name="search" (ngModelChange)="filterResources()" />
+                </div>
+            </div>
+        </div>
+        <ds-card *ngFor="let resource of filteredResources" [hover]="true" class="clickable" mode="callout" color="info" color-fade (click)="resource.edit()">
+            <div ds-card-icon>
+                explore
+            </div>
+            <div ds-card-header>
+                <ds-card-inline-content>
+                    <div class="text-color-fade">
+                        {{ resource.applicationSourceName }} | {{ resource.raw.routeUrl }}
+                    </div>
+                    <div class="ds-card-title-callout">
+                        {{ resource.raw.name }}
+                    </div>
+                </ds-card-inline-content>
+                <ds-card-title-action>
+                    <button class="btn btn-icon">
+                        <i class="material-icons">more_vert</i>
+                    </button>
+                </ds-card-title-action>
+            </div>
+        </ds-card>
+    </div>
+</ds-card>

@@ -1,0 +1,33 @@
+syntax: glob
+*\obj\*
+*.*~
+*.rdl.data
+*.orig
+*.trend
+*.dll
+*.nccov
+*.ncproj
+*.suo
+*.user
+*.pdb
+*.swp
+*.rej
+*.xml
+*.XML
+*.MDF
+*.LDF
+*.db
+*.scc
+*.vspscc
+*.vssscc
+*.scssc
+*/coverage/*
+*/node_modules/*
+
+# switch to regexp syntax.
+Packages.dgml
+*.ncrunchproject
+syntax: regexp
+/?packages/.*/
+/bin/
+obj/

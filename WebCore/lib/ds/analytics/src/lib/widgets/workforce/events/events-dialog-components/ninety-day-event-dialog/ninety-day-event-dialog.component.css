@@ -1,0 +1,19 @@
+.mat-column-Name {
+    flex: 1 1 250px;
+}
+
+.mat-column-Department {
+    flex: 0 1 200px;
+}
+
+.mat-column-Cost-Center {
+    flex: 0 1 150px;
+}
+
+.mat-column-Hire-Date {
+    flex: 0 0 100px;
+}
+
+.mat-column-90-Days-of-Service-Date {
+    flex: 0 1 180px;
+}

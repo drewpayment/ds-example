@@ -1,0 +1,282 @@
+﻿<div ng-show="isLoading">Electronic Consents Loading...</div>
+<div ng-hide="isLoading">
+    <div class="ess-container">
+        <form name="frmElectronicConsents" class="form">
+            <div class="panel clearfix col-md-12">
+                <div class="panel-body">
+                    <div class="d-flex flex-wrap on-header">
+                        <div class="circle-sm on-pager">{{circleNumber}}</div>
+                        <div class="top-constant">
+                            <h1>W-2 & 1095-C Forms</h1>
+                            <p class="text-muted">
+                                <!--Please select if you would like to waive your right to a paper copy of your documents and only receive electronic documents. You will still have access to your electronic documents if you waive your right to printed copies. By choosing not to receive paper copies of your documents, you are accepting the agreements below.-->
+                                Please read the Agreement(s) below and select your preferred method of delivery for each
+                                form listed.
+                            </p>
+                        </div>
+                    </div>
+                    <div ng-if="(isConsent)" class="controls">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <br />
+                                <p class="text-primary">
+                                    <a ng-click="toggleW2Consent()">W-2 Agreement</a>
+
+                                </p>
+
+                                <br />
+                                <div class="form-group">
+                                    <input id="W2OnlineOnly" type="radio" name="format" ng-model="valueW2" value="W2OnlineOnly"
+                                        ng-change="w2CheckStuff(valueW2)">
+                                    <label for="W2OnlineOnly">
+                                        Online Only
+                                        &nbsp;&nbsp;&nbsp;
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <input id="W2PrintedAndOnline" type="radio" name="format" ng-model="valueW2" value="W2PrintedAndOnline"
+                                        ng-change="w2CheckStuff(valueW2)">
+                                    <label for="W2PrintedAndOnline">
+                                        Printed Form & Online
+                                    </label>
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+                                <!--ng-if="(isAcaEnabled)"-->
+                                <br />
+                                <p class="text-primary">
+                                    <a ng-click="toggle1095CConsent()">1095-C Agreement</a>
+
+                                </p>
+
+                                <br />
+
+                                <div class="form-group">
+                                    <input id="1095COnlineOnly" type="radio" name="format1095C" ng-model="value1095C" value="1095COnlineOnly"
+                                        ng-change='fn1095CCheckStuff(value1095C)'>
+                                    <label for="1095COnlineOnly">
+                                        Online Only
+                                        &nbsp;&nbsp;&nbsp;
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <input id="value1095C" type="radio" name="format1095C" ng-model="value1095C" value="1095CPrintedAndOnline"
+                                        ng-change='fn1095CCheckStuff(value1095C)'>
+                                    <label for="value1095C">
+                                        Printed Form & Online
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+                        <!--<hr style="height: 1px; border: none; color: lightgrey; background-color: lightgrey;" />-->
+                        <div class="row hidden">
+                            <div class="col-md-5">
+                                <p><b>Notification Email Address</b></p>
+                                <input type="email" class="form-control"
+                                    ng-model="EmployeeOnboardingElectronicConsent.primaryEmailAddress" />
+                            </div>
+
+                            <div class="col-md-7">
+                                <br />
+                                <p class="text-muted"><i>You will receive an email at this address notifying you when
+                                        your tax document
+                                        are
+                                        available.</i></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div ng-if="!(isConsent)" class="w2agreement">
+                        <br />
+                        <p class="text-primary"><b><a ng-click="toggleW2Agreement()">
+                                    < Return to Consent</a></b></p>
+
+                        <ul class="nav nav-tabs">
+                            <li data-toggle="tab" ng-class="{'active':isW2AgreeShow}"><a
+                                    ng-click="fnW2AgreementShow()">W-2
+                                    Agreement</a></li>
+                            <!--ng-if="(isAcaEnabled)"-->
+                            <li data-toggle="tab" ng-class="{'active':!(isW2AgreeShow)}"><a
+                                    ng-click="fnW2AgreementHide()">1095-C
+                                    Agreement</a></li>
+                        </ul>
+                        <div ng-if="isW2AgreeShow">
+
+                            <br />
+                            <p><b>Electronic Employee Self Service W-2 Agreement</b></p>
+                            <p class="text-muted">After consenting to receive your W-2 online, you can obtain a paper
+                                copy of your Form
+                                W-2 by printing a copy from this Employee Self Service system. In order to view and
+                                print your Form W-2,
+                                you must have access to a computer that supports viewing and printing of PDFs, and have
+                                an operable
+                                printer setup to work with the computer.</p>
+
+                            <p class="text-muted">Additionally, you can request a paper copy of your form W-2 from your
+                                Payroll
+                                Department. This request will not consitute a withdrawal of consent to receive your W-2
+                                online through
+                                this Employee Self Service system.</p>
+
+                            <p class="text-muted">If you wish to withdraw your consent to receive your W-2 online, you
+                                must click the
+                                "Withdrawal of Consent" button. Withdrawing your consent becomes effective immediately
+                                through the
+                                software, but does not apply to a W-2 that was furnished electronically before the due
+                                date on which the
+                                withdrawal of consent occurred. Information about your withdrawal of your consent
+                                through this systems
+                                will be made available to your Company Administrator which they will be able to confirm
+                                prior to the
+                                release of any future Form W-2s.</p>
+
+                            <p class="text-muted">Access to your electronic W-2 will remain on this Employee Self
+                                Service system atleast
+                                through October 15th for the year following the calendar year to which the Form W-2
+                                relates(or on the
+                                first business day after October 15, if October 15 falls on a Saturday, Sunday or legal
+                                holiday).
+                                However, access to your Electronic W-2s through this Employee Self Service system will
+                                cease upon
+                                termination of employment, unless your Company Administrator provides access to this
+                                system after
+                                termination of employment. Additionally, if your employer terminates services with
+                                Dominion Systems,
+                                access to your electronic Form W-2 will cease through this Employee Self Service system.
+                            </p>
+
+                            <p class="text-muted">You agree to notify the Payroll Department or update this Employee
+                                Self Service system
+                                if any e-mail, address, or phone number changes have occurred since issuance of your
+                                previous years'
+                                W-2.</p>
+
+                            <p class="text-muted">Your employer is responsible for notifying you of any changes to their
+                                contact
+                                information.</p>
+
+                            <p class="text-muted">By accepting this agreement, you acknowledge that the electronic
+                                version of Form W-2
+                                meets the IRS requirements for a substitute form, and that you will use this Employee
+                                Self Service
+                                system to review and print your Form W-2. Additionally, you can review and save your
+                                electronic Form W-2
+                                to your own computer hardware.</p>
+
+                            <p class="text-muted">You acknowledge that a paper copy of Form W-2 may be required to be
+                                printed and
+                                attached to a Federal, State, or local income tax return.</p>
+
+                            <p class="text-muted">If you would like to receive an e-mail notifying you when your
+                                electronic Form W-2 is
+                                ready, enter your e-mail address in the section below this consent. The subject line of
+                                the e-mail will
+                                read, "IMPORTANT TAX RETURN DOCUMENT AVAILABLE". Your Company Administrator is
+                                responsible for
+                                initiating this e-mail notification.</p>
+                        </div>
+
+                        <div ng-if="!(isW2AgreeShow)">
+
+                            <br />
+                            <p><b>Electronic Employee Self Service 1095-C Agreement</b></p>
+                            <p class="text-muted">By consenting to receive your 1095-C online, you agree to not receive
+                                a paper Form
+                                1095-C from your employer. If you consent to receive your 1095-C online, your consent
+                                will remain in
+                                effect for all future years until you withdraw it.</p>
+
+                            <p class="text-muted">After consenting to receive your 1095-C online, you can obtain a paper
+                                copy of your
+                                Form 1095-C by printing a copy from this Employee Self Service system. In order to view
+                                and print your
+                                Form 1095-C, you must have access to a computer that supports viewing and printing of
+                                PDFs, and have an
+                                operable printer set up to work with the computer.</p>
+
+                            <p class="text-muted">Additionally, you can request a paper copy of your Form 1095-C from
+                                your Payroll
+                                Department. This request will not constitute a withdrawal of consent to receive your
+                                1095-C online
+                                through this Employee Self Service system.</p>
+
+                            <p class="text-muted">If you wish to withdraw your consent to receive your 1095-C online,
+                                you must click the
+                                "Withdrawal of Consent" button. Withdrawing your consent becomes effective immediately
+                                through the
+                                software, but does not apply to a 1095-C that was furnished electronically before the
+                                due date on which
+                                the withdrawal of consent occurred. Information about your withdrawal of your consent
+                                through this
+                                system will be made available to your Company Administrator which they will be able to
+                                confirm prior to
+                                the release of any future Form 1095-Cs.</p>
+
+                            <p class="text-muted">Access to your electronic 1095-C will remain on this Employee Self
+                                Service system at
+                                least through October 15th for the year following the calendar year to which the Form
+                                1095-C relates (or
+                                on the first business day after October 15, if October 15 falls on a Saturday, Sunday,
+                                or legal
+                                holiday). However, access to your electronic 1095-Cs through this Employee Self Service
+                                system will
+                                cease upon termination of employment, unless your Company Administrator provides access
+                                to this system
+                                after termination of employment. Additionally, if your employer terminates services with
+                                Dominion
+                                Systems, access to your electronic Form 1095-C will cease through this Employee Self
+                                Service system.</p>
+
+                            <p class="text-muted">You agree to notify the Payroll Department or update this Employee
+                                Self Service system
+                                if any e-mail, address, or phone number changes have occurred since the issuance of your
+                                previous years'
+                                1095-C.</p>
+
+                            <p class="text-muted">Your employer is responsible for notifying you of any changes to their
+                                contact
+                                information.</p>
+
+                            <p class="text-muted">By accepting this agreement, you acknowledge that the electronic
+                                version of the Form
+                                1095-C meets the IRS requirements for a substitute form, and that you will use this
+                                Employee Self
+                                Service system to review and print your Form 1095-C. Additionally, you can review and
+                                save your
+                                electronic Form 1095-C to your own computer hardware.</p>
+
+                            <p class="text-muted">You acknowledge that a paper copy of Form 1095-C may be required to be
+                                printed and
+                                attached to a Federal, State, or local income tax return.</p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <hr style="height: 1px; border: none; color: lightgrey; background-color: lightgrey;" />
+
+                <ds-nav-workflow-footer workflow-Hide-Next="false" workflow-Hide-Prev="false" my-Workflow="myWorkflow"
+                    on-save="$ctrl.clickSavePageData($direction)" />
+
+                <br />
+
+            </div>
+
+
+
+        </form>
+
+
+    </div>
+
+<!--<p>employeeId : {{EmployeeOnboardingElectronicConsent.employeeId}}</p>-->
+</div>
+
+<!--col-md-9-->

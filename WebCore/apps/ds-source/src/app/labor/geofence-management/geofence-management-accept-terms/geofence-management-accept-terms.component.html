@@ -1,0 +1,101 @@
+<div [formGroup]="acceptTerms">
+
+    <ng-container *ngIf="formInit|async as init">
+        <div class="row">
+            <div class="col-lg-8">
+                <h3 class="bold-text">Disclaimer</h3>
+                <p>
+                    By providing a digital signature, you are agreeing to the billing terms after the free trial period
+                    has
+                    ended.
+                    You will be billed per pay period and the cost per user will be broken down accordingly. You may
+                    cancel the
+                    Geofence feature at any time.
+                    Dominion does not use or store employee locations other than for the purposes of recording punch
+                    data.
+                    Please note that GPS punching has a
+                    margin of error unique to the device used.
+                </p>
+                <p class="bold-text">
+                    In order for this feature to work, employees must agree to have location services on for
+                    Dominion Mobile on their smartphones. If the employee has an iPhone using iOS 14 or newer,
+                    then that employee will also need to allow "Precise Location" on their iPhone. If they do not agree,
+                    then their geolocation will not be recorded, but an exception will be generated for that employee
+                    on their time card.
+                </p>
+                <div class="mt-6">
+                    <h3 class="bold-text d-inline-block mr-2 mb-2">ESTIMATED COST PER PAYROLL: <span
+                            class="text-transform-none">{{employeeCount*(2/payrollMultiplier) | currency}}
+                            for {{employeeCount}}
+                            Employees </span></h3>
+                    <div class="card-data bordered d-inline-flex font-xs font-italic mb-2">
+                        <div class="item">
+                            <label>{{2/payrollMultiplier | currency}} per employee</label>
+                        </div>
+                        <div class="item">
+                            <label>Free trial starts the next business day after you submit this form</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-6">
+                    <div class="col-sm-6 col-lg-4">
+                        <div class="form-group">
+                            <label class="form-control-label">First Name</label>
+                            <input formControlName="firstName" type="text" class="form-control" maxLength="25"
+                                [class.is-invalid]="acceptTerms.controls['firstName'].touched && acceptTerms.controls['firstName'].invalid" />
+                            <div *ngIf="acceptTerms.controls['firstName'].hasError('pattern')" class="invalid-feedback">
+                                Please enter valid characters only.
+                            </div>
+                            <div *ngIf="acceptTerms.controls['firstName'].hasError('required')"
+                                class="invalid-feedback">
+                                Please enter your first name.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-4">
+                        <div class="form-group">
+                            <label class="form-control-label">Last Name</label>
+                            <input formControlName="lastName" type="text" class="form-control" maxLength="25"
+                                [class.is-invalid]="acceptTerms.controls['lastName'].touched && acceptTerms.controls['lastName'].invalid" />
+                            <div *ngIf="acceptTerms.controls['lastName'].hasError('pattern')" class="invalid-feedback">
+                                Please enter valid characters only.
+                            </div>
+                            <div *ngIf="acceptTerms.controls['lastName'].hasError('required')" class="invalid-feedback">
+                                Please enter your last name.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-sm-4 col-lg-4 col-xl-2">
+                        <div class="form-group">
+                            <label class="form-control-label">PIN</label>
+                            <input formControlName="pin" type="password" class="form-control"
+                                [class.is-invalid]="acceptTerms.controls['pin'].touched && acceptTerms.controls['pin'].invalid" />
+                            <div *ngIf="acceptTerms.controls['pin'].hasError('pattern')" class="invalid-feedback">
+                                Please enter letters or numbers only.
+                            </div>
+                            <div *ngIf="acceptTerms.controls['pin'].hasError('required')" class="invalid-feedback">
+                                Please enter your pin.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="!isLoading">
+        <ng-container *ngIf="!optedIn">
+            <div class="d-flex justify-content-between flex-row-reverse mt-6">
+                <div class="d-flex align-items-center">
+                    <button type="button" mat-button matStepperNext class="btn btn-save"
+                        (click)="saveForm()">Submit</button>
+                </div>
+                <button matStepperPrevious class="btn btn-cancel">Back</button>
+            </div>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngIf="isLoading">
+        <ds-loading-message></ds-loading-message>
+    </ng-container>
+
+</div>

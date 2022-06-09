@@ -1,0 +1,297 @@
+<ng-template #itemSvg>
+    <div class="svg">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="checked">
+            <path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="enabled">
+            <path d="M0 0h24v24H0z" fill="none"/><path d="M7 11v2h10v-2H7zm5-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+        </svg>
+    </div>
+</ng-template>
+
+<ng-container *ngIf="!isLoading">
+
+    <ds-card border="top" color="primary">
+        <div ds-card-header>
+            <ds-card-header-title>
+                Review Profile
+            </ds-card-header-title>
+            <ds-card-bread-crumb>
+              <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="performancereviews.aspx?submenu=performance#/performance/setup/review-profiles">Review Profiles</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Review Profile</li>
+                </ol>
+              </nav>
+            </ds-card-bread-crumb>
+            <ds-card-subtitle>
+                <div class="instructional-title-text">
+                    A review profile is a reusable template that is assigned to a review cycle. If a previously used section is turned off, any information entered will appear disabled for that section in the review.
+                </div>
+            </ds-card-subtitle>
+        </div>
+        <div ds-card-content>
+            <form #mainForm="ngForm">
+                <div class="row">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input class="form-control" [(ngModel)]="reviewProfile.name" name="name" required dsFormControlValidator/>
+                            <div class="invalid-feedback">
+                                <span>Please enter a profile name.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Instructions</label>
+                            <span class="form-help-text pl-2">Optional; Instructions entered here will populate on each evaluation form selected below.</span>
+                            <textarea class="form-control" [(ngModel)]="reviewProfile.defaultInstructions" name="defaultInstructions" rows="4"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </ds-card>
+
+    <ds-card>
+        <div ds-card-header>
+            <ds-card-sub-header-title>
+                Review Steps
+            </ds-card-sub-header-title>
+            <ds-card-subtitle>
+                <div class="instructional-title-text">
+                    Select all that apply.
+                </div>
+            </ds-card-subtitle>
+        </div>
+        <div ds-card-content>
+            <form class="overflow-list" #contentForm="ngForm">
+                <ds-card *ngFor="let eval of evalSections; let evalIdx = index;" mode="widget-nobody" [color]="eval.isEnabled ? 'info' : 'disabled'" collapse="true" [expanded]="eval.isOpen" >
+                    <div ds-card-icon>{{ eval.isSupervisor ? "supervised_user_circle" : "account_circle" }}</div>
+                    <div ds-card-header>
+                        <ds-card-section-title>
+                            {{ eval.isSupervisor ? "Supervisor" : "Employee Self-" }} Evaluation
+                        </ds-card-section-title>
+                        <ds-card-title-action>
+                            <label class="switch switch-default switch-pill switch-success switch-sm">
+                            <input type="checkbox" class="switch-input" [(ngModel)]="eval.isEnabled" name="eeEvalEnabled_{{evalIdx}}">
+                            <span class="switch-label"></span>
+                            <span class="switch-handle"></span>
+                            <span class="ds-switch-off">Off</span>
+                            <span class="ds-switch-on">On</span>
+                        </label>
+                        </ds-card-title-action>
+                    </div>
+                    <div ds-card-content class="accordion-collapse open">
+                        <hr class="mt-0 mb-2" />
+                        <div class="instruction-text form-group">Select the evaluation form content</div>
+                        <div class="control-spacer-lg">
+                            <label class="circle-checkbox clickable">
+                                <input type="checkbox" class="item-checkbox" [(ngModel)]="eval.evalSettings.includeCompetencies" name="competenciesIncluded_{{evalIdx}}" (ngModelChange)="eval.toggleCompetencies()" [disabled]="!eval.isEnabled">
+                                <ng-container *ngTemplateOutlet="itemSvg"></ng-container>
+                                <div class="circle-checkbox-label">
+                                    <span>Competencies:</span> Competencies will populate based on the Competency Model assigned to the employee.
+                                </div>
+                            </label>
+                            <div class="nested-control-spacer-lg">
+                                <label class="circle-checkbox clickable">
+                                    <input type="checkbox" class="item-checkbox" [(ngModel)]="eval.evalSettings.isCompetencyCommentRequired" name="competenciesComment_{{evalIdx}}" [disabled]="!eval.isEnabled || !eval.evalSettings.includeCompetencies">
+                                    <ng-container *ngTemplateOutlet="itemSvg"></ng-container>
+                                    <div class="circle-checkbox-label">
+                                        <span>Comments Required:</span> Comments will be required for all ratings unless specific ratings are deselected below. Only the selected ratings require comments.
+                                    </div>
+                                </label>
+                                <div class="nested-control-spacer-lg" *ngIf="eval.evalSettings.isCompetencyCommentRequired">
+                                  <ng-container *ngFor="let rr of reviewRatings;let i = index">
+                                      <label class="circle-checkbox clickable" >
+                                          <input type="checkbox" class="item-checkbox" value="{{rr.reviewRatingId}}" name="competenciesRating_{{eval.evalSettings.role}}_{{i}}"
+                                                  [checked]="eval.isEnabled && eval.evalSettings.includeCompetencies && eval.evalSettings.isCompetencyCommentRequired && eval.evalSettings.selectedCompetenceyRatings && eval.evalSettings.selectedCompetenceyRatings.indexOf(rr.reviewRatingId) >= 0"
+                                                  (change)="updateCompetencyRatings(eval.evalSettings, rr.reviewRatingId, $event)"
+                                                  [disabled]="!eval.isEnabled || !eval.evalSettings.includeCompetencies || !eval.evalSettings.isCompetencyCommentRequired">
+                                          <ng-container *ngTemplateOutlet="itemSvg"></ng-container>
+                                          <span class="circle-checkbox-label d-inline-flex">
+                                            <span class="star-rating sm d-flex">
+                                              <ng-container *ngFor="let r of reviewRatings">
+                                                  <input id="{{r.rating}}_{{eval.evalSettings.role}}_{{i}}" type="radio" class="star-radio" [attr.name]="'rating_'+eval.evalSettings.role+(reviewRatings.length - i)" [value]="r.rating" [checked]="(reviewRatings.length-i)==r.rating" [disabled]="(reviewRatings.length-i)!=r.rating" />
+                                                  <span class="star d-inline-flex">
+                                                      <mat-icon class="filled">star</mat-icon>
+                                                      <mat-icon class="outline-view">star</mat-icon>
+                                                      <mat-icon class="outline">star_border</mat-icon>
+                                                  </span>
+                                              </ng-container>
+                                            </span>
+                                            <span class="star-label">
+                                                <span class="d-inline-block mr-1">{{rr.label}}:</span>
+                                                <span class="star-description">{{rr.description}}</span>
+                                            </span>
+                                          </span>
+                                        </label>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <label class="circle-checkbox clickable">
+                                <input type="checkbox" class="item-checkbox" [(ngModel)]="eval.evalSettings.includeGoals" name="goalsIncluded_{{evalIdx}}" (ngModelChange)="eval.toggleGoals()" [disabled]="!eval.isEnabled">
+                                <ng-container *ngTemplateOutlet="itemSvg"></ng-container>
+                                <div class="circle-checkbox-label">
+                                    <span>Goals:</span> Any Employee Goals within the evaluation period will populate on the evaluation form.
+                                </div>
+                            </label>
+                            <div class="nested-control-spacer-lg">
+                                <label class="circle-checkbox clickable" *ngIf="eval.isSupervisor">
+                                    <input type="checkbox" class="item-checkbox" [(ngModel)]="eval.evalSettings.isGoalsWeighted" name="goalsWeighted_{{evalIdx}}" [disabled]="!eval.isEnabled || !eval.evalSettings.includeGoals">
+                                    <ng-container *ngTemplateOutlet="itemSvg"></ng-container>
+                                    <div class="circle-checkbox-label">
+                                        <span>Weighted Employee Goals:</span> The supervisor will add weights to goals included in the review on the evaluation form.
+                                    </div>
+                                </label>
+                                <label class="circle-checkbox clickable">
+                                    <input type="checkbox" class="item-checkbox" [(ngModel)]="eval.evalSettings.isGoalCommentRequired" name="goalsComment_{{evalIdx}}" [disabled]="!eval.isEnabled || !eval.evalSettings.includeGoals">
+                                    <ng-container *ngTemplateOutlet="itemSvg"></ng-container>
+                                    <div class="circle-checkbox-label">
+                                        <span>Comments Required:</span> Comments will be required for all ratings unless specific ratings are deselected below. Only the selected ratings require comments.
+                                    </div>
+                                </label>
+                                <div class="nested-control-spacer-lg" *ngIf="eval.evalSettings.isGoalCommentRequired">
+                                  <ng-container *ngFor="let rr of reviewRatings;let i = index">
+                                    <label class="circle-checkbox clickable">
+                                        <input type="checkbox" class="item-checkbox" value="{{rr.reviewRatingId}}" name="goalsRating_{{eval.evalSettings.role}}_{{i}}"
+                                                [checked]="eval.isEnabled && eval.evalSettings.includeGoals && eval.evalSettings.isGoalCommentRequired && eval.evalSettings.selectedGoalRatings && eval.evalSettings.selectedGoalRatings.indexOf(rr.reviewRatingId) >= 0"
+                                                (change)="updateGoalRatings(eval.evalSettings, rr.reviewRatingId, $event)"
+                                                [disabled]="!eval.isEnabled || !eval.evalSettings.includeGoals || !eval.evalSettings.isGoalCommentRequired">
+                                        <ng-container *ngTemplateOutlet="itemSvg"></ng-container>
+                                        <span class="circle-checkbox-label d-inline-flex">
+                                          <span class="star-rating sm d-flex">
+                                              <ng-container *ngFor="let r of reviewRatings">
+                                                  <input id="goal_{{r.rating}}_{{eval.evalSettings.role}}_{{i}}" type="radio" class="star-radio" [attr.name]="'goal_rating_'+eval.evalSettings.role+(reviewRatings.length - i)" [value]="r.rating" [checked]="(reviewRatings.length-i)==r.rating" [disabled]="(reviewRatings.length-i)!=r.rating" />
+                                                  <span class="star d-inline-block" >
+                                                      <mat-icon class="filled">star</mat-icon>
+                                                      <mat-icon class="outline-view">star</mat-icon>
+                                                      <mat-icon class="outline">star_border</mat-icon>
+                                                  </span>
+                                              </ng-container>
+                                            </span>
+                                          <span class="star-label">
+                                                <span class="d-inline-block mr-1">{{rr.label}}:</span>
+                                                <span class="star-description">{{rr.description}}</span>
+                                          </span>
+                                        </span>
+                                      </label>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="control-spacer-lg">
+                            <label class="circle-checkbox clickable">
+                                <input type="checkbox" class="item-checkbox" [(ngModel)]="eval.evalSettings.includeFeedback" name="feedbackIncluded_{{evalIdx}}" (ngModelChange)="eval.toggleFeedbackSection()" [disabled]="!eval.isEnabled || !eval.feedbackItems.length">
+                                <ng-container *ngTemplateOutlet="itemSvg"></ng-container>
+                                <div class="circle-checkbox-label">
+                                    <span>Feedback:</span> Only the Feedback items you select will display on the evaluation form.
+                                </div>
+                            </label>
+                            <div class="circle-checkbox-child-container" *ngIf="eval.evalSettings.includeFeedback">
+
+                                <label class="circle-checkbox clickable" *ngFor="let item of eval.feedbackItems; let fbIdx = index;">
+                                    <input type="checkbox" class="item-checkbox" [(ngModel)]="item.isEnabled" name="feedbackEnabled_{{evalIdx}}_{{fbIdx}}" (ngModelChange)="eval.toggleFeedbackItem(item)" [disabled]="!eval.isEnabled">
+                                    <ng-container *ngTemplateOutlet="itemSvg"></ng-container>
+                                    <div class="circle-checkbox-label">
+                                        {{ item.feedback.body }} <span *ngIf="item.feedback.isSupervisor && !item.feedback.isVisibleToEmployee" class="instruction-text" style="font-weight: initial;">Response hidden from employee</span>
+                                    </div>
+                                </label>
+
+                            </div>
+                        </div>
+                        <ng-container *ngIf="eval.isSupervisor">
+                            <hr />
+                            <div class="control-spacer-lg">
+                                <label class="circle-checkbox clickable">
+                                    <input type="checkbox" class="item-checkbox" [(ngModel)]="eval.evalSettings.isApprovalProcess" name="isApprovalProcess_{{evalIdx}}" >
+                                    <ng-container *ngTemplateOutlet="itemSvg"></ng-container>
+                                    <div class="circle-checkbox-label">
+                                        <span>Approval Process</span> Supervisors will submit evaluations for approval. Approvers have the option to make direct edits 
+                                            and comments per item. Supervisors will receive a notification that changes were made to the evaluation and/or if they 
+                                            need to make edits to the evaluation and resubmit it for approval.
+                                    </div>
+                                </label>
+                            </div>
+                        </ng-container>
+                        
+                    </div>
+                </ds-card>
+                <ds-card [color]="meetingSection.isEnabled ? 'info' : 'disabled'" mode="widget-nobody" hover="true">
+                    <div ds-card-icon>event_available</div>
+                    <div ds-card-header>
+                        <ds-card-section-title>
+                            Review Meeting
+                        </ds-card-section-title>
+                        <ds-card-inline-content>
+                            <div class="instruction-text">This will send notifications to the appropriate user to schedule a meeting with the employee.</div>
+                        </ds-card-inline-content>
+                        <ds-card-title-action>
+                            <label class="switch switch-default switch-pill switch-success switch-sm no-expansion-switch-placeholder">
+                            <input type="checkbox" class="switch-input" [(ngModel)]="meetingSection.isEnabled" name="meetingEnabled">
+                            <span class="switch-label"></span>
+                            <span class="switch-handle"></span>
+                            <span class="ds-switch-off">Off</span>
+                            <span class="ds-switch-on">On</span>
+                        </label>
+                        </ds-card-title-action>
+                    </div>
+                </ds-card>
+
+                <ds-card *ngIf="isScoringEnabledForClient" [color]="scoringSection.isEnabled ? 'info' : 'gray'" mode="widget-nobody" hover="true">
+                    <div ds-card-icon>insert_chart_outlined</div>
+                    <div ds-card-header>
+                        <ds-card-section-title>
+                            Scoring
+                        </ds-card-section-title>
+                        <ds-card-inline-content>
+                            <div class="instruction-text">This will calculate and display scores based on your company's scoring set up.</div>
+                        </ds-card-inline-content>
+                        <ds-card-title-action>
+                        <label class="switch switch-default switch-pill switch-success switch-sm no-expansion-switch-placeholder">
+                            <input type="checkbox" class="switch-input" [(ngModel)]="scoringSection.isEnabled" name="scoringEnabled">
+                            <span class="switch-label"></span>
+                            <span class="switch-handle"></span>
+                            <span class="ds-switch-off">Off</span>
+                            <span class="ds-switch-on">On</span>
+                        </label>
+                    </ds-card-title-action>
+                </div>
+            </ds-card>
+
+            <ds-card [color]="payrollRequestSection.isEnabled ? 'info' : 'gray'" mode="widget-nobody" hover="true">
+                <div ds-card-icon>attach_money</div>
+                <div ds-card-header>
+                    <ds-card-section-title>
+                        Payroll Requests
+                    </ds-card-section-title>
+                    <ds-card-inline-content>                        
+                        <div class="instruction-text">Payroll Request are part of the Supervisor Evaluation. This includes Merit Increase and Additional Earnings, such as a bonus.</div>
+                    </ds-card-inline-content>
+                    <ds-card-title-action>
+                        <label class="switch switch-default switch-pill switch-success switch-sm no-expansion-switch-placeholder">
+                            <input type="checkbox" class="switch-input" [(ngModel)]="payrollRequestSection.isEnabled" name="payrollEnabled">
+                            <span class="switch-label"></span>
+                            <span class="switch-handle"></span>
+                            <span class="ds-switch-off">Off</span>
+                            <span class="ds-switch-on">On</span>
+                        </label>
+                        </ds-card-title-action>
+                    </div>
+                </ds-card>
+            </form>
+        </div>
+    </ds-card>
+
+    <ds-card>
+        <div ds-card-content class="mt-5 d-flex justify-content-between">
+            <button type="button" class="btn btn-cancel" (click)="cancel()">Cancel</button>
+            <button type="button" class="btn btn-primary" (click)="saveReviewProfile(mainForm)">Save</button>
+        </div>
+    </ds-card>
+
+</ng-container>

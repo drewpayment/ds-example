@@ -1,0 +1,74 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "outDir": "../../out-tsc/app",
+        "paths": {
+            "@ajs/*": [
+                "Scripts/ds/*"
+            ],
+            "@ds/admin": [
+                "lib/ds/admin/src/lib"
+            ],
+            "@ds/admin/*": [
+                "lib/ds/admin/src/lib/*"
+            ],
+            "@ds/core": [
+                "lib/ds/core/src/lib"
+            ],
+            "@ds/core/*": [
+                "lib/ds/core/src/lib/*"
+            ],
+            "@util/*": [
+                "Scripts/util/*"
+            ],
+            "@ds/performance": [
+                "lib/ds/performance/src/lib"
+            ],
+            "@ds/performance/*": [
+                "lib/ds/performance/src/lib/*"
+            ],
+            "@ds/payroll": [
+                "lib/ds/payroll/src/lib"
+            ],
+            "@ds/payroll/*": [
+                "lib/ds/payroll/src/lib/*"
+            ],
+            "@ds/notifications": [
+                "lib/ds/notifications/src/lib"
+            ],
+            "@ds/notifications/*": [
+                "lib/ds/notifications/src/lib/*"
+            ],
+            "@ds/reports": [
+                "lib/ds/reports/src/lib"
+            ],
+            "@ds/reports/*": [
+                "lib/ds/reports/src/lib/*"
+            ],
+            "employee-services": [
+                "dist/employee-services"
+            ],
+            "employee-services/*": [
+                "dist/employee-services/*"
+            ],
+            "@scripts/ds": [
+                "Scripts/ds"
+            ],
+            "@scripts/ds/*": [
+                "Scripts/ds/*"
+            ],
+            "@ds/employees": [
+                "lib/ds/employees/src/lib"
+            ],
+            "@ds/employees/*": [
+                "lib/ds/employees/src/lib/*"
+            ]
+        },
+        "module": "es2015",
+    },
+    "exclude": [
+        "src/test.ts",
+        "**/*.spec.ts",
+        "e2e/**"
+    ]
+}

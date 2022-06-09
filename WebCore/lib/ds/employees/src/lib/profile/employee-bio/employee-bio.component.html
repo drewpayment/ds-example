@@ -1,0 +1,23 @@
+<ds-card hover="true" class="hoverable">
+    <ds-card-header>
+        <ds-card-header-title>
+            About Me
+        </ds-card-header-title>
+        <ds-card-title-action>
+            <button Class="btn btn-icon hover-show" (click)="showEditBioDialog(employeePersonalInfo)">
+                <i class="material-icons">mode_edit</i>
+            </button>
+        </ds-card-title-action>
+    </ds-card-header>
+    <ds-card-content>
+        <div class="row justify-content-center" *ngIf="isLoading">
+            <div class="col"><ds-loading-message></ds-loading-message></div>
+        </div>
+        <div class="empty-state" *ngIf="(!employeePersonalInfo || !employeePersonalInfo.bio || employeePersonalInfo.bio == '') && !isLoading">
+            Filling out your About Me profile helps others learn more about you.
+        </div>
+        <ng-container *ngIf="employeePersonalInfo && hasViewPermissions">
+            <div [innerHtml]="employeePersonalInfo ? employeePersonalInfo.bio : 'Filling out your About Me profile helps others learn more about you.'"></div>
+        </ng-container>
+    </ds-card-content>
+</ds-card>

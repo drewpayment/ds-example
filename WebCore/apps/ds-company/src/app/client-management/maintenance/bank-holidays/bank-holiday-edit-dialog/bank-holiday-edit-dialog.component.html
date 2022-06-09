@@ -1,0 +1,52 @@
+<mat-dialog-header>
+    <h2 class="dialog-title">
+        {{bankHoliday.bankHolidayId != null ? 'Edit Bank Holiday' : 'Add Bank Holiday'}}
+    </h2>
+    <button type="button" class="close" (click)="onNoClick()">
+        <i class="material-icons">clear</i>
+    </button>
+</mat-dialog-header>
+<mat-dialog-content>
+    <form [formGroup]="form">
+        <div class="form-group">
+            <label>Name</label>
+            <input 
+                [class.is-invalid]="form.get('name').invalid && (form.get('name').touched || formSubmitted)"
+                class="form-control"
+                formControlName="name"
+                required
+                cdkFocusInitial
+            />
+            <div class="invalid-feedback">Please enter a name.</div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label"> Date</label>
+            <div class="input-group">
+                <input matInput class="form-control"
+                       [class.is-invalid]="form.get('date').invalid && (form.get('date').touched || formSubmitted)"
+                       [matDatepicker]="date"
+                       formControlName="date"
+                       required />
+                <div class="input-group-append">
+                    <mat-datepicker-toggle matSuffix [for]="date" class="input-group-text date">
+                        <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #date></mat-datepicker>
+                </div>
+                <div class="invalid-feedback">
+                    Please enter a date.
+                </div>
+            </div>
+        </div>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button 
+        class="btn btn-primary"
+        (click)="saveBankHoliday()"
+    >Save</button>
+    <button type="button"
+        class="btn btn-cancel"
+        (click)="onNoClick()"
+    >Cancel</button>
+</mat-dialog-actions>

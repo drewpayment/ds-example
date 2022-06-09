@@ -1,0 +1,26 @@
+<ds-card class="card-height-fix-sm">
+  <ds-card-header>
+    <ds-card-sub-header-title>
+      Competencies
+    </ds-card-sub-header-title>
+  </ds-card-header>
+  <ds-card-content>
+    <div #ratingLegend class="ds-legend-group mb-0"></div>
+    <div class="chart-wrapper ds-scroll">
+      <ng-template #ratingPieChartDiv >
+          <canvas 
+            baseChart
+            [datasets]  ="chartDataSet"
+            [labels]    ="chartLabels"
+            [chartType] ="chartType"
+            [colors]    ="chartColors"
+            [options]   ="chartOptions"
+            #ratingPieChart ="base-chart"
+          ></canvas>
+      </ng-template>
+      <div [class.chart-area-wrapper]="chartLabels.length>5" style="height: 200px;" width="700" *ngIf="showChart">
+        <ng-container [ngTemplateOutlet]="ratingPieChartDiv"></ng-container>
+      </div>
+    </div>
+  </ds-card-content>
+</ds-card>

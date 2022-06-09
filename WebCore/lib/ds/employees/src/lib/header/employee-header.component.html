@@ -1,0 +1,243 @@
+<!-- <div class="ds-card employee-header" *ngIf="isLoading"></div>
+<div [hidden]="isLoading"> -->
+<ng-container
+  *ngIf="{results: searchResults$|async, options: searchOptions$|async, employee: selectedEmployee$|async} as x">
+  <ds-card mode="noheader" class="employee-header" [class.no-filter]="hideFilter">
+    <ds-card-content>
+      <div class="row justify-content-between align-items-end" *ngIf="!hideFilter">
+        <div class="col-md-auto form-group">
+          <div class="d-flex align-items-center mb-3 mb-md-0">
+            <button class="btn" [class]="(hasEnabledFilters$|async) ? 'btn-icon-primary' : 'btn-icon-outline-primary'"
+              [disabled]="(isLoading)" (click)="showFilterOptionModal(x?.options)">
+              <i class="material-icons">filter_list</i>
+            </button>
+            <div>
+              <ng-container *ngFor="let filter of getEnabledFilters(x?.options); last as isLast">
+                <div class="d-inline-block text-muted clickable hoverable ml-3 font-xs"
+                  (click)="clearFilterSelection(x?.options, filter)">
+                  {{ filter.$selected.name }} <i class="material-icons md-12 text-muted hover-show">clear</i>
+                  {{ !isLast || x?.options?.isActiveOnly || x?.options?.isExcludeTemps ? " /" : ""}}
+                </div>
+              </ng-container>
+              <div class="d-inline-block text-muted clickable hoverable ml-3 font-xs" *ngIf="x?.options?.isActiveOnly"
+                (click)="removeActiveOnly()">
+                Active Only <i class="material-icons md-12 text-muted hover-show">clear</i>
+                {{ x?.options?.isExcludeTemps ? " /" : ""}}
+              </div>
+              <div class="d-inline-block text-muted clickable hoverable ml-3 font-xs" *ngIf="x?.options?.isExcludeTemps"
+                (click)="removeExcludeTemps()">
+                Temps Excluded <i class="material-icons md-12 text-muted hover-show">clear</i>
+              </div>
+              <div class="d-inline-block text-muted ml-3 font-xs" *ngIf="!(hasEnabledFilters$|async)">
+                Filters Off
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-auto">
+          <div class="d-flex align-items-end flex-wrap">
+            <div class="search-container mr-2 form-group">
+              <label class="instruction-text font-xs">
+                <span *ngIf="isLoading; else showCount">Loading...</span>
+                <ng-template #showCount>
+                  <span>Search {{x?.results?.filterCount}} of {{x?.results?.totalCount}}</span>
+                </ng-template>
+              </label>
+              <ds-contact-autocomplete #ac multiple="false" displayEmployeeNumber="true" selectable="false"
+                [inputControl]="searchInput" (change)="selectedContact($event)"
+                [contacts]="filteredEmployees|async|mapToContact:mapEmpResToContact" [displayWith]="displayFn"
+                [filterLocalContacts]="false" [disabled]="(isLoading)">
+              </ds-contact-autocomplete>
+            </div>
+            <ng-container *ngIf="allowAddEmployee$|async">
+              <button class="btn btn-primary form-group" matTooltip="Add Employee" (click)="addEmployee()"
+                [disabled]="(isLoading)">
+                <i class="material-icons">person_add</i>
+              </button>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <hr class="mt-0"  *ngIf="!hideFilter"/>
+
+
+      <div class="skeleton-container">
+        <!-- loading -->
+        <div class="employee-header-loading" *ngIf="!x?.employee || (isLoading)"></div>
+
+        <!-- EE Data-->
+        <div [hidden]="!x?.employee || (isLoading)">
+          <div class="information-wrapper row align-items-center justify-content-center position-relative">
+            <div class="col-xl-auto">
+
+              <div class="profile text-center mt-2 mb-2 cursor-pointer">
+                <ng-container *ngIf="x?.employee">
+                  <ds-profile-image [employeeImage]="x.employee | mapToEmployeeImage" image-type="1" image-size="1"
+                    [firstName]="x?.employee?.firstName" [lastName]="x?.employee?.lastName"></ds-profile-image>
+                </ng-container>
+
+              </div>
+            </div>
+            <div class="col">
+              <div class="information row flex-nowrap">
+                <!-- Previous Employee -->
+                <div class="col-1 col-2xl-auto page-left p-0 pager">
+                  <button class="btn btn-icon" [matTooltip]="x?.results | eeSearchResultToName:'prev'"
+                    [class.invisible]="!(x?.results | eeSearchResultToName:'prev')" matTooltipShowDelay="250"
+                    [aria-hidden]="!(x?.results | eeSearchResultToName:'prev')" (click)="previousEmployee()">
+                    <mat-icon>keyboard_arrow_left</mat-icon>
+                  </button>
+                </div>
+                <!-- Current Employee Information -->
+                <div class="col-10 col-2xl">
+                  <div class="row align-items-baseline">
+                    <div class="col-xl-auto mr-auto text-center">
+                      <div
+                        class="d-flex flex-wrap align-items-baseline justify-content-xl-start justify-content-center">
+                        <div class="text-uppercase text-truncate font-2xl pr-3 font-weight-bold">
+                          {{x?.employee?.lastName}}<ng-container
+                            *ngIf="x?.employee?.firstName && x?.employee?.lastName">,
+                          </ng-container> {{x?.employee?.firstName}}
+                        </div>
+                        <div class="d-inline-block text-medium-dark font-weight-bold font-lg">
+                          {{x?.employee?.employeeNumber}}</div>
+                        <label [hidden]="x?.employee?.isActive"
+                          class="badge-pill badge-danger ml-4 align-self-center text-uppercase">Inactive</label>
+                        <label *ngIf="x?.employee?.isTemp"
+                          class="badge-pill badge-info ml-4 align-self-center text-uppercase">Temporary</label>
+                      </div>
+                    </div>
+                    <div class="col-xl-auto text-center">
+                      <ul class="list-inline bordered mb-0 text-center">
+                        <li *ngIf="jobProfileName" class="list-inline-item font-weight-bold job-profile">
+                          <button *ngIf="showJobProfileLink" (click)="openJobProfile(x?.employee)"
+                            class="btn btn-anchor font-weight-bold">
+                            {{jobProfileName}}
+                          </button>
+                          <ng-container *ngIf="!showJobProfileLink">{{jobProfileName}}</ng-container>
+                        </li>
+                        <li *ngIf="x?.employee?.department?.clientDepartmentId"
+                          class="list-inline-item font-weight-bold department">
+                          {{x?.employee | filterGroupName: x?.employee?.department?.clientDepartmentId }}
+                        </li>
+                        <li *ngIf="(x?.employee | filterTypeId: 2) != null && (x?.employee | filterTypeId: 2) != ''"
+                          class="list-inline-item font-weight-bold division">
+                          {{x?.employee | filterTypeId: 2 }}
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <hr class="my-2" />
+
+                  <div class="d-2xl-flex justify-content-center justify-content-lg-start">
+                    <div class="info-column">
+                      <div class="emp-content">
+                        <div class="eheader-sub sm">Email</div>
+                        <div class="text-dark eheader-content text-nowrap">
+                          <ng-container *ngIf="x?.employee?.emailAddress, else notSpecified">
+                            <div class="text-truncate email">
+                              <a href="mailto: {{x?.employee?.emailAddress}}">{{x?.employee?.emailAddress}}</a>
+                            </div>
+                          </ng-container>
+                        </div>
+                      </div>
+                      <div class="emp-content">
+                        <div class="eheader-sub sm">Home</div>
+                        <div class="text-dark text-nowrap">
+                          <ng-container *ngIf="x?.employee?.homePhoneNumber, else notSpecified">
+                            ({{x?.employee?.homePhoneNumber | slice: 0:3}}) {{x?.employee?.homePhoneNumber | slice:
+                            4:12}}
+                          </ng-container>
+                        </div>
+                      </div>
+                      <div class="emp-content" *ngIf="x?.employee?.cellPhoneNumber">
+                        <div class="eheader-sub sm">Mobile</div>
+                        <div class="text-dark text-nowrap">
+                          ({{x?.employee?.cellPhoneNumber | slice: 0:3}}) {{x?.employee?.cellPhoneNumber | slice: 4:12}}
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- HR shows on mobile size, v-line div shows on larger screens. Both separate the above and below content -->
+                    <hr class="d-sm-none" />
+                    <div class="v-line"></div>
+
+                    <div class="info-column flex-1 flex-lg-3 d-lg-flex flex-wrap">
+                      <div class="row">
+                        <div class="col-auto">
+                          <div class="emp-content" *ngIf="user && (x?.employee?.clientId != user.selectedClientId())" >
+                            <div class="eheader-sub lg">Client Name</div>
+                            <ng-container *ngIf="x?.employee?.clientName , else notSpecified">
+                              {{x?.employee.clientName}}
+                            </ng-container>
+                          </div>
+                          <div class="emp-content">
+                            <div class="eheader-sub lg">Work History</div>
+                            <ng-container *ngIf="x?.employee && workHistoryText, else notSpecified">
+                              <span [innerHTML]="workHistoryText"></span>
+                            </ng-container>
+                          </div>
+                          <div class="emp-content">
+                            <div class="eheader-sub lg">Length of Service</div>
+                            <ng-container *ngIf="x?.employee && lengthOfServiceText, else notSpecified">
+                              <span [innerHTML]="lengthOfServiceText"></span>
+                            </ng-container>
+                          </div>
+                        </div>
+                        <div class="col-auto">
+                          <div class="emp-content">
+                            <div class="eheader-sub lg">Pay Type</div>
+                            <ng-container *ngIf="x?.employee?.payType != null, else notSpecified">
+                              {{ x?.employee?.payType | payType }}
+                            </ng-container>
+                          </div>
+                          <div class="emp-content">
+                            <div class="eheader-sub lg">Supervisor</div>
+                            <ng-container *ngIf="x?.employee?.directSupervisor, else notSpecified">
+                              {{x?.employee?.directSupervisor}}
+                            </ng-container>
+                          </div>
+                        </div>
+                        <div class="col-auto">
+                          <div class="emp-content">
+                            <div class="eheader-sub lg">Status</div>
+                            <ng-container *ngIf="x?.employee?.employeeStatusType != null, else notSpecified">
+                              {{ x?.employee?.employeeStatusType | empStatus }}
+                            </ng-container>
+                          </div>
+                          <div class="emp-content"
+                            *ngIf="!x?.employee?.isActive && x?.employee?.terminationReason && x?.employee?.terminationReason?.description">
+                            <div class="eheader-sub lg">Reason</div>
+                            <ng-container
+                              *ngIf="!x?.employee?.isActive && x?.employee?.terminationReason && x?.employee?.terminationReason?.description">
+                              <span class="text-nowrap">{{ x?.employee?.terminationReason?.description }}</span>
+                            </ng-container>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-auto page-right p-0 pr-5 pager">
+                  <button class="btn btn-icon" [matTooltip]="x?.results | eeSearchResultToName:'next'"
+                    [class.invisible]="!(x?.results | eeSearchResultToName:'next')"
+                    [aria-hidden]="!(x?.results | eeSearchResultToName:'next')" matTooltipShowDelay="250"
+                    (click)="nextEmployee()">
+                    <mat-icon>keyboard_arrow_right</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </ds-card-content>
+  </ds-card>
+</ng-container>
+<!-- </div> -->
+
+<ng-template #notSpecified>
+  <span class="italic text-muted">Not Specified</span>
+</ng-template>

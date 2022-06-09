@@ -1,0 +1,225 @@
+@import '../../../../../../../Styles/scss/bootstrap-variables';
+.save-width {
+  display: inline-block;
+  width: 60px;
+}
+
+// Grid
+.grid {
+  .mat-header-row,
+  .mat-row {
+    .mat-header-cell,
+    .mat-cell {
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
+
+      &.table-text-right {
+        padding-right: 0.5rem;
+      }
+    }
+  }
+}
+// Sticky Grid
+.mat-table-sticky:not(.mat-table-sticky-border) {
+  z-index: 2 !important;
+}
+
+.grid {
+  .mat-row {
+    .mat-table-sticky-border {
+      box-shadow: $table-box-shadow;
+
+      &.mat-header-cell {
+        border-left: $table-sticky-hidden-header-border; // needed to keep width
+        border-right: $table-header-border;
+
+      }
+      &.mat-cell {
+        border-left: $table-sticky-hidden-border;
+        border-right: $table-border !important;
+      }
+
+      +.mat-cell {
+        border-left: none !important; // Removes border immediately after sticky column
+      }
+    }
+  }
+}
+
+.mat-table-sticky-border-end {
+  box-shadow: $table-box-shadow;
+
+  &.mat-header-cell {
+    border-left: $table-header-border;
+  }
+  &.mat-cell {
+    border-left: $table-border;
+  }
+}
+
+// Column sizes
+.mat-column-award,
+.mat-column-earning,
+.mat-column-type {
+  min-width: 100px;
+}
+
+.mat-column-select {
+  width: 59px;
+  min-width: 59px;
+}
+.mat-column-avatar {
+  min-width: 42px;
+  left: 59px !important;
+}
+.mat-column-employeeLastName {
+  min-width: 150px;
+  left: 101px !important;
+}
+.mat-column-employeeNumber {
+  min-width: 105px;
+  left: 251px !important;
+}
+::ng-deep .mat-column-employeeNumber > .mat-sort-header-container{
+  -webkit-box-pack: end !important;
+  justify-content: flex-end !important;
+}
+
+.mat-column-amount {
+  min-width: 100px;
+}
+.mat-column-effective {
+  min-width: 130px;
+}
+.mat-column-status {
+  min-width: 150px;
+}
+.mat-column-payout {
+  min-width: 150px;
+}
+.mat-column-supervisor {
+  min-width: 150px;
+}
+.mat-column-jobTitle {
+  min-width: 150px;
+}
+
+// Grid Input Elements
+.grid-input-container.mat-cell {
+  position: relative;
+}
+
+// base styles & spacing
+.grid-select,
+.grid-input,
+.grid-amount,
+.grid-input-group,
+.grid-append,
+.grid-prepend {
+  transition: background-color 0.3s ease-in-out;
+  height: 98%;
+  border: none;
+  top: 1%;
+}
+
+// full width inputs
+.grid-select,
+.grid-input,
+.grid-input-group {
+  padding: $table-cell-padding;
+  position: absolute;
+  width: 98%;
+  left: 1%;
+  border-radius: 0;
+}
+
+// Split width inputs
+.grid-input-group {
+  .grid-input {
+    width: 70%; // Standard width for inputs
+    left: 0;
+  }
+
+  .grid-append,
+  .grid-prepend {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28%;
+
+    .currency,
+    .percent {
+      width: 16px;
+    }
+  }
+
+  .grid-append {
+    right: 0;
+    //border-left: 1px solid #eee;
+  }
+
+  .grid-prepend {
+    left: 1%;
+    //border-right: 1px solid #eee;
+  }
+  .grid-prepend + .grid-input {
+    right: 1%;
+    left: auto;
+  }
+}
+
+// Validation spacing
+.grid {
+  .grid-input.is-invalid {
+    top: 0;
+    height: 100%;
+  }
+  .grid-prepend + .grid-input.is-invalid {
+    right: -1px;
+  }
+  .grid-input-group {
+    // appends
+    .grid-input.is-invalid {
+      height: 102%;
+      top: -1%;
+      left: -1%;
+    }
+
+    // prepends
+    .grid-prepend + .grid-input.is-invalid {
+      right: -1%;
+      left: auto;
+    }
+  }
+}
+
+// Payroll Request Card view
+.payroll-requests-table-include {
+  width: auto;
+  min-width: 10px;
+}
+.payroll-requests-table-rate {
+  width: 60px;
+}
+.payroll-requests-table-current {
+  width: 80px;
+}
+.payroll-requests-table-increase {
+  min-width: 120px;
+}
+.payroll-requests-table-amount {
+  min-width: 120px;
+}
+.payroll-requests-table-proposed {
+  width: 80px;
+}
+.payroll-request-table-payroll {
+  white-space: nowrap;
+}
+.payroll-requests-table-apply-on {
+  width: 80px;
+}
+.mat-column-action {
+  width: 55px;
+}

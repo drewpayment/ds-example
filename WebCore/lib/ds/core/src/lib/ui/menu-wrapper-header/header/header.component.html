@@ -1,0 +1,21 @@
+<div class="d-flex justify-content-end flex-wrap" *ngIf="{user: user$|async} as d">
+    <div class="inline-content">
+        <button class="btn btn-menu-toolbar" type="button" [disabled]="!canChangeClient"
+            (click)="openClientSelector()">
+            <span class="client-name text-truncate">{{d?.user?.lastClientName }} / {{ selectedClient?.clientCode}}</span>
+            <span class="badge badge-pill badge-danger badge-toolbar position-relative mr-2"
+                *ngIf="selectedClient != null && !selectedClient?.isCurrentlyActive">Terminated</span>
+            <span class="client-status" *ngIf="selectedClient?.isCurrentlyActive">
+              <span class="badge badge-pill badge-toolbar badge-client-info">
+                {{selectedClient?.clientStatusCode}}
+                <ng-container *ngIf="selectedClient?.isTaxManagement"> / TM</ng-container>
+              </span>
+            </span>
+            <mat-icon *ngIf="canChangeClient" >keyboard_arrow_down</mat-icon>
+        </button>
+        <div class="right-content">
+            <ds-menu-wrapper-toggle></ds-menu-wrapper-toggle>
+        </div>
+    </div>
+    <a href="Logout?directlogout" class="btn btn-menu-toolbar" target="_parent" (click)="clearLocalStorage()">Sign Out</a>
+</div>

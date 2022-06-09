@@ -1,0 +1,280 @@
+
+<ng-container *ngIf="hasError">
+    Unable to load the evaluation. Please close the window, refresh the page and try again.
+</ng-container>
+<ng-container *ngIf="!hasError && (data$ | async) as data; else loading">
+    <ng-container *ngTemplateOutlet="noError; context: { data: data }"></ng-container>
+</ng-container>
+<ng-template #noError let-data="data">
+    <div class="print-page">
+        <div class="print-page-header">
+            <div class="print-header">
+                <h1 class="d-inline-block" style="color: #fff !important;">
+                    {{data.searchResult.nav.current.firstName + '&nbsp;' + data.searchResult.nav.current.lastName}}
+                </h1>
+                <span>
+                    #
+                    {{data.searchResult.nav.current.employeeNumber}}
+                </span>
+            </div>
+        </div>
+        <div class="print-page-body">
+            <div class="row pt-3">
+              <div [ngClass]="(data.canShowScores && data.detail.completedDate)? 'col-6 print-page-border' : 'col-6 print-page-border d-print-none d-none'">
+                <ng-container *ngIf="data.canShowScores && data.detail.completedDate">
+                  <div class="d-flex" [class.justify-content-center]="!actualScore.items.length">
+                    <div class="text-center px-6 text-truncate score">
+                        <div class="text-muted text-uppercase">Overall Score</div>
+                        <h1 class="score-callout text-truncate">{{data.overallScore | number : '1.0-2'}}</h1>
+                        <div class="font-italic text-truncate">{{data.ratingDesc}}</div>
+                    </div>
+                    <div class="score-breakdown" *ngIf="actualScore.items.length">
+                        <div class="bold">Score Breakdown:</div>
+                        <div *ngFor="let topLevelGroup of actualScore.items">
+                            {{topLevelGroup.name}}: {{topLevelGroup.score | number : '1.0-2'}}
+                            <ul *ngIf="topLevelGroup.items.length">
+                                <li *ngFor="let secondLevelGroup of topLevelGroup.items">
+                                    {{secondLevelGroup.name}}: {{secondLevelGroup.score | number : '1.0-2'}}
+                                </li>
+                            </ul>
+                        </div>
+                      </div>
+                  </div>
+                </ng-container>
+              </div>
+                <div class="col-6">
+                    <div style="padding-left: 5pt;" class="bold">
+                        <div class="font-md mb-1">
+                            <span>{{data.titleAndPeriod.title}}:&nbsp;</span>
+                            {{data.detail.role === 1 ? 'Supervisor Evaluation' : 'Self-Evaluation'}}
+                        </div>
+                        <div class="font-md mb-1">
+                            <span>Evaluation Period:&nbsp;</span>
+                            {{data.titleAndPeriod.evalPeriod}}
+                        </div>
+                        <div class="font-md mb-1" *ngIf="data.searchResult.nav.current.departmentName">
+                            <span>Department Name:&nbsp;</span>
+                            {{data.searchResult.nav.current.departmentName}}
+                        </div>
+                        <div class="font-md mb-1" *ngIf="data.searchResult.nav.current.divisionName">
+                            <span>Division:&nbsp;</span>
+                            {{data.searchResult.nav.current.divisionName}}
+                        </div>
+                        <div class="font-md mb-1">
+                            <span>Supervisor:&nbsp;</span>
+                            {{data.detail.reviewedEmployeeContact.supervisorName == null || data.detail.reviewedEmployeeContact.supervisorName == '' ? noValString :data.detail.reviewedEmployeeContact.supervisorName}}
+                        </div>
+                        <div class="font-md mb-1">
+                            <span>Submitted By:&nbsp;</span>
+                            <ng-container *ngIf="data.detail.completedDate">
+                                {{data.detail.evaluatedByContact.firstName == null || data.detail.evaluatedByContact.firstName == '' ? noValString :data.detail.evaluatedByContact.firstName}}
+                                {{'&nbsp;' + data.detail.evaluatedByContact.lastName == null || data.detail.evaluatedByContact.lastName == '' ? noValString :data.detail.evaluatedByContact.lastName}}
+                                <ng-container *ngIf="data.detail.completedDate">on</ng-container> {{data.detail.completedDate}} 
+                                <ng-container *ngIf="data.detail.completedTime">at</ng-container> {{data.detail.completedTime}}
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr *ngIf="data.group.length"/>
+            <div class="row" *ngIf="data.group.length">
+                <div class="col-12">
+                    <div class="card-data text-uppercase mb-2">
+                        <div class="item text-muted">Rating Definitions</div>
+                    </div>
+                    <div class="mb-2" *ngFor="let r of data.detail.ratings; let i = index">
+                        <div class="d-flex align-items-center">
+                            <div class="star-rating sm">
+                                <ng-container *ngFor="let star of data.detail.ratings; let j = index;">
+                                    <input id="rating_{{i}}_{{j}}" type="radio" class="star-radio" name="rating-{{i}}-{{j}}"
+                                           [value]="star.rating" [ngModel]="r.rating" disabled />
+                                    <label class="star" for="rating_{{i}}_{{j}}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="filled">
+                                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                            <path d="M0 0h24v24H0z" fill="none" />
+                                        </svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="outline-view">
+                                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                            <path d="M0 0h24v24H0z" fill="none" />
+                                        </svg>
+                                    </label>
+                                </ng-container>
+                            </div>
+                            <div class="star-label">{{ r.label }}</div>
+                        </div>
+                        <div class="star-description">{{ r.description }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="instructions-container" *ngIf="data.titleAndPeriod.instructions">
+                <h3 class="text-muted">Instructions</h3>
+                <p>{{data.titleAndPeriod.instructions}}</p>
+            </div>
+
+            <div *ngFor="let group of data.group">
+                <ng-container *ngIf="group.items.length">
+                    <div class="print-header">
+                        <span class="d-inline-block text-uppercase">{{group.items[0]?.evalInfo?.groupName + ': ' + group.items.length}}</span>
+                        <span *ngIf="data.canShowScores"> | Section Score: &nbsp;</span>
+                        <ng-container *ngIf="data.canShowScores">
+                            <span *ngIf="!group.shouldShowBlankScore; else blankScore">{{(data.scoreModel?.scoreMethodType?.name | evalScoreToString:group.score)}}</span>
+                        </ng-container>
+                    </div>
+                    <div *ngFor="let item of group.items">
+                        <ng-container *ngTemplateOutlet="displayItems; context: {$implicit: item}"></ng-container>
+                    </div>
+                </ng-container>
+            </div>
+
+            <h2 class="print-header" *ngIf="data.detail.role === 1 && employeeNotes && employeeNotes.length>0">Employee Notes: {{employeeNotes.length}}</h2>
+            <div *ngIf="data.detail.role === 1">
+                
+                
+                <div class="print-page-section-group" *ngFor="let employeeNote of employeeNotes">
+                    <div class="row">
+                        <div class="font-md col-12">{{employeeNote.description}}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 instruction-text">
+                            Added {{employeeNote.addedDate | date}} by {{employeeNote.addedByFirstName + " " + employeeNote.addedByLastName}}
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <h2 class="print-header" *ngIf="data.detail.filteredFeedback">Feedback: {{data.detail.filteredFeedback.length}}</h2>
+            <div class="print-page-section-group">
+                <ol>
+                    <li *ngFor="let feedback of data.detail.filteredFeedback" [ngClass]="data.detail.completedDate ? 'submitted-feedback' : ''">
+                        <div ds-feedback [feedback]="feedback" class="break-avoid"></div>
+                    </li>
+                </ol>
+            </div>
+            <h2 class="print-header">Disclaimer</h2>
+            <div class="print-page-section-group">
+                <p>
+                    By signing this form, I authorize that the information provided on this review is complete and accurate.
+                    I agree to keep the information confidential, unless being shared by the appropriate parties.
+                </p>
+                <div *ngIf="data.detail.completedDate; else noSig" class="print-page-signature-section break-avoid reviewedEmployeeContact">
+                    <div class="row mb-5">
+                    <div class="col-8">
+                        <div class="single-line-input">
+                            {{
+((data.detail.signature || {}).signeeFirstName == null ? '' : (data.detail.signature ||
+              {}).signeeFirstName) +
+              " " +
+              ((data.detail.signature || {}).signeeLastName == null ? '' : (data.detail.signature || {}).signeeLastName)
+                            }}
+                        </div>
+                        <div class="instruction-text">Signature</div>
+                    </div>
+                    <div class="col-4">
+                        <div class="single-line-input">{{data.detail.completedDate}}</div>
+                        <div class="instruction-text">Date</div>
+                    </div>
+                </div>
+                <div class="row">
+                        <div class="col-8">
+                            <div class="single-line-input">
+                            </div>
+                            <div class="instruction-text">Signature</div>
+                        </div>
+                        <div class="col-4">
+                            <div class="single-line-input"></div>
+                            <div class="instruction-text">Date</div>
+                        </div>
+                    </div>
+                </div>
+                <ng-template #noSig>
+                    <div class="print-page-signature-section break-avoid">
+                        <div class="row mb-5">
+                                <div class="col-8">
+                                        <div class="single-line-input-initial-state"></div>
+                                        <div class="instruction-text">Signature</div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="single-line-input-initial-state"></div>
+                                        <div class="instruction-text">Date</div>
+                                    </div>
+                        </div>
+                        <div class="row">
+                                <div class="col-8">
+                                        <div class="single-line-input-initial-state"></div>
+                                        <div class="instruction-text">Signature</div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="single-line-input-initial-state"></div>
+                                        <div class="instruction-text">Date</div>
+                                    </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+    <ng-template #displayItems let-comp>
+        <div class="print-page-section-group">
+            <div class="d-flex align-items-center break-avoid">
+                <h3 class="bold mb-0 mr-2">{{comp.name}}</h3>
+                <div *ngIf="!comp.score; else starRatingCompetency" class="d-inline-block bold h3 mb-0 white-space-nowrap">
+                    <span class='rating-initial-value'></span> / 5
+                </div>
+            </div>
+
+            <div class="instruction-text" [innerHTML]=" ('Description:'+comp.evalInfo.description) | formatComment ">
+            </div>
+            <div class="d-flex mt-2 break-avoid">
+                <div class="comment-label d-inline-block mr-2 mt-0">Comments: </div>
+                <div class="d-inline-block" *ngIf="comp.evalInfo != null && comp.evalInfo.comments != null && comp.evalInfo.comments.description != null && comp.evalInfo.comments.description.trim() != ''; else noComment"
+                    [innerHTML]="comp.evalInfo.comments.description | formatComment ">
+                </div>
+            </div>
+
+            <ng-template #starRatingCompetency>
+                <div class="d-flex align-items-center">
+                    <div class="star-rating sm">
+                        <ng-container *ngFor="let star of arrayWithLengthOf5; let j = index;">
+                            <input id="goal_{{comp.evalInfo.id}}_{{j}}" type="radio" class="star-radio" name="goal_{{comp.evalInfo.id}}_{{j}}"
+                                   disabled [checked]="comp.score == (arrayWithLengthOf5.length - j)" />
+                            <label class="star" for="goal_{{comp.evalInfo.id}}_{{j}}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="filled">
+                                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                    <path d="M0 0h24v24H0z" fill="none" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="outline-view">
+                                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                                    <path d="M0 0h24v24H0z" fill="none" />
+                                </svg>
+                            </label>
+                        </ng-container>
+                    </div>
+                    <label class="star-description">{{ratingDictionary[comp.score].label}}</label>
+                </div>
+            </ng-template>
+
+        </div>
+    </ng-template>
+    <ng-template #noComment>
+        <div class="comment-box" *ngIf="!data.detail.completedDate; else noCompCommentsEntered"></div>
+    </ng-template>
+    <ng-template #noCompCommentsEntered>
+        <div class="instruction-text d-inline-block">No comments entered</div>
+    </ng-template>
+</ng-template>
+<ng-template #loading>
+    <div class="loading-message">Loading...</div>
+</ng-template>
+<ng-template #blankScore>
+    <div class="w-15 bg-white d-inline-block ml-1">&nbsp;</div>
+</ng-template>
+<ng-template #topBlankScore>
+    <div class="bold d-inline-block">Please enter a final score for this employee:</div>
+    <div class="comment-box"></div>
+</ng-template>
+<ng-template #emptyBox>
+    <div class="name-box"></div>
+</ng-template>

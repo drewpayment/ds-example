@@ -1,0 +1,103 @@
+<!--<div class="modal-content">-->
+<ng-container *ngIf="jobProfileData;else loading">
+<div class="modal-header">
+    <h2>{{jobProfileData.description}}</h2>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancel()" ds-auto-focus="true"><i class="material-icons" aria-hidden="false">clear</i></button>
+</div>
+<form name="frmJobProfile">
+    <div class="modal-body">
+        <div class="overflow-list" id="pnlToPrint" name="pnlToPrint">
+            <div class="bg-white p-3 mb-3">
+                <div class="row">
+                    <div class="jb-title col-md-12">
+                        <h1 class="text-center bold">{{jobProfileData.clientName}}</h1>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3>{{jobProfileData.description}}</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row pb-1" *ngIf="jobProfileData.eeocLocation">
+                            <div class="col-2">
+                                <span class="text-uppercase text-muted">Location</span>
+                            </div>
+                            <div class="col-7">
+                                {{jobProfileData.eeocLocation}}
+                            </div>
+                        </div>
+                        <div class="row pb-1" *ngIf="jobProfileData.clientDepartment">
+                            <div class="col-2">
+                                <span class="text-uppercase text-muted">Department</span>
+                            </div>
+                            <div class="col-7">
+                                {{jobProfileData.clientDepartment}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="row" *ngIf="jobProfileData.requirements.length>0">
+                    <div class="col-md-12">
+                        <h3 class="bold">Summary</h3>
+                        <p>{{jobProfileData.requirements}}</p>
+                    </div>
+                </div>
+                <div class="row" *ngIf="jobProfileData.jobProfileResponsibilities.length>0">
+                    <div class="col-md-12">
+                        <h3 class="bold">Responsibilities</h3>
+                        <ul>
+                            <li *ngFor="let jobResponsibility of jobProfileData.jobProfileResponsibilities">
+                                <div class="item-label">{{jobResponsibility.description}}</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row" *ngIf="jobProfileData.jobProfileSkills.length>0">
+                    <div class="col-md-12">
+                        <h3 class="bold">Skills</h3>
+                        <ul>
+                            <li *ngFor="let jobSkill of jobProfileData.jobProfileSkills">
+                                <div class="item-label">{{jobSkill.description}}</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row" *ngIf="jobProfileData.workingConditions">
+                    <div class="col-md-12">
+                        <h3 class="bold">Working Conditions</h3>
+                        <p>{{jobProfileData.workingConditions}}</p>
+                    </div>
+                </div>
+                <div class="row" *ngIf="jobProfileData.benefits">
+                    <div class="col-md-12">
+                        <h3 class="bold">Benefits</h3>
+                        <p>{{jobProfileData.benefits}}</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 float-right">
+                        Viewed on : <span class="text-uppercase text-muted">{{currentDate}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="col-12 p-0">
+            <div class="float-left">
+                <button class="btn btn-cancel float-left" (click)="cancel()"> Cancel </button>
+            </div>
+            <div class="float-right">
+                <button class="btn btn-outline-primary" (click)="printGrid()"> Print </button>
+                <button class="btn btn-save" (click)="convertHtmlPageToPdf()">Download</button>
+            </div>
+        </div>
+    </div>
+</form>
+</ng-container>
+<ng-template #loading>
+    <ds-loading-message></ds-loading-message>
+</ng-template>

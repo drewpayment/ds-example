@@ -1,0 +1,24 @@
+.name {
+    flex: 0 1 200px;
+}
+
+.department {
+    flex: 0 1 250px;
+}
+
+.costCenter {
+    flex: 0 1 250px;
+}
+
+.hireDate {
+    flex: 0 1 100px;
+}
+
+.terminationDate {
+    flex: 0 1 100px;
+}
+
+.terminationReason {
+    flex: 0 1 150px;
+    justify-content: center;
+}

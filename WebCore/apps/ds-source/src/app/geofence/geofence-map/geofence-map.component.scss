@@ -1,0 +1,41 @@
+agm-map {
+    height: 50vh;
+}
+
+#toggleDrawingMode {
+    top: 15px !important;
+    left: 15px !important;
+}
+
+#toggleMapType {
+    bottom: 30px !important;
+    left: 15px !important;
+}
+
+#addressSearch {
+    text-overflow: ellipsis;
+    width: 300px;
+    top: 15px !important;
+    margin-right: 20px;
+}
+
+#showAllMapObjects {
+    top: 15px !important;
+    right: 15px !important;
+}
+
+#infowindowForm {
+    right: 15px !important;
+}
+
+.form-group-margin {
+    margin-top: 50px;
+}
+
+.textAreaNoResize {
+    resize: none;
+}
+
+.infowindow-form {
+    font-size: 14px;
+}

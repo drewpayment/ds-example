@@ -1,0 +1,137 @@
+<mat-dialog-header>
+  <h2 class="modal-title">Add Group</h2>
+  <button type="button" class="close" (click)="cancel()">
+    <mat-icon>clear</mat-icon>
+</button>
+<div class="modal-subtitle">
+  <div class="instruction-text">Use the filters below to create a group of employees.  Groups can be applied to specific reviews.</div>
+</div>
+</mat-dialog-header>
+<mat-dialog-content [formGroup]="form">
+  <div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <label class="form-control-label">Name</label>
+            <input type="text" class="form-control" formControlName="name" dsFormControlValidator cdkFocusInitial
+            [dsFormControlSubmitted]="submitted"  />
+            <div class="invalid-feedback" *ngIf="form.controls.name.hasError('required')">
+              Please enter a name.
+          </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+      <div class="form-group">
+          <label class="form-control-label">Assign Reviews <span class="form-help-text">Optional</span></label>
+          <ds-generic-autocomplete
+          [items]="dialogData.templates | sortTemplates | toAutocompleteItem : templatesMapper"
+          [customSort]="sorttemplates"
+           formControlName="reviews">
+          </ds-generic-autocomplete>
+      </div>
+  </div>
+</div>
+<div class="row align-content-end">
+  <div class="col-md-4">
+      <div class="form-group">
+          <label class="form-control-label">Length of Service <span class="form-help-text">Optional</span></label>
+          <select class="form-control custom-select" formControlName="lengthOfService">
+              <option></option>
+              <option [value]="option.id" *ngFor="let option of lengthOfServiceSelectOptions">{{option.description}}</option>
+          </select>
+      </div>
+  </div>
+  <div class="col-md-8">
+    <div class="inline-md-control">
+      <ds-date-selector 
+        label="" 
+        helpText=""
+        [parentForm]="form"
+        durationControlName="duration"
+        unitTypeControlName="unitType"
+        [submitted]="submitted"
+        ></ds-date-selector>
+      </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+      <div class="form-group">
+          <label class="form-control-label">Employee Status <span class="form-help-text">Optional</span></label>
+          <ds-generic-autocomplete
+          [items]="statuses" formControlName="status">
+          </ds-generic-autocomplete>
+      </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+      <div class="form-group">
+          <label class="form-control-label">Competency Models <span class="form-help-text">Optional</span></label>
+          <ds-generic-autocomplete
+          [items]="dialogData.compModels | toAutocompleteItem : compModelMapper"
+          formControlName="compModel">
+          </ds-generic-autocomplete>
+      </div>
+  </div>
+</div>
+<!-- <div class="row">
+  <div class="col-md-12">
+      <div class="form-group">
+          <label class="form-control-label">Division</label>
+          <ds-generic-autocomplete
+          [items]="dialogData.divisions | toAutocompleteItem : divisionsMapper">
+          </ds-generic-autocomplete>
+      </div>
+  </div>
+</div> -->
+<div class="row">
+  <div class="col-md-12">
+      <div class="form-group">
+          <label class="form-control-label">Department <span class="form-help-text">Optional</span></label>
+          <ds-generic-autocomplete
+          [items]="dialogData.departments | toAutocompleteItem : departmentsMapper"
+          formControlName="department">
+          </ds-generic-autocomplete>
+      </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+      <div class="form-group">
+          <label class="form-control-label">Job Title <span class="form-help-text">Optional</span></label>
+          <ds-generic-autocomplete
+          [items]="dialogData.jobProfiles | toAutocompleteItem : jobProfilesMapper"
+          formControlName="jobTitle">
+          </ds-generic-autocomplete>
+      </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+      <div class="form-group">
+          <label class="form-control-label">Cost Center <span class="form-help-text">Optional</span></label>
+          <ds-generic-autocomplete
+          [items]="dialogData.costCenters | toAutocompleteItem : costCentersMapper"
+          formControlName="costCenter">
+          </ds-generic-autocomplete>
+      </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+      <div class="form-group">
+          <label class="form-control-label">Pay Type <span class="form-help-text">Optional</span></label>
+          <ds-generic-autocomplete
+          [items]="dialogData.payTypes | toAutocompleteItem : payTypesMapper"
+          formControlName="payType">
+          </ds-generic-autocomplete>
+      </div>
+  </div>
+</div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button type="button" class="btn btn-save" (click)="save()">Save</button>
+    <button type="button" class="btn btn-cancel" (click)="cancel()">Cancel</button>
+</mat-dialog-actions>

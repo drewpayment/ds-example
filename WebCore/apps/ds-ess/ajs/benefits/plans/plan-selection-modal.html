@@ -1,0 +1,207 @@
+﻿<div class="benefits">
+
+    <!--<div data-ds-msg="" data-route-key=""></div>-->
+
+    <div class="modal-header">
+        <h2>Finalize {{coverageType.description}} Selection</h2>                            
+        <button type="button" class="close" data-dismiss="modal" ng-click="close()" aria-label="Close">
+           <i class="material-icons">clear</i>
+        </button>
+    </div>
+
+    <div id="select-deps" ng-show="!showPcpForm" class="modal-body waivedCoverage">
+
+        <div ng-if="waivedCoverage">
+            <h3 class="mb-20 mt-0">You've selected to <strong><span style="color: #ff0000;">WAIVE</span></strong> coverage for <strong>{{coverageType.description}}</strong>! </h3>
+            <p>Are you sure you want to do this?</p>
+
+            <div ng-show="coverageType.isWaiverReasonRequired">
+                <p><i>If so, please provide a reason:</i></p>
+
+                <form class="modal-form" id="waiveReasonForm" name="waiveReasonForm" novalidate>
+
+                    <div class="form-group">
+                        <label class="control-label">
+                            <span class="required-star">*</span>Reason
+                        </label>
+                        <div>
+                            <select class="form-control"
+                                    ng-model="waiverInfo.planWaiveReasonId"
+                                    ng-options="waiveReason.planWaiveReasonId as waiveReason.description  for waiveReason in planWaiveReasons | orderBy: 'sequence'">
+                                <option value="">-- Select --</option>
+                            </select>
+                        </div>
+                    </div>
+                    <label class="control-label">Please Explain</label>
+                    <div>
+                        <textarea maxlength="250" rows="3" class="form-control" id="planWaiveExplanation" ng-model="waiverInfo.planWaiveExplanation"></textarea>
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
+
+        <div ng-if="!waivedCoverage">
+            
+            <h3 class="mb-20 mt-0">You've selected <strong>{{plan.planName}}</strong>!</h3>
+
+            <div ng-show="plan.isPcpRequired">
+                <div ng-show="employeePcp">
+                    <p>This plan requires you supply a primary care physician (PCP). Please verify PCP is correct below.</p>
+                    <a id="edit-pcp" ng-click="loadPcp(employeePcp,currentUser.employeeId,1);">Primary Care Physician - {{employeePcp.firstName}} {{employeePcp.lastName}} </a>
+                    <br />
+                </div>
+                <div ng-show="!employeePcp">
+                    <p>This plan requires you supply a primary care physician. Please add this information below.</p>
+                    <a id="lnkAddPcp" class="btn btn-default mb-15" ng-click="loadPcp(employeePcp,currentUser.employeeId,1);">Add PCP</a>
+                    <br />
+                </div>
+            </div>
+
+            <div ng-repeat="optionInfo in plan.planOptionList | filter:{isSelected:true}">
+
+                <hr ng-if="!$first"/>
+
+                <h4>
+                    {{ optionInfo.name }} 
+                    {{optionInfo.selection.selectedBenefitAmount ? " - " + (optionInfo.selection.selectedBenefitAmount.getFriendlyName(optionInfo)) : "" }}
+                    {{optionInfo.isEmployeeElected ? " - " + (optionInfo.selection.cost | currency) + " per Pay" : "" }}
+                </h4>
+
+                <div id="selected-dependents" ng-show="hasSelectedDependents(optionInfo)">
+                    <em>Covered Dependents</em>
+
+                    <div class="form-group">
+                        <div class="checkbox" ng-repeat="ed in optionInfo.eligibleDependents | filter:{isSelected:true}">
+                            <input type="checkbox" ng-model="ed.dependent.isSelected" ng-change="checkForMissingPcp();">
+
+                            <label>
+                                {{ed.dependent.firstName}} {{ed.dependent.lastName}}
+                            </label>
+                            <span ng-show="plan.isPcpRequired">
+                                <a id="edit-dependent-Pcp" ng-show="ed.dependent.hasPcp" ng-click="loadPcp(ed.dependent.primaryCarePhysician,ed.dependent.employeeDependentId,2)"> Primary Care Physician - {{ed.dependent.primaryCarePhysician.firstName}} {{ed.dependent.primaryCarePhysician.lastName}} </a>
+                                <a id="add-dependent-Pcp" ng-show="!ed.dependent.hasPcp" ng-click="loadPcp(ed.dependent.primaryCarePhysician,ed.dependent.employeeDependentId,2)"> Add PCP </a>
+                            </span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div ng-show="plan.isPcpRequired && !allPcpsState.allPcpsSupplied">
+                <div class="checkbox">
+                    <input type="checkbox" ng-model="allPcpsState.allPcpsSupplied">
+                    <label>
+                        By checking this box, I acknowledge that primary care physician information was not added for at least one covered individual, and I understand the provider may assign a primary care physician on their behalf.
+                    </label>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div><!--modal-body-->
+
+<!--ADD Employee Pcp form-->
+<div id="pcp-add-form" class="modal-body cf" ng-show="showPcpForm">
+    <h3>Primary Care Physician</h3>
+    <form class="form-horizontal mt-5 modal-form" name="addPcpForm" novalidate>
+
+        <ds-inline-validated-input label-class="col-md-4"
+                                   input-div-class="col-md-4"
+                                   ds-required="1"
+                                   ds-max-length="25"
+                                   frm-obj="addPcpForm"
+                                   label-text="First Name"
+                                   input-name="inputFirstName"
+                                   ds-auto-focus-on="true"
+                                   ds-model="selectedPcp.firstName"></ds-inline-validated-input>
+
+        <ds-inline-validated-input label-class="col-md-4"
+                                   input-div-class="col-md-6"
+                                   ds-required="2"
+                                   ds-max-length="25"
+                                   frm-obj="addPcpForm"
+                                   label-text="Last Name"
+                                   input-name="inputLastName"
+                                   ds-model="selectedPcp.lastName"></ds-inline-validated-input>
+
+        <ds-inline-validated-input label-class="col-md-4"
+                                   input-div-class="col-md-5"
+                                   ds-required="1"
+                                   ds-max-length="50"
+                                   frm-obj="addPcpForm"
+                                   label-text="Address"
+                                   input-name="inputAddress"
+                                   ds-model="selectedPcp.address"></ds-inline-validated-input>
+        <ds-inline-validated-input label-class="col-md-4"
+                                   input-div-class="col-md-5"
+                                   ds-max-length="50"
+                                   frm-obj="addPcpForm"
+                                   label-text="Address2"
+                                   input-name="inputAddress2"
+                                   ds-model="selectedPcp.address2"></ds-inline-validated-input>
+        <ds-inline-validated-input label-class="col-md-4"
+                                   input-div-class="col-md-5"
+                                   ds-required="1"
+                                   ds-max-length="25"
+                                   frm-obj="addPcpForm"
+                                   label-text="City"
+                                   input-name="inputCity"
+                                   ds-model="selectedPcp.city"></ds-inline-validated-input>
+        <ds-inline-validated-select label-class="col-md-4"
+                                    input-div-class="col-md-5"
+                                    ds-required="1"
+                                    frm-obj="addPcpForm"
+                                    label-text="State"
+                                    input-name="inputState"
+                                    is-number="1"
+                                    ds-can-clear-suppression="1"
+                                    ds-select-options="state.stateId as state.name for state in $parent.states | orderBy: 'name'"
+                                    ds-model="selectedPcp.stateId"></ds-inline-validated-select>
+
+        <ds-inline-validated-input label-class="col-md-4"
+                                   input-div-class="col-md-5"
+                                   ds-required="1"
+                                   ds-max-length="10"
+                                   frm-obj="addPcpForm"
+                                   label-text="Zip Code"
+                                   input-name="inputZipCode"
+                                   dsInputHelpMsg
+                                   ds-built-in-pattern-key="usZip"
+                                   ds-built-in-help-message-key="usZip"
+                                   ds-built-in-mask-key="usZip"
+                                   ds-model="selectedPcp.zipCode"></ds-inline-validated-input>
+        <ds-inline-validated-input label-class="col-md-4"
+                                   input-div-class="col-md-5"
+                                   ds-required="1"
+                                   ds-max-length="10"
+                                   ds-min-length="10"
+                                   frm-obj="addPcpForm"
+                                   label-text="NPI Number "
+                                   ds-built-in-pattern-key="nonNegInt"
+                                   ds-built-in-help-message-key="nonNegInt"
+                                   input-name="inputNpiNumber"
+                                   ds-model="selectedPcp.npiNumber"></ds-inline-validated-input>
+
+
+
+
+        <div id="save-pcp" class="modal-footer">
+
+            <a id="back3" ng-click="cancelPcp();" class="btn btn-default">Cancel</a>
+            <a id="back4" class="btn btn-primary pull-right" ng-click="savePcp(selectedPcp,selectedPcp.sourceId, selectedPcp.sourceType);">Continue</a>
+        </div>
+    </form>
+
+</div>
+
+
+<div id="add-plan-foot" ng-show="!showPcpForm" class="modal-footer modal-footer flex-row-reverse">
+    <div>
+        <button class="btn btn-primary" ng-show="!waivedCoverage" ng-disabled="!allPcpsState.allPcpsSupplied" ng-click="saveEmployeeOpenEnrollmentSelection();">Add to Benefits</button>
+        <button class="btn btn-danger" ng-show="waivedCoverage" ng-disabled="coverageType.isWaiverReasonRequired && !waiverInfo.planWaiveReasonId" ng-click="saveEmployeeOpenEnrollmentSelection();">Waive Coverage</button>
+    </div>
+    <button class="btn btn-default" ng-click="close();">Cancel</button>
+</div><!--modal-footer-->

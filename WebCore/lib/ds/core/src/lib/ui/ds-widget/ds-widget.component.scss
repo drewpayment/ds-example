@@ -1,0 +1,45 @@
+@import '../../../../../../../Styles/scss/bootstrap-variables';
+
+.ds-widget {
+    padding: $widget-spacer-y $widget-spacer-x;
+}
+.ds-widget-statistic {
+    text-align: center;
+}
+
+.ds-widget-title-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.ds-widget-title-detail {
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    padding: 0.5rem 0;
+}
+.ds-widget-icon {
+    display: block;
+    width: 48px;
+    height: 48px;
+    margin: 0 16px;
+
+    .mat-icon {
+        font-size: 48px;
+        width: 48px;
+        height: 48px;
+    }
+}
+
+.ds-widget-title-value {
+    font-size: 2.5rem;
+    line-height: 1;
+    font-weight: bold;
+}
+ds-card-detail {
+    display: block;
+
+    + ds-card-detail {
+        margin-top: 0.25rem;
+    }
+}

@@ -1,0 +1,53 @@
+<div mat-dialog-header class="ds-dialog-header">
+    <h2 class="dialog-title">Share Note</h2>
+    <button type="button" class="close" (click)="close()">
+        <i class="material-icons">clear</i>
+    </button>
+</div>
+<div mat-dialog-content>
+	<div class="control-spacer-lg">
+		<div class="custom-control custom-radio">
+			<input type="radio" id="customRadioSpacer1" name="securityRadio" class="custom-control-input" [value]="1" [(ngModel)]="accessType" [checked]="accessType == 1" cdk-focus-initial>
+			<label class="custom-control-label" for="customRadioSpacer1">Private <span class="form-help-text">Only you and other company administrators will be able to view this note</span></label>
+		</div>
+
+		<div class="custom-control custom-radio">
+			<input type="radio" id="customRadioSpacer2" name="securityRadio" class="custom-control-input" [value]="2" [(ngModel)]="accessType" [checked]="accessType == 2" >
+			<label class="custom-control-label" for="customRadioSpacer2">Public <span class="form-help-text">All users with access to this employee will be able view this note</span></label>
+		</div>
+
+		<div class="custom-control custom-radio">
+			<input type="radio" id="customRadioSpacer3" name="securityRadio" class="custom-control-input" [value]="3" [(ngModel)]="accessType" [checked]="accessType == 3">
+			<label class="custom-control-label" for="customRadioSpacer3">Restricted <span class="form-help-text">Users selected below will be able to view this note</span></label>
+		</div>
+		<div class="nested-control-spacer-lg" *ngIf="accessType == 3">
+			<div class="custom-control custom-checkbox">
+				<input type="checkbox" class="custom-control-input" id="directSuper" [(ngModel)]="isDirectSupervisor">
+				<label class="custom-control-label" for="directSuper">Direct Supervisor</label>
+			</div>
+			<!--<div class="custom-control custom-checkbox">
+				<input type="checkbox" class="custom-control-input" id="employee" [(ngModel)]="isEmployee">
+				<label class="custom-control-label" for="employee">Employee: {{ employeeName }}</label>
+			</div>-->
+			<div class="custom-control custom-checkbox">
+				<input type="checkbox" class="custom-control-input" id="others" [(ngModel)]="otherChecked">
+				<label class="custom-control-label" for="others">Others <span class="form-help-text">Enter the names of other users that should have access to this note</span></label>
+			</div>
+			<div *ngIf="otherChecked">
+				<div class="form-group">
+					<ds-contact-autocomplete
+						[multiple]="true"
+						[contacts]="supervisors"
+						[(ngModel)]="selectedSupervisors"
+						name="multiContact"
+						>
+					</ds-contact-autocomplete>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div mat-dialog-actions class="ds-dialog-footer mat-dialog-actions">
+    <button type="button" class="btn btn-primary" (click)="saveShareSettings()">Save</button>
+    <button type="button" class="btn btn-cancel" (click)="close()">Cancel</button>
+</div>

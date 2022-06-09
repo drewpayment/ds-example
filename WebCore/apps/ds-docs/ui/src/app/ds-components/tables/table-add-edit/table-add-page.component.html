@@ -1,0 +1,77 @@
+<ds-card>
+  <ds-card-header>
+    <ds-card-header-title>Table</ds-card-header-title>
+    <ds-card-title-action>
+      <button 
+        class="btn btn-outline-primary" 
+        (click)="editForm(true)"
+        *ngIf="!isEdit">
+        Edit
+      </button>
+    </ds-card-title-action>
+  </ds-card-header>
+  <ds-card-content>
+    <ds-table-container [formGroup]="form">
+      <table ds-table formArrayName="items" [dataSource]="dataSource" matSort (matSortChange)="sortFormArray($event)" >
+        <ng-container dsColumnDef="character" sticky>
+          <th ds-header-cell *dsHeaderCellDef class="ds-column-character" mat-sort-header="character"> Character </th>
+          <td ds-cell *dsCellDef="let element, let i = index"
+            [formGroupName]="i+((paginator?.pageIndex)*paginator?.pageSize)">
+            <input 
+              type="text" 
+              class="form-control" 
+              formControlName="character" 
+              [autoFocus]="newRow && (this.formItems.length-1) == i+((paginator?.pageIndex)*paginator?.pageSize)" />
+          </td>
+        </ng-container>
+        <ng-container dsColumnDef="movie" sticky>
+          <th ds-header-cell *dsHeaderCellDef mat-sort-header="movie"> Movie </th>
+          <td ds-cell *dsCellDef="let element, let i = index"
+            [formGroupName]="i+((paginator?.pageIndex)*paginator?.pageSize)">
+            <input type="text" class="form-control" formControlName="movie" />
+          </td>
+        </ng-container>
+        <ng-container dsColumnDef="year">
+          <th ds-header-cell *dsHeaderCellDef mat-sort-header="year" alignViewRight> Year </th>
+          <td ds-cell *dsCellDef="let element, let i = index"
+            [formGroupName]="i+((paginator?.pageIndex)*paginator?.pageSize)"
+            alignViewRight>
+            <mat-select class="form-control custom-select" formControlName="year">
+              <mat-option *ngFor="let year of years" [value]="year.id">{{ year.year }}</mat-option>
+            </mat-select>
+          </td>
+        </ng-container>
+        <ng-container dsColumnDef="quote">
+          <th ds-header-cell *dsHeaderCellDef mat-sort-header="quote"> Quote </th>
+          <td ds-cell *dsCellDef="let element, let i = index"
+            [formGroupName]="i+((paginator?.pageIndex)*paginator?.pageSize)">
+            <input type="text" class="form-control" formControlName="quote" />
+          </td>
+        </ng-container>
+        <ng-container dsColumnDef="action" stickyEnd>
+          <th ds-header-cell *dsHeaderCellDef tableAction> </th>
+          <td ds-cell *dsCellDef="let element, let i = index"
+            [formGroupName]="i+((paginator?.pageIndex)*paginator?.pageSize)"
+            tableAction >
+            <button type="button" [matMenuTriggerFor]="menu" class="btn btn-icon">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="delete(element)">Delete</button>
+            </mat-menu>
+          </td>
+        </ng-container>
+        <tr ds-header-row *dsHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr ds-row *dsRowDef="let row; columns: displayedColumns; let i = index"></tr>
+      </table>
+      <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons></mat-paginator>
+      <add-button (click)="addRow()">
+        <mat-icon>add</mat-icon> Row
+      </add-button>
+    </ds-table-container>
+  </ds-card-content>
+  <ds-card-footer>
+    <button class="btn btn-save" (click)="save()">Save</button>
+    <button class="btn btn-cancel" (click)="cancel()">Cancel</button>
+  </ds-card-footer>
+</ds-card>

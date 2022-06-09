@@ -1,0 +1,134 @@
+<ds-card mode="nobody" border="top">
+    <div ds-card-header>
+        <ds-card-header-title>
+            Notification Settings
+        </ds-card-header-title>       
+        <ds-card-subtitle>
+            <div class="instruction-text">Below is a list of notifications Dominion provides. Some are system required, and others are optional for your company. All users will receive Dominion and Company alerts based on the security level indicated on the alert.</div>
+        </ds-card-subtitle>     
+    </div>    
+</ds-card>
+
+<div class="card">
+    <div class="card-body">
+        <div class="overflow-list">
+            <ds-card 
+                mode="widget-nobody" 
+                [collapse]="productGroup.isEnabled"
+                [hover]="productGroup.isEnabled"
+                [color]="disableProductGroupCard(productGroup)" 
+                [expanded]="productGroup.$accordionToggle" 
+                *ngFor="let productGroup of preferencesProductGroups">
+                <div ds-card-icon>
+                    {{productGroup.iconName}}
+                </div>
+                <div ds-card-header (expansionChange)="toggleProductGroupContent(productGroup)">
+                    <ds-card-section-title>
+                        {{productGroup.name}}
+                    </ds-card-section-title>
+                    <!-- <ds-card-inline-content >
+                        <ng-container *ngIf="productGroup.isEnabled, else notEnabledMessage">
+                            <span class="text-uppercase text-muted">Notifications: &nbsp;</span>
+                            <span>{{productGroup.clientNotificationPreferences.requiredPreferences.length}} System Required | 
+                                    {{getProductGroupEnabledCount(productGroup, false)}} of {{productGroup.clientNotificationPreferences.optionalPreferences.length}} Optional in Use</span>
+                        </ng-container>
+                        <ng-template #notEnabledMessage>
+                            <div class="instruction-text">Your company currently does not have this feature. Please contact your account representative for details.</div>
+                        </ng-template>
+                    </ds-card-inline-content> -->
+                    <ds-card-title-right-content>
+                        <div class="flex-1-0-100">
+                            <ng-container *ngIf="productGroup.isEnabled, else notEnabledMessage">
+                                <span class="text-uppercase text-muted">Notifications: &nbsp;</span>
+                                <span>{{productGroup.clientNotificationPreferences.requiredPreferences.length}} System Required | 
+                                    {{getProductGroupEnabledCount(productGroup, false)}} of {{productGroup.clientNotificationPreferences.optionalPreferences.length}} Optional in Use</span>
+                            </ng-container>
+                            <ng-template #notEnabledMessage>
+                                <div class="instruction-text">Your company currently does not have this feature. Please contact your account representative for details.</div>
+                            </ng-template>
+                        </div>
+                    </ds-card-title-right-content>
+                </div>
+                <div ds-card-content [class.d-none]="!productGroup.isEnabled">
+                    <!-- System Required -->
+                    <ng-container *ngIf="productGroup.clientNotificationPreferences.requiredPreferences.length > 0">
+                        <div class="divider mt-0 mb-1">System Required</div>
+                        <div class="mb-4">
+                            <label class="circle-checkbox" [class.clickable]="(productGroup.isEnabled && preference.canClientControl)" *ngFor="let preference of productGroup.clientNotificationPreferences.requiredPreferences">
+                                <input type="checkbox" [disabled]="(!productGroup.isEnabled || !preference.canClientControl)" [checked]="preference.isEnabled" (change)="preference.isEnabled = toggleNotificationTypePreference(productGroup, preference)">
+                                <ng-container *ngIf="!preference.canClientControl, else itemSvg">
+                                    <div class="svg">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="locked">
+                                            <path d="M0 0h24v24H0z" fill="none"/>
+                                            <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+                                        </svg>
+                                    </div>
+                                </ng-container>
+                                <div class="circle-checkbox-label">
+                                    <span>{{preference.clientLabel}}</span> <span class="instruction-text">{{preference.clientDescription}}</span>
+                                </div>
+                            </label>
+                        </div>   
+                    </ng-container>                  
+                    <!-- Optional -->
+                    <ng-container *ngIf="productGroup.clientNotificationPreferences.optionalPreferences.length > 0">
+                        <div class="divider mt-0 mb-1" *ngIf="productGroup.clientNotificationPreferences.optionalPreferences.length > 0">Optional</div>
+                        <div class="mb-4">
+                            <label class="circle-checkbox" [class.clickable]="(productGroup.isEnabled && preference.canClientControl)"  *ngFor="let preference of productGroup.clientNotificationPreferences.optionalPreferences">
+                                <input type="checkbox" [disabled]="(!productGroup.isEnabled || !preference.canClientControl)" [checked]="preference.isEnabled" (change)="preference.isEnabled = toggleNotificationTypePreference(productGroup, preference)">
+                                <ng-container *ngIf="!preference.canClientControl, else itemSvg">
+                                    <div class="svg">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="locked">
+                                            <path d="M0 0h24v24H0z" fill="none"/>
+                                            <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+                                        </svg>
+                                    </div>
+                                </ng-container>
+                                <div class="circle-checkbox-label">
+                                    <span>{{preference.clientLabel}}</span> <span class="instruction-text">{{preference.clientDescription}}</span>
+                                </div>
+                            </label>
+                        </div>
+                    </ng-container>
+                </div>    
+            </ds-card>
+        </div>
+    </div>
+</div>
+
+<ds-card mode="nobody">
+    <div ds-card-header>
+        <ds-card-title-action>
+                <input type="button"
+                class="btn btn-save"
+                (click)="save()"
+                value="save" />
+        </ds-card-title-action>
+    </div>
+</ds-card>
+
+<!-- <ng-template #preferences let-productGroup='productGroup' let-preferences='preferences'>
+<div *ngFor="let preference of preferences" class="mb-4">
+    <label class="circle-checkbox" [class.clickable]="(productGroup.isEnabled && preference.canClientControl)">
+        <input type="checkbox" [disabled]="(!productGroup.isEnabled || !preference.canClientControl)" [checked]="preference.isEnabled" (change)="preference.isEnabled = toggleNotificationTypePreference(productGroup, preference)">
+        <ng-container *ngIf="!preference.canClientControl, else itemSvg">
+            <div class="svg">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="locked">
+                    <path d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+                </svg>
+            </div>
+        </ng-container>
+        <div class="circle-checkbox-label">
+            <span>{{preference.clientLabel}}</span> <span class="instruction-text">Description here</span>
+        </div>
+    </label>
+</div>      
+</ng-template> -->
+
+<ng-template #itemSvg>
+    <div class="svg">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="checked"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="enabled"><path d="M0 0h24v24H0z" fill="none"/><path d="M7 11v2h10v-2H7zm5-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+    </div>
+</ng-template>

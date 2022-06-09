@@ -1,0 +1,74 @@
+<ds-card>
+  <ds-card-header>
+    <ds-card-header-title>Table</ds-card-header-title>
+    <ds-card-title-action>
+      <button 
+        [matMenuTriggerFor]="menu" 
+        class="btn btn-outline-primary dropdown-toggle">
+        Options
+      </button>
+      <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="rowsSelected()">Action</button>
+          <button mat-menu-item (click)="rowsSelected()">Another action</button>
+          <button mat-menu-item (click)="rowsSelected()">Something else here</button>
+      </mat-menu>
+    </ds-card-title-action>
+  </ds-card-header>
+  <ds-card-content>
+    <div class="card card-md-table">
+        <div class="table-md-responsive">
+            <mat-table [dataSource]="dataSource" matSort >
+              <ng-container matColumnDef="selected">
+                <mat-header-cell *matHeaderCellDef class="mat-td-checkbox-width table-checkbox"> 
+                  <div class="custom-control custom-checkbox">
+                    <input id="header-row-checkbox"
+                        class="custom-control-input"
+                        type="checkbox"
+                        (change)="$event ? masterToggle() : null"
+                        [checked]="selection.hasValue() && isAllSelected()"
+                    />
+                    <label class="custom-control-label" for="header-row-checkbox"></label>
+                  </div> 
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element, let i = index" class="mat-td-checkbox-width table-checkbox"> 
+                  <!-- {{element.checked}}  -->
+                  <div class="custom-control custom-checkbox">
+                    <input 
+                      id="checked{{i}}"
+                      class="custom-control-input"
+                      type="checkbox"
+                      (change)="$event ? selection.toggle(element) : null; nothingSelected = false"
+                      [checked]="isSelected(element)"
+                      [class.is-invalid]="nothingSelected"
+                    />
+                    <label class="custom-control-label" for="checked{{i}}">
+                        <span>Select</span>
+                    </label>
+                  </div>
+                </mat-cell>
+                <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+              </ng-container>
+              <ng-container matColumnDef="character">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Character </mat-header-cell>
+                <mat-cell *matCellDef="let element"  data-label="Character"> {{element.character}} </mat-cell>
+                <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+              </ng-container>
+              <ng-container matColumnDef="movie">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> Movie </mat-header-cell>
+                <mat-cell *matCellDef="let element" data-label="Movie"> {{element.movie}} </mat-cell>
+                <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+              </ng-container>
+              <ng-container matColumnDef="year">
+                <mat-header-cell *matHeaderCellDef mat-sort-header class="table-text-right"> Year </mat-header-cell>
+                <mat-cell *matCellDef="let element" class="table-text-right" data-label="Year"> {{element.year}} </mat-cell>
+                <mat-footer-cell *matFooterCellDef class="table-text-right">Total Active Years: {{this.activeYears}} </mat-footer-cell>
+              </ng-container>
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+              <mat-footer-row *matFooterRowDef="displayedColumns"></mat-footer-row>
+            </mat-table>
+            <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons></mat-paginator>
+        </div>
+    </div>
+  </ds-card-content>
+</ds-card>

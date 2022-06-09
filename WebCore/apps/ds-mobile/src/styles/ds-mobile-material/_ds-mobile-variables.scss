@@ -1,0 +1,154 @@
+$ds-mobile-primary: (
+    50 : #e6e9ed,
+    100 : #c2c9d2,
+    200 : #99a5b4,
+    300 : #708195,
+    400 : #51667f,
+    500 : #324b68,
+    600 : #2d4460,
+    700 : #263b55,
+    800 : #1f334b,
+    900 : #13233a,
+    A100 : #78adff,
+    A200 : #458eff,
+    A400 : #126fff,
+    A700 : #0061f7,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #ffffff,
+        400 : #ffffff,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #ffffff,
+        A700 : #ffffff,
+    )
+);
+
+$ds-mobile-teal: (
+    50 : #e1f6f6,
+    100 : #b4e9e7,
+    200 : #82dad8,
+    300 : #4fcbc8,
+    400 : #2ac0bc,
+    500 : #04b5b0,
+    600 : #03aea9,
+    700 : #03a5a0,
+    800 : #029d97,
+    900 : #018d87,
+    A100 : #b9fffb,
+    A200 : #86fff8,
+    A400 : #53fff6,
+    A700 : #3afff4,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #000000,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+
+
+$ds-mobile-red: (
+    50 : #faecec,
+    100 : #f3cece,
+    200 : #ebaeae,
+    300 : #e38e8e,
+    400 : #dd7575,
+    500 : #d75d5d,
+    600 : #d35555,
+    700 : #cd4b4b,
+    800 : #c74141,
+    900 : #be3030,
+    A100 : #ffffff,
+    A200 : #ffcfcf,
+    A400 : #ff9c9c,
+    A700 : #ff8383,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #000000,
+        500 : #000000,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+
+$ds-mobile-green: (
+    50 : #e9f6eb,
+    100 : #c7e9cd,
+    200 : #a2daac,
+    300 : #7ccb8b,
+    400 : #60c072,
+    500 : #44b559,
+    600 : #3eae51,
+    700 : #35a548,
+    800 : #2d9d3e,
+    900 : #1f8d2e,
+    A100 : #c9ffcf,
+    A200 : #96ffa2,
+    A400 : #63ff75,
+    A700 : #49ff5f,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #000000,
+        500 : #000000,
+        600 : #000000,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+
+$box-shadow:              0px 2px 4px 0px rgba(0,0,0,0.10);
+$toolbar-shadow:          0px 2px 4px 0px rgba(0,0,0,0.10);
+$sidenav-shadow:          3px 0px 10px 1px rgba(0, 0, 0, 0.15);
+$mobile-border:           1px solid #E6E6E6;
+
+$table-header-text-color: #FFF;
+$table-header-color:      #59626D;
+$text-muted:              #9C9C9C;
+$teal:                    #04b5b0;
+$yellow:                  #ffc107;
+$table-hover:             #fbf9e0;
+$navy:                    #324b68;
+$icon-focus-background:   #eee;
+$white:                   #fff;
+$danger:                  #be3030;
+
+// Radios
+$rating-border-color:     rgba(0,0,0,.15);
+$rating-inactive-color:     rgba(#9C9C9C, 1);
+$transition-bg-color:       background-color 0.3s ease-in-out;
+$transition-color:          color 0.3s ease-in-out;

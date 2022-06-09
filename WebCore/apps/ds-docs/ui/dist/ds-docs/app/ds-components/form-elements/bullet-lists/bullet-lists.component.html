@@ -1,0 +1,38 @@
+<!-- Editable List -->
+<div class="ds-bulletted-list">
+    <ul class="ds-ul">
+        <li class="ds-li hoverable" *ngFor="let item of bulletList, let i = index">
+            <!-- View -->
+            <div class="ds-item" *ngIf="view, else edit">
+                <div class="item-label">{{item.name}} {{i}}</div>
+                <button type="button" mat-button [matMenuTriggerFor]="menu" class="btn btn-icon hover-show">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu" (click)="edit(i)">
+                    <button mat-menu-item >Edit</button>
+                </mat-menu>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<ng-template #edit>
+    <div class="li-edit-item editable-input">
+        <input type="text" class="form-control" />
+        <div class="btn-group">
+            <button type="button" class="btn btn-icon-primary" (click)="view = true">
+                <i class="material-icons">done</i>
+            </button>
+            <button type="button" class="btn btn-icon-outline-primary" (click)="view = true">
+                <i class="material-icons">clear</i>
+            </button>
+        </div>
+    </div>
+</ng-template>
+
+<!-- View Only-->
+<!-- <ul class="ds-ul">
+    <li class="ds-li" *ngFor="let item of bulletList">
+        <div class="py-2">{{item.name}}</div>
+    </li>
+</ul> -->

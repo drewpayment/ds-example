@@ -1,0 +1,96 @@
+@import '../../../../../../../Styles/scss/bootstrap-variables';
+
+// Grid
+.grid {
+  .mat-header-row,
+  .mat-row {
+    .mat-header-cell,
+    .mat-cell {
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
+
+      &.table-text-right {
+        padding-right: 0.5rem;
+      }
+    }
+  }
+}
+
+// Sticky Grid
+.mat-table-sticky:not(.mat-table-sticky-border) {
+  z-index: 2 !important;
+}
+
+.grid {
+    width: 100%;
+
+    .mat-row {
+        .mat-table-sticky-border {
+            box-shadow: $table-box-shadow;
+
+            &.mat-header-cell {
+                border-left: $table-sticky-hidden-header-border; // needed to keep width
+                border-right: $table-header-border;
+
+            }
+            &.mat-cell {
+                border-left: $table-sticky-hidden-border;
+                border-right: $table-border !important;
+            }
+
+            +.mat-cell {
+                border-left: none !important; // Removes border immediately after sticky column
+            }
+        }
+    }
+}
+
+// Column sizes
+// Left values are forced for x-scroll, when sticky fields collapse. Calculate from the min-width of the field to the left.
+// EXAMPLE: .mat-column-name is to the right of .mat-column-avi, so it's left value is 42px, the min-width of .mat-column-name. 
+// .mat-column-number gets it's left value from the min-widths of .mat-column-avi and .mat-column-name 
+.mat-column-name {
+    min-width: 150px;
+    left: 42px !important;
+}
+.mat-column-number {
+    min-width: 105px;
+    left: 192px !important;
+}
+.mat-column-clientCode {
+    min-width: 80px;
+    left: 272px !important;
+}
+.mat-column-dropdown {
+    min-width: 150px;
+}
+
+// Grid Input Elements
+.grid-input-container.mat-cell {
+    position: relative;
+}
+
+// base styles & spacing
+.grid-select,
+.grid-input {
+    padding: $table-cell-padding;
+    position: absolute;
+    border-radius: 0;
+    transition: background-color 0.3s ease-in-out;
+    height: 98%;
+    width: 98%;
+    border: none;
+    top: 1%;
+    left: 1%;
+
+    &.is-invalid {
+        height: 100%;
+        width: 100%;
+        top: 0;
+        left: 0;
+    }
+}
+
+.grid-select {
+    padding-right: 27px; // add padding to prevent select carat from overlapping text
+}

@@ -1,0 +1,304 @@
+<div ng-hide="isLoading">
+    <div class="ess-container">
+        <div class="panel clearfix">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-sm-12 text-center" ng-if="!isAllWorkFlowCompleted && !isOnboardingFinalizeCompleteBool">
+                        <h1>Finalization Unavailable</h1>
+                        <div class="col-sm-offset-1 alert alert-warning" style="padding: 5px;">
+                            <i class="fa fa-info-circle" style="font-size: 1.3em;"></i> Self-Onboarding incomplete. Please complete the pages listed below before you finalize your self-onboarding.
+                        </div>
+                    </div>
+                </div>
+                <div class="row" ng-if="!isAllWorkFlowCompleted && !isOnboardingFinalizeCompleteBool">
+                    <div class="parent col-md-12" ng-repeat="parentWorkFlowItem in EmployeeOnboardingCompletionStatus | filter:{linkToState : '!ess.onboarding.finalize'}">
+
+                        <!--<h2 class="text-center">Missing Info - Finalize Unavailable</h2>-->
+                        <div class="row" ng-if="parentWorkFlowItem.icon != 'CHECK'">
+                            <div class="col-md-12 form-group">
+                                <span class="text-muted" style="font-size: medium; color: #bababa;"><b>{{parentWorkFlowItem.title}}</b></span><br />
+                            </div>
+                        </div>
+
+                        <div class="row" ng-if="!(parentWorkFlowItem.subMenus.length) && parentWorkFlowItem.isCompleted != 1" ng-click="goToMenu(parentWorkFlowItem)">
+
+                            <div class="children col-md-12">
+                                <div style="border: 1px solid lightgrey;">
+                                    <div class="row" style="padding-left: 5px; display: flex; align-items: center;">
+                                        <div class="box col-xs-7 col-sm-8 col-md-8 col-lg-9">
+
+                                            <a class="pt-sm"><i class="fa fa-pencil fa-1x" style="color: orange;" ng-click=""></i></a><span style="font-size: medium; color: orange; font-weight: bold;"> {{parentWorkFlowItem.title}}</span>
+                                            <div ng-if="parentWorkFlowItem.description !== null">
+                                                <p class="text-muted">
+                                                    <i>{{parentWorkFlowItem.description}}</i>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="box col-xs-5 col-sm-4 col-md-4 col-lg-3 text-center">
+                                            <span ng-if="parentWorkFlowItem.isCompleted == 0">
+                                                <input type="button" value="Incomplete" class="btn btn-xs btn-warning" />
+                                            </span>
+                                            <span ng-if="parentWorkFlowItem.isCompleted === null">
+                                                <input type="button" value="Not Started" class="btn btn-xs btn-outline-secondary" />
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="children col-md-12" ng-click="goToMenu(childWorkFlowItem)" ng-repeat="childWorkFlowItem in parentWorkFlowItem.subMenus | filter: filterInComplete">
+                                <div style="border: 1px solid lightgrey;">
+                                    <div class="row" style="padding-left: 5px; display: flex; align-items: center;">
+                                        <div class="box col-xs-7 col-sm-7 col-md-8 col-lg-9">
+
+                                            <a class="pt-sm"><i class="fa fa-pencil fa-1x" style="color: orange;" ng-click=""></i></a><span style="font-size: medium; color: orange; font-weight: bold;"> {{childWorkFlowItem.title}}</span>
+                                            <div ng-if="childWorkFlowItem.description !== null">
+                                                <p class="text-muted">
+                                                    <i>{{childWorkFlowItem.description}}</i>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="box col-xs-5 col-sm-5 col-md-4 col-lg-3 text-center">
+                                            <span ng-if="childWorkFlowItem.isCompleted == 0">
+                                                <input type="button" value="Incomplete" class="btn btn-xs btn-warning" />
+                                            </span>
+                                            <span ng-if="childWorkFlowItem.isCompleted === null">
+                                                <input type="button" value="Not Started" class="btn btn-xs btn-outline-secondary" />
+                                            </span>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row" ng-if="isAllWorkFlowCompleted && !isOnboardingFinalizeCompleteBool">
+                    <div class="col-md-12 text-center form-group">
+                        <h1>Finalize Self-Onboarding</h1>
+                    </div>
+
+
+                    <div>
+                        <div class="col-md-8">
+                            <div class="text-muted text-center form-group">
+                                <b>Digital Signature</b>
+                            </div>
+                            <div name="frmSign" class="form">
+                                <div class="form-group">
+                                    <div style="border: 1px solid lightgrey; padding: 15px;">
+                                        <div class="row"> 
+                                            <div class="col-md-12 form-group">                                              
+                                                <p class="text-muted" style="font-style: italic;" ng-bind-html="replaceWildCards(finalDisclaimerMessage)"></p>  
+                                            </div>   
+                                        </div> 
+                                        <div class="row">
+
+                                            <div class="col-md-9 col-sm-9 col-xs-9  form-group">
+                                                <label>First Name</label>
+                                                <input ng-model="signature.signeeFirstName" type="text" class="form-control" />
+                                            </div>
+
+                                            <div class="col-md-3 col-sm-3 col-xs-3 form-group">
+                                                <label>M.I.</label>
+                                                <input ng-model="signature.signeeMiddle" type="text" maxlength="1" class="form-control" />
+                                            </div>
+
+                                            <div class="col-md-9 col-sm-9 col-xs-9 form-group">
+                                                <label>Last Name</label>
+                                                <input ng-model="signature.signeeLastName" type="text" class="form-control" />
+                                            </div>
+
+                                            <div class="col-md-3 col-sm-3 col-xs-3  form-group">
+                                                <label>Initials</label>
+                                                <input ng-model="signature.signeeInitials" type="text" maxlength="2" class="form-control" />
+                                            </div>
+
+                                        </div>
+                                        <div class="row">
+                                            <hr />
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="on-checkbox">
+                                                    <span>
+                                                        <input id="check" type="checkbox" ng-model="agree">
+                                                    </span>
+                                                    <label for="check" class="form-label">
+                                                        <b ng-bind-html="replaceWildCards(finalDisclaimerAgreementText)"></b>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div ng-if="forms.length > 0">
+                                <div class="text-muted text-center form-group" >
+                                    <b>Preview Employment Forms</b>
+                                </div>
+                                <div ng-repeat="form in forms" class="FormInfoBox">
+                                    <div class="row prefer-styles ml-0 mr-0" ng-style="addBorderBottomForLast($last)">
+                                        <div class="col-xs-10 col-sm-10 col-md-10">
+                                            <span style="color: teal"><b>{{form.formName}}</b></span>
+                                        </div>
+                                        <div class="col-xs-2 col-sm-2 col-md-2">
+                                            <div>
+                                                <div ng-hide="!!form.formId && hidePreviewFormButtonForFormsWithoutMatchingDocument(form)">
+                                                    <a ng-click="previewForm(form)"><i class="icon-cloud-download" style="color: teal"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </br>
+                            <div ng-if="documents.length>0">
+                                <div class="text-muted text-center form-group">
+                                    <b>Preview Employment Documents</b>
+                                </div>
+                                <div ng-repeat="document in documents" class="FormInfoBox" >
+                                    <div ng-hide="hideDocumentsWithMatchingFormId(document)" class="row ml-0 mr-0 prefer-styles" ng-style="addBorderBottomForLast($last)">
+                                        <div class="col-xs-10 col-sm-10 col-md-10">
+                                            <span style="color: teal"><b>{{document.name}}</b></span>
+                                        </div>
+                                        <div class="col-xs-2 col-sm-2 col-md-2">
+                                            <div>
+                                                <div>
+                                                    <a ng-click="previewDocument(document)"><i class="icon-cloud-download" style="color: teal"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div ng-if="signature.signeeFirstName.trim()!=='' && signature.signeeLastName.trim()!=='' && signature.signeeInitials.trim()!=='' && agree ">
+                            <div class="col-md-12 text-center">
+                                <input type="button" ng-disabled="isSubmitted" ng-click="save()" class="btn btn-primary" value="Complete Onboarding" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div ng-if="signature.signeeFirstName.trim()==='' || signature.signeeLastName.trim()==='' || signature.signeeInitials.trim()==='' || !agree">
+                            <div class="col-md-12 text-center">
+                                <input type="button" class="btn btn-primary btn-outline-secondary" disabled value="Complete Onboarding" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" ng-if="isAllWorkFlowCompleted && isOnboardingFinalizeCompleteBool">
+                    <!--<div class="empty-for-offset col-md-offset-2">&nbsp;</div>-->
+                    <div class="col-md-12 text-center">
+                        <div class="Congrats-Heading text-center">
+                            <h2>
+                                Congratulations, {{signature.signeeFirstName}}. <br />
+                                Your Self-Onboarding is complete!
+                            </h2>
+                        </div>
+                        <div class="show-hire-date">
+                            <p class="text-muted text-center">We look forward to seeing you on your first day, {{employeeHireDate | date:'MMMM d, y'}}!</p>
+                        </div>
+                        <div class="info-message text-center">
+                            <div class="alert alert-info" style="padding: 5px;">
+                                <i class="fa fa-info-circle" style="font-size: 1.3em;"></i> To verify your employment eligibility, please bring at least <b>1 document from list A, or 1 document from list B and C on your first day.</b>
+                            </div>
+                        </div>
+
+                        <div class="tabbed-lists">
+                            <ul class="nav nav-tabs" style="display: flex; justify-content: center">
+                                <li data-toggle="tab" ng-class="{'active':isListAShow}"><a ng-click="fnListAShow()">List A</a></li>
+                                <li data-toggle="tab" ng-class="{'active':!(isListAShow)}"><a ng-click="fnListAHide()">List B + C</a></li>
+                            </ul>
+
+                            <div ng-if="isListAShow" class="list-padding">
+
+                                <br />
+                                <p class="text-muted text-left"><b>List A: </b>Documents that establish both identity and employment authorization:</p>
+                                <div class="text-left" ng-repeat="docname in i9DocumentsList | filter:{ category: 'A'} | orderBy: 'index'">
+                                    <p class="text-muted">
+                                        <b>- {{docname.name}}</b>
+                                    </p>
+                                </div>
+                                <p class="text-muted text-left">
+                                    <i>For a non-immigrant alien authorized to work for a specific employer because of his or her status, provide both foreign passport and Form I-94 or Form I-94A that has the same name as the passport and an endorsement of the alien's nonimmigrant status as long as that period of endorsement has not yet expired and the proposed employment is not in conflict with any restrictions or limitations identified on the form.</i>
+                                </p>
+                            </div>
+
+                            <div ng-if="!(isListAShow)" class="list-padding">
+                                <div class="row">
+                                    <div class="col-md-6 ListB">
+                                        <br />
+                                        <p class="text-muted text-left"><b>List B:</b> Documents that establish identity:</p>
+
+                                        <div class="text-left" ng-repeat="docname in i9DocumentsList | filter:{ category: 'B' } | orderBy: 'index' ">
+                                            <p class="text-muted">
+                                                <b>- {{docname.name}}</b>
+                                            </p>
+                                        </div>
+                                        <p class="text-muted text-left">
+                                            <i>For persons under age 18 who are unable to present a document listed above you may present a school record or report card, clinic, doctor, or hospital record, or day-care or nursery school record.</i>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-6 ListC">
+                                        <br />
+                                        <p class="text-muted text-left"><b>List C: </b>Documents that establish employment authorization:</p>
+                                        <div class="text-left" ng-repeat="docname in i9DocumentsList | filter:{ category: 'C'} | orderBy: 'index'">
+                                            <p class="text-muted">
+                                                <b>- {{docname.name}}</b>
+                                            </p>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <div class="row" ng-if="isAllWorkFlowCompleted && isOnboardingFinalizeCompleteBool">
+                    <div class="col-md-8 col-md-offset-2 text-center form-group">
+                        <input type="button" value="Continue To Home" class="btn btn-primary" ng-click="redirectToDominionSourceHome()" />
+                    </div>
+                </div>
+                <ds-nav-workflow-footer workflow-Hide-Next="true" workflow-Hide-Prev="true"
+                    my-Workflow="myWorkflow"
+                    on-save="$ctrl.clickSavePageData($direction)" />
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

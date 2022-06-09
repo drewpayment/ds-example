@@ -1,0 +1,341 @@
+
+@mixin ds-mobile-mat-card-theme($theme) {
+    $primary: map-get($theme, primary);
+    $accent: map-get($theme, accent);
+
+    .mat-card {
+        padding: 0 !important;
+        margin-bottom: 1rem;
+    }
+    .mat-card-header {
+        color: #fff;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        background-color: #555555;
+        padding: 0.5rem 1rem 0 1rem;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+
+        .mat-card-header-text {
+            text-align: center;
+            text-transform: uppercase;
+            width: 100%;
+        }
+
+        .mat-card-title {
+            font-size: 18px;
+        }
+    }
+    .mat-card-content {
+        padding: 1rem;
+        margin: 0;
+    }
+
+    // Error State
+    .mat-card.danger {
+        .mat-card-header {
+            background-color: mat-color($ds-mobile-app-warn);
+        }
+    }
+
+    .section-title {
+        background-color: $table-header-color;
+        color: white;
+        text-align: center;
+        text-transform: uppercase;
+        padding: 2px;
+    }
+
+    .section-margin {
+        margin-bottom: 12px;
+    }
+}
+
+@mixin ds-mobile-mat-list-theme($theme) {
+    .mobile-nav-list {
+
+        .mat-list-item-content {
+            justify-content: space-between;
+        }
+
+        mat-list-item {
+            border-bottom: $mobile-border;
+
+            &:first-of-type {
+                border-top: $mobile-border;
+            }
+        }
+
+        .mat-list-item-content {
+            padding-right: 0 !important;
+        }
+
+        .item {
+            flex: 1 1 auto;
+        }
+
+        .item-counter {
+            margin-right: 0.5rem;
+            flex: 0 0 auto;
+            order: -1; // Overrides Material positioning
+        }
+
+        &.multi-line-list {
+            .mat-list-item-content {
+                align-items: baseline !important;
+            }
+            .mat-list-item {
+              height: auto;
+                padding-bottom: 8px;
+            }
+            .mat-list-item-ripple {
+                bottom: -8px !important;
+            }
+        }
+
+        &.no-padding {
+          .mat-list-item-content {
+            padding-left: 0 !important;
+          }
+        }
+    }
+}
+
+@mixin ds-mobile-mat-button-theme($theme) {
+    .mat-flat-button, .mat-button.text {
+        width: 100%;
+        border-radius: 10rem;
+        text-transform: uppercase;
+        .mat-icon {
+            height: 18px;
+            width: 18px;
+            font-size: 18px;
+            vertical-align: text-bottom;
+        }
+    }
+    .mat-button-base+.mat-button-base {
+        margin-left: 0 !important;
+    }
+    .mat-flat-button+.mat-flat-button  {
+        margin-top: 8px;
+    }
+}
+
+@mixin ds-mobile-mat-button-toggle-theme($theme) {
+    .mat-button-toggle-group {
+        display: flex;
+    }
+    .mat-button-toggle {
+        flex: 1 1 auto;
+    }
+    .mat-button-toggle-checked {
+        color: #FFF !important;
+        background-color: $teal;
+    }
+    .mat-button-toggle-button {
+        .mat-button-toggle-label-content {
+            line-height:36px;
+        }
+    }
+}
+
+@mixin ds-mobile-table-theme($theme) {
+
+    .mat-table {
+        background: #FFF;
+
+        &.no-border {
+            .mat-row,
+            .mat-cell {
+                border: none;
+            }
+        }
+    }
+
+    .mat-header-row {
+        background-color: $table-header-color;
+        min-height: 0;
+        height: auto !important;
+
+        .mat-header-cell {
+            color: $table-header-text-color;
+            padding: 6px 10px;
+
+            &:first-of-type {
+                padding-left: 10px;
+            }
+            &:last-of-type {
+                padding-right: 10px;
+            }
+        }
+    }
+
+    .mat-row {
+        min-height: 0;
+
+        &:active:not(.disabled) {
+          background-color: $table-hover;
+        }
+    }
+
+    .mat-cell,
+    td.mat-cell {
+        padding: 10px !important;
+        min-height: 0;
+        height: auto !important;
+
+        &:first-of-type {
+            padding-left: 10px !important;
+        }
+        &:last-of-type {
+            padding-right: 10px !important;
+        }
+    }
+}
+
+@mixin ds-mobile-checkbox-theme($theme) {
+    .mat-checkbox-background {
+        border-radius: 50% !important;
+    }
+    .mat-checkbox-frame {
+        border-radius: 50% !important;
+    }
+    //added for long labels
+    .mat-checkbox-layout {
+        white-space: normal !important;
+    }
+    //Puts the check mark in-line with the top of the label
+    .mat-checkbox.mat-accent {
+        .mat-checkbox-inner-container {
+           margin: 2px 8px auto 0;
+        }
+     }
+    //Puts secondary text in line with label
+    .mat-checkbox-secondary-text {
+         margin-left: 24px;
+     }
+    //Make buttons full width in button toggle group
+    .mat-button-toggle-group {
+        width: 100%;
+        .mat-button-toggle {
+            width: 49%;
+        }
+    }
+}
+
+@mixin ds-mobile-form-field-theme($theme) {
+    .mat-form-field-label {
+        font-style: italic !important;
+    }
+
+    .max-input::placeholder{
+        font-style: italic !important;
+    }
+}
+
+@mixin ds-mobile-dialog-theme($theme) {
+    .dialog-subtitle {
+        flex: 1 1 100%;
+    }
+    .mat-dialog-content {
+        padding: 24px !important;
+    }
+}
+
+@mixin ds-mobile-radio-theme($theme) {
+
+    $primary: map-get($theme, primary);
+    $rating-size: 30px;
+
+   .rating {
+       margin: 0 10px;
+
+       .mat-radio-button {
+            height: $rating-size;
+            width:  $rating-size;
+            margin: 0.15rem;
+            transition: $transition-bg-color;
+
+            &:hover {
+                .mat-radio-label-content {
+                    color: $white !important;
+                }
+
+                .mat-radio-outer-circle {
+                    background-color: mat-color($ds-mobile-teal, 500);
+                    border-color: mat-color($ds-mobile-teal, 500);
+               }
+            }
+       }
+
+       .mat-radio-label {
+           margin-bottom: 0;
+           position: relative;
+       }
+
+       .mat-radio-outer-circle {
+            border-width: 1px;
+            border-color: $rating-border-color;
+            height: $rating-size;
+            width:  $rating-size;
+       }
+
+       .mat-radio-label-content {
+            color: $rating-inactive-color;
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            width: $rating-size;
+            padding-left: 0;
+            transition: $transition-color;
+       }
+
+       .mat-radio-container {
+            height: $rating-size;
+            width:  $rating-size;
+            border-radius: 50%;
+       }
+
+        // When selected
+        .mat-radio-button.mat-radio-checked,
+        .mat-radio-button.nps-checked {
+            .mat-radio-label-content {
+                color: $white !important;
+            }
+            .mat-radio-inner-circle {
+                display: none;
+            }
+            .mat-radio-outer-circle {
+                background-color: mat-color($ds-mobile-teal, 500);
+                border-color: mat-color($ds-mobile-teal, 500);
+            }
+       }
+    }
+
+    // Validation Styles
+    .mat-radio-group.is-invalid {
+        .mat-radio-button {
+
+            .mat-radio-outer-circle {
+                background-color: mat-color($ds-mobile-red, 50);
+                border-color: mat-color($ds-mobile-red, 500);
+                transition: $transition-bg-color;
+            }
+
+            .mat-radio-label-content {
+                color: mat-color($ds-mobile-red, 800);
+                transition: $transition-color;
+            }
+
+            &:hover {
+                .mat-radio-outer-circle {
+                    background-color: mat-color($ds-mobile-red, 500);
+                    border-color: mat-color($ds-mobile-red, 500);
+                }
+                .mat-radio-label-content {
+                    color: $white !important;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,272 @@
+<ds-card mode="nobody" border="top">
+  <ds-card-header>
+    <ds-card-header-title>Billing</ds-card-header-title>
+  </ds-card-header>
+</ds-card>
+
+<ng-container *ngIf="!isBillingLoading && !isOneTimeLoading && !isCreditLoading">
+  <ds-card>
+    <ds-card-header>
+      <ds-card-sub-header-title>
+        Recurring
+      </ds-card-sub-header-title>
+      <ds-card-title-action>  
+        <button class="btn btn-outline-primary" type="button" (click)="openModal(0)"><mat-icon>add</mat-icon>Billing</button>
+      </ds-card-title-action>
+    </ds-card-header>
+    <ds-card-content>
+      <div class="card card-table">
+        <ng-container *ngIf="billingSource.data && billingSource.data.length">
+          <mat-table [dataSource]="billingSource" color="primary">
+            <ng-container matColumnDef="Name">
+              <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+              <mat-cell *matCellDef="let element;" data-label="Name">{{element.billingItemDescription.description}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Price Chart">
+              <mat-header-cell *matHeaderCellDef> Price Chart </mat-header-cell>
+              <mat-cell *matCellDef="let element;" data-label="Price Chart">{{element.billingPriceChart.description}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Start Date">
+              <mat-header-cell *matHeaderCellDef class="table-text-right"> Start Date </mat-header-cell>
+              <mat-cell *matCellDef="let element;" class="table-text-right" data-label="Start Date">{{element.startBilling | date:'MM/dd/yyyy'}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Frequency">
+              <mat-header-cell *matHeaderCellDef> Frequency </mat-header-cell>
+              <mat-cell *matCellDef="let element;" data-label="Frequency">{{ billingFreqHelper.toString(element.billingFrequency) }}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Line">
+              <mat-header-cell *matHeaderCellDef> Line </mat-header-cell>
+              <mat-cell *matCellDef="let element;" data-label="Line">{{element.line | number:'1.2-2' }}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Flat">
+              <mat-header-cell *matHeaderCellDef> Flat </mat-header-cell>
+              <mat-cell *matCellDef="let element;" data-label="Flat">{{element.flat | number:'1.2-2'}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Per Qty">
+              <mat-header-cell *matHeaderCellDef> Per Qty </mat-header-cell>
+              <mat-cell *matCellDef="let element;" data-label="Per Qty">{{element.perQty | number:'1.2-2'}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="What To Count">
+              <mat-header-cell *matHeaderCellDef> What To Count </mat-header-cell>
+              <mat-cell *matCellDef="let element;" data-label="What To Count">{{ billingWTCHelper.toString(element.billingWhatToCount) }}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Ignore Discount">
+              <mat-header-cell *matHeaderCellDef class="justify-md-content-center"> Ignore Discount </mat-header-cell>
+              <mat-cell *matCellDef="let element;" data-label="Ignore Discount" class="justify-md-content-center">
+                <ng-container *ngIf="element.isStopDiscount">
+                  <mat-icon>done</mat-icon>
+                </ng-container>
+              </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+              <mat-header-cell *matHeaderCellDef class="mat-td-action-icon-width"></mat-header-cell>
+              <mat-cell *matCellDef="let element;" data-label="Edit" class="mat-td-action-icon-width">
+                <div>
+                  <button type="button" [matMenuTriggerFor]="oneTimeBillingMenu" class="btn btn-icon table-edit-icon">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                  <mat-menu #oneTimeBillingMenu="matMenu">
+                    <button mat-menu-item (click)="openModal(0, element)">Edit</button>
+                    <button mat-menu-item (click)="confirmDeletion(0, element.billingItemId)">Delete</button>
+                  </mat-menu>
+                </div>
+              </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="billingColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: billingColumns;"></mat-row>
+          </mat-table>
+          <mat-paginator #billingPaginator [pageSize]="10" [pageSizeOptions]="[10,25,50]" showFirstLastButtons></mat-paginator>
+        </ng-container>
+      </div>
+      <ng-container *ngIf="billingSource.data == null || !billingSource.data.length">
+        <div class="empty-state">There are no billing items to display. Click the "+ Billing" button to add one for this client.</div>
+      </ng-container>
+    </ds-card-content>
+  </ds-card>
+  
+  <ds-card>
+    <ds-card-header>
+      <ds-card-sub-header-title>
+        One-Time
+      </ds-card-sub-header-title>
+      <ds-card-title-action>  
+          <button class="btn btn-outline-primary" type="button" (click)="openModal(1)"><mat-icon>add</mat-icon>One Time</button>
+      </ds-card-title-action>
+    </ds-card-header>
+    <ds-card-content>
+      <ng-container *ngIf="oneTimeSource.data && oneTimeSource.data.length">
+        <div class="card card-table">
+          <mat-table [dataSource]="oneTimeSource" color="primary">
+            <ng-container matColumnDef="Billing Item">
+              <mat-header-cell *matHeaderCellDef> Billing Item </mat-header-cell>
+              <mat-cell *matCellDef="let element;" data-label="Billing Item">{{element.billingItemDescription.description}}
+              </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Year">
+              <mat-header-cell *matHeaderCellDef> Year </mat-header-cell>
+              <mat-cell *matCellDef="let element;" data-label="Year">{{element.billingYear}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Name">
+              <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+              <mat-cell *matCellDef="let element;" data-label="Name">{{element.comment}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Flat">
+              <mat-header-cell *matHeaderCellDef> Flat </mat-header-cell>
+              <mat-cell *matCellDef="let element;" data-label="Flat">{{element.flat | number:'1.2-2'}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Per Qty">
+              <mat-header-cell *matHeaderCellDef> Per Qty </mat-header-cell>
+              <mat-cell *matCellDef="let element;" data-label="Per Qty">{{element.perQty | number:'1.2-2'}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="What To Count">
+              <mat-header-cell *matHeaderCellDef> What To Count </mat-header-cell>
+              <mat-cell *matCellDef="let element;" data-label="What To Count">
+                {{ billingWTCHelper.toString(element.billingWhatToCount) }}
+              </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Payroll Applied">
+              <mat-header-cell *matHeaderCellDef> Payroll Applied </mat-header-cell>
+              <mat-cell *matCellDef="let element;" data-label="Payroll Applied">
+                {{ billingPeriodHelper.toString(element.billingPeriod) }}
+              </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="Ignore Discount">
+              <mat-header-cell class="justify-md-content-center" *matHeaderCellDef> Ignore Discount </mat-header-cell>
+              <mat-cell *matCellDef="let element;" data-label="Ignore Discount" class="justify-md-content-center">
+                <ng-container *ngIf="element.isStopDiscount">
+                  <mat-icon>done</mat-icon>
+                </ng-container>
+              </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+              <mat-header-cell *matHeaderCellDef class="mat-td-action-icon-width"></mat-header-cell>
+              <mat-cell *matCellDef="let element;" data-label="Edit" class="mat-td-action-icon-width">
+                <div>
+                  <button type="button" [matMenuTriggerFor]="oneTimeBillingMenu" class="btn btn-icon table-edit-icon">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                  <mat-menu #oneTimeBillingMenu="matMenu">
+                    <button mat-menu-item (click)="openModal(1, element)">Edit</button>
+                    <button mat-menu-item (click)="confirmDeletion(1, element.billingItemId)">Delete</button>
+                  </mat-menu>
+                </div>
+              </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="oneTimeColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: oneTimeColumns;"></mat-row>
+          </mat-table>
+          <mat-paginator #oneTimePaginator [pageSize]="10" [pageSizeOptions]="[10,25,50]" showFirstLastButtons>
+          </mat-paginator>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="oneTimeSource.data == null || !oneTimeSource.data.length">
+        <div class="empty-state">There are no one time billing items to display. Click the "+ One Time" button to add one for this client.</div>
+      </ng-container>
+    </ds-card-content>
+  </ds-card>
+
+  <ds-card>
+    <ds-card-header>
+      <ds-card-sub-header-title>
+        Pending Credit
+      </ds-card-sub-header-title>
+    </ds-card-header>
+    <ds-card-content>
+      <div class="card card-table"
+      *ngIf="creditSource && creditSource.data && creditSource.data.length else emptyState">
+      <mat-table [dataSource]="creditSource" color="primary">
+        <ng-container matColumnDef="Name">
+          <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+          <mat-cell *matCellDef="let element;" data-label="Name">
+            <div class="text-truncate">{{element.billingItemDescription.description}}</div>
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Price Chart">
+          <mat-header-cell *matHeaderCellDef> Price Chart </mat-header-cell>
+          <mat-cell *matCellDef="let element;" data-label="Price Chart">{{element.billingPriceChart.description}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Frequency">
+          <mat-header-cell *matHeaderCellDef> Frequency </mat-header-cell>
+          <mat-cell *matCellDef="let element;" data-label="Frequency">{{ billingFreqHelper.toString(element.billingFrequency) }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Line">
+          <mat-header-cell *matHeaderCellDef> Line </mat-header-cell>
+          <mat-cell *matCellDef="let element;" data-label="Line">{{element.line | number:'1.2-2' }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Flat">
+          <mat-header-cell *matHeaderCellDef> Flat </mat-header-cell>
+          <mat-cell *matCellDef="let element;" data-label="Flat">{{element.flat | number:'1.2-2'}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Per Qty">
+          <mat-header-cell *matHeaderCellDef> Per Qty </mat-header-cell>
+          <mat-cell *matCellDef="let element;" data-label="Per Qty">{{element.perQty | number:'1.2-2'}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="What To Count">
+          <mat-header-cell *matHeaderCellDef> What To Count </mat-header-cell>
+          <mat-cell *matCellDef="let element;" data-label="What To Count">
+            <div class="text-truncate">{{billingWTCHelper.toString(element.billingWhatToCount)}}</div>
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="isOneTime">
+          <mat-header-cell class="justify-md-content-center" *matHeaderCellDef> Is One Time </mat-header-cell>
+          <mat-cell *matCellDef="let element;" data-label="Is One Time" class="justify-md-content-center">
+            <ng-container *ngIf="element.isOneTime">
+              <mat-icon>done</mat-icon>
+            </ng-container>
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="RequestedBy">
+          <mat-header-cell *matHeaderCellDef> Requested By </mat-header-cell>
+          <mat-cell *matCellDef="let element;" data-label="Requested By">
+            {{ element.requestedByName }}
+          </mat-cell>
+        </ng-container>
+        <ng-container *ngIf="this.isBillingAdmin" matColumnDef="status">
+          <mat-header-cell *matHeaderCellDef class=""> Status </mat-header-cell>
+          <mat-cell *matCellDef="let element;" data-label="Status" class="">
+            <div>
+              <button [matMenuTriggerFor]="menu" type="button" class="btn btn-warning btn-warning-width d-flex dropdown-toggle align-items-center ">
+                  <span class="text-truncate">Needs Approval</span>
+              </button>
+              <mat-menu #menu="matMenu">
+                  <button mat-menu-item (click)="transferPendingBillingCredit(true, element); ">Approve</button>
+                  <button mat-menu-item (click)="transferPendingBillingCredit(false, element); ">Decline</button>
+              </mat-menu>
+            </div>
+          </mat-cell>
+        </ng-container>
+        <ng-container *ngIf="this.isBillingAdmin" matColumnDef="edit">
+          <mat-header-cell *matHeaderCellDef class="mat-td-action-icon-width"></mat-header-cell>
+          <mat-cell *matCellDef="let element;" data-label="Edit" class="mat-td-action-icon-width">
+              <div>
+                <button type="button" [matMenuTriggerFor]="pendingCredit" class="btn btn-icon table-edit-icon">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #pendingCredit="matMenu">                  
+                  <button mat-menu-item (click)="openModal(2, element)">
+                    Edit
+                  </button>
+                </mat-menu>
+              </div>
+            </mat-cell>
+        </ng-container>        
+        <mat-header-row *matHeaderRowDef="creditColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: creditColumns;"></mat-row>
+      </mat-table>
+      <mat-paginator #creditPaginator [pageSize]="10" [pageSizeOptions]="[10,25,50]" showFirstLastButtons>
+      </mat-paginator>
+    </div>
+    <ng-template #emptyState>
+      <div class="empty-state">There are no pending credit billing items to display.</div>
+    </ng-template>
+    </ds-card-content>
+  </ds-card>
+</ng-container>
+
+<ng-container *ngIf="isBillingLoading || isOneTimeLoading || isCreditLoading">
+  <ds-card mode="noheader">
+    <ds-card-content>
+      <ds-loading-message></ds-loading-message>
+    </ds-card-content>
+  </ds-card>
+</ng-container>

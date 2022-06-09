@@ -1,0 +1,68 @@
+<ng-template #loadingBlock>
+  <div class="loading-message">Loading...</div>
+</ng-template>
+<ds-card>
+<ds-card-header>
+        <ds-card-header-title>
+            Reviews<span *ngIf="">: {{SourceTemplates.length}}</span>
+        </ds-card-header-title>
+        <ds-card-title-action>
+          <button type="button" class="btn btn-outline-primary" (click)="swapDisplayList()">
+            View {{ IsArchiveView ? 'Active' : 'History' }}
+        </button>  
+          <button type="button" [matMenuTriggerFor]="menu" class="btn btn-primary dropdown-toggle">
+                <mat-icon>add</mat-icon> Review
+            </button>
+            <mat-menu #menu="matMenu">
+                <button type="button" mat-menu-item (click)="addRecurring()">Recurring</button>
+                <button type="button" mat-menu-item (click)="addOneTime()">One Time</button>
+            </mat-menu>
+        </ds-card-title-action>
+</ds-card-header>
+<ds-card-content>
+    <div *ngIf="SourceTemplates?.length > 0" class="row">
+        <div class="col-md-4 col-lg-3">
+          <div class="form-group">
+                <label class="form-control-label">Review Type</label>
+                <select class="form-control custom-select"
+                name="selectedReviewType"
+                [formControl]="selectedReviewType"
+                >
+                <option value="2">All</option>
+                <option value="1">
+                  Recurring
+                </option>
+                <option value="0">
+                  One Time
+                </option>
+            </select>
+          </div>
+        </div>
+    </div>
+    <ng-container *ngIf="!!SourceTemplates && SourceTemplates.length > 0; else emptyState">
+      <div class="overflow-list" *ngIf="SourceTemplates; else loadingBlock" style="min-height: 3rem;">
+        <div class="row">
+          <div class="col-6 col-md-4 col-lg-3" *ngFor="let template of (SourceTemplates | filterByType : selectedReviewType.value : ListChanged)">
+            <ds-icon-widget 
+            [TemplateId]="template.reviewTemplateId"
+            [Name]="template.name"
+            [refDateType]="template.referenceDateTypeId"
+            [isArchived]="template.isArchived"
+            [isRecurring]="template.isRecurring"
+            ></ds-icon-widget>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  
+</ds-card-content>
+</ds-card>
+
+<ng-template #emptyState>
+  <div class="empty-state-cycle warning" *ngIf="IsArchiveView">
+      <mat-icon>info</mat-icon>
+      <div class="title">No review history found.</div>
+      <p>Archived reviews will show up here.</p>
+  </div>
+  <div class="empty-state" *ngIf="!IsArchiveView">There are no reviews to display. Click"+ Review" to add one.</div>
+</ng-template>

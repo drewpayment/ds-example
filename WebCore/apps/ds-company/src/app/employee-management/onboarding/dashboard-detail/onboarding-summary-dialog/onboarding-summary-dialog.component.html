@@ -1,0 +1,104 @@
+<mat-dialog-header>
+    <h2 class="dialog-title">
+        Onboarding Summary
+    </h2>
+    <button type="button" class="close" (click)="clear()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</mat-dialog-header>
+<mat-dialog-content>
+    <div >
+        <div id="printarea">
+            <!--company name-->
+            <div class="row form-group">
+                <div class="col-6 text-uppercase">
+                    <strong>{{onboardingSummary.companyName}}</strong>
+                </div>
+                <div class="col-6 text-right d-none d-print-block">
+                    <strong>Onboarding Summary</strong>
+                </div>
+            </div>
+            <div class="print-page">
+                <div class="print-page-header print-header d-flex justify-content-between">
+                    <div class="d-flex align-items-end">
+                        <h1>{{onboardingSummary.employeeName }}</h1>
+                        <div class="font-xs ml-2">
+                            {{onboardingSummary.employeeNumber }}
+                        </div>
+                    </div>
+                    <div>
+                        Printed: {{onboardingSummary.date | date: 'MM/dd/yyyy' }}
+                    </div>
+                </div>
+                <div class="print-page-body">
+                    <div class="print-page-section-group">
+                        <ng-container *ngFor="let workflowItem of onboardingSummary.taxWorkflowItems; let i = index" >
+                        <div *ngIf="workflowItem.id < 4">
+                            <div class="font-weight-bold" >
+                                <i class="material-icons md-12">fiber_manual_record</i> {{workflowItem.title }}
+                                <hr />
+                            </div>
+                        </div>
+                        </ng-container>
+                        
+                        <ng-container  *ngFor="let workflowItem of onboardingSummary.workflowItems; let i = index">
+                        <div *ngIf="workflowItem.id > 3">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" checked="">
+                                <label class="custom-control-label font-weight-bold">{{workflowItem.title }}</label>
+                                <svg class="print-checkbox" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"></path><path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg>
+                            </div>
+                            <div class="ml-1 pl-5"><i class="font-weight-bold">Acknowledgement:</i> {{workflowItem.description }}</div>
+                            <!-- Loop throuh documents attached through the workflow -->
+                            <div class="pl-5">
+                                <div class="font-weight-bold" >
+                                    <!--<i class="material-icons md-12">fiber_manual_record</i> {{workflowItem.title }}-->
+                                    <div class="pl-5" 
+                                        *ngFor="let resource of workflowItem.resources">
+                                        <div class="font-weight-bold"> <i class="material-icons md-12">fiber_manual_record</i> {{resource.name}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <hr *ngIf="i < lastWFIndex" />
+                        </div>
+                        </ng-container>
+                    </div>
+                    <h3 class="print-header">Onboarding disclaimer</h3>
+                    <div class="print-page-section-group">
+                        <div class="form-group">
+                            By adding your name below and clicking the "Complete Onboarding" button, you agree that you have received the documents under "Preview Employment Forms" and confirm that the information in them is accurate.
+                        </div>
+                        <div class="row print-page-input-section break-avoid align-items-end">
+                            <div class="col-6">
+                                <div class="single-line-input">{{onboardingSummary.employeeName }}</div>
+                                <div class="instruction-text">Employee Name</div>
+                            </div>
+                            <div class="col-3">
+                                <div class="single-line-input text-uppercase">{{onboardingSummary.employeeInitial }}</div>
+                                <div class="instruction-text">Employee Initials</div>
+                            </div>
+                            <div class="col-3">
+                                <div class="single-line-input">{{onboardingSummary.submittedDate | date: 'MM/dd/yyyy' }} at {{onboardingSummary.submittedDate | date: 'HH:mm a' }}</div>
+                                <div class="instruction-text">Date and Time</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="custom-control custom-checkbox d-flex">
+                                    <input type="checkbox" class="custom-control-input" checked="">
+                                    <label class="custom-control-label">Under penalties of perjury, I declare that I have answered all previous questions to the best of my knowledge and belief, and that they are true, correct, and complete.</label>
+                                    <svg class="print-checkbox" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"></path><path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11 0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button type="button" class="btn btn-save" (click)="print()">Print</button>
+    <button type="button" class="btn btn-cancel" (click)="clear()">Cancel</button>
+</mat-dialog-actions>

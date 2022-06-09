@@ -1,0 +1,238 @@
+<div class="ds-card">
+	<div class="card-header align-y-center header-bar border-top-secondary">
+		<div class="ds-card-header-row">
+      <div class="ds-card-header-row-inner-wrapper">
+        <div class="ds-card-title">
+          <h1>Employee Notes</h1>
+          <div class="ds-card-breadcrumb">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="ChangeEmployee.aspx?Submenu=Employee&URL=EmployeeNotes.aspx">Employee List</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Employee Notes</li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+        <div class="ds-right-content" *ngIf="!isHRBlocked">
+          <div class="d-flex align-items-start flex-wrap">
+            <button *ngIf="!displayArchive" type="button" class="btn btn-outline-primary d-inline-block text-nowrap inline-md-control mr-2 mb-4 mb-md-0-" (click)="resetForm(); displayArchivedNotes()">View History</button>
+            <button *ngIf="displayArchive"  type="button" class="btn btn-outline-primary d-inline-block text-nowrap inline-md-control mr-2 mb-4 mb-md-0-" (click)="resetForm(); displayArchive = false; this.totalNotesCount = empNotes.length; updateDisplayNotes()">View Active</button>
+            <div class="search-container d-inline-block">
+              <label class="instruction-text font-xs">Search {{ displayedNotesCount }} of {{ totalNotesCount }} notes</label>
+              <div class="input-group">
+                <input class="form-control" type="search" name="noteSearch" [formControl]="searchTextFormCtrl" />
+                <div class="input-group-append">
+                  <button class="search" type="button">
+                    <i class="material-icons">search</i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+			<div class="ds-card-action" *ngIf="!ViewOnly && !isHRBlocked">
+				<add-note-modal (savedNote)="closedSaved($event)" [selectedNote]="newNote"></add-note-modal>
+			</div>
+		</div>
+	</div>
+	<div class="empty-state-cycle warning" *ngIf="isHRBlocked; else notHRBlocked">
+		<i class="material-icons">warning</i>
+		<div class="title">Notes are not displayed for your user profile.</div>
+		<p>Please contact your Dominion Systems representative if you believe this is an error.</p>
+	</div>
+	<ng-template #notHRBlocked>
+	<div class="card-body">
+			<div class="loading-message" *ngIf="loading">
+				Loading...
+			</div>
+			<ng-container *ngIf="!loading">
+				<div class="row">
+					<div class="col-6 col-md-3 col-xl-2">
+						<div class="form-group">
+							<label class="form-control-label">Display From</label>
+							<div class="input-group">
+								<input matInput #fromInput
+									class="form-control"
+									[max]="toDate"
+									[matDatepicker]="fromDatePicker"
+									(dateChange)="updateDisplayNotes()"
+									[(ngModel)]="fromDate"
+									name="fromDatePicker"
+									dsFormControlValidator
+									#fromDateNgModel="ngModel" />
+								<div class="input-group-append">
+									<mat-datepicker-toggle matSuffix [for]="fromDatePicker" class="input-group-text date">
+										<mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+									</mat-datepicker-toggle>
+									<mat-datepicker #fromDatePicker></mat-datepicker>
+								</div>
+
+								<div *ngIf="fromDateNgModel?.invalid" class="invalid-feedback">
+									<div *ngIf="!(fromDateNgModel?.hasError('matDatepickerMax'));">
+										Please enter a from date.
+									</div>
+									<div *ngIf="fromDateNgModel?.hasError('matDatepickerMax');">
+										Please enter a date on or before
+										{{ toDate | date: 'MM/dd/yyyy'}}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-6 col-md-3 col-xl-2">
+						<div class="form-group">
+							<label class="form-control-label">To</label>
+							<div class="input-group">
+								<input matInput #toInput
+									class="form-control"
+									[min]="fromDate"
+									[matDatepicker]="toDatePicker"
+									(dateChange)="updateDisplayNotes()"
+									[(ngModel)]="toDate"
+									name="toDatePicker"
+									dsFormControlValidator
+									#toDateNgModel="ngModel" />
+								<div class="input-group-append">
+									<mat-datepicker-toggle matSuffix [for]="toDatePicker" class="input-group-text date">
+										<mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+									</mat-datepicker-toggle>
+									<mat-datepicker #toDatePicker></mat-datepicker>
+								</div>
+								<div *ngIf="toDateNgModel?.invalid" class="invalid-feedback">
+									<div *ngIf="!(toDateNgModel?.hasError('matDatepickerMin'));">
+										Please enter a to date.
+									</div>
+									<div *ngIf="toDateNgModel?.hasError('matDatepickerMin');">
+										Please enter a date on or after
+										{{ fromDate  | date: 'MM/dd/yyyy'}}
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+			<div class="col-md-3 col-xl-2">
+						<div class="form-group">
+							<label class="form-control-label">Source</label>
+							<select [(ngModel)]="selectedSource" (change)="updateDisplayNotes()"
+								class="form-control custom-select">
+								<option *ngFor="let n of sources" [value]="n.noteSourceId">{{n.noteSource}}</option>
+							</select>
+				</div>
+			</div>
+			<div class="col-md-3 col-xl-6">
+				<div class="form-group" [formGroup]="tagsFormGroup">
+					<label class="form-control-label">Tags</label><span class="instruction-text"> Optional</span>
+					<mat-form-field class="form-control">
+					  <mat-chip-list #chipList>
+						<mat-chip *ngFor="let tag of selectedFilterTags" [removable]="true" (removed)="removeFilterTag(tag)">{{tag.tagName}}<mat-icon
+						  matChipRemove>clear</mat-icon>
+						</mat-chip>
+						<input type="text" #searchTagsElm [matChipInputFor]="chipList" [matAutocomplete]="auto"
+						formControlName="searchTagsInput">
+					  </mat-chip-list>
+					</mat-form-field>
+					<mat-autocomplete #auto="matAutocomplete" (optionSelected)="addFilterTag($event)">
+						<mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
+							{{tag.tagName}}
+						</mat-option>
+					</mat-autocomplete>
+						</div>
+					</div>
+				</div>
+				<div *ngIf="displayedEmpNotes?.length > 0; else noNotes">
+					<div class="list-bordered list-bordered-large">
+						<div class="header">Notes: {{ displayedNotesCount }} of {{ totalNotesCount }} displayed</div>
+						<div class="body">
+							<div class="item-group" *ngFor="let note of displayedEmpNotes">
+								<div class="title-row">
+									<div class="list-title">
+										<mat-icon>comment</mat-icon>
+										{{ note.noteSource }}
+                  </div>
+                  <div class="list-right-content">
+                    <mat-chip-list class="info">
+                      <mat-chip *ngFor="let tag of note.tags" [removable]="true" (removed)="removeNoteTag(note.remarkId, tag)">{{tag.tagName}}
+                      </mat-chip>
+                    </mat-chip-list>
+                    <div class="bold" [matTooltip]="note.addedDate | date:'h:mm aa'">{{note.addedDate | date:'mediumDate'}}</div>
+                  </div>
+									<div class="list-action-items">
+										<span *ngIf="!ViewOnly && note.addedBy == userinfo.userId">
+											<button [matMenuTriggerFor]="menu" class="btn btn-icon" type="button">
+												<mat-icon>more_vert</mat-icon>
+											</button>
+											<mat-menu #menu="matMenu">
+												<span *ngIf="!displayArchive; else archiveMenu">
+													<add-note-modal [isInDDL]="true" [selectedNote]="note" (savedNote)="closedSaved($event)">Edit</add-note-modal>
+													<assign-tags-modal [selectedNote]="note" [remarkId]="note.remarkId" (assignedTags)="closedAssignTags($event, note.remarkId)">Assign Tags</assign-tags-modal>
+													<button type="button" mat-menu-item (click)="attachmentModal(note.remarkId)">Add attachment</button>
+													<share-note-modal [selectedNote]="note" [isEssMode]="isEssMode" (savedSettings)="closedShare($event)">Share</share-note-modal>
+													<button type="button" mat-menu-item (click)="archiveNote(note.remarkId)">Archive</button>
+												</span>
+												<ng-template #archiveMenu>
+													<button type="button" mat-menu-item (click)="restoreNote(note.remarkId)">Restore</button>
+												</ng-template>
+                      						</mat-menu>
+										</span>
+										<button type="button" class="btn btn-icon" [class.accordion-rotate]="note.showToggle" (click)="note.showToggle = !note.showToggle">
+											<mat-icon>keyboard_arrow_left</mat-icon>
+										</button>
+									</div>
+								</div>
+								<div class="list-subtitle" (click)="note.showToggle = !note.showToggle" *ngIf="!note.showToggle">
+									<p class="mb-0 clickable">{{ note.description }}</p>
+								</div>
+								<div class="collapse" [class.show]="note.showToggle">
+									<p>{{ note.description }}</p>
+                  <div class="list-section" *ngIf="note.files?.length > 0">
+										<h4 >Attachments</h4>
+										<ds-employee-attachments [files]="note.files" [userAccount]="userinfo" [folders]="folders" (editedAttachment)="attachmentEditClosed($event, note.remarkId)"></ds-employee-attachments>
+									</div>
+									<div class="list-section">
+										<h4 *ngIf="note?.activity?.length > 0">Activity</h4>
+										<div *ngFor="let c of note.activity" class="history-item">
+											{{ c.activityDesc }} {{ c.activityDate | date: 'MM/dd/yyyy hh:mm a'}}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<ng-template #noNotes>
+					<div *ngIf="displayArchive == true && 1 > archivedEmpNotes?.length; else isESSViewOnly">
+						<div class="row">
+							<div class="empty-state-cycle info">
+								<i class="material-icons">info</i>
+								<div class="title">No note history found</div>
+								<p>Notes will show up here when archived</p>
+							</div>
+						</div>
+					</div>
+				</ng-template>
+				<ng-template #isESSViewOnly>
+					<div *ngIf="ViewOnly == true; else archiveFalse" class="empty-state">
+						There are no notes to display.
+					</div>
+				</ng-template>
+				<ng-template #archiveFalse>
+					<div *ngIf="1 > displayedEmpNotes?.length && (searchText == '' || searchText == null) && fromDate == null && toDate == null && selectedSource == 999; else search" class="empty-state">
+						There are no notes to display. Click the "+ Note" button to add a note for this employee.
+					</div>
+				</ng-template>
+				<ng-template #search>
+					<div *ngIf="1 > displayedEmpNotes?.length && !(searchText == '' || searchText == null); else noSearchResults" class="empty-state">
+						There are no results to display for {{ searchText }}
+					</div>
+				</ng-template>
+				<ng-template #noSearchResults>
+					<div class="empty-state">
+						There are no results to display.
+					</div>
+				</ng-template>
+			</ng-container>
+		</div>
+	</ng-template>
+</div>
+<ng-container *ngIf="subscriptionHandler$ | async"></ng-container>

@@ -1,0 +1,60 @@
+<div ng-show="!isLoaded">Loading Videos...</div>
+<div ng-show="isLoaded">
+    <div class="container-new">
+        <div class="panel clearfix">
+            <div class="panel-body">
+                <div class="d-flex flex-wrap on-header">
+                    <div class="circle-sm on-pager">{{circleNumber}}</div>
+                    <div class="top-constant">
+                        <h1>{{currWorkflowTitle}}</h1>
+                        <p>{{description}}</p>
+                    </div>
+                </div>
+                <form name="frmVideo">
+                    <div id="myForm" class="form-group">
+                        <div ng-if="selectedResources.length>0">
+                            <div class="row">
+                                <div class="col-md-3 col-md-push-9 p-l">
+                                    <div class="Acme-Documents clickable" ng-class="{ 'Documents-active' : selectedResource.previewResourceCssClass}" ng-repeat="selectedResource in selectedResources" ng-click="setPreviewResource(selectedResource)" style="border-radius: 0px;">
+                                        <h3 class="res-style"
+                                            data-toggle="tooltip" title="{{selectedResource.resourceName}}">
+                                            {{selectedResource.resourceName}}
+                                        </h3>
+                                        <span class="text-muted res-style">
+                                            {{ selectedResource.source ? selectedResource.source.split('\\').pop() : ""}}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-9 col-md-pull-3 p-r form-group">
+                                    <div class="video-container">
+                                        <iframe name="filePreview" src="{{previewResource}}" class="frame-style" frameborder="0"></iframe>
+                                    </div>
+                                </div>
+                                <div ng-if="considerSignatureDescription">
+                                    <div class="col-sm-12">
+                                        <div class="on-checkbox" ng-class="{ 'required-field' : isSoftWarned && !isCompleted}">
+                                            <span>
+                                                <input type="checkbox"
+                                                    id="checkVideo"
+                                                    ng-model="document.isCompleted"
+                                                    ng-change="changeSignatureState($event)">
+                                            </span>
+                                            <label for="checkVideo" class="form-label">
+                                                {{signatureDescription}}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr style="height: 1px; border: none; color: lightgrey; background-color: lightgrey;" />
+                    <ds-nav-workflow-footer workflow-Hide-Next="false" workflow-Hide-Prev="false"
+                        my-Workflow="myWorkflow"
+                        on-save="$ctrl.clickSavePageData($direction)" />
+                    <br />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

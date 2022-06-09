@@ -1,0 +1,46 @@
+<ds-card>
+  <ds-card-header>
+    <ds-card-header-title>Table</ds-card-header-title>
+    <ds-card-title-action>
+    </ds-card-title-action>
+  </ds-card-header>
+  <ds-card-content>
+    <div class="card card-table">
+        <div class="table-responsive">
+            <table mat-table [dataSource]="dataSource" matSort class="table sticky">
+              <ng-container matColumnDef="character" sticky>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Character </th>
+                <td mat-cell *matCellDef="let element"  data-label="Character"> {{element.character}} </td>
+              </ng-container>
+              <ng-container matColumnDef="movie" sticky>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="mat-table-sticky-border"> Movie </th>
+                <td mat-cell *matCellDef="let element" data-label="Movie" class="mat-table-sticky-border"> {{element.movie}} </td>
+              </ng-container>
+              <ng-container matColumnDef="quote">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Quote </th>
+                <td mat-cell *matCellDef="let element" data-label="Quote"> {{element.quote}} </td>
+              </ng-container>
+              <ng-container matColumnDef="year">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="table-text-right"> Year </th>
+                <td mat-cell *matCellDef="let element" class="table-text-right" data-label="Year"> {{element.year}} </td>
+              </ng-container>
+              <ng-container matColumnDef="edit" stickyEnd>
+                <th mat-header-cell *matHeaderCellDef class="td-action-icon-width mat-table-sticky-border-end"></th>
+                <td mat-cell *matCellDef="let element" class="td-action-icon-width mat-table-sticky-border-end">
+                  <button type="button" mat-button [matMenuTriggerFor]="menu" class="btn btn-icon">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                  <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="delete(element)">Delete</button>
+                  </mat-menu>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+            
+        </div>
+        <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons></mat-paginator>
+    </div>
+  </ds-card-content>
+</ds-card>

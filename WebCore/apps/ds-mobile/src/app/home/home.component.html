@@ -1,0 +1,294 @@
+
+<div class="desktop-message" *ngIf="!shouldRun; else showMobile">
+    <div class="empty-state-cycle gray">
+        <mat-icon>build</mat-icon>
+        <div class="title">This page is currently under construction.</div>
+        <div>To view information, please </div><a mat-button autofocus href="https://live.dominionsystems.com/payroll/default.aspx">visit the desktop site.</a>
+    </div>
+</div>
+
+<ng-template #showMobile>
+    <h1>Sample Components</h1>
+
+    <div class="empty-state">There is currently no data to display.</div>
+    
+    <h2>Grid</h2>
+    Add `.ds-mobile-grid` to call the grid. 
+    Add `.row` to each row. If a row is split into 2 equal parts, add `.col-2`. If a row is split into 3 equal parts, add `.col-3`. 
+
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>1 Column</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div class="ds-mobile-grid form-group">
+            <mat-form-field class="row">
+                <input matInput placeholder="Input">
+            </mat-form-field>
+            <mat-form-field class="row">
+                <input matInput placeholder="Input">
+            </mat-form-field>
+            <mat-form-field  class="row">
+                <input matInput placeholder="Input">
+            </mat-form-field>
+            <mat-form-field class="row">
+                <input matInput placeholder="Input">
+            </mat-form-field>
+            <mat-form-field class="row">
+                <input matInput placeholder="Input">
+            </mat-form-field>
+            </div>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>2 Column</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div class="ds-mobile-grid form-group">
+            <mat-form-field class="row">
+                <input matInput placeholder="Input">
+            </mat-form-field>
+            <div class="row col-2">
+                <mat-form-field>
+                <input matInput placeholder="Input">
+                </mat-form-field>
+                <mat-form-field>
+                <input matInput placeholder="Input">
+                </mat-form-field>
+            </div>
+            <mat-form-field class="row">
+                <input matInput placeholder="Input">
+            </mat-form-field>
+            </div>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>3 Column</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div class="ds-mobile-grid form-group">
+            <mat-form-field class="row">
+                <input matInput placeholder="Input">
+            </mat-form-field>
+            <div class="row col-3">
+                <mat-form-field>
+                <input matInput placeholder="Input">
+                </mat-form-field>
+                <mat-form-field>
+                <input matInput placeholder="Input">
+                </mat-form-field>
+                <mat-form-field>
+                <input matInput placeholder="Input">
+                </mat-form-field>
+            </div>
+            <mat-form-field class="row">
+                <input matInput placeholder="Input">
+            </mat-form-field>
+            </div>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>Buttons</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div class="form-group">
+            <mat-button-toggle-group name="requestType">
+                <mat-button-toggle value="partial" color="primary">Partial</mat-button-toggle>
+                <mat-button-toggle value="one">One Day</mat-button-toggle>
+                <mat-button-toggle value="multiple">Multiple</mat-button-toggle>
+            </mat-button-toggle-group>
+            </div>
+            <button mat-flat-button color="accent">
+            <mat-icon>description</mat-icon>
+            Button
+            </button>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>Check Date Dec 25 2019</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div class="instruction-text text-center mb-4">Pay Period Dec 10 2019 - Dec 18 2019</div>
+            <div class="text-center">
+            <span class="ds-callout mr-2">$905.76</span>
+            <span class="ds-callout-detail">NET</span>
+            </div>
+            <div class="ds-callout-detail text-center mb-4">
+            Gross Pay: $2,000,000
+            </div>
+            <mat-nav-list class="mobile-nav-list" role="navigation">
+            <mat-list-item>
+                Check Details
+                <button mat-icon-button>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+                </button>
+            </mat-list-item>
+            <mat-list-item>
+                Earnings Details
+                <button mat-icon-button>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+                </button>
+            </mat-list-item>
+            <mat-list-item>
+                Earnings Hours
+                <button mat-icon-button>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+                </button>
+            </mat-list-item>
+            <mat-list-item>
+                Employer Paid Benefits
+                <button mat-icon-button>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+                </button>
+            </mat-list-item>
+            <mat-list-item>
+                Other Information
+                <button mat-icon-button>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+                </button>
+            </mat-list-item>
+            </mat-nav-list>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>Dependents</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <mat-nav-list class="mobile-nav-list " role="navigation">
+            <mat-list-item>
+                <div class="item-counter teal">1</div>
+                <div class="item" mat-line>
+                <div class="bold d-inline-block mr-2">First Last</div>
+                <div class="instruction-text d-inline-block">Relationship</div>
+                </div>
+                <button mat-icon-button>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+                </button>
+            </mat-list-item>
+            <mat-list-item>
+                <div class="item-counter teal">2</div>
+                <div class="item" mat-line>
+                <div class="bold d-inline-block mr-2">First Last First Last First Last</div>
+                <div class="instruction-text d-inline-block">Relationship</div>
+                </div>
+                <button mat-icon-button>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+                </button>
+            </mat-list-item>
+            <mat-list-item>
+                <div class="item-counter teal">3</div>
+                <div class="item" mat-line>
+                <div class="bold d-inline-block mr-2">First Last First Last First Last First Last First Last</div>
+                <div class="instruction-text d-inline-block">Relationship</div>
+                </div>
+                <button mat-icon-button>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+                </button>
+            </mat-list-item>
+            </mat-nav-list>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>Emergency Contacts</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <mat-nav-list class="mobile-nav-list multi-line-list" role="navigation">
+            <mat-list-item>
+                <div class="item-counter teal">1</div>
+                <div class="item" mat-line>
+                <div class="bold d-inline-block mr-2">First Last</div>
+                <div class="instruction-text d-inline-block">Relationship</div>
+                <div>616-566-5468</div>
+                </div>
+                <button mat-icon-button>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+                </button>
+            </mat-list-item>
+            <mat-list-item>
+                <div class="item-counter teal">2</div>
+                <div class="item" mat-line>
+                <div class="bold d-inline-block mr-2">First Last First Last First Last</div>
+                <div class="instruction-text d-inline-block">Relationship</div>
+                <div>616-566-5468</div>
+                </div>
+                <button mat-icon-button>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+                </button>
+            </mat-list-item>
+            <mat-list-item>
+                <div class="item-counter teal">3</div>
+                <div class="item" mat-line>
+                <div class="bold d-inline-block mr-2">First Last First Last First Last First Last First Last</div>
+                <div class="instruction-text d-inline-block">Relationship</div>
+                <div>616-566-5468</div>
+                </div>
+                <button mat-icon-button>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+                </button>
+            </mat-list-item>
+            </mat-nav-list>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>Profile</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <mat-nav-list class="mobile-nav-list" role="navigation">
+            <mat-list-item>
+                User Settings
+                <button mat-icon-button>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+                </button>
+            </mat-list-item>
+            <mat-list-item>
+                Contact Information
+                <button mat-icon-button>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+                </button>
+            </mat-list-item>
+            <mat-list-item>
+                Emergency Contacts
+                <button mat-icon-button>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+                </button>
+            </mat-list-item>
+            <mat-list-item>
+                Dependents
+                <button mat-icon-button>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+                </button>
+            </mat-list-item>
+            </mat-nav-list>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card class="danger">
+        <mat-card-header>
+            <mat-card-title>Card Header</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <p>
+                <span class="bold">Ensign Babyface! Computer, belay that order. </span>
+                <span class="italic">Captain, why are we out here chasing comets? A lot of things can change in twelve years, Admiral. I'd like to think that I haven't changed those things, sir.
+                and attack the Romulans. How long can two people talk about nothing?</span>
+            </p>
+        </mat-card-content>
+    </mat-card>
+
+</ng-template>
+
+

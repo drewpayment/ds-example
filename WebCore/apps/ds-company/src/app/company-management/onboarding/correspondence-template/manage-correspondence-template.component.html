@@ -1,0 +1,433 @@
+<ds-card [mode]="!isDisclaimerTemplate && !isMailTemplatesOnly ? 'nav' : 'nobody'" border="top">
+    <div ds-card-header>
+        <ds-card-header-title>
+            {{ isDisclaimerTemplate ? "Company Disclaimer" : (isLinkedToOnboarding ? "Email Invitation Templates" : "Correspondence Templates")}}
+        </ds-card-header-title>
+        <ds-card-bread-crumb>
+            <nav aria-label="breadcrumb" *ngIf="isLinkedToOnboarding">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a routerLink="/manage/onboarding/dashboard">Onboarding</a>
+                    </li>
+                    <li class="breadcrumb-item active">Email Invitation Templates</li>
+                </ol>
+            </nav>
+            <div class="instruction-text" *ngIf="isDisclaimerTemplate">
+                {{ helpText.disclaimer }}
+            </div>
+        </ds-card-bread-crumb>
+    </div>
+    <ds-card-content>
+        <ds-card-nav *ngIf="!isDisclaimerTemplate && !isMailTemplatesOnly">
+            <div class="ds-tabs" role="navigation">
+              <button type="button" class="tab" (click)="cancel(false); selected = 'EMAIL'; initForm(); " [class.active]="selected == 'EMAIL'">EMAIL</button>
+              <button type="button" class="tab" (click)="cancel(false); selected = 'TEXT'; initForm(); " [class.active]="selected == 'TEXT'">TEXT</button>
+            </div>
+        </ds-card-nav>
+    </ds-card-content>
+</ds-card>
+
+<!-- Email templates default sender field-->
+<div class="row" *ngIf="selected == 'EMAIL' && !isDisclaimerTemplate && !isLoading">
+    <div class="col-md">
+        <ds-card matchHeight="true">
+            <ds-card-header>
+                <ds-card-sub-header-title>Default Sender Address</ds-card-sub-header-title>
+                <ds-card-subtitle>
+                    <div class="instruction-text">
+                        Email replies sent to the default sender address below are delivered to an unmonitored inbox. To use a different sender address, click the "Edit"
+                        button to setup SMTP (Simple Mail Transfer Protocol) settings. You may need your company's IT department to help establish this connection. If you need
+                        further assistance, please contact Dominion.
+                    </div>
+                </ds-card-subtitle>
+            </ds-card-header>
+            <ds-card-content>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <div class="disabled form-control">
+                                <ng-container *ngIf="senderInfo">{{senderInfo.senderEmail}}</ng-container>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-outline-primary form-group inline-md-control" (click)="editSender()">
+                            Edit
+                        </button>
+                    </div>
+                </div>
+            </ds-card-content>
+        </ds-card>
+    </div>
+    <div class="col">
+        <ds-card matchHeight="true">
+            <ds-card-header>
+                <ds-card-sub-header-title>Company Logo</ds-card-sub-header-title>
+                <ds-card-inline-content>
+                    <div class="instruction-text">
+                        Accepted file types include .jpg and .png
+                    </div>
+                </ds-card-inline-content>
+            </ds-card-header>
+            <ds-card-content>
+                <ng-container *ngIf="!isCompanyLogoPresent">
+                    <div class="clickable add-tile" (click)="openImageUpload()" role="button">
+                        <mat-icon class="md-48">add_a_photo</mat-icon>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="isCompanyLogoPresent">
+                    <div class="clickable add-tile bg-transparent" (click)="openImageUpload()" alt="Company Logo" role="button">
+                        <img [src]="logo.source">
+                    </div>
+                </ng-container>
+            </ds-card-content>
+        </ds-card>
+    </div>
+</div>
+
+<!-- Text Templates instruction text-->
+<ds-card *ngIf="selected == 'TEXT' && !isDisclaimerTemplate">
+    <ds-card-header>
+        <ds-card-subtitle>
+            <div class="instruction-text">
+                Text notifications are sent from a default phone number with an unmonitored inbox. No actions will result from an applicant replying to a text. For an applicant to opt out of text notifications, they must go to their account and change their settings. Long messages may end up being sent as multiple texts. Standard message and data rates may apply.
+            </div>
+        </ds-card-subtitle>
+    </ds-card-header>
+</ds-card>
+
+<ds-card [mode]="isEditMode ? 'noheader' : ''" [formGroup]="frm" *ngIf="!isLoading && selected == 'EMAIL'">
+  <ds-card-header *ngIf="!isDisclaimerTemplate && !isEditMode">
+    <ds-card-title-action>
+      <button class="btn btn-primary" (click)="openApplicantCorrespondenceTemplateDetails(false, null)"><i class="material-icons">add</i> Template</button>
+    </ds-card-title-action>
+  </ds-card-header>
+    <ds-card-content>
+        <ng-container *ngIf="!isLoading; else loading">
+            <div *ngIf="(applicantEmailTemplates).length && !isDisclaimerTemplate && !isEditMode" class="overflow-list">
+                <div class="row">
+                    <div class="col-md-3 col-sm-6"
+                        *ngFor="let applicantEmailTemplate of applicantEmailTemplates">
+                        <div class="content-tile clickable hoverable ds-card-widget flex-column">
+                            <div class="card-body">
+                                <button type="button" class="btn btn-icon nested-cog hover-show" [matMenuTriggerFor]="menu">
+                                    <mat-icon>more_vert</mat-icon>
+                                  </button>
+                                  <mat-menu #menu >
+                                    <button type="button" mat-menu-item (click)="openApplicantCorrespondenceTemplateDetails(false, applicantEmailTemplate);">
+                                        Edit
+                                    </button>
+                                    <button type="button" mat-menu-item (click)="previewCorrespondenceTemplate(false, applicantEmailTemplate);">
+                                        Preview
+                                    </button>
+                                    <button type="button" mat-menu-item *ngIf="!isDisclaimerTemplate" (click)="copyCorrespondenceTemplate(false, applicantEmailTemplate);">
+                                        Copy
+                                    </button>
+                                    <button type="button" mat-menu-item *ngIf="!isDisclaimerTemplate" (click)="deleteCorrespondenceTemplate(applicantEmailTemplate);">
+                                        Delete
+                                    </button>
+
+                                  </mat-menu>
+                                <div class="object-card-avatar">
+                                    <mat-icon class="avatar text-info">mail</mat-icon>
+                                </div>
+                                <div class="bold text-truncate">{{applicantEmailTemplate.description}}</div>
+                                <div data-toggle="tooltip" class="text-muted text-truncate">
+                                    Category: {{categoryDesc(applicantEmailTemplate.applicantCorrespondenceTypeId)}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="(applicantEmailTemplates == null || !applicantEmailTemplates.length) && !isDisclaimerTemplate && !isEditMode">
+                <div class="empty-state">
+                    There are no Email Templates to display. Email Templates streamline the applicant correspondence process by automatically sending emails for you. To setup an Email Template, click the "+ Template" button.
+                </div>
+            </div>
+
+            <div *ngIf="isEditMode">
+                <div class="row" *ngIf="!isDisclaimerTemplate">
+                    <div class="col-md-9">
+                        <div class="form-group">
+                            <label class="form-control-label">Name</label>
+                            <input formControlName="templateName" class="form-control" type="text"
+                                dsFormControlValidator
+                                [dsFormControlSubmitted]="frmSubmitted"/>
+                            <div class="invalid-feedback">
+                                <span *ngIf="frm.controls.templateName.errors?.required">Please enter a name.</span>
+                                <span *ngIf="frm.controls.templateName.errors?.maxlength">Please enter a name that is less than 50 characters.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="form-control-label">Category</label>
+                            <select class="form-control custom-select"
+                                    formControlName="templateCategory"
+                                    dsFormControlValidator
+                                    [dsFormControlSubmitted]="frmSubmitted">
+                                    <option default [ngValue]="0"> </option>
+                                    <option *ngFor="let d of applicantCorrespondenceTypes" [ngValue]="d.applicantCorrespondenceTypeId">{{d.description}}</option>
+                                </select>
+                            <div class="invalid-feedback">
+                                <span>Please select an item in the list.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" *ngIf="!isDisclaimerTemplate">
+                    <div class="col-md-9">
+                        <div class="form-group">
+                            <label class="form-control-label">Subject Line</label>
+                            <input formControlName="templateSubject" class="form-control" type="text"
+                            dsFormControlValidator
+                            [dsFormControlSubmitted]="frmSubmitted"/>
+                            <div class="invalid-feedback">
+                                <span *ngIf="frm.controls.templateSubject.errors?.required">Please enter a subject line.</span>
+                                <span *ngIf="frm.controls.templateSubject.errors?.maxlength">Please enter a subject line that is less than 255 characters.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row" >
+                    <div class="col-md-12">
+                        <label class="form-control-label">
+                            <span *ngIf="isDisclaimerTemplate">Disclaimer</span>
+                            <span *ngIf="!isDisclaimerTemplate">Message Body</span>
+                        </label>
+                        <div class="my-2 pb-3 inline-radio"  *ngIf="isDisclaimerTemplate">
+
+                            <div class="custom-control custom-radio custom-control-bg primary">
+                                <input type="radio" id="useDominionsMessage" [(ngModel)]="tmpIsCustomDisclaimer" [value]="false"
+                                    formControlName="chkCustomMessage" (change)="setDisclaimerType(true)"
+                                    class="custom-control-input">
+                                <label class="custom-control-label" for="useDominionsMessage">
+                                    Default
+                                </label>
+                                <div class="custom-bg"></div>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-bg primary">
+                                <input type="radio" id="useCustomMessage" [(ngModel)]="tmpIsCustomDisclaimer" [value]="true"
+                                    formControlName="chkCustomMessage" (change)="setDisclaimerType(false)"
+                                    class="custom-control-input">
+                                <label class="custom-control-label" for="useCustomMessage">
+                                    Custom
+                                </label>
+                                <div class="custom-bg"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row form-group" *ngIf="isDisclaimerTemplate && !isCustomDisclaimer">
+                    <div class="col-md-12">
+                        <div class="p-2" style="border:1px solid lightgrey;" [innerHTML]="defaultTemplateHtml">
+                        </div>
+                    </div>
+                </div>
+                <div class="row form-group" [hidden]="isDisclaimerTemplate && !isCustomDisclaimer">
+                    <div class="col-md-9">
+                        <textarea formControlName="templateMessageBody" name="templateMessageBody" rows="18" cols="50"
+                            [(ngModel)]="applicantEmailTemplateData.body"
+                            class="form-control card-height-fix"
+                            dsFormControlValidator
+                            [dsFormControlSubmitted]="frmSubmitted"></textarea>
+                        <div class="invalid-feedback">
+                            <span ng-message="required">Please enter a message.</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-control-label">Insert Fields</label>
+                        <div class="form-help-text form-group">
+                            Use the fields below to insert information in the
+                            <span *ngIf="isDisclaimerTemplate">disclaimer.</span>
+                            <span *ngIf="!isDisclaimerTemplate">message body.</span>
+                        </div>
+                        <button type="button" class="btn-pill btn-info form-group w-100"
+                            *ngFor="let btnX of wcButtonsFilter(wcButtons)"
+                            id="btn{{btnX.name}}" (click)="insertTextAt(btnX.wildcard)">{{btnX.lbl}}</button>
+                        <div class="form-help-text" *ngIf="isLinkedToOnboarding" >
+                            Onboarding information will include a link to the Onboarding platform, the recepient's username, and a temporary password if needed.
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <button class="btn btn-save float-right" (click)="save( false)" type="button">Save</button>
+                        <button class="btn btn-cancel" *ngIf="!isDisclaimerTemplate" type="button" (click)="cancel( false)">Cancel</button>
+                    </div>
+                </div>
+            </div>
+
+        </ng-container>
+
+        <ng-template #loading>
+            <ds-loading-message>
+            </ds-loading-message>
+        </ng-template>
+    </ds-card-content>
+</ds-card>
+
+<ds-card [mode]="isEditMode ? 'noheader' : ''" [formGroup]="frm" *ngIf="!isLoading && selected == 'TEXT'">
+  <ds-card-header *ngIf="!isDisclaimerTemplate && !isEditMode">
+    <ds-card-title-action>
+      <button class="btn btn-primary" (click)="openApplicantCorrespondenceTemplateDetails(true, null)"><i class="material-icons">add</i> Template</button>
+    </ds-card-title-action>
+  </ds-card-header>
+    <ds-card-content>
+        <ng-container *ngIf="!isLoading; else loading">
+            <div *ngIf="(applicantTextTemplates).length && !isDisclaimerTemplate && !isEditMode" class="overflow-list">
+                <div class="row">
+                    <div class="col-md-3 col-sm-6"
+                        *ngFor="let applicantTextTemplate of applicantTextTemplates">
+                        <div class="content-tile clickable hoverable ds-card-widget flex-column">
+                            <div class="card-body">
+                                <button type="button" class="btn btn-icon nested-cog hover-show" [matMenuTriggerFor]="menu">
+                                    <mat-icon>more_vert</mat-icon>
+                                  </button>
+                                  <mat-menu #menu >
+                                    <button type="button" mat-menu-item (click)="openApplicantCorrespondenceTemplateDetails(true, applicantTextTemplate);">
+                                        Edit
+                                    </button>
+                                    <button type="button" mat-menu-item (click)="previewCorrespondenceTemplate(true, applicantTextTemplate);">
+                                        Preview
+                                    </button>
+                                    <button type="button" mat-menu-item *ngIf="!isDisclaimerTemplate" (click)="copyCorrespondenceTemplate(true, applicantTextTemplate);">
+                                        Copy
+                                    </button>
+                                    <button type="button" mat-menu-item *ngIf="!isDisclaimerTemplate" (click)="deleteCorrespondenceTemplate(applicantTextTemplate);">
+                                        Delete
+                                    </button>
+
+                                  </mat-menu>
+                                <div class="object-card-avatar">
+                                    <mat-icon class="avatar text-info">textsms</mat-icon>
+                                </div>
+                                <div class="bold text-truncate">{{applicantTextTemplate.description}}</div>
+                                <div data-toggle="tooltip" class="text-muted text-truncate">
+                                    Category: {{categoryDesc(applicantTextTemplate.applicantCorrespondenceTypeId)}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="(applicantTextTemplates == null || !applicantTextTemplates.length) && !isDisclaimerTemplate && !isEditMode">
+                <div class="empty-state">
+                    There are no Email Templates to display. Email Templates streamline the applicant correspondence process by automatically sending emails for you. To setup an Email Template, click the "+ Template" button.
+                </div>
+            </div>
+
+            <div *ngIf="isEditMode">
+                <div class="row" *ngIf="!isDisclaimerTemplate">
+                    <div class="col-md-9">
+                        <div class="form-group">
+                            <label class="form-control-label">Name</label>
+                            <input formControlName="templateName" class="form-control" type="text"
+                              dsFormControlValidator
+                              [dsFormControlSubmitted]="frmSubmitted"/>
+                            <div class="invalid-feedback">
+                                <span *ngIf="frm.controls.templateName.errors?.required">Please enter a name.</span>
+                                <span *ngIf="frm.controls.templateName.errors?.maxlength">Please enter a name that is less than 50 characters.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="form-control-label">Category</label>
+                            <select class="form-control custom-select"
+                                    formControlName="templateCategory"
+                                    dsFormControlValidator
+                                    [dsFormControlSubmitted]="frmSubmitted">
+                                    <option default [ngValue]="0"> </option>
+                                    <option *ngFor="let d of applicantCorrespondenceTypes" [ngValue]="d.applicantCorrespondenceTypeId">{{d.description}}</option>
+                                </select>
+                            <div class="invalid-feedback">
+                                <span>Please select an item in the list.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" >
+                    <div class="col-md-12">
+                        <label class="form-control-label">
+                            <span *ngIf="isDisclaimerTemplate">Disclaimer</span>
+                            <span *ngIf="!isDisclaimerTemplate">Message Body</span>
+                        </label>
+                        <div class="my-2 pb-3 inline-radio"  *ngIf="isDisclaimerTemplate">
+
+                            <div class="custom-control custom-radio custom-control-bg primary">
+                                <input type="radio" id="useDominionsMessage" [value]="!isCustomDisclaimer"
+                                    formControlName="chkCustomMessage" (change)="setDisclaimerType(true)"
+                                    class="custom-control-input">
+                                <label class="custom-control-label" for="useDominionsMessage">
+                                    Default
+                                </label>
+                                <div class="custom-bg"></div>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-bg primary">
+                                <input type="radio" id="useCustomMessage" [value]="isCustomDisclaimer"
+                                    formControlName="chkCustomMessage" (change)="setDisclaimerType(false)"
+                                    class="custom-control-input">
+                                <label class="custom-control-label" for="useCustomMessage">
+                                    Custom
+                                </label>
+                                <div class="custom-bg"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row form-group" *ngIf="isDisclaimerTemplate && !isCustomDisclaimer">
+                    <div class="col-md-12">
+                        <div class="p-2" style="border:1px solid lightgrey;" [innerHTML]="defaultTemplateHtml">
+                        </div>
+                    </div>
+                </div>
+                <div class="row form-group" *ngIf="!isDisclaimerTemplate">
+                    <div class="col-md-9">
+                        <textarea formControlName="templateMessageBody" name="templateMessageBody" rows="18" cols="50"
+                            [(ngModel)]="applicantTextTemplateData.body"
+                            class="form-control card-height-fix"
+                            dsFormControlValidator
+                            [dsFormControlSubmitted]="frmSubmitted"></textarea>
+                        <div class="invalid-feedback">
+                            <span ng-message="required">Please enter a message.</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-control-label">Insert Fields</label>
+                        <div class="form-help-text form-group">
+                            Use the fields below to insert information in the
+                            <span *ngIf="isDisclaimerTemplate">disclaimer.</span>
+                            <span *ngIf="!isDisclaimerTemplate">message body.</span>
+                        </div>
+                        <button type="button" class="btn-pill btn-info form-group w-100" id="btnApplicantName" (click)="insertTextAt('{*Applicant}')">Applicant's Full Name</button>
+                        <button type="button" class="btn-pill btn-info form-group w-100" id="btnApplicantFirstName" (click)="insertTextAt('{*ApplicantFirstName}')">Applicant's First Name</button>
+                        <button type="button" class="btn-pill btn-info form-group w-100" id="btnPosting" (click)="insertTextAt('{*Posting}')">Post Title</button>
+                        <button type="button" class="btn-pill btn-info form-group w-100" id="btnCompanyName" (click)="insertTextAt('{*CompanyName}')">Company's Name</button>
+                        <button type="button" class="btn-pill btn-info form-group w-100" id="btnCompanyAddress" (click)="insertTextAt('{*CompanyAddress}')">Company's Address</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <button class="btn btn-save float-right" (click)="save( true)" type="button">Save</button>
+                        <button class="btn btn-cancel" *ngIf="!isDisclaimerTemplate" type="button" (click)="cancel( true)">Cancel</button>
+                    </div>
+                </div>
+            </div>
+
+        </ng-container>
+
+        <ng-template #loading>
+            <ds-loading-message>
+            </ds-loading-message>
+        </ng-template>
+    </ds-card-content>
+</ds-card>

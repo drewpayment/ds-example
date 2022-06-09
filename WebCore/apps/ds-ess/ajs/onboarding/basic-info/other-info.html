@@ -1,0 +1,67 @@
+﻿<div ng-show="isLoading">Other Info Loading...</div>
+<div ng-show="isLoaded">
+    <div class="ess-container">
+        <div class="panel clearfix">
+            <div class="panel-body">
+                <form name="frmOtherInfo">
+                    <div class="d-flex flex-wrap on-header">
+                        <div class="circle-sm on-pager">{{circleNumber}}</div>
+                        <div class="top-constant">
+                            <h1>Other Information</h1>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div ng-repeat="employeeHRInfo in employeeHRInfoList" class="row form-group">
+                                <div class="col-md-12">
+                                    <label ng-if="employeeHRInfo.fieldTypeId != 1">{{employeeHRInfo.fieldName}}</label>
+
+                                    <div class="on-checkbox" ng-if="employeeHRInfo.fieldTypeId == 1">
+                                        <span><input  
+                                            type="checkbox" 
+                                            id="other-checkbox_{{$index}}"
+                                            ng-true-value="'true'" ng-false-value="'false'"
+                                            ng-model="employeeHRInfo.employeeHRInfos[0].value" /></span>
+                                        <label for="other-checkbox_{{$index}}" class="form-label">
+                                            {{employeeHRInfo.fieldName}}
+                                        </label>
+                                    </div>
+
+                                    <select ng-if="employeeHRInfo.fieldTypeId == 2"
+                                        class="form-control"
+                                        data-ng-model="employeeHRInfo.employeeHRInfos[0].value"
+                                        data-ng-options="elm as elm for elm in employeeHRInfo.optionsList"></select>
+
+                                    <input ng-if="employeeHRInfo.fieldTypeId == 3"
+                                        type="text" class="form-control" 
+                                        ds-mask="000000000"
+                                        ng-model="employeeHRInfo.employeeHRInfos[0].value"
+                                        ng-required="false">
+
+                                    <div ng-if="employeeHRInfo.fieldTypeId == 4" id="datetimepicker1" class="input-group date input-append" ds-datepicker ng-model="employeeHRInfo.employeeHRInfos[0].value">
+                                        <input 
+                                            type="text" class="form-control" ds-mask="00/00/0000"
+                                            placeholder="mm/dd/yyyy"
+                                            ng-model="employeeHRInfo.employeeHRInfos[0].value"
+                                            ng-required="false">
+                                        <span class="input-group-addon add-on">
+                                            <i data-time-icon="icon-time" class="fa fa-calendar icon-calendar"></i>
+                                        </span>
+                                    </div>
+
+                                    <input ng-if="employeeHRInfo.fieldTypeId == 5"
+                                        type="text" class="form-control"
+                                        ng-model="employeeHRInfo.employeeHRInfos[0].value"
+                                        ng-required="false">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr style="height: 1px; border: none; color: lightgrey; background-color: lightgrey;" />
+                    <ds-nav-workflow-footer workflow-hide-next="false" workflow-hide-prev="false" my-workflow="myWorkflow" on-save="$ctrl.clickSavePageData($direction)" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

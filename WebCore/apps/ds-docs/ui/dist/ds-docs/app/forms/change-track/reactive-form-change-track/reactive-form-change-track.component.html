@@ -1,0 +1,34 @@
+<ds-card color="primary" border="top">
+    <ds-card-header>
+        <ds-card-section-title>
+            Reactive Form Example
+        </ds-card-section-title>
+        <ds-card-title-action>
+            <a href="https://www.google.com"><i class="material-icons">link</i> Leave</a>
+        </ds-card-title-action>
+    </ds-card-header>
+    <ds-card-content>
+        <form [formGroup]="form" dsTrackFormChanges [submitted]="submitted">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input class="form-control" formControlName="firstName" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input class="form-control" formControlName="lastName" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <button class="btn btn-save float-right" (click)="save()">{{ submitted ? "Saved!" : "Not Saved" }}</button>
+                    <button class="btn btn-cancel float-left" (click)="cancel()">Cancel</button>
+                </div>
+            </div>          
+        </form>
+    </ds-card-content>
+</ds-card>

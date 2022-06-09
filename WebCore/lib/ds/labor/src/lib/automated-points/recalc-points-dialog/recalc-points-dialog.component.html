@@ -1,0 +1,67 @@
+<div mat-dialog-header>
+    <h2 class="modal-title d-inline">
+        Recalculate Automatic Points
+    </h2>
+    <button type="button" class="close" aria-label="Close" (click)="closeModal()" >
+        <i class="material-icons">clear</i>
+    </button>
+</div>
+<div mat-dialog-content [formGroup]="form">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="form-control-label">Start Date</label>
+                <div class="input-group">
+                    <input matInput #fromInput
+                        cdk-focus-initial
+                        class="form-control input-group-height"
+                        [matDatepicker]="fromDatePicker"
+                        [(ngModel)]="start"
+                        name="fromDatePicker"
+                        formControlName="startDate"
+                        dsFormControlValidator
+                        [ngClass]="{'is-invalid' : startInvalid}"
+                        required />
+                    <div class="input-group-addon">
+                        <mat-datepicker-toggle matSuffix [for]="fromDatePicker" class="input-group-text date">
+                            <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                        </mat-datepicker-toggle>
+                        <mat-datepicker #fromDatePicker></mat-datepicker>
+                    </div>
+                </div>
+                <div *ngIf="startInvalid" class="invalid-feedback">
+                    Please enter a valid start date.
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="form-control-label">To</label>
+                <div class="input-group">
+                    <input matInput #toInput
+                        class="form-control input-group-height"
+                        [min]="start"
+                        [matDatepicker]="toDatePicker"
+                        formControlName="endDate"
+                        name="toDatePicker"
+                        dsFormControlValidator
+                        [ngClass]="{'is-invalid' : endInvalid}"
+                        required />
+                    <div class="input-group-addon">
+                        <mat-datepicker-toggle matSuffix [for]="toDatePicker" class="input-group-text date">
+                            <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                        </mat-datepicker-toggle>
+                        <mat-datepicker #toDatePicker></mat-datepicker>
+                    </div>
+                </div>
+                <div *ngIf="endInvalid" class="invalid-feedback">
+                    Please enter a valid end date.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div mat-dialog-actions>
+    <button type="button" (click)="recalcPoints()" class="btn btn-primary">Recalc Points</button>
+    <button type="button" (click)="closeModal()" class="btn btn-cancel">Cancel</button>
+</div>

@@ -1,0 +1,52 @@
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <div class="switch-setting">
+                <label class="h3">Setting Name</label>
+                <label class="switch switch-default switch-sm switch-pill switch-success">
+                    <input id="MyID" type="checkbox" class="switch-input" aria-describedby="setting name">
+                    <span class="switch-label"></span>
+                    <span class="switch-handle"></span>
+                    <span class="ds-switch-off">Off</span>
+                    <span class="ds-switch-on">On</span>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <div class="switch-title">
+                <label class="h3">Title</label>
+                <label class="switch switch-default switch-sm switch-pill switch-success" for="titleSwitch">
+                    <input id="titleSwitch" type="checkbox" class="switch-input" (click)="titleOn = !titleOn" />
+                    <span class="switch-label"></span>
+                    <span class="switch-handle"></span>
+                    <span class="ds-switch-off">off</span>
+                    <span class="ds-switch-on">on</span>
+                </label>
+            </div>
+            <div class="form-group" *ngIf="titleOn">
+                <label class="form-control-label" for="titleSwitchInput">Hidden Field Label</label>
+                <input id="titleSwitchInput" class="form-control" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="switch-setting">
+            <label for="setting">Setting</label>
+            <label class="switch switch-default switch-pill switch-success">
+                <input type="checkbox" class="switch-input" id="setting"/>
+                <span class="switch-label" ></span>
+                <span class="switch-handle"></span>
+                <span class="ds-switch-off">Off</span>
+                <span class="ds-switch-on" >On</span>
+            </label>
+        </div>
+    </div>
+</div>

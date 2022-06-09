@@ -1,0 +1,153 @@
+<div mat-dialog-header>
+    <h2 class="dialog-title">Customize Sender Address</h2>
+    <button type="button" class="close" (click)="onNoClick()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</div>
+
+<div mat-dialog-content>
+    <ng-container [formGroup]="form">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-control-label">SMTP Host</label>
+                    <input formControlName="host"
+                           type="text"
+                           [attr.disabled]="onRestoreDefault ? true : null"
+                           class="form-control"
+                           cdkFocusInitial
+                           dsFormControlValidator 
+                          [dsFormControlSubmitted]="formSubmitted">
+                    <div class="invalid-feedback">
+                        <span *ngIf="form.controls.host.errors?.required">Please enter the SMTP host name.</span>
+                        <span *ngIf="form.controls.host.errors?.maxlength">Please enter a SMTP host name that is less than 50 characters.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-control-label">SMTP Port</label>
+                    <input formControlName="port"
+                        type="text"
+                        [attr.disabled]="onRestoreDefault ? true : null"
+                        class="form-control"
+                        dsFormControlValidator 
+                        [dsFormControlSubmitted]="formSubmitted">
+                    <div class="invalid-feedback">
+                        <span *ngIf="form.controls.port.errors?.required">Please enter the port number.</span>
+                        <span *ngIf="form.controls.port.errors?.pattern">Please enter a valid port number.</span>
+                        <span *ngIf="form.controls.port.errors?.maxlength">Please enter a port number that is less than 10 characters.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-control-label">Send Emails From</label>
+                    <input formControlName="senderEmail"
+                        type="text"
+                        [attr.disabled]="onRestoreDefault ? true : null"
+                        class="form-control"
+                        dsFormControlValidator 
+                        [dsFormControlSubmitted]="formSubmitted">
+                    <div class="invalid-feedback" >
+                        <span *ngIf="form.controls.senderEmail.errors?.required">Please enter the sender email address.</span>
+                        <span *ngIf="form.controls.senderEmail.errors?.pattern">Please enter a valid email address.</span>
+                        <span *ngIf="form.controls.senderEmail.errors?.maxlength">Please enter a email address that is less than 50 characters.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-control-label">SMTP Login</label>
+                    <input formControlName="smtpLogin"
+                        type="text"
+                        [attr.disabled]="onRestoreDefault ? true : null"
+                        class="form-control"
+                        dsFormControlValidator 
+                        [dsFormControlSubmitted]="formSubmitted">
+                    <div class="invalid-feedback" >
+                        <span *ngIf="form.controls.smtpLogin.errors?.required">Please enter the SMTP login Id.</span>
+                        <span *ngIf="form.controls.smtpLogin.errors?.maxlength">Please enter a SMTP Login that is less than 50 characters.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-control-label">SMTP Password</label>
+                    <input formControlName="smtpPassword"
+                        type="password"
+                        [attr.disabled]="onRestoreDefault ? true : null"
+                        class="form-control"
+                        dsFormControlValidator 
+                        [dsFormControlSubmitted]="formSubmitted">
+                    <div class="invalid-feedback" >
+                        <span *ngIf="form.controls.smtpPassword.errors?.required">Please enter the SMTP password.</span>
+                        <span *ngIf="form.controls.smtpPassword.errors?.maxlength">Please enter a SMTP Password that is less than 50 characters.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-control-label">Secure Connection</label>
+                    <select class="form-control custom-select" 
+                        formControlName="connectionType"
+                        class="custom-select form-control"
+                        [attr.disabled]="onRestoreDefault ? true : null"
+                        dsFormControlValidator 
+                        [dsFormControlSubmitted]="formSubmitted">
+                        <option class="text-muted" value=""></option>
+                        <option *ngFor="let connectionType of connectionTypes" [ngValue]="connectionType.value">
+                            {{connectionType.name}}
+                        </option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a connection type.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="custom-control custom-checkbox">
+                        <input formControlName="restoreDefault"
+                               type="checkbox"
+                               class="custom-control-input"
+                               (change)="restoreDefault()"/>
+                        <span class="custom-control-label">Restore Default Sender Address</span>
+                        <br />
+                        <span class="instruction-text"><i>Selecting this option uses donotreply@dominionsystems.com and clears all custom information.</i></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="form-group row mb-0 pl-2 pr-2" *ngIf="emailData!=null">
+            <div class="col-12 p-2 alert-success">
+                <span> &#x2714; Your test email was sent to {{emailData.toAddress}}.</span>
+            </div>
+        </div>
+        <div class="form-group row mb-0 pl-2 pr-2" *ngIf="testFailed">
+            <div class="col-12 p-2">
+                <span class="text-danger">{{errMessage}}</span>
+            </div>
+        </div> -->
+    </ng-container>
+</div>
+
+<div mat-dialog-actions class="ds-dialog-footer flex-row-reverse">
+    <div>
+        <button type="button" class="btn btn-outline-primary" (click)="test()">Test</button>
+        <button [disabled]="dataSaving" type="button" class="btn btn-save" (click)="save()">Save</button>
+    </div>
+    <button class="btn btn-cancel" type="button" (click)="onNoClick()">Cancel</button>
+</div>

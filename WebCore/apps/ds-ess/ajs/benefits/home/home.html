@@ -1,0 +1,114 @@
+﻿<div class="benefits" ng-hide="noOpenEnrollments || isLoading">
+    <div class="row">
+        <div class="col-md-12">
+            <div id="OpenEnrollmentRepeater">
+                    <div ng-repeat="openEnrollment in openEnrollments">
+                      <div class="open-enrollment-message">
+                          <div class="row" ng-if="!openEnrollment.isDeclined">
+                              <div class="col-md-9" >
+                                  <span class="icon-stack icon-3x">
+                                      <i class="icon-circle icon-stack-base"></i>
+                                      <i class="icon  icon-shopping-cart icon-light"></i>
+                                  </span>
+                                
+                                  <div ng-if="!openEnrollment.isDeclined">
+                                      <div class="oe-message-content" ng-show="!openEnrollment.isSigned">
+                                          <h3 class="title">It's time to complete your {{ openEnrollment.isLifeEvent ? 'life event': 'benefit'}} enrollment.</h3>
+                                          <div ng-show="openEnrollment.planList.length >= 0">
+                                              <p>Your benefit selections for <b>{{openEnrollment.description}}</b> must be completed by {{openEnrollment.endDate | date:'MM/dd/yyyy'}}.</p>                 
+                                          </div>
+                                      </div>
+                                      <div class="oe-message-content" ng-show="openEnrollment.isSigned" >
+                                          <h3 class="title">Your benefit selections have been successfully submitted!</h3>
+                                          <div ng-show="openEnrollment.planList.length > 0">
+                                              <p>Your benefit selections for <b>{{openEnrollment.description}}</b> were completed on {{openEnrollment.dateSigned | date:'MM/dd/yyyy'}}.</p>                 
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="col-md-2">
+                                  <a class="btn btn-clear-white pull-right mt-15" ng-show="!openEnrollment.isSigned && openEnrollment.employeeGroupingSelectedCount == 0" ng-click="selectEnrollment(openEnrollment, 1)">Get Started<i class="icon-angle-right right-side"></i></a>
+                                  <a class="btn btn-clear-white pull-right mt-15" ng-show="!openEnrollment.isSigned && openEnrollment.employeeGroupingSelectedCount > 0" ng-click="selectEnrollment(openEnrollment, 2)">Continue<i class="icon-angle-right right-side"></i></a>
+                                  <a class="btn btn-clear-white pull-right mt-15" ng-show="openEnrollment.isSigned" ng-click="selectEnrollment(openEnrollment, 2)">Re-Open<i class="icon-angle-right right-side"></i></a>
+                               
+                              </div>
+                          </div>
+                          
+                          <div class="row" ng-if="openEnrollment.isDeclined">
+                              <div class="col-md-12">
+                                  <span class="icon-stack icon-3x">
+                                      <i class="icon-circle icon-stack-base"></i>
+                                      <i class="icon-exclamation-sign icon-light"></i>
+                                  </span>
+                                  <div class="oe-message-content">
+                                      <h3 class="title">Your <b>{{openEnrollment.description}}</b> life event request has been declined.
+                                      </h3>
+                                      <p>Please contact your benefits administrator for more information.</p>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                </div><!--/.repeater-->
+            </div>
+    </div>
+    </div>
+</div><!--/ng-hide if no oe-->
+
+<div class="row benefits" ng-hide="isLoading">
+    <div class="col-md-12"><h1>My Benefits</h1></div> 
+    <div class="col-md-8" ng-hide="noCurrentBenefits">
+        <div class="row">
+            <div class="col-6 col-lg-4" ng-repeat="benefit in activeEmployeeBenefits | filter:{isWaived:false, isEmployeeGrouping:true} | orderBy:'sequence'">
+                <div class="benefit-box card-height-fix-sm selected {{benefit.cssClass}}">
+                        
+                    <div class="row">
+                        <div class="col-9 pr-0">
+                            <h2 class="mt-sm">{{ benefit.description }}</h2>
+                        </div>
+                        <div class="col-3 pl-xs">
+                            <div class="selection-status">
+                                <span class="icon-stack">
+                                    <i class="icon-circle icon-stack-base"></i>
+                                    <i class="icon-ok icon-light"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                        
+                    <div style="min-height:75px">
+                        <div ng-repeat="p in benefit.plans | filter:{isSelected:true}">
+                            <h3>{{p.planName}}</h3>
+                            <div class="row" ng-repeat="s in p.selections">
+                                <div class="pr-0" ng-class="{'col-7':s.selectedBenefitAmount || s.selectedOption.isEmployeeElected, 'col-12':!s.selectedBenefitAmount && !s.selectedOption.isEmployeeElected}">
+                                    {{s.selectedOption.isEmployeeElected ? "Contribution" : s.selectedOption.name}}
+                                </div>
+                                <div class="col-5 text-right pl-0" ng-if="s.selectedBenefitAmount">
+                                    {{ s.selectedBenefitAmount.getFriendlyName(s.selectedOption, true) }}
+                                </div>
+                                <div class="col-5 text-right pl-0" ng-if="s.selectedOption.isEmployeeElected">
+                                    ${{ s.cost | number:2 }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a class="btn btn-clear-white mt-20 mb-md" ng-click="selectBenefit(benefit)">View</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4" ng-hide="hasLifeEvent">
+        <div class="panel panel-gray">
+            <div class="panel-heading">
+                <h2 class="panel-title">Request Changes to My Benefits</h2> 
+            </div>
+            <div class="panel-body">
+
+                In order to change your benefits, you need to have had a qualifying life event.<br/>
+                <div ng-click="requestLifeEvent();" class="btn btn-default mt-20">Start Here</div>
+                   
+            </div>
+        </div>
+    </div>
+</div>
+<!--col-md-9-->

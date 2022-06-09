@@ -1,0 +1,126 @@
+<form [formGroup]="f" dsTrackFormChanges class="mat-drawer-inner-container-form" >
+    <div class="drawer-header">
+        <button type="button" (click)="clearDrawer()" class="btn btn-icon" *ngIf="!isModal">
+            <mat-icon>chevron_right</mat-icon>
+        </button>
+        <h2>
+            <ng-container *ngIf="!isAdding, else newContact">
+                {{this.emergencyContact.firstName}} {{this.emergencyContact.lastName}}
+            </ng-container>
+            <ng-template #newContact>
+                Add Emergency Contact
+            </ng-template>
+        </h2>
+        <button  *ngIf="isModal" type="button" class="close float-right" (click)="dismiss()">
+            <i class="material-icons">clear</i>
+        </button>
+    </div>
+    <div class="drawer-content">
+        <div class="row">
+            <div class="col-sm-12 col-md-6 col-lg-12 col-2xl-6">
+                <div class="form-group">
+                    <label class="form-control-label">First Name</label>
+                    <input id="txtFirstName" type="text"
+                           dsFormControlValidator 
+                           [dsFormControlSubmitted]="formSubmitted"
+                           class="form-control"
+                           formControlName="firstName"
+                           maxlength="25"
+                           />
+                    <div class="invalid-feedback" *ngIf="f.controls.firstName.errors?.required">
+                        Please enter a first name.
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-12 col-2xl-6">
+                <div class="form-group">
+                    <label class="form-control-label">Last Name</label>
+                    <input type="text"
+                           dsFormControlValidator 
+                           [dsFormControlSubmitted]="formSubmitted"
+                           class="form-control"
+                           maxlength="25"
+                           formControlName="lastName"
+                           />
+                    <div class="invalid-feedback" *ngIf="f.controls.lastName.errors?.required">
+                        Please enter a last name.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-control-label">Relationship</label>
+                    <input type="text"
+                           dsFormControlValidator 
+                           [dsFormControlSubmitted]="formSubmitted"
+                           class="form-control"
+                           formControlName="relationship"
+                           maxlength="20"
+                           />
+                    <div class="invalid-feedback" *ngIf="f.controls.relationship.errors?.required">
+                        Please enter a relationship.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-lg-12 col-xl-6">
+                <div class="form-group">
+                    <label class="form-control-label">Primary Phone</label>
+                    <input type="text"
+                           dsFormControlValidator 
+                           [dsFormControlSubmitted]="formSubmitted"
+                           class="form-control"
+                           formControlName="homePhone"
+                           (keyup)="formatNumber($event)" 
+                           maxlength="12"
+                           />
+                    <div class="invalid-feedback" *ngIf="f.controls.homePhone.errors?.required">
+                        Please enter a phone number.
+                    </div>
+                    <div class="invalid-feedback" *ngIf="f.controls.homePhone.errors?.pattern">
+                        Please enter a valid phone number (xxx-xxx-xxxx).
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-12 col-xl-6">
+                <div class="form-group">
+                    <label class="form-control-label">Secondary Phone <span class="form-help-text">Optional</span></label>
+                    <input type="text"
+                           dsFormControlValidator 
+                           [dsFormControlSubmitted]="formSubmitted"
+                           (keyup)="formatNumber($event)" 
+                           class="form-control"
+                           maxlength="12"
+                           formControlName="cellPhone" />
+                    <div class="invalid-feedback" *ngIf="f.controls.cellPhone.errors?.pattern">
+                        Please enter a valid phone number (xxx-xxx-xxxx).
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-control-label">Email <span class="form-help-text">Optional</span></label>
+                    <input type="email"
+                           dsFormControlValidator 
+                           [dsFormControlSubmitted]="formSubmitted"
+                           class="form-control"
+                           maxlength="120"
+                           formControlName="emailAddress"
+                           />
+                    <div class="invalid-feedback" *ngIf="f.controls.emailAddress.errors?.pattern">
+                        Please enter a valid email address.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="drawer-footer">
+        <button type="button" class="btn btn-save" (click)="saveEmergencyContact()">Save</button>
+        <button class="btn btn-cancel" (click)="close()">Cancel</button>
+    </div>
+</form>

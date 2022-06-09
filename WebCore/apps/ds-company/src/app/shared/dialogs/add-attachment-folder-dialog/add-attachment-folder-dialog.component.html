@@ -1,0 +1,45 @@
+<mat-dialog-header>
+    <h2 class="dialog-title">
+        {{header}}
+    </h2>
+    <button type="button" class="close" (click)="clear()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</mat-dialog-header>
+<mat-dialog-content>
+    <div [formGroup]="form1">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-control-label">Folder Name</label>
+                    <input id="txtOrgName" maxlength="25" formControlName="folderName" class="form-control" 
+                        dsFormControlValidator 
+                        [dsFormControlSubmitted]="formSubmitted" cdkFocusInitial />
+                    <div class="invalid-feedback">
+                        <span *ngIf="form1.controls.folderName.errors?.required">Please enter a folder name.</span>
+                        <span *ngIf="form1.controls.folderName.errors?.duplicate">Please enter a different folder name.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" *ngIf="!isCompanyAttachments">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="custom-control custom-checkbox">
+                        <input formControlName="employeeView"
+                               type="checkbox"
+                               class="custom-control-input"/>
+                        <span class="custom-control-label">Viewable by Employee</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button type="button" class="btn btn-save" (click)="save()">Save</button>
+    <div>
+        <button *ngIf="(isNew || currResourceFolder.attachmentCount > 0)" type="button" class="btn btn-cancel" (click)="clear()">Cancel</button>
+        <button class="btn btn-delete" [class.d-none]="(isNew || currResourceFolder.attachmentCount>0)" (click)="deletefolder(currResourceFolder)">Delete</button>
+    </div>
+</mat-dialog-actions>

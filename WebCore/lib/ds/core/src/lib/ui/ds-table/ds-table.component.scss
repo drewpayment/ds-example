@@ -1,0 +1,17 @@
+@import '../../../../../../../Styles/scss/bootstrap-variables';
+
+.ds-action-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 10px;
+  border-top: 1px solid $table-border-color; 
+}
+
+// @media screen and (min-width: 961px) {
+//   .custom-checkbox .custom-control-label span {
+//     display: block;
+//     text-indent: -1000px;
+//   }
+// }
+

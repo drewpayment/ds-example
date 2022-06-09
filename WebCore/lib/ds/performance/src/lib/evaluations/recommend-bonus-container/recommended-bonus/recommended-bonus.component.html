@@ -1,0 +1,1 @@
+<span class="text-uppercase" *ngIf="bonus?.total > 0">{{bonus?.complete}} of {{bonus?.total}} eligible goals completed | recommend {{calculateRecommendation(bonus?.complete, bonus?.total) | number : '1.2-2'}}% of target bonus</span>

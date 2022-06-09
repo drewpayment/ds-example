@@ -1,0 +1,280 @@
+<ng-container *ngIf="!isLoading; else loadingScreen">
+	<div [class.mat-drawer-inner-container-form]="!isModal">
+        <div class="drawer-header" *ngIf="!isModal">
+            <button type="button" 
+                (click)="clearDrawer()" 
+                class="btn btn-icon text-medium-dark">
+                <mat-icon>arrow_forward_ios</mat-icon>
+            </button>
+            <h2>Certify I-9 For {{items.employeeName}}</h2>
+        </div>
+        <div class="drawer-content">
+            <div class="row">
+                <div [class]="addressClass">
+                    <div class="form-group">
+                        <label class="font-weight-bold text-dark">Address</label>
+                        <div>{{items.employeeData.addressLine1}}</div>
+                        <div *ngIf="items.employeeData.addressLine2 && items.employeeData.addressLine2.length > 0">
+                            <div>{{items.employeeData.addressLine2}}</div>
+                        </div>
+                        <!-- <div>{{items.cityStateZip}}</div> -->
+                        <div>
+                        {{items.employeeData.city}}<ng-container *ngIf="items.employeeData.city">,</ng-container> 
+                        {{items.employeeData.stateName}} {{items.employeeData.postalCode}}
+                        </div>
+                    </div>
+                </div>
+                <div [class]="addressClass">
+                    <div class="form-group">
+                        <label class="font-weight-bold text-dark">Date of Birth</label>
+                        <div>{{items.DOB | date:'M/dd/yyyy'}}</div>
+                    </div>
+                </div>
+                <div [class]="addressClass">
+                    <div class="form-group">
+                        <label class="font-weight-bold text-dark">SSN</label>
+                        <div>{{items.employeeData.socialSecurityNumber}}</div>
+                    </div>
+                </div>
+                <div [class]="addressClass">
+                    <div class="form-group">
+                        <label class="font-weight-bold text-dark">Status</label>
+                        <div>{{items.status}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6" *ngIf="items.i9Data.i9EligibilityStatusId === 3">
+                    <div class="form-group">
+                        <label class="font-weight-bold text-dark">Alien Registration Number/USCIS Number</label>
+                        <div>{{items.i9Data.permResidentUscisNumber}}</div>
+                    </div>
+                </div>
+                <div class="col-sm-6"
+                    *ngIf="items.i9Data.i9EligibilityStatusId === 4 && items.i9Data.alienAdmissionNumberType === 1">
+                    <div class="form-group">
+                        <label class="font-weight-bold text-dark">Alien Registration Number/USCIS Number</label>
+                        <div>{{items.i9Data.alienAdmissionNumber}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6"
+                    *ngIf="items.i9Data.i9EligibilityStatusId === 4 && items.i9Data.alienAdmissionNumberType === 2">
+                    <div class="form-group">
+                        <label class="font-weight-bold text-dark">I-94 Admission Number</label>
+                        <div>{{items.i9Data.alienAdmissionNumber}}</div>
+                    </div>
+                </div>
+                <div class="col-sm-6"
+                    *ngIf="items.i9Data.i9EligibilityStatusId === 4 && items.i9Data.alienAdmissionNumberType === 2 && items.i9Data.admissionNumberFromCBP">
+                    <div class="form-group">
+                        <label class="font-weight-bold text-dark">Foreign Passport Number</label>
+                        <div>{{items.i9Data.foreignPassportNumber}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6"
+                    *ngIf="items.i9Data.i9EligibilityStatusId === 4 && items.i9Data.alienAdmissionNumberType === 2 && items.i9Data.admissionNumberFromCBP">
+                    <div class="form-group">
+                        <label class="font-weight-bold text-dark">Issuing Country</label>
+                        <div>{{items.i9Data.country}}</div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-12">
+                    <div class="form-group instruction-text">
+                        Select the document(s) you have reviewed to establish identity and employment authorization. You
+                        must physically examine one document from List A OR examine a combination of one document from <span class="text-nowrap">List
+                        B</span> and one document from <span class="text-nowrap">List C.</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group inline-radio">
+                        <div class="custom-control custom-radio custom-control-bg primary">
+                            <input type="radio" id="option1" value="A" checked="checked" [formControl]="documentType"
+                                class="custom-control-input" (change)="selectionChange('A')">
+                            <label class="custom-control-label" for="option1">List A</label>
+                            <div class="custom-bg"></div>
+                        </div>
+                        <div class="custom-control custom-radio custom-control-bg primary">
+                            <input type="radio" id="option2" value="B" [formControl]="documentType"
+                                class="custom-control-input" (change)="selectionChange('B')">
+                            <label class="custom-control-label" for="option2">List B and C</label>
+                            <div class="custom-bg"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <ng-template #verification let-type="type" let-frm="frm">
+                <form [formGroup]="frm">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <input type="hidden" formControlName="docType" />
+                                <label for="docId" class="form-control-label">Document Title - List {{type}}</label>
+                                <select class="form-control custom-select"
+                                    [class.is-invalid]="(frm.controls.docId.touched || formSubmitted) && (frm.controls.docId.errors?.required)"
+                                    formControlName="docId">
+                                    <option *ngFor="let doc of items.titles | i9DocumentType : type"
+                                        [value]="doc.i9DocumentId">
+                                        {{doc.name}}
+                                    </option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    <span *ngIf="frm.controls.docId.errors?.required">Please select a document title.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row align-items-baseline">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="issuing" class="form-control-label">Issuing Authority</label>
+                                <input type="text" formControlName="issuing" maxlength="50" class="form-control"
+                                    [class.is-invalid]="(frm.controls.issuing.touched || formSubmitted) && (frm.controls.issuing.errors?.required)">
+                                <div class="invalid-feedback">
+                                    <span *ngIf="frm.controls.issuing.errors?.required">Please enter an issuing
+                                        authority.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="number" class="form-control-label">Document Number</label>
+                                <input type="text" formControlName="number" maxlength="50" class="form-control"
+                                    [class.is-invalid]="(frm.controls.number.touched || formSubmitted) && (frm.controls.number.errors?.required)">
+                                <div class="invalid-feedback">
+                                    <span *ngIf="frm.controls.number.errors?.required">Please enter a document
+                                        number.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="form-control-label">Expiration Date</label>
+                                <div class="input-group">
+                                    <input matInput [matDatepicker]="expirationDate" class="form-control"
+                                        [class.is-invalid]="(frm.controls.expirationDate.touched || formSubmitted) && !frm.controls.noExpiration.value && (frm.controls.expirationDate.errors?.required)" 
+                                        class="form-control" formControlName="expirationDate" />
+                                    <div class="input-group-append">
+                                        <mat-datepicker-toggle matSuffix [for]="expirationDate"
+                                            class="input-group-text date">
+                                        </mat-datepicker-toggle>
+                                        <mat-datepicker #expirationDate></mat-datepicker>
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        Please enter a valid expiration date.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group inline-sm-control">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" formControlName="noExpiration" checked="checked" (change)="resetExpiration(frm)" class="custom-control-input" id="{{type}}NoExpiration">
+                                    <label class="custom-control-label" for="{{type}}NoExpiration">No Expiration Date</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="(type == 'A' || type == 'C')">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="additionalInfo">Additional Information <span
+                                        class="form-help-text">Optional</span></label>
+                                <textarea formControlName="additionalInfo" class="form-control"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </ng-template>
+
+            <ng-template #signature let-type="type" let-frm="frm">
+                <form [formGroup]="frm">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="custom-control custom-checkbox">
+                                    <input id="agreement" class="custom-control-input" type="checkbox"
+                                        formControlName="chkAccept"
+                                        [class.is-invalid]="(frm.controls.chkAccept.touched || formSubmitted) && (frm.controls.chkAccept.errors?.unaccept)" />
+                                    <label class="custom-control-label" for="agreement">
+                                        I attest, under penalty of perjury, that (1) I have examined the document(s)
+                                        presented by the above –named, (2) the above-listed document(s) appear to be genuine
+                                        and to relate to the employee named, and (3) to the best of my knowledge
+                                        the employee is authorized to work in the United States.
+                                    </label>
+                                </label>
+                                <!-- Hidden input fields go here -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="firstName" class="form-control-label">First Name</label>
+                                <input type="text" class="form-control" formControlName="firstName"
+                                    [class.is-invalid]="(frm.controls.firstName.touched || formSubmitted) && (frm.controls.firstName.errors?.required)" />
+                                <div class="invalid-feedback">
+                                    Please enter a first name.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="form-control-label">Last Name</label>
+                                <input type="text" class="form-control" formControlName="lastName"
+                                    [class.is-invalid]="(frm.controls.lastName.touched || formSubmitted) && (frm.controls.lastName.errors?.required)" />
+                                <div class="invalid-feedback">
+                                    Please enter a last name.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="form-control-label">Job Title</label>
+                                <input type="text" class="form-control" formControlName="title"
+                                    [class.is-invalid]="(frm.controls.title.touched || formSubmitted) && (frm.controls.title.errors?.required)" />
+                                <div class="invalid-feedback">
+                                    Please enter a title.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6" *ngIf="!isModal">
+                            <div class="form-group d-flex justify-content-end inline-sm-control">
+                                <!-- <button type="button" class="btn btn-cancel  float-left" (click)="cancel()">Cancel</button> -->
+                                <button type="button" class="btn btn-save" (click)="certify()">Certify I-9</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </ng-template>
+
+            <ng-container *ngIf="selection == 'A'">
+                <ng-container *ngTemplateOutlet="verification; context:{ frm: form1, type: 'A' }"></ng-container>
+            </ng-container>
+            <ng-container *ngIf="selection == 'B'">
+                <ng-container *ngTemplateOutlet="verification; context:{ frm: form2, type: 'B' }"></ng-container>
+                <hr />
+                <ng-container *ngTemplateOutlet="verification; context:{ frm: form3, type: 'C' }"></ng-container>
+            </ng-container>
+            <ng-container *ngTemplateOutlet="signature; context:{ frm: formSignature, type: selection }"></ng-container>
+        </div>
+    </div>
+</ng-container>
+
+
+<ng-template #loadingScreen>
+    <ds-loading-message></ds-loading-message>
+</ng-template>

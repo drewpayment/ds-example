@@ -1,0 +1,1388 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "apps",
+  "projects": {
+    "ds-source": {
+      "root": "apps/ds-source",
+      "sourceRoot": "apps/ds-source/src",
+      "projectType": "application",
+      "prefix": "ds",
+      "schematics": {
+        "@schematics/angular:component": {
+          "styleext": "scss"
+        }
+      },
+      "architect": {
+        "build": {
+          "builder": "@angular-builders/custom-webpack:browser",
+          "options": {
+            "customWebpackConfig": {
+              "path": "./webpack-config.js"
+            },
+            "aot": true,
+            "outputPath": "../Ds.Source.Web/WebCore/dist/ds-source",
+            "index": "apps/ds-source/src/index.html",
+            "main": "apps/ds-source/src/main.ts",
+            "polyfills": "apps/ds-source/src/polyfills.ts",
+            "tsConfig": "apps/ds-source/tsconfig.app.json",
+            "assets": [
+              "apps/ds-source/src/favicon.ico",
+              "apps/ds-source/src/assets"
+            ],
+            "scripts": [
+              {
+                "input": "node_modules/jquery/dist/jquery.js",
+                "bundleName": "vend.lib"
+              },
+              {
+                "input": "Scripts/vendor/cropit/jquery.cropit.js",
+                "bundleName": "vend.lib"
+              },
+              {
+                "input": "node_modules/jquery-mask-plugin/dist/jquery.mask.js",
+                "bundleName": "vend.lib"
+              },
+              {
+                "input": "Scripts/vendor/jquery-maskinput-igorescobar/jquery-maskinput-152.js",
+                "bundleName": "vend.lib"
+              },
+              {
+                "input": "node_modules/moment/moment.js",
+                "bundleName": "vend.lib"
+              },
+              {
+                "input": "Scripts/vendor/helpdocsonline/tooltips.js",
+                "bundleName": "vend.lib"
+              },
+              {
+                "input": "Scripts/vendor/ds-datetimepicker/bootstrap-datetimepicker.js",
+                "bundleName": "vend.lib"
+              },
+              {
+                "input": "node_modules/bootstrap/dist/js/bootstrap.js",
+                "inject": false,
+                "bundleName": "bootstrap.min"
+              },
+              {
+                "input": "Scripts/vendor/bootstrap-switch/bootstrap-switch.min.js",
+                "inject": false,
+                "bundleName": "bootstrap-switch.min"
+              }
+            ],
+            "styles": [
+              {
+                "input": "./Styles/scss/vendors/ds-material/ds-styles.scss",
+                "bundleName": "ds-styles"
+              },
+              {
+                "input": "./apps/ds-source/src/styles.legacy.vendor.scss",
+                "bundleName": "styles.legacy.vendor"
+              },
+              {
+                "input": "../Ds.Source.Web/Stylesheets/application.scss",
+                "bundleName": "styles.application"
+              },
+              {
+                "input": "../Ds.Source.Web/Styles/new2.scss",
+                "bundleName": "styles.new2"
+              },
+              {
+                "input": "../Ds.Source.Web/Stylesheets/source/segue/benefits/benefits.scss",
+                "bundleName": "styles.benefits"
+              },
+              {
+                "input": "./Styles/scss/main.scss",
+                "bundleName": "styles.main"
+              }
+            ],
+            "vendorChunk": true
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/ds-source/src/environments/environment.ts",
+                  "with": "apps/ds-source/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            },
+            "dev": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/ds-source/src/environments/environment.ts",
+                  "with": "apps/ds-source/src/environments/environment.dev.ts"
+                }
+              ],
+              "tsConfig": "apps/ds-source/tsconfig.dev.json"
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "ds-source:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "ds-source:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "ds-source:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "apps/ds-source/src/test.ts",
+            "polyfills": "apps/ds-source/src/polyfills.ts",
+            "tsConfig": "apps/ds-source/tsconfig.spec.json",
+            "karmaConfig": "apps/ds-source/karma.conf.js",
+            "styles": ["apps/ds-source/src/styles.scss"],
+            "scripts": [],
+            "assets": [
+              "apps/ds-source/src/favicon.ico",
+              "apps/ds-source/src/assets"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/ds-source/tsconfig.app.json",
+              "apps/ds-source/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    },
+    "ds-source-e2e": {
+      "root": "apps/ds-source/e2e/",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "apps/ds-source/e2e/protractor.conf.js",
+            "devServerTarget": "ds-source:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "ds-source:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": "apps/ds-source/e2e/tsconfig.e2e.json",
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    },
+    "ds-mobile-legacy": {
+      "root": "apps/ds-mobile-legacy",
+      "sourceRoot": "apps/ds-mobile-legacy/src",
+      "projectType": "application",
+      "prefix": "ds",
+      "schematics": {
+        "@schematics/angular:component": {
+          "styleext": "scss"
+        }
+      },
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/ds-mobile-legacy",
+            "index": "apps/ds-mobile-legacy/src/index.html",
+            "main": "apps/ds-mobile-legacy/src/main.ts",
+            "polyfills": "apps/ds-mobile-legacy/src/polyfills.ts",
+            "tsConfig": "apps/ds-mobile-legacy/tsconfig.app.json",
+            "assets": [
+              "apps/ds-mobile-legacy/src/favicon.ico",
+              "apps/ds-mobile-legacy/src/assets"
+            ],
+            "styles": ["apps/ds-mobile-legacy/src/styles.scss"],
+            "scripts": [],
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "apps/ds-mobile-legacy/src/environments/environment.ts",
+                  "with": "apps/ds-mobile-legacy/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            }
+          },
+          "defaultConfiguration": ""
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "ds-mobile-legacy:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "ds-mobile-legacy:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "ds-mobile-legacy:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "apps/ds-mobile-legacy/src/test.ts",
+            "polyfills": "apps/ds-mobile-legacy/src/polyfills.ts",
+            "tsConfig": "apps/ds-mobile-legacy/tsconfig.spec.json",
+            "karmaConfig": "apps/ds-mobile-legacy/karma.conf.js",
+            "styles": [],
+            "scripts": [],
+            "assets": [
+              "apps/ds-mobile-legacy/src/favicon.ico",
+              "apps/ds-mobile-legacy/src/assets"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/ds-mobile-legacy/tsconfig.app.json",
+              "apps/ds-mobile-legacy/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    },
+    "ds-mobile-legacy-e2e": {
+      "root": "apps/ds-mobile-legacy/e2e",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "apps/ds-mobile-legacy/e2e/protractor.conf.js",
+            "devServerTarget": "ds-mobile-legacy:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "ds-mobile-legacy:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": "apps/ds-mobile-legacy/e2e/tsconfig.e2e.json",
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    },
+    "ds-ess": {
+      "root": "apps/ds-ess",
+      "sourceRoot": "apps/ds-ess/src",
+      "projectType": "application",
+      "prefix": "ds",
+      "schematics": {
+        "@schematics/angular:component": {
+          "styleext": "scss"
+        }
+      },
+      "architect": {
+        "build": {
+          "builder": "@angular-builders/custom-webpack:browser",
+          "options": {
+            "aot": true,
+            "customWebpackConfig": {
+              "path": "./apps/ds-ess/webpack-config.js"
+            },
+            "indexTransform": "index-transform.ts",
+            "outputPath": "../Ds.Ess.Web/WebCore/dist/ds-ess",
+            "index": "../Ds.Ess.Web/Views/Root/Index.cshtml",
+            "main": "apps/ds-ess/src/main.ts",
+            "polyfills": "apps/ds-ess/src/polyfills.ts",
+            "tsConfig": "apps/ds-ess/tsconfig.app.json",
+            "assets": ["apps/ds-ess/src/favicon.ico", "apps/ds-ess/src/assets"],
+            "styles": [
+              "apps/ds-ess/src/styles.scss",
+              {
+                "input": "./Styles/scss/vendors/ds-material/ds-styles.scss",
+                "bundleName": "styles.material"
+              },
+              {
+                "input": "./Styles/scss/main.scss",
+                "bundleName": "styles.main"
+              },
+              {
+                "input": "apps/ds-ess/src/styles.legacy.vendor.scss",
+                "bundleName": "styles.legacy.vendor"
+              }
+            ],
+            "scripts": [
+              {
+                "input": "node_modules/jquery/dist/jquery.js",
+                "bundleName": "vend.lib"
+              },
+              {
+                "input": "Scripts/vendor/cropit/jquery.cropit.js",
+                "bundleName": "vend.lib"
+              },
+              {
+                "input": "node_modules/jquery-mask-plugin/dist/jquery.mask.js",
+                "bundleName": "vend.lib"
+              },
+              {
+                "input": "Scripts/vendor/jquery-maskinput-igorescobar/jquery-maskinput-152.js",
+                "bundleName": "vend.lib"
+              },
+              {
+                "input": "node_modules/moment/moment.js",
+                "bundleName": "vend.lib"
+              },
+              {
+                "input": "Scripts/vendor/helpdocsonline/tooltips.js",
+                "bundleName": "vend.lib"
+              },
+              {
+                "input": "Scripts/vendor/ds-datetimepicker/bootstrap-datetimepicker.js",
+                "bundleName": "vend.lib"
+              }
+            ],
+            "vendorChunk": true,
+            "sourceMap": {
+              "scripts": true
+            }
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/ds-ess/src/environments/environment.ts",
+                  "with": "apps/ds-ess/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "ds-ess:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "ds-ess:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "ds-ess:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "apps/ds-ess/src/test.ts",
+            "polyfills": "apps/ds-ess/src/polyfills.ts",
+            "tsConfig": "apps/ds-ess/tsconfig.spec.json",
+            "karmaConfig": "apps/ds-ess/karma.conf.js",
+            "styles": ["apps/ds-ess/src/styles.scss"],
+            "scripts": [],
+            "assets": ["apps/ds-ess/src/favicon.ico", "apps/ds-ess/src/assets"]
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/ds-ess/tsconfig.app.json",
+              "apps/ds-ess/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    },
+    "ds-ess-e2e": {
+      "root": "apps/ds-ess/e2e/",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "apps/ds-ess/e2e/protractor.conf.js",
+            "devServerTarget": "ds-ess:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "ds-ess:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": "apps/ds-ess/e2e/tsconfig.e2e.json",
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    },
+    "ds-company": {
+      "root": "apps/ds-company",
+      "sourceRoot": "apps/ds-company/src",
+      "projectType": "application",
+      "prefix": "ds",
+      "schematics": {
+        "@schematics/angular:component": {
+          "styleext": "scss"
+        }
+      },
+      "architect": {
+        "build": {
+          "builder": "@angular-builders/custom-webpack:browser",
+          "options": {
+            "aot": true,
+            "customWebpackConfig": {
+              "path": "./apps/ds-company/webpack-config.js"
+            },
+            "indexTransform": "index-transform.ts",
+            "outputPath": "../Ds.CompanyManagement.Web/WebCore/dist/ds-company",
+            "index": "../Ds.CompanyManagement.Web/Views/Root/Index.cshtml",
+            "main": "apps/ds-company/src/main.ts",
+            "polyfills": "apps/ds-company/src/polyfills.ts",
+            "tsConfig": "apps/ds-company/tsconfig.app.json",
+            "assets": [
+              "apps/ds-company/src/favicon.ico",
+              "apps/ds-company/src/assets"
+            ],
+            "styles": [
+              "apps/ds-company/src/styles.scss",
+              {
+                "input": "./Styles/scss/vendors/ds-material/ds-styles.scss",
+                "bundleName": "styles.material"
+              },
+              {
+                "input": "apps/ds-source/src/styles.legacy.vendor.scss",
+                "bundleName": "styles.legacy.vendor"
+              },
+              {
+                "input": "./Styles-Legacy/ds/icons/icons.scss",
+                "bundleName": "styles.legacy-icons"
+              },
+              {
+                "input": "./Styles/scss/main.scss",
+                "bundleName": "styles.main"
+              }
+            ],
+            "scripts": [
+              {
+                "input": "node_modules/jquery/dist/jquery.js",
+                "bundleName": "vend.lib"
+              },
+              {
+                "input": "Scripts/vendor/cropit/jquery.cropit.js",
+                "bundleName": "vend.lib"
+              },
+              {
+                "input": "node_modules/jquery-mask-plugin/dist/jquery.mask.js",
+                "bundleName": "vend.lib"
+              },
+              {
+                "input": "Scripts/vendor/jquery-maskinput-igorescobar/jquery-maskinput-152.js",
+                "bundleName": "vend.lib"
+              },
+              {
+                "input": "node_modules/moment/moment.js",
+                "bundleName": "vend.lib"
+              },
+              {
+                "input": "node_modules/twix/dist/twix.js",
+                "bundleName": "vend.lib"
+              },
+              {
+                "input": "Scripts/vendor/helpdocsonline/tooltips.js",
+                "bundleName": "vend.lib"
+              },
+              {
+                "input": "Scripts/vendor/ds-datetimepicker/bootstrap-datetimepicker.js",
+                "bundleName": "vend.lib"
+              }
+            ],
+            "vendorChunk": true
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/ds-company/src/environments/environment.ts",
+                  "with": "apps/ds-company/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "ds-company:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "ds-company:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "ds-company:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "apps/ds-company/src/test.ts",
+            "polyfills": "apps/ds-company/src/polyfills.ts",
+            "tsConfig": "apps/ds-company/tsconfig.spec.json",
+            "karmaConfig": "apps/ds-company/karma.conf.js",
+            "styles": ["apps/ds-company/src/styles.scss"],
+            "scripts": [],
+            "assets": [
+              "apps/ds-company/src/favicon.ico",
+              "apps/ds-company/src/assets"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/ds-company/tsconfig.app.json",
+              "apps/ds-company/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    },
+    "ds-company-e2e": {
+      "root": "apps/ds-company/e2e/",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "apps/ds-company/e2e/protractor.conf.js",
+            "devServerTarget": "ds-company:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "ds-company:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": "apps/ds-company/e2e/tsconfig.e2e.json",
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    },
+    "ds-docs": {
+      "root": "apps/ds-docs/ui",
+      "sourceRoot": "apps/ds-docs/ui/src",
+      "projectType": "application",
+      "prefix": "app",
+      "schematics": {
+        "@schematics/angular:component": {
+          "styleext": "scss"
+        }
+      },
+      "architect": {
+        "build": {
+          "builder": "@angular-builders/custom-webpack:browser",
+          "options": {
+            "customWebpackConfig": {
+              "path": "./webpack-config.js"
+            },
+            "outputPath": "apps/ds-docs/ui/dist/ds-docs",
+            "index": "apps/ds-docs/ui/src/index.html",
+            "main": "apps/ds-docs/ui/src/main.ts",
+            "polyfills": "apps/ds-docs/ui/src/polyfills.ts",
+            "tsConfig": "apps/ds-docs/ui/tsconfig.app.json",
+            "assets": [
+              "apps/ds-docs/ui/src/favicon.ico",
+              "apps/ds-docs/ui/src/assets",
+              "apps/ds-docs/ui/src/app/forms",
+              "apps/ds-docs/ui/src/app/ds-components",
+              "apps/ds-docs/ui/src/app/typography",
+              "apps/ds-docs/ui/src/app/ds-home"
+            ],
+            "styles": [
+              "apps/ds-docs/ui/src/styles.scss",
+              {
+                "input": "./Styles/scss/main.scss",
+                "bundleName": "styles.main"
+              },
+              {
+                "input": "./node_modules/highlight.js/styles/github-gist.css",
+                "bundleName": "styles.highlightjs"
+              },
+              {
+                "input": "./node_modules/prismjs/themes/prism.css",
+                "bundleName": "styles.prismjs"
+              },
+              {
+                "input": "./node_modules/prismjs/plugins/line-highlight/prism-line-highlight.css",
+                "bundleName": "styles.prismjs"
+              },
+              {
+                "input": "./Styles/scss/docsite/docs.scss",
+                "bundleName": "styles.docsite"
+              },
+              {
+                "input": "./Styles/scss/vendors/ds-material/ds-styles.scss",
+                "bundleName": "styles.ds-material"
+              }
+            ],
+            "scripts": [
+              {
+                "input": "node_modules/marked/lib/marked.js",
+                "bundleName": "vend.md"
+              },
+              {
+                "input": "node_modules/prismjs/prism.js",
+                "bundleName": "vend.prism"
+              },
+              {
+                "input": "node_modules/prismjs/plugins/line-highlight/prism-line-highlight.min.js",
+                "bundleName": "vend.prism"
+              },
+              {
+                "input": "node_modules/prismjs/plugins/line-numbers/prism-line-numbers.min.js",
+                "bundleName": "vend.prism"
+              },
+              {
+                "input": "node_modules/prismjs/components/prism-css.min.js",
+                "bundleName": "vend.prism"
+              },
+              {
+                "input": "node_modules/prismjs/components/prism-javascript.min.js",
+                "bundleName": "vend.prism"
+              },
+              {
+                "input": "node_modules/prismjs/components/prism-markup.min.js",
+                "bundleName": "vend.prism"
+              },
+              {
+                "input": "node_modules/prismjs/components/prism-typescript.min.js",
+                "bundleName": "vend.prism"
+              },
+              {
+                "input": "node_modules/prismjs/components/prism-vbnet.min.js",
+                "bundleName": "vend.prism"
+              },
+              {
+                "input": "node_modules/prismjs/components/prism-scss.min.js",
+                "bundleName": "vend.prism"
+              },
+              {
+                "input": "node_modules/prismjs/components/prism-csharp.min.js",
+                "bundleName": "vend.prism"
+              },
+              {
+                "input": "node_modules/jquery/dist/jquery.js",
+                "bundleName": "vend.lib"
+              },
+              {
+                "input": "Scripts/vendor/cropit/jquery.cropit.js",
+                "bundleName": "vend.lib"
+              },
+              {
+                "input": "node_modules/jquery-mask-plugin/dist/jquery.mask.js",
+                "bundleName": "vend.lib"
+              },
+              {
+                "input": "Scripts/vendor/jquery-maskinput-igorescobar/jquery-maskinput-152.js",
+                "bundleName": "vend.lib"
+              },
+              {
+                "input": "node_modules/moment/moment.js",
+                "bundleName": "vend.lib"
+              },
+              {
+                "input": "node_modules/twix/dist/twix.js",
+                "bundleName": "vend.lib"
+              },
+              {
+                "input": "Scripts/vendor/helpdocsonline/tooltips.js",
+                "bundleName": "vend.lib"
+              },
+              {
+                "input": "Scripts/vendor/ds-datetimepicker/bootstrap-datetimepicker.js",
+                "bundleName": "vend.lib"
+              }
+            ],
+            "vendorChunk": true
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/ds-docs/ui/src/environments/environment.ts",
+                  "with": "apps/ds-docs/ui/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "aot": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": false
+            },
+            "ngx-qa": {
+              "baseHref": "/ngx/qa/docs/"
+            },
+            "docs-design": {
+              "baseHref": "/Docs/Design/"
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-builders/custom-webpack:dev-server",
+          "options": {
+            "browserTarget": "ds-docs:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "ds-docs:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "ds-docs:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "apps/ds-docs/ui/src/test.ts",
+            "polyfills": "apps/ds-docs/ui/src/polyfills.ts",
+            "tsConfig": "apps/ds-docs/ui/tsconfig.spec.json",
+            "karmaConfig": "apps/ds-docs/ui/karma.conf.js",
+            "styles": ["apps/ds-docs/ui/src/styles.scss"],
+            "scripts": [],
+            "assets": [
+              "apps/ds-docs/ui/src/favicon.ico",
+              "apps/ds-docs/ui/src/assets"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/ds-docs/ui/tsconfig.app.json",
+              "apps/ds-docs/ui/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    },
+    "@ds/core": {
+      "root": "lib/ds/core",
+      "sourceRoot": "lib/ds/core/src",
+      "projectType": "library",
+      "prefix": "ds",
+      "schematics": {
+        "@schematics/angular:component": {
+          "styleext": "scss"
+        }
+      },
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "tsConfig": "lib/ds/core/tsconfig.lib.json",
+            "project": "lib/ds/core/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "project": "lib/ds/core/ng-package.prod.json",
+              "tsConfig": "lib/ds/core/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "lib/ds/core/src/test.ts",
+            "tsConfig": "lib/ds/core/tsconfig.spec.json",
+            "karmaConfig": "lib/ds/core/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "lib/ds/core/tsconfig.lib.json",
+              "lib/ds/core/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    },
+    "@ds/performance": {
+      "root": "lib/ds/performance",
+      "sourceRoot": "lib/ds/performance/src",
+      "projectType": "library",
+      "prefix": "ds",
+      "schematics": {
+        "@schematics/angular:component": {
+          "styleext": "scss"
+        }
+      },
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "tsConfig": "lib/ds/performance/tsconfig.lib.json",
+            "project": "lib/ds/performance/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "lib/ds/performance/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "lib/ds/performance/src/test.ts",
+            "tsConfig": "lib/ds/performance/tsconfig.spec.json",
+            "karmaConfig": "lib/ds/performance/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "lib/ds/performance/tsconfig.lib.json",
+              "lib/ds/performance/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    },
+    "@ds/payroll": {
+      "root": "lib/ds/payroll",
+      "sourceRoot": "lib/ds/payroll/src",
+      "projectType": "library",
+      "prefix": "ds",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "tsConfig": "lib/ds/payroll/tsconfig.lib.json",
+            "project": "lib/ds/payroll/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "lib/ds/payroll/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "lib/ds/payroll/src/test.ts",
+            "tsConfig": "lib/ds/payroll/tsconfig.spec.json",
+            "karmaConfig": "lib/ds/payroll/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "lib/ds/payroll/tsconfig.lib.json",
+              "lib/ds/payroll/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    },
+    "@ds/notifications": {
+      "root": "lib/ds/notifications",
+      "sourceRoot": "lib/ds/notifications/src",
+      "projectType": "library",
+      "prefix": "ds",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "tsConfig": "lib/ds/notifications/tsconfig.lib.json",
+            "project": "lib/ds/notifications/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "lib/ds/notifications/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "lib/ds/notifications/src/test.ts",
+            "tsConfig": "lib/ds/notifications/tsconfig.spec.json",
+            "karmaConfig": "lib/ds/notifications/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "lib/ds/notifications/tsconfig.lib.json",
+              "lib/ds/notifications/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    },
+    "@ds/reports": {
+      "root": "lib/ds/reports",
+      "sourceRoot": "lib/ds/reports/src",
+      "projectType": "library",
+      "prefix": "ds",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "tsConfig": "lib/ds/reports/tsconfig.lib.json",
+            "project": "lib/ds/reports/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "lib/ds/reports/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "lib/ds/reports/src/test.ts",
+            "tsConfig": "lib/ds/reports/tsconfig.spec.json",
+            "karmaConfig": "lib/ds/reports/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "lib/ds/reports/tsconfig.lib.json",
+              "lib/ds/reports/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    },
+    "@ds/admin": {
+      "root": "lib/ds/admin",
+      "sourceRoot": "lib/ds/admin/src",
+      "projectType": "library",
+      "prefix": "ds",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "tsConfig": "lib/ds/admin/tsconfig.lib.json",
+            "project": "lib/ds/admin/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "lib/ds/admin/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "lib/ds/admin/src/test.ts",
+            "tsConfig": "lib/ds/admin/tsconfig.spec.json",
+            "karmaConfig": "lib/ds/admin/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "lib/ds/admin/tsconfig.lib.json",
+              "lib/ds/admin/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    },
+    "@ds/benefits": {
+      "root": "lib/ds/benefits",
+      "sourceRoot": "lib/ds/benefits/src",
+      "projectType": "library",
+      "prefix": "ds",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "tsConfig": "lib/ds/benefits/tsconfig.lib.json",
+            "project": "lib/ds/benefits/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "lib/ds/benefits/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "lib/ds/benefits/src/test.ts",
+            "tsConfig": "lib/ds/benefits/tsconfig.spec.json",
+            "karmaConfig": "lib/ds/benefits/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "lib/ds/admin/tsconfig.lib.json",
+              "lib/ds/admin/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    },
+    "@ds/analytics": {
+      "projectType": "library",
+      "root": "lib/ds/analytics",
+      "sourceRoot": "lib/ds/analytics/src",
+      "prefix": "ds",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "lib/ds/analytics/tsconfig.lib.json",
+            "project": "lib/ds/analytics/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "lib/ds/analytics/src/test.ts",
+            "tsConfig": "lib/ds/analytics/tsconfig.spec.json",
+            "karmaConfig": "lib/ds/analytics/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "lib/ds/analytics/tsconfig.lib.json",
+              "lib/ds/analytics/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    },
+    "employee-services": {
+      "root": "apps/employee-services",
+      "sourceRoot": "apps/employee-services/src",
+      "projectType": "library",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "tsConfig": "apps/employee-services/tsconfig.lib.json",
+            "project": "apps/employee-services/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "apps/employee-services/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "apps/employee-services/src/test.ts",
+            "tsConfig": "apps/employee-services/tsconfig.spec.json",
+            "karmaConfig": "apps/employee-services/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/employee-services/tsconfig.lib.json",
+              "apps/employee-services/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    },
+    "ds-mobile": {
+      "root": "apps/ds-mobile/",
+      "sourceRoot": "apps/ds-mobile/src",
+      "projectType": "application",
+      "prefix": "ds",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "architect": {
+        "build": {
+          "aot": false,
+          "builder": "@angular-builders/custom-webpack:browser",
+          "options": {
+            "customWebpackConfig": {
+              "path": "./webpack-config.js"
+            },
+            "outputPath": "../Ds.Source.Web/WebCore/dist/ds-mobile",
+            "index": "apps/ds-mobile/src/index.html",
+            "main": "apps/ds-mobile/src/main.ts",
+            "polyfills": "apps/ds-mobile/src/polyfills.ts",
+            "tsConfig": "apps/ds-mobile/tsconfig.app.json",
+            "assets": [
+              "apps/ds-mobile/src/favicon.ico",
+              "apps/ds-mobile/src/assets"
+            ],
+            "styles": [
+              {
+                "input": "./apps/ds-mobile/src/styles/ds-mobile-material/ds-mobile-styles.scss",
+                "bundleName": "ds-mobile-styles"
+              }
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/ds-mobile/src/environments/environment.ts",
+                  "with": "apps/ds-mobile/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            },
+            "dev": {
+              "tsConfig": "apps/ds-mobile/tsconfig.dev.json"
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "ds-mobile:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "ds-mobile:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "ds-mobile:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "apps/ds-mobile/src/test.ts",
+            "polyfills": "apps/ds-mobile/src/polyfills.ts",
+            "tsConfig": "apps/ds-mobile/tsconfig.spec.json",
+            "karmaConfig": "apps/ds-mobile/karma.conf.js",
+            "styles": [
+              "apps/ds-mobile/src/styles/ds-mobile-material/ds-mobile-styles.scss"
+            ],
+            "scripts": [],
+            "assets": [
+              "apps/ds-mobile/src/favicon.ico",
+              "apps/ds-mobile/src/assets"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/ds-mobile/tsconfig.app.json",
+              "apps/ds-mobile/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    },
+    "ds-mobile-e2e": {
+      "root": "apps/ds-mobile-e2e/",
+      "projectType": "application",
+      "prefix": "",
+      "architect": {
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "apps/ds-mobile-e2e/protractor.conf.js",
+            "devServerTarget": "ds-mobile:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "ds-mobile:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": "apps/ds-mobile-e2e/tsconfig.e2e.json",
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    },
+    "models": {
+      "projectType": "library",
+      "root": "lib/models",
+      "sourceRoot": "lib/models/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "tsConfig": "lib/models/tsconfig.lib.json",
+            "project": "lib/models/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "lib/models/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "lib/models/src/test.ts",
+            "tsConfig": "lib/models/tsconfig.spec.json",
+            "karmaConfig": "lib/models/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "lib/models/tsconfig.lib.json",
+              "lib/models/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "ds-source",
+  "cli": {
+    "analytics": false
+  }
+}

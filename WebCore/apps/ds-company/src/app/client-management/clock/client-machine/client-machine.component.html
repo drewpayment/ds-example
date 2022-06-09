@@ -1,0 +1,248 @@
+<ng-container *ngIf="changeMachine$ | async"></ng-container>
+
+<ds-card border="top">
+    <div ds-card-header>
+        <ds-card-header-title>Clock Details</ds-card-header-title>
+        <ds-card-bread-crumb>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a (click)="goBackToList()">Time Clock Hardware</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Clock Details</li>
+            </ol>
+          </nav>
+        </ds-card-bread-crumb>
+    </div>
+    <ds-card-content>
+        <form [formGroup]="formGroup">
+            <form [formGroup]="formGroup">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label class="form-control-label">Clock Name</label>
+                            <input formControlName="description" type="text" class="form-control"
+                                [class.is-invalid]="Description.invalid && (Description.touched || formSubmitted)" />
+                            <div *ngIf="Description.hasError('required')" class="invalid-feedback">
+                                Please enter a description.
+                            </div>
+                            <div *ngIf="Description.errors?.maxlength" class="invalid-feedback">
+                                Name cannot be more than 50 characters.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group" formGroupName="pushMachine">
+                            <label class="form-control-label">Serial Number</label>
+                            <select class="custom-select form-control" formControlName="devSn"
+                                *ngIf='!hardware.pushMachine'
+                                [class.is-invalid]="DevSn.invalid && (DevSn.touched || formSubmitted)">
+                                <option [value]=""></option>
+                                <option *ngFor="let unassignedMachine of unassignedMachines"
+                                    [value]="unassignedMachine.devSn">
+                                    {{unassignedMachine.devSn}} (Last Activity: {{unassignedMachine.lastRequestTime |
+                                    date:'MMM yyyy hh:mm:ss ZZZZZ'}})
+                                </option>
+                            </select>
+                            <input *ngIf='hardware.pushMachine' formControlName="devSn" type="text" class="form-control"
+                                disabled />
+                            <div *ngIf="DevSn.hasError('required')" class="invalid-feedback">
+                                Please select a serial number.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group" formGroupName="pushMachine">
+                            <label class="form-control-label">IP Address</label>
+                            <input formControlName="devIp" type="text" class="form-control" disabled />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-control-label">Purchase/Rental Date</label>
+                            <div class="input-group">
+                                <input matInput class="form-control" [matDatepicker]="purchaseDatePicker"
+                                    formControlName="purchaseDate" required dsFormControlValidator
+                                    [dsFormControlSubmitted]="formSubmitted" />
+                                <div class="input-group-append">
+                                    <mat-datepicker-toggle matSuffix [for]="purchaseDatePicker"
+                                        class="input-group-text date">
+                                        <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #purchaseDatePicker></mat-datepicker>
+                                </div>
+                                <div class="invalid-feedback">
+                                    Please enter a date.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="form-group">
+                            <label class="form-control-label">Status</label>
+                            <div class="form-group inline-radio">
+                                <div class="custom-control custom-radio custom-control-bg primary">
+                                    <input id="radioInline" type="radio" name="isRental" value="false" checked="checked"
+                                        class="custom-control-input" formControlName="isRental">
+                                    <label class="custom-control-label" for="radioInline">Purchase</label>
+                                    <div class="custom-bg"></div>
+                                </div>
+                                <div class="custom-control custom-radio custom-control-bg primary">
+                                    <input id="radioInlineInfo" type="radio" name="isRental" value="true"
+                                        class="custom-control-input" formControlName="isRental">
+                                    <label class="custom-control-label" for="radioInlineInfo">Rental</label>
+                                    <div class="custom-bg"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-control-label">Warranty Start Date</label>
+                            <div class="input-group">
+                                <input matInput class="form-control" [matDatepicker]="startDatePicker"
+                                    formControlName="warranty" required name="startDatePicker" [max]="WarrantyEnd.value"
+                                    required dsFormControlValidator [dsFormControlSubmitted]="formSubmitted" />
+                                <div class="input-group-append">
+                                    <mat-datepicker-toggle matSuffix [for]="startDatePicker"
+                                        class="input-group-text date">
+                                        <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #startDatePicker></mat-datepicker>
+                                </div>
+                                <div class="invalid-feedback" *ngIf="Warranty.hasError('required')">
+                                    Please enter a start date.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-control-label">End Date</label>
+                            <div class="input-group">
+                                <input matInput class="form-control" [matDatepicker]="endDatePicker"
+                                    formControlName="warrantyEnd" [min]="Warranty.value" required dsFormControlValidator
+                                    [dsFormControlSubmitted]="formSubmitted" />
+                                <div class="input-group-append">
+                                    <mat-datepicker-toggle matSuffix [for]="endDatePicker"
+                                        class="input-group-text date">
+                                        <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                                    </mat-datepicker-toggle>
+                                    <mat-datepicker #endDatePicker></mat-datepicker>
+                                </div>
+                                <div class="invalid-feedback">
+                                    <span *ngIf="WarrantyEnd.hasError('required')">Please enter an end date.</span>
+                                    <span *ngIf="WarrantyEnd.hasError('matDatepickerMin')">Please enter a date on or
+                                        after the start date.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-control-label">Customer Code</label>
+                            <input formControlName="clientCode" type="text" class="form-control" disabled />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="form-control-label">Customer ID</label>
+                            <input formControlName="clientId" type="text" class="form-control" disabled />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group" formGroupName="pushMachine">
+                            <label class="form-control-label ds-tooltip">
+                                Transfer Time
+                                <span class="ds-tooltip" matTooltip="The exact time (hh:mm) for checking and sending new data, with multiple spots seperated by semicolons. Up to 10 times can be set.">
+                                 <mat-icon class="tooltip-icon">help</mat-icon>
+                                </span>
+                             </label>
+                            <input formControlName="transTimes" type="text" class="form-control" disabled />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group" formGroupName="pushMachine">
+                            <label class="form-control-label ds-tooltip">
+                                Interval
+                                <span class="ds-tooltip" matTooltip="The time (in minutes) between each checking and sending of new data. If set to 1, data is uploaded immediately.">
+                                 <mat-icon class="tooltip-icon">help</mat-icon>
+                                </span>
+                             </label>
+                            <input formControlName="transInterval" type="text" class="form-control" disabled />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group" formGroupName="pushMachine">
+                            <label class="form-control-label ds-tooltip">
+                                Last Punch Received
+                                <span class="ds-tooltip" matTooltip="The timestamp of the last loaded attendance record from the device.">
+                                 <mat-icon class="tooltip-icon">help</mat-icon>
+                                </span>
+                             </label>
+                            <input formControlName="attLogStamp" type="text" class="form-control" disabled />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group" formGroupName="pushMachine">
+                            <label class="form-control-label ds-tooltip">
+                                Last Data Upload Received
+                                <span class="ds-tooltip" matTooltip="The timestamp of the last loaded operation record from the device.">
+                                 <mat-icon class="tooltip-icon">help</mat-icon>
+                                </span>
+                             </label>
+                            <input formControlName="operLogStamp" type="text" class="form-control" disabled />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group" formGroupName="pushMachine">
+                            <label class="form-control-label ds-tooltip">
+                                Timezone
+                                <span class="ds-tooltip" matTooltip="The time zone where the clock is operated, follwing hh:mm format.">
+                                 <mat-icon class="tooltip-icon">help</mat-icon>
+                                </span>
+                             </label>
+                            <select class="custom-select form-control" formControlName="timeZone">
+                                <option *ngFor="let tz of this.usTimezones" [value]="tz.utcOffset">
+                                    {{tz.descWithUtcOffset}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group" formGroupName="pushMachine">
+                            <label class="form-control-label ds-tooltip">
+                                Sync Time
+                                <span class="ds-tooltip" matTooltip="The time sync interval in seconds. Used by clocks to keep time in sync with server time. Set to 0 to disable. Default is 30.">
+                                 <mat-icon class="tooltip-icon">help</mat-icon>
+                                </span>
+                             </label>
+                            <input formControlName="syncTime" type="text" class="form-control" disabled />
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </form>
+    </ds-card-content>
+</ds-card>
+
+<ds-card mode="footer">
+    <ds-card-footer>
+        <button type="submit" class="btn btn-save" (click)="saveForm()">Save</button>
+        <button type="button" class="btn btn-cancel" (click)="goBackToList()">Cancel</button>
+    </ds-card-footer>
+  </ds-card>

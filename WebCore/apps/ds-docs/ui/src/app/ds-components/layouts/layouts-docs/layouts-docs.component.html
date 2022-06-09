@@ -1,0 +1,104 @@
+<markdown ngPreserveWhitespaces>
+# Layouts
+</markdown>
+
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleStandardPage = !toggleStandardPage">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleStandardPage">
+  <div class="ui">
+    <div class="overflow-list">
+      <ds-standard-form></ds-standard-form>
+    </div>
+  </div>
+  <div class="example">
+      <markdown src="app/ds-components/layouts/standard-form/standard-form.component.html"></markdown>
+  </div>
+</div>
+
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleSideBySide = !toggleSideBySide">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleSideBySide">
+  <div class="ui">
+    <div class="overflow-list">
+      <ds-side-by-side></ds-side-by-side>
+    </div>
+  </div>
+  <div class="example">
+      <markdown src="app/ds-components/layouts/side-by-side/side-by-side.component.html"></markdown>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+  ## Alignment 
+  Easily align fields that don't have a label but need to be inline. Use `inline-*-control` where * is the same as the breakpoint used in the row layout. 
+  In this example, `md` is used so the class would be `inline-md-control`.
+</markdown>
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleAlignment = !toggleAlignment">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleAlignment">
+  <div class="ui">
+    <ds-alignment></ds-alignment>
+  </div>
+  <div class="example">
+      <markdown src="app/ds-components/layouts/alignment/alignment.component.html"></markdown>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+    ## Add scroll to column based on other columns's height 
+    The card that has `.match-height` declared will take the height of the other column in the row. Scroll content needs to be wrapped in `.overflow-y-scroll-container`. 
+    `.match-height` supports breakpoint sizes. If column breakpoints are being used, that breakpoint needs to be added here.
+  </markdown>
+  <div class="button-bar">
+    <button class="btn btn-icon" (click)="toggleOverflow = !toggleOverflow">
+      <mat-icon>code</mat-icon>
+      View Code
+    </button>
+  </div>
+  <div class="example-block" [class.open]="toggleOverflow">
+    <div class="ui">
+        <div class="overflow-list">
+            <ds-overflow-columns></ds-overflow-columns>
+        </div>
+    </div>
+    <div class="example">
+        <markdown src="app/ds-components/layouts/overflow-columns/overflow-columns.component.html"></markdown>
+    </div>
+  </div>
+
+<markdown ngPreserveWhitespaces>
+## Text Break
+Use when you want to selectively break text when the parent element has less width.
+</markdown>
+<div class="button-bar">
+<button class="btn btn-icon" (click)="toggleTextBreak = !toggleTextBreak">
+    <mat-icon>code</mat-icon>
+    View Code
+</button>
+</div>
+<div class="example-block" [class.open]="toggleTextBreak">
+<div class="ui">
+    <div class="overflow-list">
+        <div class="card">
+            <div class="card-body">
+                <ds-text-break></ds-text-break>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="example">
+    <markdown src="app/ds-components/layouts/text-break/text-break.component.html"></markdown>
+</div>
+</div>

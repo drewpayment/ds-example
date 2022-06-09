@@ -1,0 +1,107 @@
+<mat-dialog-header>
+  <h2 class="dialog-title"> {{data.billingItem ? 'Edit' : 'Add' }} Billing Item</h2>
+  <button type="button" class="close" (click)="cancel()"><mat-icon>clear</mat-icon></button>
+</mat-dialog-header>
+
+<form [formGroup]="form" (ngSubmit)="this.formSubmitted = true; save()">
+  <mat-dialog-content>
+      <ng-container *ngIf="!isLoading else loadingScreen">
+        <ng-container *ngTemplateOutlet="billingItem; context: { $implicit: form }"></ng-container>
+      </ng-container>
+
+      <ng-template #loadingScreen>
+        <ds-loading-message></ds-loading-message>
+      </ng-template>
+  </mat-dialog-content>
+
+  <mat-dialog-actions *ngIf="!isLoading">
+    <div class="d-flex align-items-center">
+      <div *ngIf="bothWrong" class="text-danger mr-2">{{doubleErrMsg}} </div>
+      <button type="submit" class="btn btn-save" [ngClass]="{'disabled' : (isSaving)}" CausesValidation="True">Save</button>
+    </div>
+    <button type="button" class="btn btn-cancel" (click)="cancel()">Cancel</button>
+  </mat-dialog-actions>
+</form>
+
+<ng-template #billingItem>
+  <ng-container [formGroup]="form">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-control-label">Name</label>
+          <select class="custom-select form-control" formControlName="name" cdkFocusInitial dsFormControlValidator
+            cdkFocusInitial>
+            <option [ngValue]="null"></option>
+            <option *ngFor="let bi of billingItemDescription" [ngValue]="bi.billingItemDescriptionId">
+              {{ bi.description }}</option>
+          </select>
+          <div class="invalid-feedback">
+            Please select a name.
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-control-label">Frequency</label>
+          <select class="custom-select form-control" formControlName="frequency" dsFormControlValidator>
+            <option [ngValue]="null"></option>
+            <option *ngFor="let freq of billingFreqHelper" [ngValue]="freq.id">{{ freq.description }}</option>
+          </select>
+          <div class="invalid-feedback">
+            Please select a frequency.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-control-label">Line</label>
+          <input type="number" class="form-control" formControlName="line" step="1" required dsFormControlValidator/>
+          <div class="invalid-feedback">
+            Please enter a valid line value.
+          </div>  
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-control-label">Flat</label>
+          <div class="input-group">                                                              
+            <div class="input-group-prepend">
+                <span class="input-group-text currency">$</span>
+            </div>                                                              
+            <input type="number" class="form-control" formControlName="flat" [ngClass]="method('flat') ? 'form-control is-invalid' : 'form-control'"/>
+            <div class="invalid-feedback">
+              {{ bothWrong ? "" : flatErrMsg }}
+            </div>  
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-control-label">Per Qty</label>
+          <div class="input-group">                                                              
+            <div class="input-group-prepend">
+                <span class="input-group-text currency">$</span>
+            </div>                                                              
+            <input type="number" class="form-control" formControlName="perQty" [ngClass]="method('perQty') ? 'form-control is-invalid' : 'form-control'"/>
+            <div class="invalid-feedback">
+              {{ bothWrong ? "" : perQtyErrMsg}}
+            </div>      
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-control-label">What to Count</label>
+          <select class="custom-select form-control" formControlName="whatToCount">
+            <option [ngValue]="null">None</option>
+            <option *ngFor="let wtc of billingWTCList" [ngValue]="wtc.id">{{ wtc.description }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>

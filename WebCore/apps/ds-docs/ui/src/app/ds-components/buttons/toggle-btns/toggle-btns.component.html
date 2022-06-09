@@ -1,0 +1,9 @@
+<mat-button-toggle-group #group="matButtonToggleGroup" toggle-type="checkbox" multiple class="form-group">
+    <mat-button-toggle 
+        *ngFor="let item of items"
+        value="{{item.lengthOfTime}}" 
+        aria-label="{{item.lengthOfTime}}" 
+        [disabled]="item.disabled">
+        {{item.lengthOfTime}}
+    </mat-button-toggle>
+</mat-button-toggle-group>

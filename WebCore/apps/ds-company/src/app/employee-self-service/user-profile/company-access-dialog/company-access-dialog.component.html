@@ -1,0 +1,37 @@
+
+<mat-dialog-header>
+  <h2 class="modal-title">Company Access</h2>
+  <button class="close" (click)="cancel()">
+    <mat-icon>clear</mat-icon>
+  </button>
+  <div class="modal-subtitle">
+    <div class="instruction-text">
+      Select companies this user will administer.
+    </div>
+  </div>
+</mat-dialog-header>
+<mat-dialog-content>
+  <div class="form-group multi-select borderless" [formGroup]="form">
+    <label>Related Companies</label>
+    <div class="multi-select-wrapper">
+      <div class="row" formArrayName="companies">
+        <ng-container *ngFor="let c of companies?.controls; let i=index" [formGroup]="c">
+          <div class="col-sm-auto">
+            <div class="custom-control custom-checkbox custom-control-pill primary">
+              <input type="checkbox" class="custom-control-input" [id]="'company_' + i"
+                formControlName="hasAccess" />
+              <label [for]="'company_' + i" class="custom-control-label">
+                {{ c?.value?.clientName }}
+              </label>
+              <div class="custom-bg"></div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button class="btn btn-save" (click)="save()">Save</button>
+  <button class="btn btn-cancel" (click)="cancel()">Cancel</button>
+</mat-dialog-actions>

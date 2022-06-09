@@ -1,0 +1,119 @@
+<ng-container [formGroup]="form" dsTrackFormChanges>
+  <ng-container *ngIf="!isLoading; else loading">
+    <div *ngIf="items?.length > 0; else noTasksMessage" class="overflow-list">
+
+      <h3 class="mb-2">Tasks</h3>
+      <div class="row">
+        <input type="hidden" formControlName="HdnChangeTrackHack" />
+        <div class="col-12 col-md-4 col-lg-4"
+          *ngFor="let task of items | filterOnboardingWorkflowTasks : { adminMustSelect: true, isNullclient: true }">
+          <ds-card mode="object" x-align="center" matchHeight="true"
+            [color]="task.onboardingWorkflowTaskId== 14 && disablePayPref ? 'archive' : ''">
+            <ds-card-header>
+              <ds-card-subtitle>
+                <div class="split-content">
+                  <div class="top">
+                    <div class="object-card-avatar">
+                      <div class="aw aw-{{task.imgClass}} aw-{{task.imgClass}}-{{selectedState.abbreviation}} pb-0">
+                        <div class="aw-img color" *ngIf="!(task.linkToState=='ess.onboarding.i9' || task.linkToState=='ess.onboarding.w4Federal' || task.linkToState=='ess.onboarding.emergency-contact' || task.linkToState=='ess.onboarding.electronic-consents' || task.linkToState=='ess.onboarding.dependents' || task.linkToState=='ess.onboarding.payment-preference' || task.linkToState=='ess.onboarding.employee-bio' || task.linkToState=='ess.onboarding.other-info')"></div>
+                        <mat-icon class="avatar" *ngIf="task.linkToState=='ess.onboarding.i9' || task.linkToState=='ess.onboarding.w4Federal' || task.linkToState=='ess.onboarding.emergency-contact' || task.linkToState=='ess.onboarding.electronic-consents' || task.linkToState=='ess.onboarding.dependents' || task.linkToState=='ess.onboarding.payment-preference' || task.linkToState=='ess.onboarding.employee-bio' || task.linkToState=='ess.onboarding.other-info'">{{task.imgClass}}</mat-icon>
+                      </div>
+                    </div>
+                    <div class="font-lg font-weight-bold text-center mb-1 text-truncate mb-2"
+                      [hidden]="task.onboardingWorkflowTaskId == 7" matTooltip="{{task.title}}">
+                      {{ task.title }}
+                    </div>
+
+                    <select class="form-control custom-select mb-2" formControlName="StateW4State"
+                      [hidden]="task.onboardingWorkflowTaskId != 7"
+                      (change)="selectedStateChanged(task, selectedState)">
+                      <option [ngValue]="state" *ngFor="let state of stateList">
+                        {{ state.name + ' W-4' }}
+                      </option>
+                    </select>
+
+                    <div class="text-center mb-2">
+                      {{ task.adminDescription }}
+                    </div>
+                  </div>
+                </div>
+              </ds-card-subtitle>
+            </ds-card-header>
+            <ds-card-footer>
+              <button class="btn" (click)="(task.onboardingWorkflowTaskId != 14 || task.onboardingWorkflowTaskId == 14 && !disablePayPref) 
+                    && ( task.status == 0 ) && (task.isChecked = !task.isChecked);selectionChanged(task, $event);"
+                [disabled]="((task.onboardingWorkflowTaskId == 14 && disablePayPref)||( task.status > 0 ))"
+                [ngClass]="{'btn-outline-primary' : !task.isChecked, 'btn-primary' : task.isChecked}">
+                <span *ngIf="!task.isChecked">Assign Task</span>
+                <span *ngIf="task.isChecked">
+                  <i class="material-icons">done</i> {{ task.status == 0 ? 'Task Assigned' : ( task.status == 1 ? 'In
+                  Progress' : 'Complete' ) }}
+                </span>
+              </button>
+            </ds-card-footer>
+          </ds-card>
+        </div>
+      </div>
+
+      <h3 class="mb-2">Custom Pages</h3>
+
+      <div class="row">
+        <div class="col-12 col-md-4 col-lg-4"
+          *ngFor="let task of items | filterOnboardingWorkflowTasks : { adminMustSelect: true, isNullclient: false }">
+          <ds-card hover="true" mode="object" x-align="center" matchHeight="true"
+            [color]="task.onboardingWorkflowTaskId== 14 && disablePayPref ? 'archive' : ''">
+            <ds-card-header>
+              <ds-card-subtitle>
+                <div class="split-content">
+                  <div class="top">
+                    <div class="object-card-avatar">
+                      <div class="aw aw-{{task.imgClass}} aw-{{task.imgClass}}-{{selectedState.abbreviation}} pb-0">
+                        <div class="aw-img color"></div>
+                      </div>
+                      <div class="font-lg font-weight-bold text-center mb-1 text-truncate" matTooltip="{{task.title}}">
+                        {{ task.title }}
+                      </div>
+
+                      <div class="text-center" matTooltip="{{ task.adminDescription }}">
+                        {{ task.adminDescription }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ds-card-subtitle>
+            </ds-card-header>
+            <ds-card-content>
+
+            </ds-card-content>
+            <ds-card-footer>
+              <button class="btn" (click)="(task.onboardingWorkflowTaskId != 14 || task.onboardingWorkflowTaskId == 14 && !disablePayPref) 
+                    && ( task.status == 0 ) && (task.isChecked = !task.isChecked);selectionChanged(task, $event);"
+                [disabled]="((task.onboardingWorkflowTaskId == 14 && disablePayPref)||( task.status > 0 ))"
+                [ngClass]="{'btn-outline-primary' : !task.isChecked, 'btn-primary' : task.isChecked}">
+                <span *ngIf="!task.isChecked">Assign Task</span>
+                <span *ngIf="task.isChecked">
+                  <i class="material-icons">done</i> {{ task.status == 0 ? 'Task Assigned' : ( task.status == 1 ? 'In
+                  Progress' : 'Complete' ) }}
+                </span>
+              </button>
+            </ds-card-footer>
+          </ds-card>
+        </div>
+      </div>
+
+    </div>
+  </ng-container>
+
+  <ng-template #noTasksMessage >
+    <div class="body">
+      <div class="empty-state">There are no tasks to display currently.</div>
+    </div>
+  </ng-template>
+
+  <ng-template #loading>
+    <ds-loading-message>
+    </ds-loading-message>
+  </ng-template>
+
+
+</ng-container>

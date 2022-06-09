@@ -1,0 +1,28 @@
+
+<ng-content *ngIf="loadReviewStatuses$|async"></ng-content>
+
+<!-- loading -->
+<ds-card mode="noheader" *ngIf="isLoading">
+    <ds-card-content>
+        <ds-loading-message></ds-loading-message>
+    </ds-card-content>
+</ds-card>
+<!-- unfiltered Empty State -->
+<ds-card mode="noheader" *ngIf="!filtered && !reviewGroups && !isLoading">
+    <ds-card-content>
+        <div class="empty-state">
+            Use the filters to see performance review statuses.
+        </div>
+    </ds-card-content>
+</ds-card>
+
+<ng-container *ngIf="!isLoading && reviewGroups && reviewGroups.length">
+    <ds-review-group-status-view 
+        *ngFor="let group of reviewGroups; let isFirst = first" 
+        [reviewGroup]="group" 
+        [expanded]="isFirst"
+        (evaluationSelect)="evaluationSelected($event)"
+        (reviewChange)="reviewChanged($event)"
+        [mode]="'kanban'">
+    </ds-review-group-status-view>
+</ng-container>

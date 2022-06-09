@@ -1,0 +1,244 @@
+<ds-card mode="nobody" border="top">
+  <ds-card-header>
+      <ds-card-header-title>Vendor Maintenance</ds-card-header-title>
+  </ds-card-header>
+</ds-card>
+<form #frmVendorGeneral="ngForm">
+    <ds-card *ngIf="!isLoading">
+        <ds-card-header>       
+            <ds-card-sub-header-title>General</ds-card-sub-header-title>
+        </ds-card-header> 
+            <ds-card-content>
+                <div class="row">
+                    <div class="col-xl-8">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-control-label">Vendor</label>
+                                    <select class="custom-select form-control"
+                                        [(ngModel)]="selectedVendorId"
+                                        (ngModelChange)="vendorChange()"
+                                        name="vendors">
+                                        <option class="text-muted" [ngValue]="null">-- Add Vendor --</option>
+                                        <option *ngFor="let vendor of vendors" [ngValue]="vendor.vendorId">{{vendor?.name}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-control-label">Name</label>
+                                    <input name="name"
+                                        [(ngModel)]="selectedVendor.name" class="form-control"
+                                        dsFormControlValidator maxlength="30" required />
+                                    <div class="invalid-feedback">
+                                        Please enter a name.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-control-label">Country</label>
+                                    <select class="custom-select form-control"
+                                        [(ngModel)]="selectedCountry"
+                                        (ngModelChange)="updateCountryState()"
+                                        name="country">
+                                        <option *ngFor="let country of countries"
+                                        [ngValue]="country">{{country.name}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-control-label">Address</label>
+                                    <input name="address1"
+                                        [(ngModel)]="selectedVendor.addressLine1" class="form-control"
+                                        dsFormControlValidator maxlength="50" required />
+                                    <div class="invalid-feedback">
+                                        Please enter an address.
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input name="address2"
+                                        [(ngModel)]="selectedVendor.addressLine2" class="form-control"
+                                        maxlength="50"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-control-label">City</label>
+                                    <input name="city"
+                                        [(ngModel)]="selectedVendor.city" class="form-control"
+                                        dsFormControlValidator maxlength="25" required />
+                                    <div class="invalid-feedback">
+                                        Please enter a city.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4" *ngIf="this.states.length > 0">
+                                <div class="form-group">
+                                    <label class="form-control-label">State</label>
+                                    <select class="custom-select form-control"
+                                        [(ngModel)]="selectedVendor.stateId"
+                                        name="state" required dsFormControlValidator>
+                                        <option class="text-muted" [ngValue]="null"></option>
+                                        <option *ngFor="let state of states"
+                                        [ngValue]="state.stateId">{{state.name}}</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                            Please select a state.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-control-label">Zip/Postal</label>
+                                    <input name="zip"
+                                        [(ngModel)]="selectedVendor.zipCode" class="form-control"
+                                        dsFormControlValidator maxlength="10" required />
+                                    <div class="invalid-feedback">
+                                        Please enter a Zip/Postal Code.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-8 col-md-4">
+                                <div class="form-group">
+                                    <label class="form-control-label">Phone</label>
+                                    <span class="form-help-text"> Optional</span>
+                                    <input name="phone"
+                                        [(ngModel)]="selectedVendor.phone" class="form-control"
+                                        maxlength="15"/>
+                                </div>
+                            </div>
+                            <div class="col-xs-4 col-md-2">
+                                <div class="form-group">
+                                    <label class="form-control-label">Phone Ext</label>
+                                    <span class="form-help-text"> Optional</span>
+                                    <input name="phoneExtension"
+                                        [(ngModel)]="selectedVendor.phoneExtension" class="form-control"
+                                        maxlength="5"/>
+                                </div>
+                            </div>
+                        </div>                        
+                        <div class="row">
+                            <div class="col-auto">
+                                <div class="custom-control custom-checkbox">
+                                    <input name="active" id="active" type="checkbox" class="form-control custom-control-input"
+                                        [(ngModel)]="selectedVendor.isActive"/>  
+                                    <label class="custom-control-label" for="active">Active</label>                                          
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ds-card-content>        
+    </ds-card>
+
+    <ds-card *ngIf="!isLoading">
+        <ds-card-header>
+                <ds-card-sub-header-title>Payment Info</ds-card-sub-header-title>
+        </ds-card-header>        
+            <ds-card-content>
+                <div class="row">
+                    <div class="col-xl-8">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-control-label">Account</label>
+                                    <span class="form-help-text"> Optional</span>
+                                    <input name="accountNumber"
+                                        [(ngModel)]="selectedVendor.accountNumber" maxlength="25" class="form-control"/>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-control-label">Frequency</label>
+                                    <span class="form-help-text"> Optional</span>
+                                    <select class="custom-select form-control"
+                                        [(ngModel)]="selectedVendor.taxFrequencyId" 
+                                        name="frequency">
+                                        <option></option>
+                                        <option *ngFor="let frequency of frequencies" [ngValue]="frequency.taxFrequencyId">{{frequency.frequency}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-control-label">Routing Number</label>
+                                    <span class="form-help-text"> Optional</span>
+                                    <select class="custom-select form-control"
+                                        [(ngModel)]="selectedVendor.bankId" 
+                                        name="bank">
+                                        <option></option>
+                                        <option *ngFor="let bank of banks" [ngValue]="bank.bankId">{{bank.name}} ({{bank.routingNumber}})</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6" *ngIf="selectedVendor.bankId == null || selectedVendor.bankId == 0">
+                                <div class="form-group">
+                                    <label class="form-control-label">Alternate Routing Number</label>
+                                    <span class="form-help-text"> Optional</span>
+                                    <input name="routingNumber"
+                                        [(ngModel)]="selectedVendor.routingNumber" maxlength="25" class="form-control"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-auto">
+                                <div class="form-group">
+                                    <label class="form-control-label">Account Type</label>
+                                    <span class="form-help-text"> Optional</span>
+                                    <div class="custom-control custom-radio">
+                                        <input 
+                                            id="at-checking"
+                                            type="radio" 
+                                            name="accountType" 
+                                            [(ngModel)]="selectedVendor.accountTypeId"
+                                            [value]="1"
+                                            class="custom-control-input"/>
+                                        <label class="custom-control-label" for="at-checking">Checking</label>
+                                    </div>
+                                    <div class="custom-control custom-radio">
+                                        <input 
+                                            id="at-savings"
+                                            type="radio" 
+                                            name="accountType" 
+                                            [(ngModel)]="selectedVendor.accountTypeId"
+                                            [value]="2"
+                                            class="custom-control-input"/>
+                                        <label class="custom-control-label" for="at-savings">Savings</label>
+                                    </div>
+                                    <button id="at-clear" type="button" (click)="selectedVendor.accountTypeId = null;" class="btn btn-radio-clear">
+                                        Clear
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ds-card-content>
+    </ds-card>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12">
+                    <button class="btn float-right btn-save" name="save" (click)="saveClick()" CausesValidation="True">
+                        Save
+                    </button>
+                    <button type="button" *ngIf="selectedVendor.vendorId" name="delete" class="btn btn-delete" (click)="deleteClick(frmVendorGeneral);">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form> 

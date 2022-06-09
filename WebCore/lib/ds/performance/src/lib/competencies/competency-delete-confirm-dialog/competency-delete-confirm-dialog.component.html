@@ -1,0 +1,20 @@
+<div mat-dialog-content>
+    <div class="text-center mt-2">
+        <div class="bold">
+            Are you sure you want to remove this competency?
+        </div>
+        Removing a competency removes it from all future reviews and is not recoverable.
+    </div>
+</div>
+<div mat-dialog-actions>
+    <button
+        type="button"
+        class="btn btn-primary"
+        (click)="onNoClick()"
+    >Cancel</button>
+    <button
+        type="button"
+        class="btn btn-delete"
+        (click)="deleteCompetency()"
+    >Remove</button>
+</div>

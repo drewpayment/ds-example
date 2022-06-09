@@ -1,0 +1,82 @@
+<div [hidden]="!templatesLoaded">
+    <div class="card card-xl-table" *ngIf="templatesDataSource.data.length > 0, else emptyState">
+        <div class="table-xl-responsive">
+            <mat-table [dataSource]="templatesDataSource" matSort color="primary">
+                <ng-container matColumnDef="clockName">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="clockName"> Clock Name
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let template" class="clockName" data-label="Clock Name">
+                        <div class="text-truncate">{{template.clockName}}</div>
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="devSn">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="devSn table-text-right"> Serial Number
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let template" class="devSn table-text-right" data-label="Serial Number">
+                        {{template.devSn}}
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="ipAddress">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="ipAddress table-text-right"> IP Address
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let template" class="ipAddress table-text-right" data-label="IP Address">
+                        {{template.ipAddress}}
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="pin">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="pin table-text-right"> PIN
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let template" class="pin table-text-right" data-label="PIN">
+                        {{template.pin}}
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="fid">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="fid table-text-right"> FID
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let template" class="fid table-text-right" data-label="FID">
+                        {{template.fid}}
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="size">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="size table-text-right"> Size
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let template" class="size table-text-right" data-label="Size">
+                        {{template.size}}
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="valid">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="valid"> Valid
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let template" class="valid" data-label="Valid">
+                        {{template.valid == "1" ? "Yes" : "No"}}
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="tmpStr">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="tmpStr"> Encrypted Fingerprint (BASE64)
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let template" class="tmpStr" data-label="Tmp">
+                        <div class="text-truncate">{{template.tmpStr}}</div>
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: columns;"></mat-row>
+            </mat-table>
+            <mat-paginator #templatesPaginator [pageSizeOptions]="[10, 25, 50]" [pageSize]="25" showFirstLastButtons></mat-paginator>
+        </div>
+    </div>
+</div>
+<ng-container *ngIf="!templatesLoaded">
+    <ds-loading-message></ds-loading-message>
+</ng-container>
+
+<ng-template #emptyState>
+    <div class="empty-state">There is no data to display.</div>
+</ng-template>

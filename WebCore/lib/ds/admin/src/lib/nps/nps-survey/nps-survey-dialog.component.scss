@@ -1,0 +1,12 @@
+.desktop-label {
+    flex: 0 0 auto; 
+}
+
+@media screen and (min-width: 601px) {
+    .desktop-label:first-of-type {
+        margin-right: 10px;
+    }
+    .desktop-label:last-of-type {
+        margin-left: 10px;
+    }
+}

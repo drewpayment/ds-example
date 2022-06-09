@@ -1,0 +1,40 @@
+<div class="card card-table">
+    <mat-table [dataSource]="dataSource" color="primary" matSort matSortActive="firstName" (matSortChange)="sort" matSortDirection="asc" matSortDisableClear>
+        <ng-container matColumnDef="Name">
+            <mat-header-cell *matHeaderCellDef mat-sort-header class="demographic-name"> Name </mat-header-cell>
+            <mat-cell *matCellDef="let element" class="demographic-name"> {{element.lastName}}, {{element.firstName}}  </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Status">
+            <mat-header-cell *matHeaderCellDef mat-sort-header class="demographic-department"> Status </mat-header-cell>
+            <mat-cell *matCellDef="let element" class="demographic-department"> {{element.status}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Pay Type">
+            <mat-header-cell *matHeaderCellDef mat-sort-header class="demographic-costCenter"> Pay Type </mat-header-cell>
+            <mat-cell *matCellDef="let element" class="demographic-costCenter"> {{element.payType}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Length Of Service">
+            <mat-header-cell *matHeaderCellDef mat-sort-header class="demographic-demographicDate"> Length Of Service </mat-header-cell>
+            <mat-cell *matCellDef="let element" class="demographic-demographicDate"> {{element.lengthOfService}} months </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Age">
+            <mat-header-cell *matHeaderCellDef mat-sort-header class="demographic-demographicReason"> Age </mat-header-cell>
+            <mat-cell *matCellDef="let element" class="demographic-demographicReason">
+                <ng-container *ngIf="element.age > 0"> {{element.age}} </ng-container>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Gender">
+            <mat-header-cell *matHeaderCellDef mat-sort-header class="demographic-gender"> Gender </mat-header-cell>
+            <mat-cell *matCellDef="let element" class="demographic-demographicReason"> {{element.gender}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="Ethnicity">
+            <mat-header-cell *matHeaderCellDef mat-sort-header class="demographic-gender"> Ethnicity </mat-header-cell>
+            <mat-cell *matCellDef="let element" class="demographic-demographicReason"> {{element.ethnicity}} </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+    <mat-paginator [hidden]="dataSource.filteredData.length == 0" [length]="dataSource?.filteredData?.length" [pageSize]="10" [pageSizeOptions]="[10, 25, 50 ]">
+    </mat-paginator>
+
+    <div *ngIf="dataSource.filteredData.length == 0" class="empty-state">There are no employees to display that match this search.</div>
+</div>

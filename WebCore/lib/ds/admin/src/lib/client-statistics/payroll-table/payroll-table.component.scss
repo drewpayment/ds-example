@@ -1,0 +1,69 @@
+@import '../../../../../../../Styles/scss/bootstrap-variables';
+
+.payroll-table-clientName {
+    flex: 1 1 150px;
+}
+
+.payroll-table-clientCode {
+    flex: 0 0 65px;
+}
+
+.payroll-table-primaryContact {
+    flex: 0 1 130px;
+}
+
+.payroll-table-phone {
+    flex: 0 0 150px;
+}
+
+.payroll-table-email {
+    flex: 0 1 185px;
+}
+
+.payroll-table-status {
+    flex: 0 1 75px;
+}
+
+.payroll-table-processDay {
+    flex: 0 1 75px;
+}
+
+.payroll-table-frequency {
+    flex: 0 1 90px;
+}
+
+.payroll-table-dataEntry {
+    flex: 0 1 75px;
+}
+
+.payroll-table-lastCheckDateRun {
+    flex: 0 1 90px;
+}
+
+.payroll-table-lastPayrollAccepted {
+    flex: 0 1 90px;
+}
+
+mat-cell{
+    font-size: small;
+}
+
+mat-header-cell{
+    font-size: small;
+}
+
+.complete {
+    color: $green;
+}
+
+.overdue{
+    color: $red;
+}
+
+.expected{
+    color: $blue;
+}
+
+.error{
+    color: $red;
+}

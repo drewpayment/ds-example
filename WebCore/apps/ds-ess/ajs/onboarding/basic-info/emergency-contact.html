@@ -1,0 +1,240 @@
+﻿<div ng-show="isLoading">Loading Emergency Contact...</div>
+
+
+<div ng-show="isLoaded">
+    <div class="ess-container">
+        <div class="panel clearfix">
+            <div class="panel-body">
+                    <div class="d-flex flex-wrap on-header">
+                        <div class="circle-sm on-pager">{{circleNumber}}</div>
+                        <div class="top-constant">
+                            <h1>Emergency Contact</h1>
+                            <p class="text-muted">Please add at least one emergency contact to your profile.</p>
+                        </div>
+                    </div>
+                    <form name="frmEmergencyContact">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div ng-repeat="emercontact in EmployeeOnboardingEmergencyContactList" class="listorEditEmergencyContacts">
+                                <div ng-if="!(isEdit(emercontact))" class="list-view form-group">
+                                    <div class="flex-row">
+                                        <div class="flex-column list-view-icon flex-0-0-auto">
+                                            <i class="fa fa-user fa-4x" style="color: grey;"></i>
+                                        </div>
+                                        <div class="flex-column flex-1-1">
+                                            <p class="long-and-truncated"><b>{{emercontact.firstName + ' ' + emercontact.lastName}}</b>
+                                                <a class="pull-right pr-sm pl-sm" ng-click="editContact(emercontact)"><i
+                                                        class="fa fa-pencil fa-1x" style="color: orange;"></i></a>
+                                            </p>
+                                            <p><i class="fa fa-phone text-primary"></i>&nbsp;<b
+                                                    class="text-primary">{{emercontact.homePhoneNumber}}</b></p>
+                                        </div>
+                                        <div class="flex-column flex-1-1">
+                                            <div ng-hide="emercontact.emailAddress">
+                                                <p><i class="fa fa-envelope text-muted "></i><b class="text-muted">&nbsp;Email Address not
+                                                        provided</b></p>
+                                            </div>
+                                            <div ng-show="emercontact.emailAddress">
+                                                <p class="long-and-truncated">
+                                                    <i class="fa fa-envelope text-primary"></i>
+                                                    <b class="text-primary">
+                                                    {{emercontact.emailAddress}}</b>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div ng-if="(isEdit(emercontact))" class="editView">
+                                    <div class="pt-sm pl-md pr-md" style="border: 1px solid #e2dfdf;">
+                                        <div class="row">
+                                            <div class="col-sm-4 form-group">
+                                                <label>First Name</label>
+                                                <input
+                                                       name="EditFirstName"
+                                                       ng-model="selected.firstName"
+                                                       type="text"
+                                                       class="form-control capitalize"
+                                                       maxlength="25"
+                                                       ng-required="true"
+                                                       ng-class="{ 'mandatory-field' : frmEmergencyContact.EditFirstName.$invalid}"/>
+
+
+                                            </div>
+                                            <div class="col-sm-4 form-group">
+                                                <label>Last Name</label>
+                                                <input name="EditLastName"
+                                                       ng-model="selected.lastName"
+                                                       type="text"
+                                                       class="form-control capitalize"
+                                                       ng-required="true"
+                                                       ng-class="{ 'mandatory-field' : frmEmergencyContact.EditLastName.$invalid}"/>
+                                            </div>
+                                            <div class="col-sm-4 form-group">
+                                                <label>Relationship</label>
+                                                <select class="form-control" ng-options="relationship.description as relationship.description for relationship in EmergencyContactRelationshipList | orderBy : 'description'" ng-model="selected.relation"></select>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-6 form-group">
+                                                <label>Primary Number</label>
+                                                <input name="EditPhoneNumber"
+                                                       type="tel"
+                                                       ds-mask="000-000-0000" placeholder="Primary Phone"
+                                                       ng-model="selected.homePhoneNumber"
+                                                       class="form-control"
+                                                       ng-required="true"
+                                                       ng-class="{ 'mandatory-field' : (frmEmergencyContact.EditPhoneNumber.$invalid || selected.homePhoneNumber.length!=12)}"/>
+                                            </div>
+
+                                            <div class="col-sm-6 form-group">
+                                                <label>Email Address</label>
+                                                <input name="EditEmail"
+                                                       type="email"
+                                                       ng-model="selected.emailAddress"
+                                                       class="form-control"
+                                                       placeholder="Optional"
+                                                       ng-class="{ 'mandatory-field' : frmEmergencyContact.EditEmail.$invalid}"/>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="row text-right pb-sm" ng-click="deleteContact()">
+                                            <div class="col-sm-12 form-group">
+
+                                                <i class="icon-trash icon-1x clickable" style="color: red;"></i>
+                                                <b class="clickable" style="color: red;">Remove Contact</b>
+
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="row form-group">
+                                        <div class="col-sm-12 pt-sm">
+
+                                            <input type="button" ng-click="cancel()" value="Cancel" class="btn btn-default pull-left" />
+                                            <input type="button" ng-click="addOrUpdateNewContact()" value="Save Contact" class="btn btn-primary pull-right" />
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="displayAddContactButton" ng-if="(((EmployeeOnboardingEmergencyContactList).length) && !isAdding)">
+                                <br />
+                                <input type="button" ng-click="addContact()" value="Add Contact" class="btn btn-primary" />
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <br />
+                    <div class="row">
+                        <div id="myForm" class="form-group">
+
+                            <div class="col-sm-12">
+                                <div ng-if="!((EmployeeOnboardingEmergencyContactList).length) || isAdding" class="editForAddingFirstEmergencyContact">
+
+
+                                    <div class="editView">
+                                        <div class="pt-lg pl-lg pr-lg pb-lg" style="border: 1px solid #e2dfdf;">
+                                            <div class="row">
+                                                <div class="col-sm-4 form-group">
+                                                    <label>First Name</label>
+                                                    <input name="AddFirstName" id="AddFirstName"
+                                                           ng-model="selected.firstName"
+                                                           type="text"
+                                                           class="form-control capitalize"
+                                                           maxlength="25"
+                                                           ng-required="true"
+                                                           ng-class="{ 'mandatory-field' : frmEmergencyContact.AddFirstName.$invalid && isHardStop,
+                                                           'required-field' : (frmEmergencyContact.AddFirstName.$invalid && (!isCompleted || isSoftWarned))}"/>
+                                                </div>
+                                                <div class="col-sm-4 form-group">
+                                                    <label>Last Name</label>
+                                                    <input name="AddLastName" id="AddLastName"
+                                                           ng-model="selected.lastName"
+                                                           type="text"
+                                                           class="form-control capitalize"
+                                                           ng-required="true"
+                                                           ng-class="{ 'mandatory-field' : frmEmergencyContact.AddLastName.$invalid && isHardStop,
+                                                           'required-field' : (frmEmergencyContact.AddLastName.$invalid && (!isCompleted || isSoftWarned) )}"/>
+                                                </div>
+                                                <div class="col-sm-4 form-group">
+                                                    <label>Relationship</label>
+                                                    <input name="AddRelationship" id="AddRelationship"
+                                                           ng-model="selected.relation"
+                                                           type="text"
+                                                           class="form-control "
+                                                           maxlength="20"
+                                                           ng-required="true"
+                                                           ng-class="{ 'mandatory-field' : frmEmergencyContact.AddRelationship.$invalid && isHardStop,
+                                                           'required-field' : (frmEmergencyContact.AddRelationship.$invalid && (!isCompleted || isSoftWarned) )}"/>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-6 form-group">
+                                                    <label>Primary Number</label>
+                                                    <input name="AddPhoneNumber" id="AddPhoneNumber"
+                                                           type="tel"
+                                                           ds-mask="000-000-0000" placeholder="Primary Phone"
+                                                           ng-model="selected.homePhoneNumber"
+                                                           class="form-control"
+                                                           ng-required="true"
+                                                           ng-class="{ 'mandatory-field' : (frmEmergencyContact.AddPhoneNumber.$invalid || selected.homePhoneNumber.length!=12) && (isHardStop),
+                                                           'required-field' : (frmEmergencyContact.AddPhoneNumber.$invalid && (!isCompleted || isSoftWarned))}"/>
+                                                </div>
+
+                                                <div class="col-sm-6 form-group">
+                                                    <label>Email Address</label>
+                                                    <input name="AddEmail"
+                                                           ng-model="selected.emailAddress"
+                                                           type="email"
+                                                           class="form-control"
+                                                           placeholder="Optional"
+                                                           ng-class="{ 'mandatory-field' : frmEmergencyContact.AddEmail.$invalid}"/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row pt-sm pl-md pr-md">
+
+
+
+                                            <input ng-show="((EmployeeOnboardingEmergencyContactList).length)" type="button" ng-click="cancel()" value="Cancel" class="btn btn-default pull-left" />
+
+
+
+                                            <input type="button" ng-click="addOrUpdateNewContact()" value="Save Contact" class="btn btn-primary pull-right" />
+
+                                        </div>
+
+
+
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row pl-0">
+                        <hr style="height: 1px; border: none; color: #e2dfdf; background-color: #e2dfdf;" />
+                    </div>
+
+                    <div class="row pl-0">
+                        <ds-nav-workflow-footer workflow-hide-next="false" workflow-hide-prev="false"
+                            my-workflow="myWorkflow"
+                            on-save="$ctrl.clickSavePageData($direction)" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--col-md-9-->

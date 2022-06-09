@@ -1,0 +1,41 @@
+<div mat-dialog-header>
+    <h2 class="modal-title d-inline">
+        Update Balance
+    </h2>
+    <button type="button" class="close" aria-label="Close" (click)="closeModal()" >
+        <i class="material-icons">clear</i>
+    </button>
+</div>
+<div mat-dialog-content>
+    <div [formGroup]="form">
+        <div class="form-group">
+            <label>Expire Date</label>
+            <div class="input-group">
+                <input matInput
+                    cdk-focus-initial
+                    class="form-control input-group-height"
+                    [matDatepicker]="processExpireDatepicker"
+                    formControlName="expireDate"
+                    [ngClass]="{'is-invalid' : invalid}"
+                    required
+                />
+                <div class="input-group-addon">
+                    <mat-datepicker-toggle matSuffix
+                        [for]="processExpireDatepicker"
+                        class="input-group-text date"
+                    >
+                        <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #processExpireDatepicker></mat-datepicker>
+                </div>
+            </div>
+            <div *ngIf="invalid"  class="invalid-feedback">
+                Please enter a valid date.
+            </div>
+        </div>
+    </div>
+</div>
+<div mat-dialog-actions>
+    <button type="button" (click)="updateBalance()" class="btn btn-primary">Update Balance</button>
+    <button type="button" (click)="closeModal()" class="btn btn-cancel">Cancel</button>
+</div>

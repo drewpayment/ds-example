@@ -1,0 +1,188 @@
+<ds-card mode="nobody" border="top">
+    <ds-card-header>
+        <ds-card-header-title>General Journal Mapping</ds-card-header-title>
+    </ds-card-header>
+</ds-card>
+
+<ds-card>
+    <ds-card-header>
+        <ds-card-sub-header-title>Filter</ds-card-sub-header-title>
+    </ds-card-header>
+    <ds-card-content *ngIf="!isLoading">
+        <div class="row align-items-baseline">
+            <div class="col-xl-12">
+                <div class="row">
+                    <div class="col-md-6 col-xl-3">
+                        <div class="form-group">
+                            <label class="form-control-label">Class</label>
+                            <select class="form-control custom-select" [(ngModel)]="filterOptions.selectedClass">
+                                <option value="1">Department</option>
+                                <option value="2">Cost Center</option>
+                                <option value="3">Group</option>
+                                <option value="4">Division</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xl-3">
+                        <div class="form-group">
+                            <label class="form-control-label">Accounting Category</label>
+                            <select class="form-control custom-select" [(ngModel)]="filterOptions.selectedCategory" (change)="changeCategory()">
+                                <option value="1" *ngIf="filterOptions.cashGLTypes && filterOptions.cashGLTypes.length">Cash</option>
+                                <option value="2" *ngIf="filterOptions.liabilityGLTypes && filterOptions.liabilityGLTypes.length">Liability</option>
+                                <option value="3" *ngIf="filterOptions.expenseGLTypes && filterOptions.expenseGLTypes.length">Expense</option>
+                                <option value="4" *ngIf="filterOptions.paymentGLTypes && filterOptions.paymentGLTypes.length">Payment</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xl-3">
+                        <div class="form-group">
+                            <label class="form-control-label">Payroll Transaction</label>
+                            <select class="form-control custom-select" [(ngModel)]="filterOptions.selectedGeneralLedgerType" (change)="searchForSubTransactions()">
+                                <option *ngFor="let gl of filterOptions.GLTypesFromCategory" [ngValue]="gl.generalLedgerTypeId">{{ gl.description }}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xl-3" *ngIf="hasSubTransactions">
+                        <div class="form-group">
+                            <label class="form-control-label">Payroll Field</label>
+                            <select class="form-control custom-select" [(ngModel)]="filterOptions.selectedSubPayrollTransaction">
+                                <option *ngFor="let spt of filterOptions.subPayrollTransactionsFromType" [ngValue]="spt.foreignKeyId">{{ spt.description }}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-xl-3">
+                        <div class="form-group">
+                            <label class="form-control-label">Default Account</label>
+                            <select class="form-control custom-select" [(ngModel)]="selectedDefaultAccountId">
+                                <option [value]="null"></option>
+                                <option *ngFor="let acc of glAccounts" [ngValue]="acc.accountId">{{ acc.description }}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ds-card-content>
+    <ds-card-content *ngIf="isLoading">
+        <ds-loading-message></ds-loading-message>
+    </ds-card-content>
+    <ds-card-footer *ngIf="!isLoading">
+        <div class="row justify-content-end">
+            <div class="col-auto">
+                <button type="button" class="btn btn-outline-primary" (click)="getFilteredMappingItems()">Filter</button>
+            </div>
+        </div>
+    </ds-card-footer>
+</ds-card>
+
+<form #formControl="ngForm" novalidate dsTrackFormChanges>
+    <ds-card mode="noheader" *ngIf="hasTableData">
+        <ds-card-content *ngIf="!isLoadingTable">
+            <div class="card card-table sticky" *ngIf="matList && matList.data && matList.data.length">
+                <mat-table [dataSource]="matList">
+                    <ng-container matColumnDef="Code">
+                        <mat-header-cell *matHeaderCellDef> Code </mat-header-cell>
+                        <mat-cell *matCellDef="let element;" data-label="Code"> {{element.classCode}} </mat-cell>
+                    </ng-container>
+    
+                    <ng-container matColumnDef="Description">
+                        <mat-header-cell *matHeaderCellDef> Description </mat-header-cell>
+                        <mat-cell *matCellDef="let element" data-label="Description"> {{element.classDescription}} </mat-cell>
+                    </ng-container>
+    
+                    <ng-container matColumnDef="Account">
+                        <mat-header-cell *matHeaderCellDef> Account </mat-header-cell>
+                        <mat-cell *matCellDef="let element; let i = index" data-label="Account">
+                            <mat-select (keypress)="typeToObject($event, element.clientGeneralLedgerId, i)" class="form-control custom-select gen-ledger" (openedChange)="openChange($event, element.clientGeneralLedgerId, i)"
+                                name="{{'itemAccount' + i}}" [(ngModel)]="element.clientGeneralLedgerId" placeholder="-- Default --" panelClass="gl-assignment-panel">
+                                <ng-container *ngIf="element.clientGeneralLedgerId != null">
+                                    <mat-option [value]="element.clientGeneralLedgerId" style="visibility: hidden; height: 0px">{{getDescription(element.clientGeneralLedgerId)}}</mat-option>
+                                </ng-container>
+                                <cdk-virtual-scroll-viewport #accountSelect itemSize="26" minBufferPx="200" maxBufferPx="400" class="gl-viewport">
+                                    <mat-option [value]="null" class="gl-item">-- Default --</mat-option>
+                                    <mat-option *cdkVirtualFor="let acc of glAccounts; templateCacheSize: 0" class="gl-item" [value]="acc.accountId">{{acc.number}} ({{acc.description}})</mat-option>
+                                </cdk-virtual-scroll-viewport>
+                            </mat-select>
+                        </mat-cell>
+                    </ng-container>
+    
+                    <ng-container *ngIf="checkForColumn('Class Group')" matColumnDef="Class Group">
+                        <mat-header-cell *matHeaderCellDef> Class Group </mat-header-cell>
+                        <mat-cell *matCellDef="let element; let i = index" data-label="Class Group">
+                            <select class="custom-select form-control class-group" name="{{'itemClassGroup' + i}}"
+                                [(ngModel)]="element.clientGLClassGroupId">
+                                <option value="null" class="text-muted">-- Select Class Group --</option>
+                                <option *ngFor="let lg of glClassGroups" [ngValue]="lg.clientGLClassGroupId">{{ lg.classGroupDesc }}</option>
+                            </select>
+                        </mat-cell>
+                    </ng-container>
+    
+                    <ng-container *ngIf="checkForColumn('Project')" matColumnDef="Project">
+                        <mat-header-cell *matHeaderCellDef> Project </mat-header-cell>
+                        <mat-cell *matCellDef="let element; let i = index" data-label="Project">
+                                <input type="text" class="form-control project" name="{{'ItemProject' + i}}"
+                                    [(ngModel)]="element.project" maxlength="100" />
+                        </mat-cell>
+                    </ng-container>
+    
+                    <ng-container *ngIf="checkForColumn('Accrued')" matColumnDef="Accrued">
+                        <mat-header-cell *matHeaderCellDef class="justify-content-center"> Accrued </mat-header-cell>
+                        <mat-cell *matCellDef="let element; let i = index" class="table-checkbox" data-label="Accrued">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="{{'accruedCB' + i}}"
+                                      name="{{'accruedCB' + i}}" [(ngModel)]="element.isAccrued">
+                                    <label class="custom-control-label" for="{{'accruedCB' + i}}"><span>Accrued</span></label>
+                                </div>
+                        </mat-cell>
+                    </ng-container>
+    
+                    <ng-container *ngIf="checkForColumn('Detail')" matColumnDef="Detail">
+                        <mat-header-cell *matHeaderCellDef class="justify-content-center"> Detail </mat-header-cell>
+                        <mat-cell *matCellDef="let element; let i = index" class="table-checkbox" data-label="Detail">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="{{'detailCB' + i}}" 
+                                        name="{{'detailCB' + i}}" [(ngModel)]="element.isDetail">
+                                    <label class="custom-control-label" for="{{'detailCB' + i}}"><span>Detail</span></label>
+                                </div>
+                        </mat-cell>
+                    </ng-container>
+    
+                    <ng-container *ngIf="checkForColumn('Offset')" matColumnDef="Offset">
+                        <mat-header-cell *matHeaderCellDef class="justify-content-center" data-label="Offset"> Offset </mat-header-cell>
+                        <mat-cell *matCellDef="let element; let i = index" class="table-checkbox">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="{{'offsetCB' + i}}"
+                                      name="{{'offsetCB' + i}}" [(ngModel)]="element.isOffset">
+                                    <label class="custom-control-label" for="{{'offsetCB' + i}}"><span>Offset</span></label>
+                                </div>
+                        </mat-cell>
+                    </ng-container>
+    
+                    <ng-container *ngIf="checkForColumn('Sequence Number')" matColumnDef="Sequence Number">
+                        <mat-header-cell *matHeaderCellDef> Sequence Number </mat-header-cell>
+                        <mat-cell *matCellDef="let element; let i = index" data-label="Sequence Number">
+                            <input type="number" class="form-control sequence" name="{{'SItemSequence' + i}}"
+                            [(ngModel)]="element.sequenceNum" />
+                        </mat-cell>
+                    </ng-container>
+    
+                    <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                </mat-table> 
+                <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[10,25,50]" showFirstLastButtons></mat-paginator>
+            </div>
+            <ng-container *ngIf="matList && ((matList.data && matList.data.length == 0) || matList.data == null)">
+                <div class="empty-state">There are no general journal mapping items to display.</div>
+            </ng-container>
+        </ds-card-content>
+        <ds-card-content *ngIf="isLoadingTable">
+            <ds-loading-message></ds-loading-message>
+        </ds-card-content>
+        <ds-card-footer *ngIf="!isLoadingTable && hasTableData && matList && matList.data && matList.data.length">
+            <button type="button" class="btn btn-primary float-right" [disabled]="isSaving" (click)="isSaving=true; saveMappingItems()">Save</button>
+            <button type="button" class="btn btn-cancel" (click)="resetAccount()">Reset Accounts</button>
+        </ds-card-footer>
+    </ds-card>
+</form>

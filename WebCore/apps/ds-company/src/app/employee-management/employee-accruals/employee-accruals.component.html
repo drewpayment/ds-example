@@ -1,0 +1,539 @@
+<ds-employee-header (employeeNavigated)="switchEmployee()"></ds-employee-header>
+
+<ds-card color="secondary" border="top" mode="nobody">
+  <ds-card-header>
+    <ds-card-header-title>Benefits</ds-card-header-title>
+    <ds-card-subtitle>
+      <nav aria-label="breadcrumb" *ngIf="baseUrl">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a [href]="employeeListUrl">Employee List</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">
+            Benefits
+          </li>
+        </ol>
+      </nav>
+    </ds-card-subtitle>
+    <ds-card-title-right-content>
+      <div class="d-flex align-items-center justify-content-end">
+        <label class="custom-control-label" for="chkReminderDate">Reminder&nbsp;Date</label>
+        <a class="ds-tooltip mx-2" title="tip:https://dominionsystems.helpdocsonline.com/ID3644">
+          <i class="tooltip-icon material-icons">help</i>
+        </a>
+        <label class="switch switch-default switch-sm switch-pill switch-success mt-1">
+          <input type="checkbox" class="switch-input" id="chkReminderDate" [(ngModel)]="reminderDateActive">
+          <span class="switch-label"></span>
+          <span class="switch-handle"></span>
+          <span class="ds-switch-off">Off</span>
+          <span class="ds-switch-on">On</span>
+        </label>
+        <div class="input-group ml-2" >
+          <input matInput #reminderDateInput class="form-control" [disabled]="!reminderDateActive"
+            [matDatepicker]="reminderDatePicker" [(ngModel)]="reminderDate" name="reminderDatePicker"
+            #reminderDateNgModel="ngModel" [min]="minDate" />
+          <div class="input-group-append">
+            <mat-datepicker-toggle matSuffix [for]="reminderDatePicker" class="input-group-text date">
+              <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+            </mat-datepicker-toggle>
+            <mat-datepicker #reminderDatePicker></mat-datepicker>
+          </div>
+        </div>
+      </div>
+    </ds-card-title-right-content>
+  </ds-card-header>
+  <ds-card-content *ngIf="!isLoading && isSupervisorOnHimself">
+    <div class="row justify-content-center">
+      <div class="col-auto">
+        <div class="empty-state-cycle warning">
+          <mat-icon class="material-icons">warning</mat-icon>
+          <div class="title">
+            You cannot make changes to your own benefit information.
+          </div>
+        </div>
+      </div>
+    </div>
+  </ds-card-content>
+</ds-card>
+
+<ng-container *ngIf="!isLoading; else loadingScreen">
+  <ng-container *ngIf="!isSupervisorOnHimself">
+    <ng-container *ngTemplateOutlet="renderScreen"></ng-container>
+  </ng-container>
+</ng-container>
+
+<ng-template #renderScreen>
+  <ng-container *ngIf="employeeAccrualList?.length > 0; else policyEmptyState">
+    <ds-card>
+      <ds-card-header>
+        <ds-card-header-title>Time Off Policies</ds-card-header-title>
+        <ds-card-inline-content>
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" name="chkIncludeInActive" id="chkIncludeInActive"
+              [(ngModel)]="includeInActive">
+            <label class="custom-control-label" for="chkIncludeInActive">Show Inactive Policies</label>
+          </div>
+        </ds-card-inline-content>
+      </ds-card-header>
+      <ds-card-content>
+        <mat-drawer-container 
+          hasBackdrop="true"  
+          (backdropClick)="clearDrawer()"
+          [@changeDrawerHeightOnOpenSm]="activeId != 0">
+          <mat-drawer-content>
+            <ng-container *ngFor="let accr of accruals; let i = index;">
+              <ds-card mode="widget-nobody" [color]="(accr.isActive ? 'info' : 'disabled')"
+                (click)="!essViewOnly &&  toggleActiveAccrual(accr.clientAccrualId)" hover="true">
+                <div ds-card-icon>airplanemode_on</div>
+                <ds-card-header>
+                  <ds-card-widget-title>{{accr.description}}<span *ngIf="accr.balance"> | {{accr.balance | number:
+                      '1.2-2'}}</span></ds-card-widget-title>
+                  <ds-card-title-action>
+                    <span *ngIf="!accr.isActive" class="badge badge-pill badge-disabled">Inactive</span>
+                  </ds-card-title-action>
+                  <ds-card-subtitle>
+                    <div class="card-data-grid">
+                      <ng-container>
+                        <div class="label">Reference Date</div>
+                        <div class="value">{{accr.referenceDate | date:'MM/dd/yyyy'}}</div>
+                      </ng-container>
+                      <ng-container>
+                        <div class="label">Source</div>
+                        <div class="value">{{accr.referencePoint ? accr.referencePoint : '&mdash;'}}</div>
+                      </ng-container>
+                      <ng-container *ngIf="accr.rate">
+                        <div class="label">Rate</div>
+                        <div class="value">{{accr.rate ? (accr.rate | number: '1.2-2') : '&mdash;'}}</div>
+                      </ng-container>
+                      <ng-container>
+                        <div class="label">Awards</div>
+                        <div class="value">{{accr.allowScheduledAwards ? 'On' : '&mdash;'}}</div>
+                      </ng-container>
+                    </div>
+                  </ds-card-subtitle>
+                </ds-card-header>
+              </ds-card>
+            </ng-container>
+          </mat-drawer-content>
+          <mat-drawer 
+            #drawer 
+            [mode]="over" 
+            position="end" 
+            [opened]="activeId != 0" 
+            [class.open]="activeId != 0"
+            [@matDrawerAfterHeightChange]="activeId != 0">
+            <ng-container *ngIf="activeAccrual != null; else loadingScreen">
+              <form class="mat-drawer-inner-container-form" (keydown.esc)="clearDrawer()">
+                <div class="drawer-header">
+                  <button type="button" (click)="clearDrawer()" class="btn btn-icon">
+                    <mat-icon>chevron_right</mat-icon>
+                  </button>
+                  <h2>
+                    {{activeAccrual.description}}
+                  </h2>
+                  <div class="custom-control custom-checkbox mx-4 mt-3">
+                    <input type="checkbox" class="custom-control-input" name="chkActive" id="chkActive"
+                      (change)="activeAccrual.isDirty=true" [(ngModel)]="activeAccrual.isActive">
+                    <label class="custom-control-label" for="chkActive">Active</label>
+                  </div>
+                </div>
+                <div class="drawer-content">
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="card-data-grid">
+                        <div class="label">Reference Date</div>
+                        <div class="value">{{activeAccrual.referenceDate | date:'MM/dd/yyyy'}}</div>
+                        <div class="label">Source</div>
+                        <div class="value">{{activeAccrual.referencePoint ? activeAccrual.referencePoint : '&mdash;'}}
+                        </div>
+                        <div class="label">Balance</div>
+                        <div class="value">{{activeAccrual.balance | number: '1.2-2'}}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12">
+                      <hr />
+                    </div>
+                    <div class="col-12">
+                      <div class="form-group">
+                        <div class="custom-control custom-checkbox">
+                          <input type="checkbox" class="custom-control-input" name="chkAwards" id="chkAwards"
+                            (change)="activeAccrual.isDirty=true" [(ngModel)]="activeAccrual.allowScheduledAwards">
+                          <label class="custom-control-label" for="chkAwards">Awards</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </ng-container>
+          </mat-drawer>
+        </mat-drawer-container>
+      </ds-card-content>
+    </ds-card>
+  </ng-container>
+
+  <form dsTrackFormChanges [submitted]="formSubmitted" [disabled]="essViewOnly" [formGroup]="f">
+    <div class="row">
+      <div [class]="showCustomFields ? 'col-xl-6' : 'col-xl-12'" >
+        <ng-container *ngIf="!essViewOnly; else readOnlyBenefitSettings">
+          <ds-card class="card-height-fix-sm">
+            <ds-card-header>
+              <ds-card-header-title>Benefit Information</ds-card-header-title>
+              <ds-card-inline-content>
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" formControlName="benefitEligible"
+                    id="chkBenefitEligible">
+                  <label class="custom-control-label" for="chkBenefitEligible">Benefit Eligible</label>
+                </div>
+              </ds-card-inline-content>
+            </ds-card-header>
+            <ds-card-content>
+
+                <div class="row">
+                  <div [class]="showCustomFields ? 'col-md-6 col-lg-6 col-2xl-6' : 'col-md-3 col-lg-3 col-2xl-3'">
+                    <div class="form-group">
+                      <label class="form-control-label">Date Eligible</label>
+                      <div class="input-group">
+                        <input matInput [matDatepicker]="eligibleDatepicker" class="form-control"
+                          formControlName="eligibleDate" dsFormControlValidator
+                          [dsFormControlSubmitted]="formSubmitted" />
+                        <div class="input-group-append">
+                          <mat-datepicker-toggle matSuffix [for]="eligibleDatepicker" class="input-group-text date">
+                            <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                          </mat-datepicker-toggle>
+                          <mat-datepicker #eligibleDatepicker></mat-datepicker>
+                        </div>
+                        <div class="invalid-feedback" *ngIf="f.controls.eligibleDate.errors?.required">
+                          Please enter an eligible date.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-auto">
+                    <div class="form-group">
+                      <label class="form-control-label">Birth Date</label>
+                      <div class="bold mt-2">{{employeeBenefitSettings.birthDate ? (employeeBenefitSettings.birthDate | date: "MM/dd/yyyy") :  '&mdash;' }}</div>
+                    </div>
+                  </div>
+                  <div class="col-auto">
+                    <div class="form-group">
+                      <label class="form-control-label">Age</label>
+                      <div class="bold mt-2">{{employeeBenefitSettings.birthDate ? getAgeInYears(employeeBenefitSettings.birthDate) :  '&mdash;'}}</div>
+                    </div>
+                  </div>
+                
+                  <div [class]="showCustomFields ? 'col-md-6 col-lg-6 col-2xl-6' : 'col-md-3 col-lg-3 col-2xl-3'" [hidden]="!isBenefitPortalEnabled && benefitPackages.length == 0">
+                    <div class="form-group">
+                      <label class="form-control-label">Benefit Package</label>
+                      <select class="custom-select form-control" dsFormControlValidator
+                        [dsFormControlSubmitted]="formSubmitted" formControlName="benefitPackage">
+                        <option value=""></option>
+                        <option *ngFor="let pack of benefitPackages" [value]="pack.benefitPackageId">{{pack.name}}
+                        </option>
+                      </select>
+                      <div class="invalid-feedback" *ngIf="f.controls.benefitPackage.errors?.required">
+                        Please select a package.
+                      </div>
+                    </div>
+                  </div>
+                  <div [class]="showCustomFields ? 'col-md-6 col-lg-6 col-2xl-6' : 'col-md-3 col-lg-3 col-2xl-3'" [hidden]="!isBenefitPortalEnabled">
+                    <div class="form-group">
+                      <label class="form-control-label">Salary Determination Method</label>
+                      <select class="custom-select form-control" dsFormControlValidator
+                        [dsFormControlSubmitted]="formSubmitted" formControlName="salaryMethod">
+                        <option value=""></option>
+                        <option value="1">Projected</option>
+                        <option value="2">Average</option>
+                        <option value="3">Custom</option>
+                      </select>
+                      <div class="invalid-feedback" *ngIf="f.controls.salaryMethod.errors?.required">
+                        Please select a package.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row" [hidden]="!isBenefitPortalEnabled">
+                  <div [class]="showCustomFields ? 'col-md-6 col-lg-6 col-2xl-6' : 'col-md-3 col-lg-3 col-2xl-3'">
+                    <div class="form-group">
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="chkTobaccoUser" formControlName="tobaccoUser">
+                        <label class="custom-control-label" for="chkTobaccoUser">Tobacco User</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-12">
+                    <hr />
+                  </div>
+                </div>
+                <div class="row">
+                  <div [class]="showCustomFields ? 'col-md-6 col-lg-6 col-2xl-6' : 'col-md-3 col-lg-3 col-2xl-3'">
+                    <div class="form-group">
+                      <label class="form-control-label">Retirement Employment Class</label>
+                      <select class="custom-select form-control" dsFormControlValidator
+                        [dsFormControlSubmitted]="formSubmitted" formControlName="employmentClass">
+                        <option value=""></option>
+                        <ng-container *ngFor="let pack of employmentClasses">
+                          <option *ngIf="pack.isEnabled || employeeBenefitSettings.clientEmploymentClassId == pack.clientEmploymentClassId" [value]="pack.clientEmploymentClassId">
+                            {{pack.description + '(' + pack.code + ')' + (pack.isEnabled ? '' : ' &mdash; inactive')}}
+                          </option>
+                        </ng-container>
+                      </select>
+                      <div class="invalid-feedback" *ngIf="f.controls.employmentClass.errors?.required">
+                        Please select an employment class.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="inline-md-control" [class]="showCustomFields ? 'col-md-6 col-lg-6 col-2xl-6' : 'col-md-3 col-lg-3 col-2xl-3'" [hidden]="essViewOnly">
+                    <div class="form-group mb-0">
+                      <button class="btn btn-outline-primary" (click)="manageClassesDialog()">Manage
+                        Classes</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="row" [hidden]="!showRetirementEligibilityOption">
+                  <div [class]="showCustomFields ? 'col-md-6 col-lg-6 col-2xl-6' : 'col-md-3 col-lg-3 col-2xl-3'">
+                    <div class="form-group">
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="chkRetirementEligible"
+                          formControlName="retirementEligible">
+                        <label class="custom-control-label" for="chkRetirementEligible">Retirement Eligible</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+            </ds-card-content>
+          </ds-card>
+        </ng-container>
+      </div>
+      <ng-container *ngIf="showCustomFields">
+      <div class="col-xl-6">
+        <ds-card class="card-height-fix-sm">
+          <ds-card-header>
+            <ds-card-header-title>Company Benefit Fields</ds-card-header-title>
+          </ds-card-header>
+          <ds-card-content>
+            <mat-drawer-container 
+              hasBackdrop="true" 
+              (backdropClick)="clearFieldsDrawer()"
+              [@changeDrawerHeightOnOpenSm]="activeBenefitDependentId != 0">
+              <mat-drawer-content>
+                <ng-container *ngFor="let ben of benefitDependents; let i = index;">
+                  <ds-card mode="widget-nobody" color="info"
+                    (click)="!essViewOnly && toggleActiveBenefitDependent(ben.dependentId)" hover="true">
+                    <div ds-card-icon>person</div>
+                    <ds-card-header>
+                      <ds-card-widget-title>{{ (ben.firstName+' '+ben.lastName) }}<span *ngIf="ben.birthDate"> | {{ben.birthDate | date:'MM/dd/yyyy'}}</span>
+                      </ds-card-widget-title>
+                      <ds-card-subtitle>
+                        <div class="card-data-grid">
+                          <ng-container *ngFor="let field of ben.customFields">
+                            <ng-container >
+                              <div class="label">{{field.name}}</div>
+                              <div class="value">{{field.textValue ? field.textValue :  '&mdash;' }}</div>
+                            </ng-container>
+                          </ng-container>
+                        </div>
+                      </ds-card-subtitle>
+                    </ds-card-header>
+                  </ds-card>
+                </ng-container>
+              </mat-drawer-content>
+              <mat-drawer 
+                #drawer 
+                [mode]="over" 
+                position="end" 
+                [opened]="activeBenefitDependentId != 0"
+                [class.open]="activeBenefitDependentId != 0"
+                [@matDrawerAfterHeightChange]="activeBenefitDependentId != 0">
+                <ng-container *ngIf="activeBenefitDependent != null; else loadingScreen">
+                  <form class="mat-drawer-inner-container-form" (keydown.esc)="clearFieldsDrawer()" dsTrackFormChanges
+                    [formGroup]="customF">
+                    <div class="drawer-header">
+                      <button type="button" (click)="clearFieldsDrawer()" class="btn btn-icon">
+                        <mat-icon>chevron_right</mat-icon>
+                      </button>
+                      <h2>
+                        {{activeBenefitDependent.firstName+'
+                        '+activeBenefitDependent.lastName}}{{activeBenefitDependentId}}
+                      </h2>
+                    </div>
+                    <div class="drawer-content">
+                      <div class="row" *ngIf="activeBenefitDependent.birthDate">
+                        <div class="col-12">
+                          <div class="form-group">
+                            <div class="card-data-grid">
+                              <div class="label">Birth Date</div>
+                              <div class="value">{{activeBenefitDependent.birthDate | date:'MM/dd/yyyy'}}</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-12" *ngFor="let field of customFields; let k = index;">
+                          <div class="form-group">
+                            <label for="{{'custom'+k}}" class="form-control-label">{{field.name}}</label>
+                            <input type="text" id="{{'custom'+k}}" formControlName="{{'field'+k}}" maxlength="250"
+                              class="form-control" (change)="activeBenefitDependent.isDirty=true" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="drawer-footer">
+                      <div class="row justify-content-end">
+                        <div class="col-auto">
+                          <button type="button" [disabled]="!activeBenefitDependent.isDirty" class="btn btn-save"
+                            (click)="clearFieldsDrawer()">Save</button>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </ng-container>
+              </mat-drawer>
+            </mat-drawer-container>
+            <div class="row" *ngIf="showAddDependent">
+              <div class="col-12">
+                <div class="empty-state">
+                  No dependents were found for the selected employee.<br/> Go to the 
+                  <a routerLink="/manage/dependents">Employee Dependents</a>
+                  <!--<a href="{{legacyDependentsUrl}}">Employee Dependents</a>-->
+                   page to add the dependents.
+                </div>
+              </div>
+            </div>
+          </ds-card-content>
+        </ds-card>
+      </div>
+      </ng-container>
+    </div>
+  </form>
+  <ds-card mode="noheader" [hidden]="essViewOnly">
+    <ds-card-content>
+      <div class="row justify-content-end">
+        <div class="col-auto">
+          <button type="button" [disabled]="isSaving" class="btn btn-save" (click)="saveBenefitSettings()">Save</button>
+        </div>
+      </div>
+    </ds-card-content>
+  </ds-card>
+</ng-template>
+
+<ng-template #readOnlyBenefitSettings>
+  <ng-container [formGroup]="f">
+    <ds-card class="card-height-fix-sm">
+      <ds-card-header>
+        <ds-card-header-title>Benefit Information</ds-card-header-title>
+        <ds-card-inline-content>
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" formControlName="benefitEligible"
+              id="chkBenefitEligible" disabled>
+            <label class="custom-control-label" for="chkBenefitEligible">Benefit Eligible</label>
+          </div>
+        </ds-card-inline-content>
+      </ds-card-header>
+      <ds-card-content>
+        <div class="row">
+          <div class="col-md-6 col-lg-6 col-2xl-6">
+            <div class="form-group">
+              <label class="form-control-label">Date Eligible</label>
+              <div class="bold">{{employeeBenefitSettings.benefitEligibilityDate ? (employeeBenefitSettings.benefitEligibilityDate | date: "MM/dd/yyyy") : '&mdash;' }}</div>
+            </div>
+          </div>
+          <div class="col-md-3 col-lg-3 col-2xl-3">
+            <div class="form-group">
+              <label class="form-control-label">Birth Date</label>
+              <div class="bold">{{employeeBenefitSettings.birthDate ? (employeeBenefitSettings.birthDate | date: "MM/dd/yyyy") :  '&mdash;' }}</div>
+            </div>
+          </div>
+          <div class="col-md-3 col-lg-3 col-2xl-3">
+            <div class="form-group">
+              <label class="form-control-label">Age</label>
+              <div class="bold">{{employeeBenefitSettings.birthDate ? getAgeInYears(employeeBenefitSettings.birthDate) :  '&mdash;'}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="row" [hidden]="!isBenefitPortalEnabled">
+          <div class="col-md-6 col-lg-6 col-2xl-6">
+            <div class="form-group">
+              <label class="form-control-label">Benefit Package</label>
+              <div class="bold">{{ employeeBenefitSettings.benefitPackageId ? getPackageName(employeeBenefitSettings.benefitPackageId) : '&mdash;'}}</div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-6 col-2xl-6">
+            <div class="form-group">
+              <label class="form-control-label">Salary Determination Method</label>
+              <div class="bold">{{ employeeBenefitSettings.defaultSalaryMethod ? getSalaryMethod(employeeBenefitSettings.defaultSalaryMethod) : '&mdash;'}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="row" [hidden]="!isBenefitPortalEnabled">
+          <div class="col-md-6 col-lg-6 col-2xl-6">
+            <div class="form-group">
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="chkTobaccoUser" formControlName="tobaccoUser"
+                  disabled>
+                <label class="custom-control-label" for="chkTobaccoUser">Tobacco User</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <hr />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 col-lg-6 col-2xl-6">
+            <div class="form-group">
+              <label class="form-control-label">Retirement Employment Class</label>
+              <div class="bold">{{employeeBenefitSettings.clientEmploymentClassId ? getEmployementClass(employeeBenefitSettings.clientEmploymentClassId) : '&mdash;'}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 col-lg-6 col-2xl-6">
+            <div class="form-group">
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="chkRetirementEligible"
+                  formControlName="retirementEligible" disabled>
+                <label class="custom-control-label" for="chkRetirementEligible">Retirement Eligible</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ds-card-content>
+    </ds-card>
+  </ng-container>
+</ng-template>
+
+<ng-template #loadingScreen>
+  <ds-card>
+    <ds-card-content>
+      <ds-loading-message></ds-loading-message>
+    </ds-card-content>
+  </ds-card>
+</ng-template>
+
+<ng-template #policyEmptyState>
+  <ds-card mode="noheader">
+    <ds-card-content>
+      <div class="empty-state">
+        No Time Off Policies are available for the selected employee.
+      </div>
+    </ds-card-content>
+  </ds-card>
+</ng-template>
+
+<ng-template #customFieldsEmptyState>
+  <ds-card mode="noheader" class="card-height-fix-sm">
+    <ds-card-content>
+      <div class="empty-state">
+        No custom fields available.
+      </div>
+    </ds-card-content>
+  </ds-card>
+</ng-template>

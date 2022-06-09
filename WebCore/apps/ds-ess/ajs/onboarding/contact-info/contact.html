@@ -1,0 +1,476 @@
+<div ng-show="!isLoaded">Loading Contact Info...</div>
+<div ng-show="isLoaded">
+    <div class="ess-container">
+        <div class="panel clearfix col-md-12">
+            <div class="panel-body">
+                <div class="d-flex flex-wrap on-header">
+                    <div class="circle-sm on-pager">{{circleNumber}}</div>
+                    <div class="top-constant">
+                        <h1>Contact Information</h1>
+                        <p>Please confirm the information below. This information will be used across all of your employment documentation.</p>
+                    </div>
+                </div>
+                <form name="frmContact" class="form">
+                    <div id="myForm" class="">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <h3 class="mt-0">Name</h3>
+                            </div>
+                            <div class="col-lg-9">
+                                <div class="row">
+                                    <div class="col-xs-9 col-sm-4 form-group">
+                                        <label>First Name</label>
+                                        <input name="FirstName"
+                                               type="text"
+                                               class="form-control capitalize"
+                                               maxlength="25" placeholder="First Name"
+                                               ng-model="employeeContactInformationData.firstName"
+                                               ng-required="true"
+                                               ng-class="{ 'mandatory-field' : frmContact.FirstName.$invalid}">
+                                    </div>
+                                    <div class="col-xs-3 col-sm-2 form-group">
+                                        <label>M.I.</label>
+                                        <input type="text" ds-mask="S" class="form-control capitalize" ng-model="employeeContactInformationData.middleInitial">
+                                    </div>
+                                    <div class="col-sm-4 form-group">
+                                        <label>Last Name</label>
+                                        <input name="LastName"
+                                               type="text"
+                                               class="form-control capitalize"
+                                               maxlength="25" placeholder="Last Name"
+                                               ng-model="employeeContactInformationData.lastName"
+                                               ng-required="true"
+                                               ng-class="{ 'mandatory-field' : (frmContact.LastName.$invalid || employeeContactInformationData.lastName.toLowerCase().indexOf('unknown')>-1) }" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row ml-20 mr-lg">
+                            <hr />
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <h3 class="mt-0">Home Address</h3>
+                            </div>
+                            <div class="col-lg-9">
+                                <div class="row">
+                                    <div class="col-sm-6 form-group">
+                                        <label>Home Address</label>
+                                        <input name="AddressLine1"
+                                               type="text"
+                                               class="form-control"
+                                               maxlength="50" placeholder="Address"
+                                               ng-model="employeeContactInformationData.addressLine1"
+                                               ng-required="true"
+                                               ng-class="{ 'required-field' : frmContact.AddressLine1.$invalid && (isSoftWarned || !isCompleted)}">
+                                    </div>
+                                    <div class="col-sm-4 form-group">
+                                        <label>Apartment</label>
+                                        <input name="addr2"
+                                               type="text" class="form-control"
+                                               maxlength="50" placeholder="Optional"
+                                               ng-model="employeeContactInformationData.addressLine2">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-xs-6 col-sm-5 mr-0 form-group">
+                                        <label>City</label>
+                                        <input name="City"
+                                               type="text" class="form-control"
+                                               maxlength="25" placeholder="City"
+                                               ng-model="employeeContactInformationData.city"
+                                               ng-required="true"
+                                               ng-class="{ 'required-field' : frmContact.City.$invalid && (isSoftWarned || !isCompleted)}">
+                                    </div>
+                                    <div class="col-xs-6 col-sm-5 form-group">
+                                        <label>State</label>
+                                        <select class="form-control"
+                                                ng-disabled="stateDisabled"
+                                                data-ng-model="employeeContactInformationData.stateId"
+                                                ng-change="changeStateCounties()"
+                                                ng-required="!stateDisabled"
+                                                data-ng-options="elm.stateId as elm.name for elm in states"></select>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-5 form-group" ng-show="employeeContactInformationData.countryId == 1">
+                                        <label>County</label>
+                                        <select name="County"
+                                                class="form-control" ng-disabled="countyDisabled"
+                                                data-ng-model="employeeContactInformationData.countyId"
+                                                data-ng-options="elm.countyId as elm.name for elm in counties"
+                                                ng-required="locationUS"
+                                                ng-class="{ 'required-field' : frmContact.County.$invalid && (isSoftWarned || !isCompleted)}"></select>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-5 mr-0 form-group">
+                                        <label>Zip/Postal</label>
+                                        <input name="ZipUS"
+                                               type="text"
+                                               ng-if="employeeContactInformationData.countryId == 1"
+                                               class="form-control" 
+                                               ds-mask="00000-0000" 
+                                               placeholder="Zip"
+                                               ng-model="employeeContactInformationData.postalCode" 
+                                               maskNopaste="true"
+                                               ng-focus="requiredZipUS=true;showInValidZipUSMsg=false"
+                                               ng-blur="validateZipUS();showInValidZipUSMsg=true"
+                                               ng-required="true"
+                                               ng-class="{ 'required-field' : frmContact.ZipUS.$invalid && (isSoftWarned || !isCompleted)}">
+                                        <input name="ZipCanada"
+                                               type="text"
+                                               ng-if="employeeContactInformationData.countryId == 7"
+                                               class="form-control" 
+                                               placeholder="Zip"
+                                               ng-model="employeeContactInformationData.postalCode" 
+                                               maskNopaste="true"
+                                               ng-focus="requiredZipCanada=true;showInValidZipCanadaMsg=false"
+                                               ng-blur="validateZipCanada();showInValidZipCanadaMsg=true"
+                                               ng-required="true"
+                                               ng-class="{ 'required-field' : frmContact.ZipCanada.$invalid && (isSoftWarned || !isCompleted)}">
+                                        <input name="Zip"
+                                               type="text" maxlength="10"
+                                               ng-if="employeeContactInformationData.countryId !== 1 && employeeContactInformationData.countryId !== 7"
+                                               class="form-control" placeholder="Zip"
+                                               ng-model="employeeContactInformationData.postalCode"
+                                               ng-required="true"
+                                               ng-class="{ 'required-field' : frmContact.Zip.$invalid && (isSoftWarned || !isCompleted)}">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-5 form-group" ng-show="!locationUS">
+                                        <label>Country</label>
+                                        <select class="form-control" data-ng-model="employeeContactInformationData.countryId" ng-change="changeCountryStates()"
+                                                data-ng-options="elm.countryId as elm.name for elm in countries"></select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-8 form-group">
+                                        <div class=" on-checkbox">
+                                            <span>
+                                                <input name="DoNotLiveInUS" id="notCitizen" type="checkbox" ng-checked="!locationUS" ng-click="toggleLocationUS()" />
+                                            </span>
+                                            <label for="notCitizen">I do not live in the United States</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-sm" ng-show="employeeContactInformationData.countryId == 1 && !validZipUS && showInValidZipUSMsg && employeeContactInformationData.postalCode.length > 0 ">
+                                    <div class="col-sm-10 form-group">
+                                        <label class="form-control alert-danger">Zip code must be either 5 (49045) or 9 (49505-6528) digits.</label>
+                                    </div>
+                                </div>
+                                        
+                                <div class="row mt-sm" ng-show="employeeContactInformationData.countryId == 7 && !validZipCanada && showInValidZipCanadaMsg && employeeContactInformationData.postalCode.length > 0 ">
+                                    <div class="col-sm-10 form-group">
+                                        <label class="form-control alert-danger">Zip code must be in the format 'A1A 0A0'.</label>
+                                    </div>
+                                </div>
+    
+                            </div>
+                        </div>
+
+
+                        <div class="row ml-20 mr-lg">
+                            <hr />
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <h3 class="mt-0">Contact Information</h3>
+                            </div>
+                            <div class="col-lg-9">
+                                <div class="row">
+                                    <div class="col-sm-5 form-group">
+                                        <label>Primary Phone</label>
+                                        <input name="primaryPhone"
+                                               type="tel" class="form-control"
+                                               ds-mask="000-000-0000" placeholder="Primary Phone"
+                                               ng-model="employeeContactInformationData.homePhoneNumber"
+                                               ng-required="true"
+                                               ng-class="{ 'mandatory-field' : (frmContact.primaryPhone.$invalid && (!isValid || frmContact.primaryPhone.$touched))}">
+                                    </div>
+                                    <div class="col-sm-5 form-group">
+                                        <label>Secondary Phone</label>
+                                        <input name="secondaryPhone"
+                                               type="tel" class="form-control"
+                                               ds-mask="000-000-0000" placeholder="Optional"
+                                               ng-model="employeeContactInformationData.cellPhoneNumber">
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-10 form-group">
+                                        <label>Email Address</label>
+                                        <input type="email" name="emailAddress" class="form-control" maxlength="50" ng-model="employeeContactInformationData.emailAddress" placeholder="Optional">
+                                    </div>
+                                </div>
+
+                                <div class="row mt-sm" ng-show="frmContact.emailAddress.$invalid">
+                                    <div class="col-sm-6 form-group">
+                                        <label class="form-control alert-warning">Email address is invalid.</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row ml-20 mr-lg">
+                            <hr />
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <h3 class="mt-0">Personal Information</h3>
+                            </div>
+                            <div class="col-lg-9">
+                                <div class="row">
+                                    <div class="col-sm-5 form-group">
+                                        <label>Social Security Number</label>
+
+                                        <input name="SocialSecurityNumber"
+                                               ds-mask="000-00-0000"
+                                               maskNopaste="true"
+                                               ng-model="employeeContactInformationData.socialSecurityNumber"
+                                               class="form-control"
+                                               ng-focus="requiredSSN=true;showInValidSSNMsg=false;isConfirmSSNValid=true"
+                                               ng-blur="validateSSN();showInValidSSNMsg=true"
+                                               ng-required="true"
+                                               ng-class="{ 'required-field' : frmContact.SocialSecurityNumber.$invalid && (isSoftWarned || !isCompleted)}">
+                                    </div>
+                                    <div class="col-sm-5 form-group">
+                                        <label>Confirm Social Security Number</label>
+
+                                        <input name="ConfirmSocialSecurityNumber"
+                                               ds-mask="000-00-0000"
+                                               maskNopaste="true"
+                                               ng-model="employeeContactInformationData.confirmSocialSecurityNumber"
+                                               class="form-control"
+                                               ng-focus="isConfirmSSNValid=true"
+                                               ng-blur="isConfirmSSNValid=false"
+                                               ng-class="{ 'mandatory-field' : (employeeContactInformationData.socialSecurityNumber.length>0 && employeeContactInformationData.socialSecurityNumber != employeeContactInformationData.confirmSocialSecurityNumber && !isConfirmSSNValid) }">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label>Date of Birth</label>
+                                    <div class="row">
+                                        <div class="col-sm-3 form-group">
+                                            <select name="DOBMonth"
+                                                    class="form-control"
+                                                    data-ng-model="DOBmonth"
+                                                    ng-change="changeMonthDays()"
+                                                    data-ng-options="elm.value as elm.desc  for elm in monthNames"
+                                                    ng-required="true"
+                                                    ng-class="{ 'required-field' : frmContact.DOBMonth.$invalid && (isSoftWarned || !isCompleted)}"></select>
+                                        </div>
+                                        <div class="col-sm-3 form-group">
+                                            <select name="DOBday"
+                                                    class="form-control"
+                                                    data-ng-model="DOBday"
+                                                    data-ng-options="elm.value as elm.desc  for elm in monthDays"
+                                                    ng-required="true"
+                                                    ng-class="{ 'required-field' : frmContact.DOBday.$invalid && (isSoftWarned || !isCompleted)}"></select>
+                                        </div>
+                                        <div class="col-sm-4 form-group">
+                                            <select name="DOByear"
+                                                    class="form-control"
+                                                    ng-change="changeMonthDays()"
+                                                    data-ng-model="DOByear"
+                                                    data-ng-options="elm.value as elm.desc  for elm in years"
+                                                    ng-required="true"
+                                                    ng-class="{ 'required-field' : (frmContact.DOByear.$invalid && (isSoftWarned || !isCompleted)) || DOBYear == 0 }"></select>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-sm" ng-show="!validSSN && showInValidSSNMsg && employeeContactInformationData.socialSecurityNumber.length > 0 ">
+                                        <div class="col-sm-8 form-group">
+                                            <label class="form-control alert-danger">Social Security Number is invalid.</label>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-sm" ng-show="employeeContactInformationData.confirmSocialSecurityNumber.length>0 && employeeContactInformationData.socialSecurityNumber!=employeeContactInformationData.confirmSocialSecurityNumber && validSSN && !isConfirmSSNValid">
+                                        <div class="col-sm-8 form-group">
+                                            <label class="form-control alert-danger">Social Security Numbers do not match.</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" ng-show="locationUS">
+                                        <div class="col-sm-12">
+                                            <div class="row">
+                                                <div class="col-sm-10 form-group">
+                                                    <label>Driver's License Number</label>
+                                                    <input name="DriversLicenseNumber"
+                                                           type="text"
+                                                           ng-disabled="employeeContactInformationData.noDriversLicense"
+                                                           ds-mask="AAAAAAAAAAAAAAAA"
+                                                           ng-model="employeeContactInformationData.driversLicenseNumber"
+                                                           class="form-control"
+                                                           ng-required="!employeeContactInformationData.noDriversLicense && locationUS "
+                                                           placeholder=""
+                                                           ng-class="{'required-field' : frmContact.DriversLicenseNumber.$invalid && (isSoftWarned || !isCompleted)}">
+                                                </div>
+                                                <div class="col-xs-6 col-sm-5 form-group" ng-class="{ 'has-error' : frmContact.IssuingState.$invalid}">
+                                                    <label>Issuing State</label>
+                                                    <select name="IssuingState"
+                                                            class="form-control" ng-disabled="employeeContactInformationData.noDriversLicense"
+                                                            data-ng-model="employeeContactInformationData.driversLicenseIssuingStateId"
+                                                            data-ng-options="elm.stateId as elm.name for elm in states"
+                                                            ng-required="!employeeContactInformationData.noDriversLicense && locationUS"
+                                                            ng-class="{ 'mandatory-field' : !employeeContactInformationData.noDriversLicense && employeeContactInformationData.driversLicenseIssuingStateId === 0 && !frmContact.DriversLicenseNumber.$invalid && locationUS}"></select>
+                                                </div>
+                                                <div class="col-xs-6 col-sm-5 form-group">
+                                                    <label>Expiration Date</label>
+                                                    <!-- <input type="date" ng-disabled="!driversLicense" class="form-control">-->
+
+                                                    <div id="datetimepicker1" class="input-group date input-append" ds-datepicker ng-model="licDate">
+                                                        <input type="text" class="form-control" ds-mask="00/00/0000"
+                                                               name="ExpirationDate"
+                                                               ng-disabled="employeeContactInformationData.noDriversLicense" placeholder="mm/dd/yyyy"
+                                                               ng-model="licDate"
+                                                               ng-required="!employeeContactInformationData.noDriversLicense && locationUS "
+                                                               ng-class="{'required-field' : frmContact.ExpirationDate.$invalid && (isSoftWarned || !isCompleted)}">
+                                                        <span class="input-group-addon add-on" ng-disabled="employeeContactInformationData.noDriversLicense">
+                                                            <i data-time-icon="icon-time" class="fa fa-calendar icon-calendar" ng-disabled="employeeContactInformationData.noDriversLicense"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="row" ng-show="employeeContactInformationData.countryId == 1">
+                                                <div class="col-sm-7 form-group">
+                                                    <div class="on-checkbox">
+                                                        <span>
+                                                            <!--<input type="checkbox" ng-checked="!driversLicense" ng-model="noDriversLicense" ng-click="toggleDriversLicense()">-->
+                                                            <input type="checkbox" id="noDriversLicense" ng-model="employeeContactInformationData.noDriversLicense" ng-click="toggleDriversLicense()">
+                                                        </span>
+                                                        <label for="noDriversLicense">I don't have a driver's license.</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row" >
+                                                <div class="col-sm-12">
+                                                    <label for="">Marital Status</label>
+                                                    <div class="form-group d-flex">
+                                                        <div class="mr-lg">
+                                                            <input type="radio" id="maritalStatusMarried" 
+                                                                name="chkMaritalStatus" 
+                                                                ng-model="employeeContactInformationData.maritalStatusId" 
+                                                                ng-value="1"> 
+                                                            <label for="maritalStatusMarried">
+                                                                Married
+                                                            </label>
+                                                        </div>
+                                                        <div class="mr-lg">
+                                                            <input type="radio" id="maritalStatusSingle" 
+                                                                name="chkMaritalStatus" 
+                                                                ng-model="employeeContactInformationData.maritalStatusId" 
+                                                                ng-value="2">
+                                                            <label for="maritalStatusSingle">
+                                                                Single
+                                                            </label> 
+                                                        </div>
+                                                        <div class="mr-lg">
+                                                            <input type="radio" id="maritalStatusNotSpecified" 
+                                                                name="chkMaritalStatus" 
+                                                                ng-model="employeeContactInformationData.maritalStatusId" 
+                                                                ng-value="0">
+                                                            <label for="maritalStatusNotSpecified">
+                                                                Not Specified
+                                                            </label> 
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    <div class="row ml-20 mr-lg">
+                        <hr />
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <h3 class="mt-0">Self-Identification</h3>
+                        </div>
+                        <div class="col-lg-9">
+                            <div class="row">
+                                <div class="col-sm-10 form-group">
+                                    <label>Race</label>
+                                    <select name="Race"
+                                            style="" class="form-control"
+                                            ng-change="changeRace()"
+                                            data-ng-model="employeeContactInformationData.eeocRaceId"
+                                            data-ng-options="elm.raceId as elm.description for elm in EeocRaceEthnicCategoryList"></select>
+                                </div>
+                                <div class="col-sm-10 form-group">
+                                    <label>Gender</label>
+                                    <select name="Sex"
+                                            style="" class="form-control"
+                                            data-ng-model="employeeContactInformationData.gender"
+                                            data-ng-options="elm.value as elm.desc for elm in gender"
+                                            ng-required="true"
+                                            ng-class="{ 'required-field' : frmContact.Sex.$invalid && (isSoftWarned || !isCompleted)}"></select>
+                                </div>
+                                <div class="" ng-show="employeeContactInformationData.eeocRaceId>0">
+                                    <div class="col-sm-12">
+                                        <div class="alert alert-info col-sm-8">
+                                            <div style="display:inline-block; min-width: 5% !important; vertical-align: top !important; padding-top:3px; "><i class="fa fa-info-circle" style="font-size:1.3em;"></i></div>
+                                            <div style="display:inline-block; max-width:90% !important;">{{detailedDescription}}</div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <hr />
+                    </div>
+
+                    <ds-nav-workflow-footer workflow-Hide-Next="false" workflow-Hide-Prev="true"
+                        my-Workflow="myWorkflow"
+                        on-save="$ctrl.clickSavePageData($direction)" />
+
+
+
+                </form>
+
+                <!--                <script type="text/javascript">
+                    $(function () {
+                        $('#datetimepicker2').datetimepicker({
+                            language: 'en',
+                            pick12HourFormat: true,
+                            format:"MM/dd/yyyy",
+                            pickTime: false
+                        });
+
+                        var picker = $('#datetimepicker1').data('datetimepicker');
+                        picker.setDate(new Date(1972, 07, 11, 0, 0));
+
+                    });
+                </script>-->
+                <!-- <div class="panel-footer">
+
+                    <div class="col-md-offset-2">
+
+                        <button
+                            class="btn btn-primary" id="submit"
+                            value="Submit"
+                            ng-disabled="!isDataModified()"
+                            ng-click="validateThenSubmit()">Request Change</button>
+
+                        <button
+                            class="btn btn-default" id="cancel"
+                            ng-click="cancelEdit()">Cancel</button>
+
+                    </div>
+                </div>-->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!--col-md-9-->

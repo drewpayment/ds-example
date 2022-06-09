@@ -1,0 +1,48 @@
+<ds-card collapse="true" [formGroup]="form" [expanded]="form.get('accrual.isPaidLeaveAct')?.value">
+  <div ds-card-header formGroupName="accrual">
+    <ds-card-sub-header-title>Paid Leave Act</ds-card-sub-header-title>
+
+    <ds-card-title-right-content>
+      <div class="form-group">
+        <label class="switch switch-default switch-pill switch-success switch-sm">
+          <input type="checkbox" class="switch-input" formControlName="isPaidLeaveAct" />
+          <span class="switch-label"></span>
+          <span class="switch-handle"></span>
+          <span class="ds-switch-off">Off</span>
+          <span class="ds-switch-on">On</span>
+        </label>
+      </div>
+    </ds-card-title-right-content>
+  </div>
+  <div ds-card-content formGroupName="accrual">
+    <div class="form-group">
+      <ds-card-collapse-instruction-text>
+        Make sure these earning types are selected as eligible hours: Regular,
+        Overtime, Double, and Holiday Worked
+      </ds-card-collapse-instruction-text>
+    </div>
+    <div class="row">
+      <div class="col-sm-6 col-xl-3">
+        <div class="form-group">
+          <label>Hours Worked Per Week</label>
+          <input type="number" class="form-control" formControlName="hoursPerWeekAct" dsFormControlValidator />
+          <div class="invalid-feedback">
+            <span>Please enter a valid number.</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-auto inline-sm-control">
+        <div class="form-group">
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="allowHoursRollover"
+              formControlName="allowHoursRollOver">
+            <label class="custom-control-label" for="allowHoursRollover">
+              Allow Hours Rollover (Paid Leave Act)
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</ds-card>

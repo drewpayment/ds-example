@@ -1,0 +1,12 @@
+<div class="form-group">
+    <label class="form-control-label">Time Span</label>
+    <div class="input-with-button-group">
+        <input type="number" class="form-control">
+        <mat-button-toggle-group #group="matButtonToggleGroup" toggle-type="checkbox">
+            <mat-button-toggle value="{{item.lengthOfTime}}" aria-label="{{item.lengthOfTime}}"
+                *ngFor="let item of items" [disabled]="item.disabled">
+                {{item.lengthOfTime}}
+            </mat-button-toggle>
+        </mat-button-toggle-group>
+    </div>
+</div>

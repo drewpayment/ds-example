@@ -1,0 +1,110 @@
+<div mat-dialog-header>
+    <h2 class="dialog-title">Event Topics</h2>
+    <button type="button" class="close" (click)="onNoClick()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</div>
+
+<div mat-dialog-content>
+    <ng-container [formGroup]="form" dsTrackFormChanges>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-control-label">Topic</label>
+                    <select class="form-control custom-select" (change)="topicChange()"
+                        formControlName="clientTopic"
+                        class="custom-select form-control"
+                        dsFormControlValidator 
+                        [dsFormControlSubmitted]="formSubmitted">
+                        <option class="text-muted" value="0">-- Add Topic --</option>
+                        <option *ngFor="let topic of clientTopics" [ngValue]="topic.clientTopicId">
+                            {{topic.description}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-control-label">Name</label>
+                    <input formControlName="clientTopicName"
+                           type="text"
+                           class="form-control"
+                           cdkFocusInitial
+                           dsFormControlValidator 
+                          [dsFormControlSubmitted]="formSubmitted"
+                          maxlength="100">
+                    <div class="invalid-feedback">
+                        <span *ngIf="form.controls.clientTopicName.errors?.required">Please enter name.</span>
+                        <span *ngIf="form.controls.clientTopicName.errors?.maxlength">Please enter a name that is less than 100 characters.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div mat-dialog-actions class="ds-dialog-footer flex-row-reverse">
+            <div>
+                <button [disabled]="dataSaving" type="button" class="btn btn-save" (click)="saveTopic()">Save</button>
+            </div>
+            <button class="btn btn-cancel" type="button" (click)="deleteTopic()" *ngIf="form.controls.clientTopic.value != 0">Delete</button>
+        </div>
+
+        <hr/>
+
+        <div class="row" *ngIf="form.controls.clientTopic.value == 0; else subTopicTemplate">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-control-label">Sub-Topic</label>
+                    <div class="empty-state-cycle warning">
+                        <p>Select a Topic to manage Sub-Topics.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <ng-template #subTopicTemplate>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="form-control-label">Sub-Topic</label>
+                        <select class="form-control custom-select" (change)="subTopicChange()"
+                            formControlName="clientSubTopic"
+                            class="custom-select form-control"
+                            dsFormControlValidator 
+                            [dsFormControlSubmitted]="formSubmitted">
+                            <option class="text-muted" value="0">-- Add Sub-Topic --</option>
+                            <option *ngFor="let subTopic of clientSubTopics" [ngValue]="subTopic.clientSubTopicId">
+                                {{subTopic.description}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="form-control-label">Name</label>
+                        <input formControlName="clientSubTopicName"
+                            type="text"
+                            class="form-control"
+                            cdkFocusInitial
+                            dsFormControlValidator 
+                            [dsFormControlSubmitted]="formSubmitted"
+                            maxlength="100">
+                        <div class="invalid-feedback">
+                            <span *ngIf="form.controls.clientSubTopicName.errors?.required">Please enter name.</span>
+                            <span *ngIf="form.controls.clientSubTopicName.errors?.maxlength">Please enter a name that is less than 100 characters.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+
+        <div mat-dialog-actions class="ds-dialog-footer flex-row-reverse">
+            <div>
+                <button [disabled]="dataSaving" type="button" class="btn btn-save" (click)="saveSubTopic()">Save</button>
+            </div>
+            <button class="btn btn-cancel" type="button" (click)="deleteSubTopic()" *ngIf="form.controls.clientSubTopic.value != 0">Delete</button>
+        </div>
+    </ng-container>    
+</div>

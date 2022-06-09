@@ -1,0 +1,98 @@
+<div mat-dialog-header>
+    <h2 class="dialog-title">        
+        {{ reviewStatus.review.title }}:
+        {{ reviewStatus.employee.lastName }}, {{ reviewStatus.employee.firstName }}
+    </h2>
+    <button type="button" class="close" (click)="cancel()">
+        <mat-icon>clear</mat-icon>
+    </button>
+    <div class="dialog-subtitle">
+        <div class="card-data bordered flex-wrap">
+            <div class="item">
+                <label class="text-uppercase">Review Process:</label> {{ review.reviewProcessStartDate | date: 'MM/dd/yyyy' }} - {{ review.reviewProcessDueDate | date: 'MM/dd/yyyy' }}
+            </div>
+            <div class="item">
+                <label>EVALUATION PERIOD:</label> {{ review.evaluationPeriodFromDate | date: 'MM/dd/yyyy' }} - {{ review.evaluationPeriodToDate | date: 'MM/dd/yyyy' }}
+            </div>
+            <div class="item" *ngIf="review.reviewCompletedDate">
+                <label>CLOSED:</label> {{ review.reviewCompletedDate | date: 'MM/dd/yyyy' }}
+            </div>
+        </div>
+    </div>
+</div>
+<div mat-dialog-content>
+    <div class="overflow-list">
+        <h4>Evaluations</h4>
+        <ds-card 
+            hover="true" mode="widget-nobody" 
+            [color]="evaluation.statusColor" 
+            *ngFor="let evaluation of evaluationStatuses"
+            class="hoverable"            
+            (mouseover)="evaluation.hoverEval = true" 
+            (mouseout)="evaluation.hoverEval = false"
+            (click)="transfer(evaluation)">
+            <div ds-card-icon>assignment_ind</div>
+            <ds-card-header>
+                <ds-card-section-title>
+                    {{ evaluation.evaluationTypeName }}
+                </ds-card-section-title>
+                <ds-card-subtitle>
+                    <div class="card-data bordered flex-wrap">
+                        <div class="item" *ngIf="evaluation.hasEvaluatedBy">
+                            <!-- image -->
+                            <span class="mr-2">
+                              <ds-avatar
+                                size="24"
+                                resource="{{evaluation.evaluation.evaluatedByContact.profileImage.extraLarge.url}}"
+                                firstName="{{ evaluation.evaluation.evaluatedByContact.firstName }}"
+                                lastName="{{ evaluation.evaluation.evaluatedByContact.lastName }}">
+                              </ds-avatar>
+                            </span>
+                            {{ evaluation.evaluation.evaluatedByContact.lastName }}, 
+                            {{ evaluation.evaluation.evaluatedByContact.firstName }}
+                            
+                        </div>
+                        <ng-template #notAssignedEval>
+                            <div class="item">
+                                <label class="text-uppercase text-danger">Not Assigned</label>
+                            </div>
+                        </ng-template>
+                        <div class="item">
+                            <label class="text-uppercase">Starts:</label>
+                            {{ evaluation.evaluation.startDate | date: 'MM/dd/yyyy' }}
+                        </div>
+                        <div class="item">
+                            <label class="text-uppercase">Due:</label>
+                            {{ evaluation.evaluation.dueDate | date: 'MM/dd/yyyy' }}
+                        </div>                        
+                        <div class="item">
+                            <label class="text-uppercase">Status:</label>
+                            {{ evaluation.evalStatusText }}
+                        </div>
+                    </div>
+                </ds-card-subtitle>
+                <ds-card-title-action>
+                    <mat-menu #toggleMenu="matMenu">
+                        <button mat-menu-item type="button" (click)="transfer(evaluation)">Go To Evaluation</button>
+                        <button mat-menu-item type="button" *ngIf="!isUsersReview && evaluation.evaluation.role == EvaluationRoleType.Manager" (click)="printReview(evaluation.evaluation, review,true)">Print For Employee</button>
+                        <button mat-menu-item type="button" (click)="printReview(evaluation.evaluation, review)">Print</button>
+                        <button mat-menu-item type="button" (click)="releaseEvalToEmployee(evaluation, review, true)" *ngIf="evaluation.evaluation.role !== EvaluationRoleType.Self && evaluation.evaluation.completedDate && !evaluation.evaluation.isViewableByEmployee && (evaluation.evaluation.completedDate && canEdit)">Share with Employee</button>
+                        <button mat-menu-item type="button" (click)="releaseEvalToEmployee(evaluation, review, false)" *ngIf="evaluation.evaluation.role !== EvaluationRoleType.Self && evaluation.evaluation.completedDate && evaluation.evaluation.isViewableByEmployee && (evaluation.evaluation.completedDate && canEdit)">Hide from Employee</button>
+                        <ds-reopen-evaluation [review]="review" [evaluation]="evaluation.evaluation" (evaluationReopened)="evalSelected(evaluation, review)"></ds-reopen-evaluation>
+                        <ds-send-complete-eval-reminder [evalDueDateStatus]="evaluation.evaluation.dueDate | toFriendlyTimeDiff" [evaluationId]="evaluation.evaluation.evaluationId" [completedDate]="evaluation.evaluation.completedDate"></ds-send-complete-eval-reminder>
+                        <button mat-menu-item type="button" *ngIf="false && canViewEval(evaluation,review)" (click)="viewEvaluation(evaluation, review)">View</button>
+                    </mat-menu>
+                    <button [matMenuTriggerFor]="toggleMenu" (click)="$event.stopPropagation()" type="button" class="btn btn-icon nested-cog" [ngClass]="evaluation.hoverEval ? 'hover-show' : 'opacity-0'">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+                </ds-card-title-action>
+            </ds-card-header>
+        </ds-card>
+    </div>
+</div>
+<div mat-dialog-actions>
+    <button type="button"
+        class="btn btn-cancel"
+        (click)="cancel()"
+    >Cancel</button>
+</div>

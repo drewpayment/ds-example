@@ -1,0 +1,85 @@
+<ng-template #noChipProfileImage>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
+        <path d="M0 0h24v24H0z" fill="none" />
+    </svg>
+</ng-template>
+<ng-template #noAutoProfileImage>
+    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
+        <path d="M0 0h24v24H0z" fill="none" />
+    </svg>
+</ng-template>
+<ng-container *ngIf="setSup$|async"></ng-container>
+
+
+
+<div mat-dialog-header>
+    <h2 class="modal-title">
+        {{ review.reviewId ? 'Update' : 'Schedule'}} Review For:
+        <strong>{{ review.reviewedEmployeeContact.firstName }} {{ review.reviewedEmployeeContact.lastName }}</strong>
+    </h2>
+    <button type="button" class="close" (click)="cancel()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</div>
+<div mat-dialog-content>
+    <form [formGroup]="ReviewTemplateForm">
+        <div class="row" *ngIf="reviewTemplates$ | async">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-control-label">Review</label>
+                    <select class="form-control custom-select"
+                        name="reviewTemplateId"
+                        formControlName="reviewTemplateId"
+                        dsFormControlValidator [dsFormControlSubmitted]="submitted"
+                        cdkFocusInitial
+                        >
+                        <option [value]=""></option>
+                        <option
+                            *ngFor="let o of reviewTemplates$ | async"
+                            [value]="o.reviewTemplateId"
+                        >
+                            {{o.name}}
+                        </option>                        
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a Review.
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group ds-autocomplete">
+                    <label class="form-control-label">Owner</label>
+                    <span class="form-help-text pl-1">Optional</span>
+                    <ds-contact-autocomplete 
+                        [multiple]="false" 
+                        [contacts]="owners$ | async" 
+                        formControlName="reviewOwner"
+                        name="reviewOwner"
+                        [inputControl]="ownerCtrl"
+                        displayUserType="1">
+                    </ds-contact-autocomplete>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div *ngIf="reviewTemplates$ | async">
+        <ds-calendar-year-form 
+        [SetForm]="selectedRCR$ | async"
+        [Submitted]="submitted" 
+        [defaultMaxMoment]="defaultMaxMoment" 
+        [defaultMinMoment]="defaultMinMoment"
+        dateRangesAreRequired="true"
+        [supervisorComp]="autocompleteComponent$ | async"
+        [reviewMeetingComp]="reviewMeetingComp"
+        [empDateRangeComp]="EmpDateRangeComp$ | async" 
+        (FormValue)="CalendarYearFormValue = $event">
+        </ds-calendar-year-form>
+    </div>
+    <ds-loading-message *ngIf="!(reviewTemplates$ | async)"></ds-loading-message>
+</div>
+<div mat-dialog-actions [hidden]="!(selectedRCR$ | async)">
+    <button class="btn btn-primary" #saveBtn>Save</button>
+    <button type="button" class="btn btn-cancel" (click)="cancel()">Cancel</button>
+</div>

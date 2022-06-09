@@ -1,0 +1,725 @@
+<div ng-show="isLoading">W4 State Loading...</div>
+<div ng-show="!isLoading">
+    <div class="ess-container">
+        <div class="panel mt-0 clearfix">
+            <div class="panel-body">
+                <div class="d-flex flex-wrap on-header">
+                    <div class="circle-sm on-pager">{{circleNumber}}</div>
+                    <div class="top-constant">
+                        <h1>{{formType.stateName}} W-4</h1>
+                        <p ng-show="showW4Download">
+                            If you need assistance completing this form, click <a ng-click="downloadOriginalForm(form)">here</a> to view your state's withholding documentation.
+                        </p>
+                    </div>
+                </div>
+                <!-- <div class="row">
+                    <div class="col-sm-11 col-sm-offset-1 text-muted">
+                        <p>Please review the suggested {{useAllowancesOrExemptions}}s and filing status below.</p>
+                    </div>
+                </div> -->
+
+                <form name="frm">
+                    <div id="myForm" class="form-group">
+                        <div class="row clearfix form-group">
+                            <div class="col-sm-4">
+                                <h3 class="">State Tax Exempt</h3>
+                            </div>
+                            <div class="col-sm-5">
+                                <div style="max-width:92px;" ng-class="{ 'required-field' : frm.isTaxExempt.$invalid && (isSoftWarned || !isCompleted)}">
+                                    <input id="true" name="isTaxExempt" type="radio"
+                                           ng-model="employeeW4StateData.isTaxExempt"
+                                           ng-required="true"
+                                           ng-change="clearValuesBasedOnExempt()"
+                                           ng-value="true">&nbsp;
+                                    <label for="true" class="form-label">
+                                           Yes&nbsp;
+                                    </label>
+                                    <input id="false" name="isTaxExempt" type="radio"
+                                                   ng-model="employeeW4StateData.isTaxExempt"
+                                                   ng-required="true"
+                                                   ng-change="clearValuesBasedOnExempt()"
+                                                   ng-value="false">
+                                    <label for="false" class="form-label">
+                                            No&nbsp;
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" ng-show="employeeW4StateData.isTaxExempt && showTaxExemptReason">
+                            <div class="col-sm-4">
+                                <h3 class="">Tax {{useAllowancesOrExemptions | capitalize}} Reason</h3>
+                            </div>
+                            <div class="col-sm-8 form-group">
+                                <select name="TaxExemptionReason"
+                                        class="form-control"
+                                        data-ng-model="employeeW4StateData.taxExemptReasonId"
+                                        ng-change="clearReciprocalStateWhereNeeded()"
+                                        data-ng-options="elm.id as elm.desc for elm in taxExemptReason"
+                                        ng-required="employeeW4StateData.isTaxExempt && showTaxExemptReason"
+                                        ng-class="{ 'required-field' : frm.TaxExemptionReason.$invalid && (isSoftWarned || !isCompleted)}"></select>
+                            </div>
+                        </div>
+
+                        <div class="row form-group" ng-show="employeeW4StateData.taxExemptReasonId == '2' && employeeW4StateData.isTaxExempt && showTaxExemptReason">
+                            <div class="col-sm-4">
+                                <h3 class="">Explanation</h3>
+                            </div>
+                            <div class="col-sm-8">
+                                <div>
+                                    <input name="Explanation"
+                                           class="form-control"
+                                           type="text"
+                                           ng-model="employeeW4StateData.taxExemptReason"
+                                           ng-required="employeeW4StateData.isTaxExempt && employeeW4StateData.taxExemptReasonId == '2' && showTaxExemptReason"
+                                           ng-class="{ 'required-field' : frm.Explanation.$invalid && (isSoftWarned || !isCompleted)}" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" ng-show="employeeW4StateData.taxExemptReasonId == '3' && employeeW4StateData.isTaxExempt && showRenaissanceZone">
+                            <div class="col-sm-4">
+                                <h3 class="">Renaissance Zone</h3>
+                            </div>
+                            <div class="col-sm-8 col-md-4 form-group">
+                                <div>
+                                    <input name="RenaissanceZone"
+                                           class="form-control"
+                                           type="text"
+                                           ng-model="employeeW4StateData.renaissanceZone"
+                                           ng-required="employeeW4StateData.isTaxExempt && employeeW4StateData.taxExemptReasonId == '3' && showRenaissanceZone"
+                                           ng-class="{ 'required-field' : frm.RenaissanceZone.$invalid && (isSoftWarned || !isCompleted)}" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-group" ng-show="employeeW4StateData.taxExemptReasonId == '8' &&  employeeW4StateData.isTaxExempt && showTaxExemptReason">
+                            <div class="col-sm-4">
+                                <h3 class="">Reciprocal State</h3>
+                            </div>
+                            <div class="col-sm-5">
+                                <select name="ReciprocalState"
+                                        class="form-control"
+                                        data-ng-model="employeeW4StateData.reciprocalStateId"
+                                        data-ng-options="elm.reciprocalStateId as elm.reciprocalStateName for elm in reciprocalStates"
+                                        ng-required="employeeW4StateData.taxExemptReasonId == '8' &&  employeeW4StateData.isTaxExempt && showTaxExemptReason"
+                                        ng-class="{ 'required-field' : frm.ReciprocalState.$invalid && (isSoftWarned || !isCompleted)}"></select>
+                            </div>
+                        </div>
+
+                        <div class="row form-group" ng-show="showFilingStatus">
+                            <div class="col-sm-4">
+                                <h3 class="">Filing Status</h3>
+                            </div>
+                            <div class="col-sm-8 col-md-4">
+                                <select name="FilingStatus"
+                                        class="form-control"
+                                        data-ng-model="employeeW4StateData.filingStatus"
+                                        data-ng-options="elm.id as elm.desc for elm in filingStatuses"
+                                        ng-required="showFilingStatus && !employeeW4StateData.isTaxExempt"
+                                        ng-change="clearValuesBasedOnFilingStatus()"
+                                        ng-class="{ 'required-field' : frm.FilingStatus.$invalid && (isSoftWarned || !isCompleted)}"></select>
+                            </div>
+                        </div>
+
+                        <div class="row form-group" ng-show="showIsMarriedFilingSeparately && employeeW4StateData.filingStatus == 1 && !employeeW4StateData.isTaxExempt">
+                            <div class="col-sm-4">
+                                <h3 class="">Filing Separately</h3>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="on-checkbox">
+                                    <span>
+                                        <input type="checkbox" ng_model="employeeW4StateData.isMarriedFilingSeparately" id="filingSeperate" />
+                                    </span>
+                                    <label for="filingSeperate">I am married, but am filing separately.</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-right" ng-show="showIsClaimedAsDependent && !employeeW4StateData.isTaxExempt">
+                            <div class="col-sm-4">
+                                <h3 class="">Dependency Status</h3>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="on-checkbox">
+                                    <span>
+                                        <input type="checkbox" ng_model="employeeW4StateData.isClaimedAsDependent" ng-click="calculateTotal()" id="dependent" />
+                                    </span>
+                                    <label for="dependent">Someone else claims me as a dependent on their taxes.</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-right" ng-show="showSpouseWorksField && employeeW4StateData.filingStatus == 1 && !employeeW4StateData.isTaxExempt && !employeeW4StateData.isMarriedFilingSeparately ">
+                            <div class="col-sm-4">
+                                <h3 class="">Spouse Employment Status</h3>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="on-checkbox">
+                                    <span>
+                                        <input type="checkbox" ng_model="employeeW4StateData.isSpouseEmployed" id="isSpouseEmployed" />
+                                    </span>
+                                    <label for="isSpouseEmployed">
+                                        My spouse is employed.
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-group" ng-show="showIsClaimingSpouseExemption && employeeW4StateData.filingStatus == 1 && !employeeW4StateData.isTaxExempt && !employeeW4StateData.isMarriedFilingSeparately  ">
+                            <div class="col-sm-4">
+                                <h3 class="">Spousal {{ useAllowancesOrExemptions }}</h3>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="on-checkbox">
+                                    <span>
+                                        <input type="checkbox" ng_model="employeeW4StateData.isClaimingSpouseExemption" id="isClaimingSpouseExemption" ng-click="calculateTotal()"/>
+                                    </span>
+                                    <label for="isClaimingSpouseExemption">I am claiming an exemption for my spouse.</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-group" ng-show="showAgeAndBlindnessQuestions && !employeeW4StateData.isTaxExempt ">
+                            <div class="col-sm-4">
+                                <h3 class="">Age/Blindness {{useAllowancesOrExemptions}}s</h3>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="on-checkbox">
+                                    <span>
+                                        <input type="checkbox" ng_model="employeeW4StateData.isBlind" id="isBlind"/>
+                                    </span>
+                                    <label for="isBlind">I am blind.</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-group"  ng-show="showAgeAndBlindnessQuestions && !employeeW4StateData.isTaxExempt && employeeW4StateData.filingStatus == 1">
+                            <div class="col-sm-4">
+                                <h3>Blindness</h3>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="on-checkbox">
+                                    <span>
+                                        <input type="checkbox" ng_model="employeeW4StateData.isSpouseBlind" id="isSpouseBlind" />
+                                    </span>
+                                    <label for="isSpouseBlind">
+                                        My spouse is blind.
+                                    </label>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-group"  ng-show="showAgeAndBlindnessQuestions && !employeeW4StateData.isTaxExempt && employeeW4StateData.filingStatus == 1 ">
+                            <div class="col-sm-4">
+                                <h3>Age over 65</h3>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="on-checkbox" ng-show="employeeW4StateData.filingStatus == 1">
+                                    <span>
+                                        <input type="checkbox" ng_model="employeeW4StateData.isSpouseOver65" id="isSpouseOver65" />
+                                    </span>
+                                    <label for="isSpouseOver65">
+                                        My spouse is age 65 or older.
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-group" ng-show="showWithheldTaxAtLowerRate && !employeeW4StateData.isTaxExempt">
+                            <div class="col-sm-4">
+                                <h3 class="">Lower Rate Withholding</h3>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="on-checkbox">
+                                    <span>
+                                        <input type="checkbox" ng_model="employeeW4StateData.withheldTaxAtLowerRate" id="withheldTaxAtLowerRate" />
+                                    </span>
+                                    <label for="withheldTaxAtLowerRate">
+                                    Are you Single, Head of Household, or Married and your spouse does not work, and you are receiving wages from only one job, and wish to have your tax withheld at a lower rate?
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-group" ng-show="showTotalNumberOfDependentsField && !employeeW4StateData.isTaxExempt">
+                            <div class="col-sm-4">
+                                <h3 class="">Total Dependents
+                                    <a title="tip:https://dominionsystems.helpdocsonline.com/ID19702" class="help-tooltip">
+                                        <i class="fa fa-question-circle" style="color:lightgray;"></i>
+                                    </a>
+                                </h3>
+                            </div>
+                            <div class="col-sm-8">
+                                <input name="DependentCount"
+                                        type="text"
+                                        class="form-control"
+                                        ds-mask="00" style="text-align: right; display:inline-block; width: 40px"
+                                        ng-change="calculateTotal()"
+                                        ng-model="employeeW4StateData.totalNumberOfDependents"
+                                        ng-required="!employeeW4StateData.isTaxExempt && showTotalNumberOfDependentsField"
+                                        ng-class="{ 'required-field' : frm.DependentCount.$invalid && (isSoftWarned || !isCompleted)}" />
+                                &nbsp;
+                            </div>
+                        </div>
+
+                        <div ng-if="!employeeW4StateData.isTaxExempt">
+                            <div class="row form-group" ng-show="showSchoolDistricts">
+                                <div class="col-sm-4">
+                                    <h3 class="">School District</h3>
+                                </div>
+                                <div class="col-sm-4">
+                                    <select name="SchoolDistricts"
+                                            class="form-control"
+                                            data-ng-model="employeeW4StateData.schoolDistrictId"
+                                            data-ng-options="elm.schoolDistrictId as elm.name for elm in employeeW4StateData.schoolDistricts"
+                                            ng-required="!employeeW4StateData.isTaxExempt && showSchoolDistricts"
+                                            ng-class="{ 'required-field' : frm.SchoolDistricts.$invalid && (isSoftWarned || !isCompleted)}"></select>
+                                </div>
+                            </div>
+
+                            <div ng-if="showFederalSubtractions">
+                                <div class="row form-group">
+                                    <div class="col-sm-4">
+                                        <h3 class="">Did you complete the Federal Deductions and Adjustments Worksheet?</h3>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div style="max-width:92px;" ng-class="{ 'required-field' : frm.isFederalSubtractions.$invalid && (isSoftWarned || !isCompleted)}">
+                                            Yes&nbsp;<input name="isFederalSubtractions" type="radio"
+                                                            ng-model="employeeW4StateData.isFederalSubtractions"
+                                                            ng-required="true"
+                                                            ng-change="clearValuesBasedOnSubtractions()"
+                                                            ng-value="true">&nbsp;
+                                            No&nbsp;<input name="isNotFederalSubtractions" type="radio"
+                                                           ng-model="employeeW4StateData.isFederalSubtractions"
+                                                           ng-required="true"
+                                                           ng-change="clearValuesBasedOnSubtractions()"
+                                                           ng-value="false">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row" ng-show="employeeW4StateData.isFederalSubtractions && showFederalSubtractions">
+                                    <div class="col-sm-4">
+                                        <h3 class="">
+                                            Total reported on Line 4 for the Federal Deductions and Adjustments Worksheet
+                                            <a title="tip:http://dominionsystems.helpdocsonline.com/ID23694" class="help-tooltip">
+                                                <i class="fa fa-question-circle" style="color:lightgray;"></i>
+                                            </a>
+                                        </h3>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <input name="FederalSubtractions"
+                                               type="text"
+                                               class="form-control"
+                                               style="text-align: left; display:inline-block; width: 100px"
+                                               ds-mask="0000000000"
+                                               ng-model="employeeW4StateData.federalSubtractions"
+                                               ng-required="employeeW4StateData.isFederalSubtractions"
+                                               ng-change="updateRecommendedAdditionalAllownaces()"
+                                               ng-class="{ 'required-field' : frm.FederalSubtractions.$invalid && (isSoftWarned || !isCompleted)}" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--Start Indiana controls-->
+                            <div class="row form-group" ng-if="showAdditionalExemptions">
+                                <div class="col-sm-4">
+                                    <h3 class="">
+                                        Additional {{useAllowancesOrExemptions | capitalize}}s
+                                        <a title="tip:http://dominionsystems.helpdocsonline.com/ID22462" class="help-tooltip">
+                                            <i class="fa fa-question-circle" style="color:lightgray;"></i>
+                                        </a>
+                                    </h3>
+                                </div>
+                                <div class="col-sm-8">
+                                    <input name="AdditionalExemptions"
+                                           type="text"
+                                           class="form-control"
+                                           ds-mask="00" style="text-align: right; display:inline-block; width: 40px"
+                                           ng-model="employeeW4StateData.additionalExemptions"
+                                           ng-required="!employeeW4StateData.isTaxExempt"
+                                           ng-class="{ 'required-field' : frm.AdditionalExemptions.$invalid && (isSoftWarned || !isCompleted)}" />
+
+                                    &nbsp;
+                                    <!-- <span class="text-muted" style="display:inline-block; font-style:italic;">
+                                        Your withholding assistant and adjustment worksheet suggests you are entitled to <b> {{employeeW4StateData.recommendedAllowanceCount}}  Additional {{useAllowancesOrExemptions}}s.</b>
+                                    </span> -->
+                                </div>
+                            </div>
+
+                            <div class="row form-group" ng-if="showCountyOfResidence">
+                                <div class="col-sm-4">
+                                    <h3 class="">County of Residence as of January 1st</h3>
+                                </div>
+                                <div class="col-sm-2">
+                                    <select name="ResidenceCounty"
+                                            class="form-control" ng-disabled="employeeW4StateData.isIndianaResident"
+                                            data-ng-model="employeeW4StateData.countyId"
+                                            data-ng-options="elm.countyId as elm.name for elm in counties"
+                                            style="width: 150px"
+                                            ng-required="!employeeW4StateData.isIndianaResident"
+                                            ng-class="{ 'required-field' : frm.ResidenceCounty.$invalid && !employeeW4StateData.isIndianaResident && (isSoftWarned || !isCompleted)}"></select>
+                                </div>
+                                <div class="on-checkbox">
+                                    <span>
+                                        <input type="checkbox" ng_model="employeeW4StateData.isIndianaResident" ng-click="toggleResidentCountyStatus()" id="isIndianaResident" />
+                                    </span>
+                                    <label for="isIndianaResident">
+                                        I was not a resident of Indiana as of January 1st
+                                    </label>
+                                    
+                                </div>
+                            </div>
+
+                            <div class="row form-group" ng-if="showCountyOfEmployment">
+                                <div class="col-sm-4">
+                                    <h3 class="">County of Principal Employment as of January 1st</h3>
+                                </div>
+                                <div class="col-sm-2">
+                                    <select name="EmploymentCounty"
+                                            class="form-control" ng-disabled="employeeW4StateData.isEmployedInIndiana"
+                                            data-ng-model="employeeW4StateData.employmentCountyId"
+                                            data-ng-options="elm.countyId as elm.name for elm in counties"
+                                            style="width: 150px"
+                                            ng-required="!employeeW4StateData.isEmployedInIndiana"
+                                            ng-class="{ 'required-field' : frm.EmploymentCounty.$invalid && !employeeW4StateData.isEmployedInIndiana && (isSoftWarned || !isCompleted)}"></select>
+                                </div>
+                                <div class="on-checkbox">
+                                    <span>
+                                        <input type="checkbox" ng_model="employeeW4StateData.isEmployedInIndiana" ng-click="toggleEmploymentCountyStatus()" id="isEmployedInIndiana"/>
+                                    </span>
+                                    <label>
+                                        I was not a principally employed in Indiana as of January 1st
+                                    </label>
+                                </div>
+                            </div>
+                            <!--End Indiana controls-->
+
+
+
+                            <div class="row form-group" ng-show="showStateAdditionalWithholding">
+                                <div class="col-md-4 col-sm-4">
+                                    <h3 class="">State Additional Withholding</h3>
+                                </div>
+                                <div class="col-md-8 col-sm-8">
+                                    <div class="on-checkbox">
+                                        <span>
+                                            <input id="check" type="checkbox" ng_model="employeeW4StateData.isAdditionalAmountWithheld"/>
+                                        </span>
+                                        <label for="check" class="form-label">
+                                            I want additional income withheld from each paycheck towards state tax.
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row form-group" ng-show="employeeW4StateData.isAdditionalAmountWithheld">
+                                <div class="col-sm-4">
+                                    <h3 class="">Amount</h3>
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="input-group d-inline-flex">
+                                        <span class="input-group-addon">$</span>
+                                        <input name="AdditionalAmount"
+                                                type="text" class="form-control" style="text-align: right" ds-mask="99990"
+                                                ng-model="employeeW4StateData.additionalWithholdingAmt"
+                                                aria-label="Per pay(to the nearest dollar)"
+                                                ng-required="!employeeW4StateData.isTaxExempt && employeeW4StateData.isAdditionalAmountWithheld"
+                                                ng-class="{ 'required-field' : frm.AdditionalAmount.$invalid && (isSoftWarned || !isCompleted)}" />
+                                        <span class="input-group-addon">.00</span>
+                                    </div>
+                                    <div class="pt-sm d-inline-flex">&nbsp;per paycheck.</div>
+                                </div>
+
+                            </div>
+
+                            <!--Start Indiana controls-->
+                            <div class="row form-group" ng-if="showAdditionalCountyWithholding">
+                                <div class="col-sm-4">
+                                    <h3 class="">County Additional Withholding</h3>
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="on-checkbox">
+                                        <span>
+                                            <input type="checkbox" ng_model="employeeW4StateData.isAdditionalCountyAmountWithheld" id="isAdditionalCountyAmountWithheld" />
+                                        </span>
+                                        <label for="isAdditionalCountyAmountWithheld">
+                                            I want additional income withheld from each paycheck towards county tax.
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row form-group" ng-show="employeeW4StateData.isAdditionalCountyAmountWithheld">
+                                <div class="col-sm-4">
+                                    <h3 class="">Amount</h3>
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="input-group" style="float: left; width: 150px">
+                                        <span class="input-group-addon">$</span>
+                                        <input name="AdditionalCountyAmount"
+                                               type="text" class="form-control" style="text-align: right" ds-mask="99990"
+                                               ng-model="employeeW4StateData.additionalCountyWithholdingAmt"
+                                               aria-label="Per pay(to the nearest dollar)"
+                                               ng-required="!employeeW4StateData.isTaxExempt && employeeW4StateData.isAdditionalCountyAmountWithheld"
+                                               ng-class="{ 'required-field' : frm.AdditionalCountyAmount.$invalid && (isSoftWarned || !isCompleted)}" />
+                                        <span class="input-group-addon">.00</span>
+                                    </div>
+                                    <div class="pt-sm">&nbsp;per paycheck.</div>
+                                </div>
+
+                            </div>
+                            <!--End Indiana controls-->
+
+                        </div>
+
+                        <div class="row form-group" ng-if="showAllowableDeductionsToFedAdjGrossIncome">
+                            <div class="col-sm-4">
+                                <h3 class="">Allowable Deductions To Fed Adj Gross Income</h3>
+                            </div>
+                            <div class="col-sm-8">
+                                <input name="Allowabledeductionstofedadjgrossincome"
+                                       type="number"
+                                       min="0"
+                                       value="0"
+                                       step="1"
+                                       class="form-control"
+                                       style="text-align: right; display:inline-block; width: 100px"
+                                       ng-model="employeeW4StateData.allowableDeductionsToFedAdjGrossIncome"
+                                       ng-required="true"
+                                       ng-class="{ 'required-field' : frm.Allowabledeductionstofedadjgrossincome.$invalid && (isSoftWarned || !isCompleted)}" />
+                            </div>
+                        </div>
+
+                        <div class="row form-group" ng-if="showEstimatedDeductionAllowances && !employeeW4StateData.isTaxExempt">
+                            <div class="col-sm-4">
+                                <h3 class="">Number of allowances from the Estimated Deductions</h3>
+                            </div>
+                            <div class="col-sm-8">
+                                <input name="EstimatedDeductionAllowances"
+                                       type="text"
+                                       ds-mask="00"
+                                       class="form-control"
+                                       style="text-align: right; display:inline-block; width: 40px"
+                                       ng-model="employeeW4StateData.estimatedDeductionAllowances"
+                                       ng-required="true"
+                                       ng-class="{ 'required-field' : frm.EstimatedDeductionAllowances.$invalid && (isSoftWarned || !isCompleted)}" />
+                            </div>
+                        </div>
+
+                        <div class="row form-group" ng-if="showIncomeNotSubjectToWithholding">
+                            <div class="col-sm-4">
+                                <h3 class="">Income Not Subject To Witholding</h3>
+                            </div>
+                            <div class="col-sm-8">
+                                <input name="IncomeNotSubjectToWithholding"
+                                       type="number"
+                                       min="0"
+                                       value="0"
+                                       step="1"
+                                       class="form-control"
+                                       style="text-align: right; display:inline-block; width: 100px"
+                                       ng-model="employeeW4StateData.incomeNotSubjectToWithholding"
+                                       ng-required="true"
+                                       ng-class="{ 'required-field' : frm.IncomeNotSubjectToWithholding.$invalid && (isSoftWarned || !isCompleted)}" />
+                            </div>
+                        </div>
+
+                        <div class="row form-group" ng-if="showIncomeNotSubjectToWithholding">
+                            <div class="col-sm-4">
+                                <h3 class="">Estimated Itemized Deductions</h3>
+                            </div>
+                            <div class="col-sm-8">
+                                <input name="EstimatedItemizedDeductions"
+                                       type="number"
+                                       min="0"
+                                       value="0"
+                                       step="1"
+                                       class="form-control"
+                                       style="text-align: right; display:inline-block; width: 100px"
+                                       ng-model="employeeW4StateData.estimatedItemizedDeductions"
+                                       ng-required="true"
+                                       ng-class="{ 'required-field' : frm.EstimatedItemizedDeductions.$invalid && (isSoftWarned || !isCompleted)}" />
+                            </div>
+                        </div>
+
+                        <!--Start NY controls-->
+                        <div class="row form-group"  ng-show="!employeeW4StateData.isTaxExempt && showIsNYCResident">
+                            <div class="col-sm-4">
+                                <h3>Are you a resident of New York City?</h3>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="on-checkbox">
+                                    <input type="checkbox" ng-model="employeeW4StateData.isResidentOfNewYorkCity" ng-change="clearAppropriateValuesForNYC()" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-group" ng-if="!employeeW4StateData.isTaxExempt && showIsNYCResident && employeeW4StateData.isResidentOfNewYorkCity">
+                            <div class="col-sm-4">
+                                <h3 class="">New York City Additional Withholding</h3>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="on-checkbox">
+                                    <input type="checkbox" ng-model="employeeW4StateData.isAdditionalNYCAmountWithheld" />
+                                    I want additional income withheld from each paycheck towards New York City tax.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-group" ng-show="!employeeW4StateData.isTaxExempt && showIsNYCResident && employeeW4StateData.isResidentOfNewYorkCity && employeeW4StateData.isAdditionalNYCAmountWithheld">
+                            <div class="col-sm-4">
+                                <h3 class="">Additional New York City Withholding Amount</h3>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="input-group" style="float: left; width: 150px">
+                                    <span class="input-group-addon">$</span>
+                                    <input name="AdditionalNYCAmount"
+                                           type="text" class="form-control" style="text-align: right" ds-mask="99990"
+                                           ng-model="employeeW4StateData.nycAdditionalWithholdingAmt"
+                                           aria-label="Per pay(to the nearest dollar)"
+                                           ng-required="!employeeW4StateData.isTaxExempt && employeeW4StateData.isAdditionalNYCAmountWithheld"
+                                           ng-class="{ 'required-field' : frm.AdditionalNYCAmount.$invalid && (isSoftWarned || !isCompleted)}" />
+                                    <span class="input-group-addon">.00</span>
+                                </div>
+                                <div class="pt-sm">&nbsp;per paycheck.</div>
+                            </div>
+                        </div>
+
+                        <div class="row form-group" ng-show="!employeeW4StateData.isTaxExempt  && showIsNYCResident && employeeW4StateData.isResidentOfNewYorkCity">
+                            <div class="col-sm-4">
+                                <h3 class="">Total number of {{useAllowancesOrExemptions | capitalize}}s for New York City</h3>
+                            </div>
+                            <div class="col-sm-8">
+                                <input name="NYCAllowances"
+                                type="text"
+                                        class="form-control"
+                                        ds-mask="00" style="text-align: right; display:inline-block; width: 50px"
+                                        ng-model="employeeW4StateData.nycAllowances"
+                                        ng-required="!employeeW4StateData.isTaxExempt && showIsNYCResident && employeeW4StateData.isResidentOfNewYorkCity"
+                                        ng-class="{ 'required-field' : frm.NYCAllowances.$invalid && (isSoftWarned || !isCompleted)}" />
+                                &nbsp;
+                            </div>
+                        </div>
+
+
+                        <div class="row form-group"  ng-show="!employeeW4StateData.isTaxExempt && showIsYonkersResident">
+                            <div class="col-sm-4">
+                                <h3>Are you a resident of Yonkers?</h3>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="on-checkbox">
+                                    <input type="checkbox" ng-model="employeeW4StateData.isResidentOfYonkers" ng-change="clearAppropriateValuesForYonkers()" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-group" ng-if="!employeeW4StateData.isTaxExempt && showIsYonkersResident && employeeW4StateData.isResidentOfYonkers">
+                            <div class="col-sm-4">
+                                <h3 class="">Yonkers Additional Withholding</h3>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="on-checkbox">
+                                    <input type="checkbox" ng-model="employeeW4StateData.isAdditionalYonkersAmountWithheld" />
+                                    I want additional income withheld from each paycheck towards Yonkers tax.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row form-group" ng-show="!employeeW4StateData.isTaxExempt && showIsYonkersResident && employeeW4StateData.isResidentOfYonkers && employeeW4StateData.isAdditionalYonkersAmountWithheld">
+                            <div class="col-sm-4">
+                                <h3 class="">Additional Yonkers Withholding Amount</h3>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="input-group" style="float: left; width: 150px">
+                                    <span class="input-group-addon">$</span>
+                                    <input name="AdditionalYonkersAmount"
+                                           type="text" class="form-control" style="text-align: right" ds-mask="99990"
+                                           ng-model="employeeW4StateData.yonkersAdditionalWithholdingAmt"
+                                           aria-label="Per pay(to the nearest dollar)"
+                                           ng-required="!employeeW4StateData.isTaxExempt && employeeW4StateData.isAdditionalYonkersAmountWithheld"
+                                           ng-class="{ 'required-field' : frm.AdditionalYonkersAmount.$invalid && (isSoftWarned || !isCompleted)}" />
+                                    <span class="input-group-addon">.00</span>
+                                </div>
+                                <div class="pt-sm">&nbsp;per paycheck.</div>
+                            </div>
+                        </div>
+                        <!--End NY controls-->
+
+                        <div class="row form-group" ng-show="!employeeW4StateData.isTaxExempt">
+                            <div class="col-sm-4">
+                                <h3 class="">Total {{useAllowancesOrExemptions | capitalize}}s</h3>
+                            </div>
+                            <div class="col-sm-8">
+                                <input name="Allowances"
+                                type="text"
+                                        class="form-control"
+                                        ds-mask="00" style="text-align: right; display:inline-block; width: 50px"
+                                        ng-model="employeeW4StateData.allowances"
+                                        ng-required="!employeeW4StateData.isTaxExempt"
+                                        ng-class="{ 'required-field' : frm.Allowances.$invalid && (isSoftWarned || !isCompleted)}" 
+                                        ng-disabled="employeeW4StateData.allowances > -1 && employeeW4StateData.stateId === 51" />
+                                &nbsp;
+                                <!-- <span class="text-muted" style="display:inline-block; font-style:italic;"> Your personal withholding worksheet suggests you claim <b>{{employeeW4StateData.totalExemptions}} {{useAllowancesOrExemptions}}s.</b></span> -->
+                            </div>
+                        </div>
+                        <div class="row form-group" ng-if="showPersonalExemtion">
+                            <div class="col-sm-4">
+                                
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="on-checkbox" >
+                                    <span>
+                                        <input type="checkbox" ng_model="employeeW4StateData.isPersonalExemption" id="isPersonalExemption"/>
+                                    </span>
+                                    <label for="isPersonalExemption">
+                                        Do you claim no personal exemption and wish to withhold at the highest rate?
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" ng-show="!employeeW4StateData.isTaxExempt && showTaxableWagesPercentage">
+                            <div class="col-sm-4">
+                                <h3 class="">Withhold from gross taxable wages at the percentage of: </h3>
+                            </div>
+                            <div class="col-sm-8 form-group">
+                                <select name="TaxableWagesPercentage"
+                                        class="form-control"
+                                        style="width: 100px"
+                                        data-ng-model="employeeW4StateData.taxableWagesPercentage"
+                                        data-ng-options="elm.id as elm.desc for elm in taxableWagesPercentages"
+                                        ng-required="!employeeW4StateData.isTaxExempt && showTaxableWagesPercentage"
+                                        ng-class="{ 'required-field' : frm.TaxableWagesPercentage.$invalid && (isSoftWarned || !isCompleted)}"></select>
+                            </div>
+                        </div>
+                        <div class="row form-group" ng-if="showUseTheChartFromInstructionA">
+                            <div class="col-sm-4">
+                                <h3 class="">If you have chosen to use the chart from instruction A, choose the appropriate letter </h3>
+                            </div>
+                            <div class="col-sm-2">
+                                <select name="InstructionAOptionFromChart" 
+                                        class="form-control"
+                                        data-ng-model="employeeW4StateData.instructionAOptionFromChart"
+                                        style="width: 50px"
+                                        data-ng-options="elm.id as elm.desc for elm in instructionAOptionsFromChart">
+                                        <option></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <!--myForm-->
+
+                    <div class="row">
+                        <hr />
+                    </div>
+
+                    <ds-nav-workflow-footer workflow-Hide-Next="false" workflow-Hide-Prev="false"
+                        my-Workflow="myWorkflow"
+                        on-save="$ctrl.clickSavePageData($direction)" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

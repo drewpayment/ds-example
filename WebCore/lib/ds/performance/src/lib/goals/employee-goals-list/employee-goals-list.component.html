@@ -1,0 +1,147 @@
+<ds-card [border]="isEssMode ? 'top' : null">
+    <ds-card-header>
+        <ds-card-header-title *ngIf="!isAssignToRestricted; else notEss">
+            {{viewArchiveTxt[1]}}
+        </ds-card-header-title>
+        <ng-template #notEss>
+            <ds-card-sub-header-title>
+                {{viewArchiveTxt[1]}}
+            </ds-card-sub-header-title>
+        </ng-template>
+        <ds-card-inline-content class="justify-content-end">
+          <ng-container *ngIf="showActiveGoals && hasGoals">
+            <ds-progress
+                [value]="goalCompletePercent"
+                color="success"
+                class="m-2"
+                style="width:400px;"
+                labelPosition="left"
+                [label]="goalCompletePercent + '% Complete'"
+            ></ds-progress>
+          </ng-container>
+        </ds-card-inline-content>
+        <ds-card-title-right-content>
+            <button
+              class="btn btn-outline-primary white-space-nowrap"
+              type="button"
+              (click)="swapDisplay()"
+              [disabled]="editingSideNavItems"
+            >{{viewArchiveTxt[0]}}</button>
+        </ds-card-title-right-content>
+        <ds-card-title-action>
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="showAddGoalDialog()"
+            [disabled]="editingSideNavItems"
+            >
+              <mat-icon>add</mat-icon> Goal
+          </button>
+        </ds-card-title-action>
+    </ds-card-header>
+
+    <ds-card-content>
+        <ng-container *ngIf="hasGoals; else noGoals">
+            <mat-drawer-container 
+                hasBackdrop="true"
+                [@changeDrawerHeightOnOpen]="drawerIsOpen">
+                <mat-drawer-content>
+                    <ds-card mode="widget-nobody"
+                        [color]="mapCompletionStatusToColorClass(g.completionStatus)"
+                        class="action"
+                        [drawerMask]="true"
+                        [drawerMaskActive]="g.isOpen"
+                        (click)="showGoalDetail(g)"
+                        [class.active]="g.isOpen"
+                        *ngFor="let g of displayGoals; let i = index; trackBy: trackByFn ">
+                        <div ds-card-icon size="lg">
+                            {{g.goalOwner?.employeeId == employeeId && g.client == null && g.employee == null ? 'domain' : 'track_changes'}}
+                            <ds-card-icon-label>
+                                <div class="d-flex align-items-center mt-1" *ngIf="g.priority">
+                                    <ng-container *ngIf="goalPriorityRef[g.priority] == 'Low'">
+                                        <!-- Arrow downward -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
+                                            <path fill="none" d="M0 0h24v24H0V0z"/><path fill="white" d="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z"/>
+                                        </svg>
+                                    </ng-container>
+                                    <ng-container *ngIf="goalPriorityRef[g.priority] == 'Medium' || goalPriorityRef[g.priority] == 'High'">
+                                        <!-- Arrow upward -->
+                                        <svg  xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24">
+                                            <path fill="none" d="M0 0h24v24H0V0z" /><path fill="white" d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/>
+                                        </svg>
+                                    </ng-container>
+                                    <span class="font-xs">{{goalPriorityRef[g.priority]}}</span>
+                                </div>
+                            </ds-card-icon-label>
+                        </div>
+                        <div ds-card-icon-title>Content</div>
+                        <ds-card-header>
+                            <ds-card-widget-title>
+                                <div class="text-truncate">{{g.title}}</div>
+                            </ds-card-widget-title>
+                            <ds-card-title-action class="text-medium-dark">
+                                <span class="badge badge-pill mr-2"
+                                    [class.badge-danger]="g.completionStatus === CompletionStatusType.Overdue"
+                                    *ngIf="g.completionStatus === CompletionStatusType.Overdue"
+                                >Overdue</span>
+                                <i class="material-icons" *ngIf="g.client != null">domain</i>
+                            </ds-card-title-action>
+                            <ds-card-subtitle>
+                                <div class="card-data bordered">
+                                    <div class="item" *ngIf="g.startDate != null">
+                                        <label>Start:</label> {{g.startDate | date:'shortDate'}}
+                                    </div>
+                                    <div class="item" *ngIf="g.dueDate; else noDueDate">
+                                        <label>Due:</label> {{g.dueDate | date:'shortDate'}}
+                                    </div>
+                                    <ng-template #noDueDate>
+                                        <div class="item"><label>Due:</label> Not Specified</div>
+                                    </ng-template>
+                                    <div class="item" *ngIf="g.tasks.length">
+                                        {{g.tasks.length}} {{g.tasks.length > 1 ? 'Tasks' : 'Task'}}
+                                    </div>
+                                    <div class="item" *ngIf="g.completionDate != null">
+                                        <label>Completed:</label> {{g.completionDate | date:'shortDate'}}
+                                    </div>
+                                </div>
+                            </ds-card-subtitle>
+                        </ds-card-header>
+                    </ds-card>
+                </mat-drawer-content>
+                <mat-drawer 
+                    #goalDetail
+                    [class.open]="drawerIsOpen"
+                    mode="over"
+                    [opened]="drawerIsOpen"
+                    position="end"
+                    (closedStart)="drawerClosing()"
+                    (openedStart)="drawerOpening()"
+                    disableClose="true"
+                    autoFocus="false"
+                    [@matDrawerAfterHeightChange]="drawerIsOpen">
+                    <ds-goal-detail
+                        *ngIf="selectedGoal != null"
+                        [goal]="selectedGoal"
+                        [user]="user"
+                        [sideNavRef]="goalDetail"
+                        [isEmployeeGoal]="isEmployeeGoals"
+                        [restrictAssignment]="isAssignToRestricted"
+                        [isEss]="isEssMode"
+                        [canAddGoals]="canAddGoals"
+                        [hasSupervisorLevelAccessToEmployee]="hasSupervisorLevelAccessToEmployee"
+                        (goalDetailEditDialogFinish)="goalDetailEditDialogFinish($event)"
+                        (goalChange)="updateGoalsOnDetailChange($event)"
+                        (goalRemoved)="removeGoal($event)"
+                        (goalAdded)="addNewGoal($event)">
+                    </ds-goal-detail>
+                </mat-drawer>
+            </mat-drawer-container>
+        </ng-container>
+        <ng-template #noGoals>
+            <div class="empty-state">There are no goals to display. Click the "+ Goal" button to add one for this employee.</div>
+        </ng-template>
+        <ng-template #loading>
+            <div class="loading-message">Loading...</div>
+        </ng-template>
+    </ds-card-content>
+</ds-card>

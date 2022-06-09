@@ -1,0 +1,46 @@
+<ds-card collapse="true" expanded="true">
+  <ds-card-header y-align="center">
+    <ds-card-sub-header-title>
+      Atm Export
+    </ds-card-sub-header-title>
+    <ds-card-inline-content>
+      <span class="form-help-text">Optional</span>
+    </ds-card-inline-content>
+  </ds-card-header>
+  <ds-card-content>
+    <form [formGroup]="form">
+      <div class="row" formGroupName="accrual">
+        <div class="col-md-3">
+          <div class="form-group">
+            <label>Export Code</label>
+            <input class="form-control" formControlName="atmInterfaceCode" />
+          </div>
+        </div>
+
+        <div class="col-md-auto">
+          <label>Export Date</label>
+          <div class="row">
+            <div class="col-auto">
+              <div class="form-group">
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="isPeriodEnd" formControlName="isPeriodEnd">
+                  <label class="custom-control-label" for="isPeriodEnd">Period End</label>
+                </div>
+              </div>
+            </div>
+            <div class="col-auto">
+              <div class="form-group">
+                <div class="custom-control custom-checkbox">
+                  <input type="checkbox" class="custom-control-input" id="isPeriodEndPlusOne"
+                    formControlName="isPeriodEndPlusOne">
+                  <label class="custom-control-label" for="isPeriodEndPlusOne">Period End +1</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </form>
+  </ds-card-content>
+</ds-card>

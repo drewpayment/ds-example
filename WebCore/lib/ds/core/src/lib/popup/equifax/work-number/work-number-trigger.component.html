@@ -1,0 +1,11 @@
+<button class="btn btn-anchor" type="button" 
+    *ngIf="!this.hasMenuWrapper"
+    (click)="openWorkNumber()">
+    The Work Number® from Equifax
+</button>
+
+<button mat-menu-item type="button" 
+    *ngIf="this.hasMenuWrapper"
+    (click)="openWorkNumber()">
+    The Work Number® from Equifax
+</button>

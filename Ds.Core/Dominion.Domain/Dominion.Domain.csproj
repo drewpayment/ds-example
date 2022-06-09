@@ -1,0 +1,1430 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{592ED34C-A176-464A-BC8B-9F813A3BA6B8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Dominion.Domain</RootNamespace>
+    <AssemblyName>Dominion.Domain</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Staging|AnyCPU'">
+    <OutputPath>bin\Staging\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Staging|x86'">
+    <OutputPath>bin\x86\Staging\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Staging|x64'">
+    <OutputPath>bin\x64\Staging\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EnhancementQA|AnyCPU'">
+    <OutputPath>bin\EnhancementQA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EnhancementQA|x86'">
+    <OutputPath>bin\x86\EnhancementQA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'EnhancementQA|x64'">
+    <OutputPath>bin\x64\EnhancementQA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'MobileQA|AnyCPU'">
+    <OutputPath>bin\MobileQA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'MobileQA|x86'">
+    <OutputPath>bin\x86\MobileQA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'MobileQA|x64'">
+    <OutputPath>bin\x64\MobileQA\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FluentValidation, Version=4.0.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\FluentValidation.4.0.0.1\lib\Net40\FluentValidation.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Entities\Aca\Aca1095C.cs" />
+    <Compile Include="Entities\Aca\Aca1095CBoxCodeInfo.cs" />
+    <Compile Include="Entities\Aca\Aca1095CBoxCodeOption.cs" />
+    <Compile Include="Entities\Aca\Aca1095CCoveredIndividual.cs" />
+    <Compile Include="Entities\Aca\Aca1095CEmployeeConsent.cs" />
+    <Compile Include="Entities\Aca\Aca1095CLineItem.cs" />
+    <Compile Include="Entities\Aca\Aca1095CResource.cs" />
+    <Compile Include="Entities\Aca\AcaAleMember.cs" />
+    <Compile Include="Entities\Aca\AcaAleMemberClient.cs" />
+    <Compile Include="Entities\Aca\AcaClientConfiguration.cs" />
+    <Compile Include="Entities\Aca\AcaCompanyApprovalStatusInfo.cs" />
+    <Compile Include="Entities\Aca\AcaCompanyStatus.cs" />
+    <Compile Include="Entities\Aca\AcaCompanyStatusType.cs" />
+    <Compile Include="Entities\Aca\AcaConfiguration.cs" />
+    <Compile Include="Entities\Aca\AcaCorrection.cs" />
+    <Compile Include="Entities\Aca\AcaEmployeeApproval.cs" />
+    <Compile Include="Entities\Aca\AcaErrorCode.cs" />
+    <Compile Include="Entities\Aca\AcaTransmission.cs" />
+    <Compile Include="Entities\Aca\AcaTransmissionError.cs" />
+    <Compile Include="Entities\Aca\AcaTransmissionRecordStatusTypeInfo.cs" />
+    <Compile Include="Entities\Aca\AcaTransmissionStatusTypeInfo.cs" />
+    <Compile Include="Entities\Aca\AcaTransmissionSubmission.cs" />
+    <Compile Include="Entities\Aca\AcaTransmissionRecord.cs" />
+    <Compile Include="Entities\Aca\AcaAleMemberGroup.cs" />
+    <Compile Include="Entities\Aca\AcaAleMemberMonthDetail.cs" />
+    <Compile Include="Entities\Aca\AcaTransmissionSubmissionStatusTypeInfo.cs" />
+    <Compile Include="Entities\Aca\AcaTransmissionTypeInfo.cs" />
+    <Compile Include="Entities\Accounting\ClientGLInterface.cs" />
+    <Compile Include="Entities\Api\Api.cs" />
+    <Compile Include="Entities\Api\ApiAccount.cs" />
+    <Compile Include="Entities\Api\ApiAccountMapping.cs" />
+    <Compile Include="Entities\Api\ApiVersion.cs" />
+    <Compile Include="Entities\Api\ClientApiAccount.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantDocument.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantSkill.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantApplicationEmailHistory.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantPostingOwner.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicationSectionInstruction.cs" />
+    <Compile Include="Entities\ApplicantTracking\ExternalApplicationIdentity.cs" />
+    <Compile Include="Entities\App\ApplicationMenu.cs" />
+    <Compile Include="Entities\App\ApplicationMenuItem.cs" />
+    <Compile Include="Entities\App\ApplicationResource.cs" />
+    <Compile Include="Entities\AR\ArDeposit.cs" />
+    <Compile Include="Entities\AR\ArManualInvoice.cs" />
+    <Compile Include="Entities\AR\ArManualInvoiceDetail.cs" />
+    <Compile Include="Entities\AR\ArNsfPayment.cs" />
+    <Compile Include="Entities\AR\ArPayment.cs" />
+    <Compile Include="Entities\AR\ArReport.cs" />
+    <Compile Include="Entities\Banks\AchBank.cs" />
+    <Compile Include="Entities\Banks\Bank.cs" />
+    <Compile Include="Entities\Banks\BankHoliday.cs" />
+    <Compile Include="Entities\Benefit\BenefitAmountSelectionTypeInfo.cs" />
+    <Compile Include="Entities\Benefit\CustomBenefitField.cs" />
+    <Compile Include="Entities\Benefit\PlanTypeEmployeeDeductionMaxType.cs" />
+    <Compile Include="Entities\Billing\PendingBillingCredit.cs" />
+    <Compile Include="Entities\ClientFeatures\ClientFeaturesAgreement.cs" />
+    <Compile Include="Entities\ClientFeatures\ClientNotes.cs" />
+    <Compile Include="Entities\Billing\AutomaticBilling.cs" />
+    <Compile Include="Entities\Clients\Calendar\PickupMethod.cs" />
+    <Compile Include="Entities\Clients\ClientAccountFeatureChangeHistory.cs" />
+    <Compile Include="Entities\Clients\ClientBank.cs" />
+    <Compile Include="Entities\Clients\ClientContact.cs" />
+    <Compile Include="Entities\Clients\ClientCostCenterRatePremium.cs" />
+    <Compile Include="Entities\Clients\ClientDivision.cs" />
+    <Compile Include="Entities\Clients\ClientDivisionAddress.cs" />
+    <Compile Include="Entities\Clients\ClientDivisionLogo.cs" />
+    <Compile Include="Entities\Clients\ClientFeatureTracking.cs" />
+    <Compile Include="Entities\Clients\ClientGLAssignment.cs" />
+    <Compile Include="Entities\Clients\ClientGLClassGroup.cs" />
+    <Compile Include="Entities\Clients\ClientGLClassGroupChangeHistory.cs" />
+    <Compile Include="Entities\Clients\ClientGLControl.cs" />
+    <Compile Include="Entities\Clients\ClientGLControlItem.cs" />
+    <Compile Include="Entities\Clients\ClientGLCustomClass.cs" />
+    <Compile Include="Entities\Clients\ClientGLSettings.cs" />
+    <Compile Include="Entities\Clients\ClientGroup.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantApplicationDetail.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantApplicationHeader.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantClient.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantCorrespondenceTypeInfo.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantDegreeList.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantEducationHistory.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantEmploymentHistory.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantJobSite.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantLicense.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantNote.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantOnBoardingDefaultDetail.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantOnBoardingDetail.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantOnBoardingProcessSet.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantOnBoardingProcessType.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantOnBoardingTask.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantOnBoardingHeader.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantOnBoardingTaskAttachment.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantQuestionControl.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantQuestionDdlItem.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantQuestionControlAndQuestionSets.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantQuestionSet.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantReference.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantRejectionReason.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantResume.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantStatusTypeDetail.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicationQuestionSection.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicationViewed.cs" />
+    <Compile Include="Entities\ApplicantTracking\ClientJobSite.cs" />
+    <Compile Include="Entities\Clients\BankAccountNextCheck.cs" />
+    <Compile Include="Entities\ApplicantTracking\Applicant.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantPosting.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantPostingCategory.cs" />
+    <Compile Include="Entities\Clients\ClientDeductionMappingPlanInfo.cs" />
+    <Compile Include="Entities\Clients\Client401KSetup.cs" />
+    <Compile Include="Entities\Clients\ClientDisciplineLevel.cs" />
+    <Compile Include="Entities\Accounting\GeneralLedgerAccount.cs" />
+    <Compile Include="Entities\Base\Entity.cs" />
+    <Compile Include="Entities\Base\EntityExtensions.cs" />
+    <Compile Include="Entities\Clients\ClientHRInfo.cs" />
+    <Compile Include="Entities\Clients\ClientInstructionOneTime.cs" />
+    <Compile Include="Entities\Clients\ClientOrganizationClient.cs" />
+    <Compile Include="Entities\Benefit\AgeDeterminationType.cs" />
+    <Compile Include="Entities\Benefit\BenefitAmount.cs" />
+    <Compile Include="Entities\Benefit\BenefitImportExportFormat.cs" />
+    <Compile Include="Entities\Benefit\BenefitImportExportType.cs" />
+    <Compile Include="Entities\Benefit\CostFactor.cs" />
+    <Compile Include="Entities\Benefit\CostFactorOption.cs" />
+    <Compile Include="Entities\Benefit\CostTypeInfo.cs" />
+    <Compile Include="Entities\Benefit\CoverageType.cs" />
+    <Compile Include="Entities\Benefit\CustomBenefitFieldValue.cs" />
+    <Compile Include="Entities\Benefit\DependentCoverageOptionTypeInfo.cs" />
+    <Compile Include="Entities\Benefit\EmployeeBenefitInfo.cs" />
+    <Compile Include="Entities\Benefit\EmployeeOpenEnrollment.cs" />
+    <Compile Include="Entities\Benefit\EmployeeOpenEnrollmentSelection.cs" />
+    <Compile Include="Entities\Benefit\EmployeeSelectionDependent.cs" />
+    <Compile Include="Entities\Benefit\IOpenEnrollmentEntity.cs" />
+    <Compile Include="Entities\Benefit\IOpenEnrollmentPlanEntity.cs" />
+    <Compile Include="Entities\Benefit\LifeEventApprovalStatusType.cs" />
+    <Compile Include="Entities\Benefit\LifeEventReasonInfo.cs" />
+    <Compile Include="Entities\Benefit\OpenEnrollment.cs" />
+    <Compile Include="Entities\Benefit\OpenEnrollmentChangeHistory.cs" />
+    <Compile Include="Entities\Benefit\OpenEnrollmentPlan.cs" />
+    <Compile Include="Entities\Benefit\OpenEnrollmentPlanChangeHistory.cs" />
+    <Compile Include="Entities\Benefit\Plan.cs" />
+    <Compile Include="Entities\Benefit\PlanCategory.cs" />
+    <Compile Include="Entities\Benefit\PlanEligibilityTypeInfo.cs" />
+    <Compile Include="Entities\Benefit\PlanEmployeeAvailability.cs" />
+    <Compile Include="Entities\Benefit\PlanOption.cs" />
+    <Compile Include="Entities\Benefit\PlanOptionCost.cs" />
+    <Compile Include="Entities\Benefit\PlanOptionCostFactorConfiguration.cs" />
+    <Compile Include="Entities\Benefit\PlanOptionPlan.cs" />
+    <Compile Include="Entities\Benefit\PlanPackage.cs" />
+    <Compile Include="Entities\Benefit\PlanProvider.cs" />
+    <Compile Include="Entities\Benefit\PlanType.cs" />
+    <Compile Include="Entities\Benefit\BenefitResource.cs" />
+    <Compile Include="Entities\Benefit\BenefitPackage.cs" />
+    <Compile Include="Entities\Benefit\PlanTypePlanOption.cs" />
+    <Compile Include="Entities\Clients\ClientSftpConfiguration.cs" />
+    <Compile Include="Entities\Clients\ClientShiftSelected.cs" />
+    <Compile Include="Entities\Clients\ClientUnemploymentSetup.cs" />
+    <Compile Include="Entities\ClientFeatures\ClockClientGeofence.cs" />
+    <Compile Include="Entities\Clients\ClientW2Options.cs" />
+    <Compile Include="Entities\Core\AbandonedAzureLinks.cs" />
+    <Compile Include="Entities\Employee\EmployeeDeductionMaxTypeEntity.cs" />
+    <Compile Include="Entities\Employee\ClockEmployeeInfo\ClockEmployeePunchAttempt.cs" />
+    <Compile Include="Entities\Employee\ClockEmployeeInfo\ClockEmployeePunchLocation.cs" />
+    <Compile Include="Entities\Clients\GeneralLedgerGroupHeader.cs" />
+    <Compile Include="Entities\Clients\GeneralLedgerType.cs" />
+    <Compile Include="Entities\Config\Config.cs" />
+    <Compile Include="Entities\Config\ConfigSetting.cs" />
+    <Compile Include="Entities\Clients\ClientWorkNumberPolicy.cs" />
+    <Compile Include="Entities\Core\ApplicantAzure.cs" />
+    <Compile Include="Entities\Clients\ClientSMTPSetting.cs" />
+    <Compile Include="Entities\Core\AzureResource.cs" />
+    <Compile Include="Entities\Core\BetaFeature.cs" />
+    <Compile Include="Entities\Core\ClientAzure.cs" />
+    <Compile Include="Entities\Core\ClientGoal.cs" />
+    <Compile Include="Entities\Core\EmployeeAzure.cs" />
+    <Compile Include="Entities\Core\EmployeeGoal.cs" />
+    <Compile Include="Entities\Core\EvaluationRemark.cs" />
+    <Compile Include="Entities\Core\FeatureOptionsGroup.cs" />
+    <Compile Include="Entities\Core\FileFormat.cs" />
+    <Compile Include="Entities\Core\Goal.cs" />
+    <Compile Include="Entities\Core\SystemFeedback.cs" />
+    <Compile Include="Entities\Core\GoalRemark.cs" />
+    <Compile Include="Entities\Core\Group.cs" />
+    <Compile Include="Entities\Core\ImageResource.cs" />
+    <Compile Include="Entities\Core\ImageSizeTypeInfo.cs" />
+    <Compile Include="Entities\Core\ImageTypeInfo.cs" />
+    <Compile Include="Entities\Core\Meeting.cs" />
+    <Compile Include="Entities\Core\MeetingAttendee.cs" />
+    <Compile Include="Entities\Core\Proposal.cs" />
+    <Compile Include="Entities\Core\RemarkChangeHistory.cs" />
+    <Compile Include="Entities\Core\Remark.cs" />
+    <Compile Include="Entities\Core\Task.cs" />
+    <Compile Include="Entities\Dashboard\DashboardConfig.cs" />
+    <Compile Include="Entities\Dashboard\DashboardUserFilter.cs" />
+    <Compile Include="Entities\Dashboard\DashboardWidget.cs" />
+    <Compile Include="Entities\Dashboard\DashboardSession.cs" />
+    <Compile Include="Entities\Dashboard\Widget.cs" />
+    <Compile Include="Entities\Employee\ClockEmployeeLostPunch.cs" />
+    <Compile Include="Entities\Employee\EmployeeAvatar.cs" />
+    <Compile Include="Entities\Employee\EmployeePoints.cs" />
+    <Compile Include="Entities\EEOC\EEOCOrganization.cs" />
+    <Compile Include="Entities\Employee\EmployeeHRInfo.cs" />
+    <Compile Include="Entities\Core\TermsAndConditionsVersion.cs" />
+    <Compile Include="Entities\Employee\EmployeeExitInterviewRequest .cs" />
+    <Compile Include="Entities\Employee\EmployeeTerminationReason.cs" />
+    <Compile Include="Entities\EEOC\CompanyEEOCPaybandSubResult.cs" />
+    <Compile Include="Entities\Employee\EmployeeAccrual.cs" />
+    <Compile Include="Entities\Employee\EmployeeClientRateCostCenter.cs" />
+    <Compile Include="Entities\Benefit\PlanWaiveReason.cs" />
+    <Compile Include="Entities\Benefit\SalaryMethodTypeInfo.cs" />
+    <Compile Include="Entities\Billing\BillingHistory.cs" />
+    <Compile Include="Entities\Billing\BillingHistoryDetail.cs" />
+    <Compile Include="Entities\Billing\BillingItem.cs" />
+    <Compile Include="Entities\Billing\BillingItemDescription.cs" />
+    <Compile Include="Entities\Billing\BillingPriceChart.cs" />
+    <Compile Include="Entities\Billing\BillingPriceChartDetail.cs" />
+    <Compile Include="Entities\Clients\Calendar\DeliveryMethod.cs" />
+    <Compile Include="Entities\Clients\Client.cs" />
+    <Compile Include="Entities\Clients\ClientAccountFeature.cs" />
+    <Compile Include="Entities\Clients\ClientAccountOption.cs" />
+    <Compile Include="Entities\Clients\ClientBankInfo.cs" />
+    <Compile Include="Entities\Clients\ClientCalendar.cs" />
+    <Compile Include="Entities\Clients\ClientCostCenter.cs" />
+    <Compile Include="Entities\Clients\ClientDepartment.cs" />
+    <Compile Include="Entities\Clients\ClientEmploymentClass.cs" />
+    <Compile Include="Entities\Clients\ClientEssOptions.cs" />
+    <Compile Include="Entities\Clients\ClientIpSecurity.cs" />
+    <Compile Include="Entities\Clients\ClientPayroll.cs" />
+    <Compile Include="Entities\Clients\ClientRate.cs" />
+    <Compile Include="Entities\Clients\ClientOrganization.cs" />
+    <Compile Include="Entities\Clients\ClientShift.cs" />
+    <Compile Include="Entities\Clients\ClientUserGroup.cs" />
+    <Compile Include="Entities\Clients\ClientUserGroupActionType.cs" />
+    <Compile Include="Entities\Clients\ClientWorkersComp.cs" />
+    <Compile Include="Entities\Clients\CompanyResource.cs" />
+    <Compile Include="Entities\Clients\CompanyResourceFolder.cs" />
+    <Compile Include="Entities\Clients\SpecialInstruction.cs" />
+    <Compile Include="Entities\Contact\Address.cs" />
+    <Compile Include="Entities\Contact\Person.cs" />
+    <Compile Include="Entities\Core\Alert.cs" />
+    <Compile Include="Entities\Core\EmployeeAttachment.cs" />
+    <Compile Include="Entities\Core\EmployeeAttachmentFolder.cs" />
+    <Compile Include="Entities\Core\EmployeeFolderGroup.cs" />
+    <Compile Include="Entities\Core\FieldTypeInfo.cs" />
+    <Compile Include="Entities\Core\ProductInfo.cs" />
+    <Compile Include="Entities\Core\Resource.cs" />
+    <Compile Include="Entities\Core\RoundingRuleTypeInfo.cs" />
+    <Compile Include="Entities\Core\Signature.cs" />
+    <Compile Include="Entities\EEOC\ClientEEOC.cs" />
+    <Compile Include="Entities\EEOC\EEOCJobCategories.cs" />
+    <Compile Include="Entities\EEOC\EEOCLocation.cs" />
+    <Compile Include="Entities\EEOC\EEOCPayBand.cs" />
+    <Compile Include="Entities\Employee\ClockEmployeePunch.cs" />
+    <Compile Include="Entities\Employee\Employee.cs" />
+    <Compile Include="Entities\Employee\EmployeeBank.cs" />
+    <Compile Include="Entities\Employee\EmployeeBankAccountType.cs" />
+    <Compile Include="Entities\Employee\EmployeeClientRate.cs" />
+    <Compile Include="Entities\Employee\EmployeeCostCenterPercentage.cs" />
+    <Compile Include="Entities\Employee\EmployeeDeduction.cs" />
+    <Compile Include="Entities\Employee\EmployeeDeductionAmountTypeInfo.cs" />
+    <Compile Include="Entities\Employee\EmployeeDependent.cs" />
+    <Compile Include="Entities\Employee\EmployeeDependentChangeHistory.cs" />
+    <Compile Include="Entities\Employee\EmployeeDependentPCP.cs" />
+    <Compile Include="Entities\Employee\EmployeeDriversLicense.cs" />
+    <Compile Include="Entities\Employee\EmployeeEmergencyContact.cs" />
+    <Compile Include="Entities\Employee\EmployeeEvent.cs" />
+    <Compile Include="Entities\Employee\EmployeeNoteTagsDetails.cs" />
+    <Compile Include="Entities\Employee\EmployeeNoteTags.cs" />
+    <Compile Include="Entities\Employee\EmployeeNotesActivityId.cs" />
+    <Compile Include="Entities\Employee\EmployeeNoteAttachments.cs" />
+    <Compile Include="Entities\Employee\EmployeeNotes.cs" />
+    <Compile Include="Entities\Employee\EmployeePay.cs" />
+    <Compile Include="Entities\Employee\EmployeePayChangeHistory.cs" />
+    <Compile Include="Entities\Employee\EmployeePayTypeInfo.cs" />
+    <Compile Include="Entities\Employee\EmployeePCP.cs" />
+    <Compile Include="Entities\Employee\EmployeePersonalInfo.cs" />
+    <Compile Include="Entities\Employee\EmployeeStatus.cs" />
+    <Compile Include="Entities\Employee\IEmployeeDependentEntity.cs" />
+    <Compile Include="Entities\Employee\IEmployeePay.cs" />
+    <Compile Include="Entities\Employee\PreviewEmployeeBenefitImport.cs" />
+    <Compile Include="Entities\Employee\Search\LegacyEmployeeSearchSetting.cs" />
+    <Compile Include="Entities\Forms\Form.cs" />
+    <Compile Include="Entities\Forms\FormDefinition.cs" />
+    <Compile Include="Entities\Forms\FormDefinitionFields.cs" />
+    <Compile Include="Entities\Forms\FormFields.cs" />
+    <Compile Include="Entities\Forms\FormSignature.cs" />
+    <Compile Include="Entities\Forms\FormSignatureDefinition.cs" />
+    <Compile Include="Entities\Forms\FormType.cs" />
+    <Compile Include="Entities\Geofence\GeofenceBilling.cs" />
+    <Compile Include="Entities\InstantPay\InstantPayDirectDepositChange.cs" />
+    <Compile Include="Entities\Labor\AccrualBalanceOption.cs" />
+    <Compile Include="Entities\Labor\AccrualCarryOverOption.cs" />
+    <Compile Include="Entities\Labor\AutoApplyAccrualPolicy.cs" />
+    <Compile Include="Entities\Labor\ClientAccrual.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantCompanyApplication.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantCompanyCorrespondence.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantJobType.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantOnBoardingProcess.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantResumeRequired.cs" />
+    <Compile Include="Entities\ApplicantTracking\ApplicantSchoolType.cs" />
+    <Compile Include="Entities\Labor\ClientAccrualClearOption.cs" />
+    <Compile Include="Entities\Labor\ClientAccrualEarning.cs" />
+    <Compile Include="Entities\Labor\ClientAccrualEmployeeStatus.cs" />
+    <Compile Include="Entities\Labor\ClientAccrualProratedSchedule.cs" />
+    <Compile Include="Entities\Labor\ClientAccrualSchedule.cs" />
+    <Compile Include="Entities\Labor\ClientJobCosting.cs" />
+    <Compile Include="Entities\Labor\ClientJobCostingAssignment.cs" />
+    <Compile Include="Entities\Labor\ClientJobCostingAssignmentSelected.cs" />
+    <Compile Include="Entities\Labor\ClientJobCostingType.cs" />
+    <Compile Include="Entities\Labor\ClockClientAddHours.cs" />
+    <Compile Include="Entities\Labor\ClockClientAddHoursSelected.cs" />
+    <Compile Include="Entities\Labor\ClockClientDailyRules.cs" />
+    <Compile Include="Entities\Labor\ClockClientHoliday.cs" />
+    <Compile Include="Entities\Labor\ClockClientHolidayChangeHistory.cs" />
+    <Compile Include="Entities\Labor\ClockClientHolidayDetail.cs" />
+    <Compile Include="Entities\Labor\ClockClientLunchPaidOption.cs" />
+    <Compile Include="Entities\Labor\ClockClientLunchPaidOptionRules.cs" />
+    <Compile Include="Entities\Labor\ClockClientOvertime.cs" />
+    <Compile Include="Entities\Labor\ClockClientNote.cs" />
+    <Compile Include="Entities\Labor\ClockClientScheduleSelected.cs" />
+    <Compile Include="Entities\Labor\ClockClientScheduleSelectedChangeHistory.cs" />
+    <Compile Include="Entities\Labor\ClockClientTimePolicy.cs" />
+    <Compile Include="Entities\Labor\ClockEarningDesHistory.cs" />
+    <Compile Include="Entities\Labor\ClockEmployee.cs" />
+    <Compile Include="Entities\Labor\ClockEmployeeAllocateHours.cs" />
+    <Compile Include="Entities\Labor\ClockEmployeeAllocateHoursDetail.cs" />
+    <Compile Include="Entities\Labor\ClockEmployeeAllocateHoursOverride.cs" />
+    <Compile Include="Entities\Labor\ClockEmployeeAllocateHoursSetting.cs" />
+    <Compile Include="Entities\Labor\ClockEmployeeApproveHoursSettings.cs" />
+    <Compile Include="Entities\Labor\ClockEmployeeBenefit.cs" />
+    <Compile Include="Entities\Labor\ClockEmployeeApproveDate.cs" />
+    <Compile Include="Entities\Labor\ClockEmployeeBenefitChangeHistory.cs" />
+    <Compile Include="Entities\Labor\ClockEmployeeCostCenter.cs" />
+    <Compile Include="Entities\Labor\ClockEmployeeExceptionHistory.cs" />
+    <Compile Include="Entities\Labor\ClockEmployeeSchedule.cs" />
+    <Compile Include="Entities\Labor\ClockOvertimeFrequency.cs" />
+    <Compile Include="Entities\Labor\Holiday.cs" />
+    <Compile Include="Entities\Labor\HolidayDate.cs" />
+    <Compile Include="Entities\Labor\IClockClientScheduleSelectedEntity.cs" />
+    <Compile Include="Entities\Labor\JobProfile.cs" />
+    <Compile Include="Entities\Labor\JobProfileAccruals.cs" />
+    <Compile Include="Entities\Labor\JobProfileClassifications.cs" />
+    <Compile Include="Entities\Labor\JobProfileClassificationsSftpType.cs" />
+    <Compile Include="Entities\Labor\JobProfileCompensation.cs" />
+    <Compile Include="Entities\Labor\JobProfileOnboardingWorkflow.cs" />
+    <Compile Include="Entities\Labor\JobProfileSkills.cs" />
+    <Compile Include="Entities\Labor\JobProfileResponsibilities.cs" />
+    <Compile Include="Entities\Labor\JobSkills.cs" />
+    <Compile Include="Entities\Labor\JobResponsibilities.cs" />
+    <Compile Include="Entities\Labor\EmployeeDefaultShift.cs" />
+    <Compile Include="Entities\Labor\EmployeeSchedulePreview.cs" />
+    <Compile Include="Entities\Labor\GroupSchedule.cs" />
+    <Compile Include="Entities\Labor\GroupScheduleShift.cs" />
+    <Compile Include="Entities\Labor\LeaveManagementPendingAward.cs" />
+    <Compile Include="Entities\Labor\ScheduleGroup.cs" />
+    <Compile Include="Entities\Labor\ScheduleGroupShiftName.cs" />
+    <Compile Include="Entities\Labor\ScheduleGroupTypeInfo.cs" />
+    <Compile Include="Entities\Labor\ServiceBeforeAfter.cs" />
+    <Compile Include="Entities\Labor\ServiceCarryOverFrequency.cs" />
+    <Compile Include="Entities\Labor\ServiceCarryOverTillFrequency.cs" />
+    <Compile Include="Entities\Labor\ServiceCarryOverWhenFrequency.cs" />
+    <Compile Include="Entities\Labor\ServiceFrequency.cs" />
+    <Compile Include="Entities\Labor\ServicePlanType.cs" />
+    <Compile Include="Entities\Labor\ServiceReferencePointFrequency.cs" />
+    <Compile Include="Entities\Labor\ServiceRenewFrequency.cs" />
+    <Compile Include="Entities\Labor\ServiceRewardFrequency.cs" />
+    <Compile Include="Entities\Labor\ServiceStartEndFrequency.cs" />
+    <Compile Include="Entities\Labor\ServiceType.cs" />
+    <Compile Include="Entities\Labor\ServiceUnit.cs" />
+    <Compile Include="Entities\Labor\TimeOffRequest.cs" />
+    <Compile Include="Entities\Labor\TimeOffRequestDetail.cs" />
+    <Compile Include="Entities\Labor\TimeOffRequestStatusInfo.cs" />
+    <Compile Include="Entities\Misc\AccountFeature.cs" />
+    <Compile Include="Entities\Misc\AccountOptionInfo.cs" />
+    <Compile Include="Entities\Misc\AccountOptionItem.cs" />
+    <Compile Include="Entities\Clients\ClientSubTopic.cs" />
+    <Compile Include="Entities\Clients\ClientTopic.cs" />
+    <Compile Include="Entities\Misc\Country.cs" />
+    <Compile Include="Entities\Misc\County.cs" />
+    <Compile Include="Entities\Misc\DayLightSavingsTime.cs" />
+    <Compile Include="Entities\Misc\DominionContact.cs" />
+    <Compile Include="Entities\Misc\EffectiveDate.cs" />
+    <Compile Include="Entities\Misc\ReciprocalState.cs" />
+    <Compile Include="Entities\Misc\SecretQuestion.cs" />
+    <Compile Include="Entities\Misc\SftpTypeEntity.cs" />
+    <Compile Include="Entities\Misc\State.cs" />
+    <Compile Include="Entities\Misc\TimeZone.cs" />
+    <Compile Include="Entities\Misc\NoteSource.cs" />
+    <Compile Include="Entities\Notification\ClientNotificationPreference.cs" />
+    <Compile Include="Entities\Notification\Notification.cs" />
+    <Compile Include="Entities\Notification\NotificationContact.cs" />
+    <Compile Include="Entities\Notification\NotificationContactPreference.cs" />
+    <Compile Include="Entities\Notification\NotificationDelivery.cs" />
+    <Compile Include="Entities\Notification\NotificationTypeInfo.cs" />
+    <Compile Include="Entities\Notification\NotificationTypeUserType.cs" />
+    <Compile Include="Entities\Notification\UserNotificationArchive.cs" />
+    <Compile Include="Entities\Notification\UserNotificationCurrent.cs" />
+    <Compile Include="Entities\Nps\Question.cs" />
+    <Compile Include="Entities\Nps\Response.cs" />
+    <Compile Include="Entities\Nps\UserTypeQuestion.cs" />
+    <Compile Include="Entities\Onboarding\EeocRaceEthnicCategories.cs" />
+    <Compile Include="Entities\Onboarding\ElectronicConsents.cs" />
+    <Compile Include="Entities\Onboarding\EmergencyContactRelationship.cs" />
+    <Compile Include="Entities\Onboarding\Employee1095CConsent.cs" />
+    <Compile Include="Entities\Onboarding\EmployeeDependentRelationships.cs" />
+    <Compile Include="Entities\Onboarding\EmployeeOnboarding.cs" />
+    <Compile Include="Entities\Onboarding\EmployeeOnboardingField.cs" />
+    <Compile Include="Entities\Onboarding\EmployeeOnboardingForm.cs" />
+    <Compile Include="Entities\Onboarding\EmployeeOnboardingI9.cs" />
+    <Compile Include="Entities\Onboarding\EmployeeOnboardingI9Document.cs" />
+    <Compile Include="Entities\Onboarding\EmployeeOnboardingMenuClient.cs" />
+    <Compile Include="Entities\Onboarding\EmployeeOnboardingMenuItems.cs" />
+    <Compile Include="Entities\Onboarding\EmployeeOnboardingTasks.cs" />
+    <Compile Include="Entities\Onboarding\EmployeeOnboardingW4.cs" />
+    <Compile Include="Entities\Onboarding\EmployeeOnboardingW4Assist.cs" />
+    <Compile Include="Entities\Onboarding\EmployeeOnboardingWorkflow.cs" />
+    <Compile Include="Entities\Onboarding\EmployeeW2Consent.cs" />
+    <Compile Include="Entities\Onboarding\I9Document.cs" />
+    <Compile Include="Entities\Onboarding\OnboardingAdminTask.cs" />
+    <Compile Include="Entities\Onboarding\OnboardingAdminTaskList.cs" />
+    <Compile Include="Entities\Onboarding\OnboardingField.cs" />
+    <Compile Include="Entities\Onboarding\OnboardingWorkflow.cs" />
+    <Compile Include="Entities\Onboarding\OnboardingWorkflowResources.cs" />
+    <Compile Include="Entities\Onboarding\OnboardingWorkflowTask.cs" />
+    <Compile Include="Entities\Onboarding\SchoolDistrict.cs" />
+    <Compile Include="Entities\Payroll\AdditionalAmountTypeInfo.cs" />
+    <Compile Include="Entities\Payroll\CheckStockBilling.cs" />
+    <Compile Include="Entities\Payroll\CheckStubConfiguration.cs" />
+    <Compile Include="Entities\Payroll\GenW2ClientHistory.cs" />
+    <Compile Include="Entities\Payroll\PaycheckSUTAHistory.cs" />
+    <Compile Include="Entities\Payroll\ClientDeduction.cs" />
+    <Compile Include="Entities\Payroll\CheckStockOrder.cs" />
+    <Compile Include="Entities\Payroll\ClientPlanChangeHistory.cs" />
+    <Compile Include="Entities\Payroll\DominionVendor.cs" />
+    <Compile Include="Entities\Payroll\GenW2EmployeeHistory.cs" />
+    <Compile Include="Entities\Payroll\ClientEarning.cs" />
+    <Compile Include="Entities\Payroll\ClientEarningWithholdingOverride.cs" />
+    <Compile Include="Entities\Payroll\ClientMatch.cs" />
+    <Compile Include="Entities\Payroll\ClientPayDataInterface.cs" />
+    <Compile Include="Entities\Payroll\ClientPlan.cs" />
+    <Compile Include="Entities\Payroll\ClientVendor.cs" />
+    <Compile Include="Entities\Payroll\DeductionDeferredComp.cs" />
+    <Compile Include="Entities\Payroll\DeductionFrequencyTypeInfo.cs" />
+    <Compile Include="Entities\Payroll\EarningCategory.cs" />
+    <Compile Include="Entities\Payroll\MeritIncrease.cs" />
+    <Compile Include="Entities\Payroll\IClientPlanEntity.cs" />
+    <Compile Include="Entities\Payroll\IVendorEntity.cs" />
+    <Compile Include="Entities\Payroll\OneTimeEarning.cs" />
+    <Compile Include="Entities\Payroll\OneTimeEarningPayroll.cs" />
+    <Compile Include="Entities\Payroll\PaycheckDeductionHistory.cs" />
+    <Compile Include="Entities\Payroll\PaycheckEarningHistory.cs" />
+    <Compile Include="Entities\Payroll\PaycheckHistory.cs" />
+    <Compile Include="Entities\Payroll\PaycheckPayDataHistory.cs" />
+    <Compile Include="Entities\Payroll\PaycheckTaxHistory.cs" />
+    <Compile Include="Entities\Payroll\PayFrequency.cs" />
+    <Compile Include="Entities\Payroll\PayGrade.cs" />
+    <Compile Include="Entities\Payroll\PayGradeChangeHistory.cs" />
+    <Compile Include="Entities\Payroll\Payroll.cs" />
+    <Compile Include="Entities\Payroll\PayrollAdjustment.cs" />
+    <Compile Include="Entities\Payroll\PayrollAdjustmentDetail.cs" />
+    <Compile Include="Entities\Payroll\PayrollCheckSeq.cs" />
+    <Compile Include="Entities\Payroll\PayrollControlTotal.cs" />
+    <Compile Include="Entities\Payroll\PayrollEmailLog.cs" />
+    <Compile Include="Entities\Payroll\PayrollEmployeeOverride.cs" />
+    <Compile Include="Entities\Payroll\PayrollFederalTaxCredit.cs" />
+    <Compile Include="Entities\Payroll\PayrollHistory.cs" />
+    <Compile Include="Entities\Payroll\PayrollNACHAOpt.cs" />
+    <Compile Include="Entities\Payroll\PayrollPayData.cs" />
+    <Compile Include="Entities\Payroll\PayrollPayDataDetail.cs" />
+    <Compile Include="Entities\Payroll\PayrollPayDataInterface.cs" />
+    <Compile Include="Entities\Payroll\PayrollRun.cs" />
+    <Compile Include="Entities\Payroll\PreviewPaycheck.cs" />
+    <Compile Include="Entities\Payroll\PreviewPaycheckEarning.cs" />
+    <Compile Include="Entities\Payroll\PreviewPaycheckPayData.cs" />
+    <Compile Include="Entities\Payroll\PreviewWarningInfo.cs" />
+    <Compile Include="Entities\Payroll\RemoteCheckHistory.cs" />
+    <Compile Include="Entities\Payroll\TaxDefermentHistory.cs" />
+    <Compile Include="Entities\Payroll\TaxFrequency.cs" />
+    <Compile Include="Entities\Payroll\TaxVendor.cs" />
+    <Compile Include="Entities\Payroll\Vendor.cs" />
+    <Compile Include="Entities\Payroll\VendorChangeHistory.cs" />
+    <Compile Include="Entities\Payroll\VendorPaymentHistory.cs" />
+    <Compile Include="Entities\PerformanceReviews\CompetencyEvaluationGroup.cs" />
+    <Compile Include="Entities\PerformanceReviews\CompetencyModelGroup.cs" />
+    <Compile Include="Entities\PerformanceReviews\CompetencyOptions.cs" />
+    <Compile Include="Entities\PerformanceReviews\CompetencyRateCommentRequired.cs" />
+    <Compile Include="Entities\PerformanceReviews\EvaluationGroupEvaluation.cs" />
+    <Compile Include="Entities\PerformanceReviews\OneTimeEarningSettings.cs" />
+    <Compile Include="Entities\PerformanceReviews\EvaluationFeedbackResponse.cs" />
+    <Compile Include="Entities\PerformanceReviews\EvaluationGroup.cs" />
+    <!-- <Compile Include="Entities\PerformanceReviews\EvaluationGroupReview.cs" /> -->
+    <Compile Include="Entities\PerformanceReviews\ApprovalProcessHistory.cs" />
+    <Compile Include="Entities\PerformanceReviews\EvaluationReminder.cs" />
+    <Compile Include="Entities\PerformanceReviews\Feedback.cs" />
+    <Compile Include="Entities\PerformanceReviews\FeedbackItem.cs" />
+    <Compile Include="Entities\PerformanceReviews\FeedbackResponse.cs" />
+    <Compile Include="Entities\PerformanceReviews\FeedbackResponseItem.cs" />
+    <Compile Include="Entities\PerformanceReviews\GoalEvaluation.cs" />
+    <Compile Include="Entities\PerformanceReviews\GoalEvaluationGroup.cs" />
+    <Compile Include="Entities\PerformanceReviews\GoalOptions.cs" />
+    <Compile Include="Entities\PerformanceReviews\GoalRateCommentRequired.cs" />
+    <Compile Include="Entities\PerformanceReviews\PerformanceCompetency.cs" />
+    <Compile Include="Entities\PerformanceReviews\PerformanceReviewRating.cs" />
+    <Compile Include="Entities\PerformanceReviews\ReviewRemark.cs" />
+    <Compile Include="Entities\PerformanceReviews\ProposalRemark.cs" />
+    <Compile Include="Entities\PerformanceReviews\ReviewOwner.cs" />
+    <Compile Include="Entities\PerformanceReviews\ReviewTemplateReminder.cs" />
+    <Compile Include="Entities\PerformanceReviews\ReviewTemplate.cs" />
+    <Compile Include="Entities\PerformanceReviews\EvaluationTemplate.cs" />
+    <Compile Include="Entities\PerformanceReviews\ReviewMeeting.cs" />
+    <Compile Include="Entities\PerformanceReviews\CompetencyEvaluation.cs" />
+    <Compile Include="Entities\PerformanceReviews\CompetencyModel.cs" />
+    <Compile Include="Entities\PerformanceReviews\CompetencyGroup.cs" />
+    <Compile Include="Entities\PerformanceReviews\Competency.cs" />
+    <Compile Include="Entities\PerformanceReviews\ReviewProposal.cs" />
+    <Compile Include="Entities\PerformanceReviews\ReviewProfile.cs" />
+    <Compile Include="Entities\PerformanceReviews\ReviewProfileEvaluation.cs" />
+    <Compile Include="Entities\PerformanceReviews\ReviewProfileEvaluationFeedback.cs" />
+    <Compile Include="Entities\PerformanceReviews\ReviewRating.cs" />
+    <Compile Include="Entities\PerformanceReviews\EmployeePerformanceConfiguration.cs" />
+    <Compile Include="Entities\PerformanceReviews\Evaluation.cs" />
+    <Compile Include="Entities\PerformanceReviews\EvaluationRoleTypeInfo.cs" />
+    <Compile Include="Entities\PerformanceReviews\Review.cs" />
+    <Compile Include="Entities\PerformanceReviews\ReviewTemplateGroup.cs" />
+    <Compile Include="Entities\PerformanceReviews\ScoreMethodType.cs" />
+    <Compile Include="Entities\PerformanceReviews\ScoreModel.cs" />
+    <Compile Include="Entities\PerformanceReviews\ScoreRangeLimit.cs" />
+    <Compile Include="Entities\Push\PushAttLog.cs" />
+    <Compile Include="Entities\Push\PushDeviceCmd.cs" />
+    <Compile Include="Entities\Push\PushMachine.cs" />
+    <Compile Include="Entities\Push\PushOpLog.cs" />
+    <Compile Include="Entities\Push\PushSms.cs" />
+    <Compile Include="Entities\Push\PushUserInfo.cs" />
+    <Compile Include="Entities\Push\PushUploadFileHistory.cs" />
+    <Compile Include="Entities\Push\PushTemplate.cs" />
+    <Compile Include="Entities\Reporting\ReportHolding.cs" />
+    <Compile Include="Entities\Reporting\ReportQueue.cs" />
+    <Compile Include="Entities\Reporting\SavedReportCustomField.cs" />
+    <Compile Include="Entities\Reporting\SavedReportField.cs" />
+    <Compile Include="Entities\Reporting\ScheduledReportEmailAddressChangeHistory.cs" />
+    <Compile Include="Entities\Reporting\StandardReport.cs" />
+    <Compile Include="Entities\Reporting\SavedReport.cs" />
+    <Compile Include="Entities\Reporting\ScheduledReport.cs" />
+    <Compile Include="Entities\Reporting\ScheduledReportEmailAddress.cs" />
+    <Compile Include="Entities\Reporting\ScheduledReportVisible.cs" />
+    <Compile Include="Entities\Security\SecuritySettingInfo.cs" />
+    <Compile Include="Entities\Security\UserSupervisorSecurityGroupAccess.cs" />
+    <Compile Include="Entities\Security\UserSupervisorSecuritySetting.cs" />
+    <Compile Include="Entities\Tax\ClientTax.cs" />
+    <Compile Include="Entities\Clients\ClientTurboTax.cs" />
+    <Compile Include="Entities\Tax\ClientTaxDeferral.cs" />
+    <Compile Include="Entities\Tax\ClientTaxInfo.cs" />
+    <Compile Include="Entities\Tax\ClientTaxPaymentInfo.cs" />
+    <Compile Include="Entities\Clients\ClientTurboTaxTracking.cs" />
+    <Compile Include="Entities\Tax\EmployeeTax.cs" />
+    <Compile Include="Entities\Tax\EmployeeTaxChangeHistory.cs" />
+    <Compile Include="Entities\Tax\EmployeeTaxCostCenter.cs" />
+    <Compile Include="Entities\Tax\FilingStatusInfo.cs" />
+    <Compile Include="Entities\Tax\IEmployeeTax.cs" />
+    <Compile Include="Entities\Tax\Legacy\LegacyDisabilityTax.cs" />
+    <Compile Include="Entities\Tax\Legacy\LegacyFederalTaxProfile.cs" />
+    <Compile Include="Entities\Tax\Legacy\LegacyLocalTax.cs" />
+    <Compile Include="Entities\Tax\Legacy\LegacyStateTax.cs" />
+    <Compile Include="Entities\Tax\Legacy\LegacyTaxTypeInfo.cs" />
+    <Compile Include="Entities\Tax\Tax.cs" />
+    <Compile Include="Entities\Tax\TaxCalculationTypeInfo.cs" />
+    <Compile Include="Entities\Tax\TaxCategoryInfo.cs" />
+    <Compile Include="Entities\Tax\TaxConfiguration.cs" />
+    <Compile Include="Entities\Tax\TaxEntityFilingStatus.cs" />
+    <Compile Include="Entities\Tax\TaxGroup.cs" />
+    <Compile Include="Entities\Tax\TaxOption.cs" />
+    <Compile Include="Entities\Tax\TaxOptionRule.cs" />
+    <Compile Include="Entities\Tax\TaxOptionTypeInfo.cs" />
+    <Compile Include="Entities\Tax\TaxRate.cs" />
+    <Compile Include="Entities\Tax\TaxRateHeader.cs" />
+    <Compile Include="Entities\Tax\TaxRateTypeInfo.cs" />
+    <Compile Include="Entities\Tax\TaxTypeInfo.cs" />
+    <Compile Include="Entities\Tax\WotcReason.cs" />
+    <Compile Include="Entities\TimeClock\ClientMachine.cs" />
+    <Compile Include="Entities\TimeClock\ClockClientException.cs" />
+    <Compile Include="Entities\TimeClock\ClockClientExceptionDetail.cs" />
+    <Compile Include="Entities\TimeClock\ClockClientHardware.cs" />
+    <Compile Include="Entities\TimeClock\ClockClientLockUser.cs" />
+    <Compile Include="Entities\TimeClock\ClockClientLunch.cs" />
+    <Compile Include="Entities\TimeClock\ClockClientLunchSelected.cs" />
+    <Compile Include="Entities\TimeClock\ClockClientOvertimeSelected.cs" />
+    <Compile Include="Entities\TimeClock\ClockClientRules.cs" />
+    <Compile Include="Entities\TimeClock\ClockClientSchedule.cs" />
+    <Compile Include="Entities\TimeClock\ClockClientScheduleChangeHistory.cs" />
+    <Compile Include="Entities\TimeClock\ClockExceptionTypeInfo.cs" />
+    <Compile Include="Entities\TimeClock\ClockRoundingType.cs" />
+    <Compile Include="Entities\TimeClock\ClockTimeFormat.cs" />
+    <Compile Include="Entities\User\AccessRule.cs" />
+    <Compile Include="Entities\User\AccessRuleClaim.cs" />
+    <Compile Include="Entities\User\ClaimType.cs" />
+    <Compile Include="Entities\User\AccessRuleSet.cs" />
+    <Compile Include="Entities\User\User.cs" />
+    <Compile Include="Entities\User\UserActionType.cs" />
+    <Compile Include="Entities\User\UserActionTypeLegacyUserType.cs" />
+    <Compile Include="Entities\User\UserBetaFeature.cs" />
+    <Compile Include="Entities\User\UserChangeHistory.cs" />
+    <Compile Include="Entities\User\UserClient.cs" />
+    <Compile Include="Entities\User\UserGroupMembership.cs" />
+    <Compile Include="Entities\User\UserPermissions.cs" />
+    <Compile Include="Entities\User\UserPin.cs" />
+    <Compile Include="Entities\User\UserSession.cs" />
+    <Compile Include="Entities\User\UserTermsAndConditions.cs" />
+    <Compile Include="Entities\User\UserType.cs" />
+    <Compile Include="EntityMetadata\Benefit\EmployeeBenefitDataStoreMetadata.cs" />
+    <Compile Include="EntityMetadata\Employee\EmployeeAccrualDataStoreMetadata.cs" />
+    <Compile Include="EntityMetadata\Employee\EmployeePayDataStoreMetadata.cs" />
+    <Compile Include="EntityMetadata\Employee\EmployeeW2ConsentDataStoreMetadata.cs" />
+    <Compile Include="EntityMetadata\Employee\EmployeeDataStoreMetadata.cs" />
+    <Compile Include="Exceptions\AccrualDescriptionExistsException.cs" />
+    <Compile Include="Exceptions\SftpConfiguration\ClientSftpConfigurationNotFoundForSftpFileType.cs" />
+    <Compile Include="Exceptions\SftpConfiguration\NoSftpConfigurationsFoundForSftpFileType.cs" />
+    <Compile Include="Interfaces\IClockEarningDesHistoryQuery.cs" />
+    <Compile Include="Interfaces\Query\App\IApplicationMenuItemQuery.cs" />
+    <Compile Include="Interfaces\Query\App\IApplicationMenuQuery.cs" />
+    <Compile Include="Interfaces\Query\App\IApplicationResourceQuery.cs" />
+    <Compile Include="Interfaces\Query\AR\IArDepositQuery.cs" />
+    <Compile Include="Interfaces\Query\AR\IArManualInvoiceDetailQuery.cs" />
+    <Compile Include="Interfaces\Query\AR\IArManualInvoiceQuery.cs" />
+    <Compile Include="Interfaces\Query\AR\IArNsfPaymentQuery.cs" />
+    <Compile Include="Interfaces\Query\AR\IArBillingHistoryQuery.cs" />
+    <Compile Include="Interfaces\Query\AR\IArPaymentQuery.cs" />
+    <Compile Include="Interfaces\Query\AR\IArReportQuery.cs" />
+    <Compile Include="Interfaces\Query\Banks\IAchBankQuery.cs" />
+    <Compile Include="Interfaces\Query\Banks\IBankHolidayQuery.cs" />
+    <Compile Include="Interfaces\Query\Banks\IBankQuery.cs" />
+    <Compile Include="Interfaces\Query\Benefits\IBenefitAmountSelectionTypeQuery.cs" />
+    <Compile Include="Interfaces\Query\Clients\IClientFeatureTrackingQuery.cs" />
+    <Compile Include="Interfaces\Query\Billing\IGeofenceBillingQuery.cs" />
+    <Compile Include="Interfaces\Query\ClientFeaturesInfo\IClientFeaturesAgreementQuery.cs" />
+    <Compile Include="Interfaces\Query\Clients\IClientUnemploymentSetupQuery.cs" />
+    <Compile Include="Interfaces\Query\Core\IBetaFeatureQuery.cs" />
+    <Compile Include="Interfaces\Query\Core\ISystemFeedbackQuery.cs" />
+    <Compile Include="Interfaces\Query\Employee\IEmployeeExitInterviewRequestQuery.cs" />
+    <Compile Include="Interfaces\Query\Benefits\IEmployeeBenefitInfoQuery.cs" />
+    <Compile Include="Interfaces\Query\Benefits\IEmployeeOpenEnrollmentQuery.cs" />
+    <Compile Include="Interfaces\Query\Benefits\IPlanTypeQuery.cs" />
+    <Compile Include="Interfaces\Query\Clients\IClientGLCustomClassQuery.cs" />
+    <Compile Include="Interfaces\Query\Clients\IClientBankInfoQuery.cs" />
+    <Compile Include="Interfaces\Query\Clients\IClientBankQuery.cs" />
+    <Compile Include="Interfaces\Query\Clients\IClientPickupQuery.cs" />
+    <Compile Include="Interfaces\Query\Clients\IClientGLAssignmentQuery.cs" />
+    <Compile Include="Interfaces\Query\Clients\IClientGLClassGroupQuery.cs" />
+    <Compile Include="Interfaces\Query\Clients\IClientGLControlItemQuery.cs" />
+    <Compile Include="Interfaces\Query\Clients\IClientGLControlQuery.cs" />
+    <Compile Include="Interfaces\Query\Clients\IClientGLSettingsQuery.cs" />
+    <Compile Include="Interfaces\Query\Clients\IGeneralLedgerGroupHeaderQuery.cs" />
+    <Compile Include="Interfaces\Query\Clients\IGeneralLedgerTypeQuery.cs" />
+    <Compile Include="Interfaces\Query\Clients\IClientTurboTaxQuery.cs" />
+    <Compile Include="Interfaces\Query\Clients\IClientTurboTaxTrackingQuery.cs" />
+    <Compile Include="Interfaces\Query\Core\IApplicantAzureQuery.cs" />
+    <Compile Include="Interfaces\Query\Core\IClientAzureQuery.cs" />
+    <Compile Include="Interfaces\Query\Core\IClientGoalQuery.cs" />
+    <Compile Include="Interfaces\Query\Core\IEmployeeAzureQuery.cs" />
+    <Compile Include="Interfaces\Query\Core\IEmployeeGoalQuery.cs" />
+    <Compile Include="Interfaces\Query\Core\IGoalQuery.cs" />
+    <Compile Include="Interfaces\Query\Core\IGroupQuery.cs" />
+    <Compile Include="Interfaces\Query\Core\IMeetingQuery.cs" />
+    <Compile Include="Interfaces\Query\Core\IRemarkChangeHistoryQuery.cs" />
+    <Compile Include="Interfaces\Query\Core\ITaskQuery.cs" />
+    <Compile Include="Interfaces\Query\Core\IRemarkQuery.cs" />
+    <Compile Include="Interfaces\Query\Employee\IEmployeeCostCenterPercentageQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantDocumentQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicationSectionInstructionQuery.cs" />
+    <Compile Include="Interfaces\Query\ClientFeaturesInfo\IClientNotesQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientAccountFeatureChangeHistoryQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientDivisionAddressQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientDivisionLogoQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientMachineQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientW2OptionQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockClientGeofenceQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockEmployeePunchAttemptQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockEmployeePunchLocationQuery.cs" />
+    <Compile Include="Interfaces\Query\IAutomaticBillingQuery.cs" />
+    <Compile Include="Interfaces\Query\IBillingItemDescriptionQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeAvatarQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeTaxCostCenterQuery.cs" />
+    <Compile Include="Interfaces\Query\IFeatureOptionsGroupQuery.cs" />
+    <Compile Include="Interfaces\Query\IAccountFeatureQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeHRInfoQuery.cs" />
+    <Compile Include="Interfaces\Query\IAddressQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockClientHardwareQuery.cs" />
+    <Compile Include="Interfaces\Query\IDashboardConfigQuery.cs" />
+    <Compile Include="Interfaces\Query\IDashboardSessionQuery.cs" />
+    <Compile Include="Interfaces\Query\IDashboardWidgetQuery.cs" />
+    <Compile Include="Interfaces\Query\IEEOCOrganizationQuery.cs" />
+    <Compile Include="Interfaces\Query\IReviewRemarkQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeePointsQuery.cs" />
+    <Compile Include="Interfaces\Query\IPaycheckSUTAHistoryQuery.cs" />
+    <Compile Include="Interfaces\Query\IPaycheckTaxHistoryQuery.cs" />
+    <Compile Include="Interfaces\Query\IPayrollFederalTaxCreditQuery.cs" />
+    <Compile Include="Interfaces\Query\IPersonQuery.cs" />
+    <Compile Include="Interfaces\Query\ISftpTypeEntityQuery.cs" />
+    <Compile Include="Interfaces\Query\ITaxDefermentHistoryQuery.cs" />
+    <Compile Include="Interfaces\Query\IPendingBillingCreditQuery.cs" />
+    <Compile Include="Interfaces\Query\IGeofenceBillingQuery.cs" />
+    <Compile Include="Interfaces\Query\IJobProfileOnboardingWorkflowQuery.cs" />
+    <Compile Include="Interfaces\Query\IBillingHistoryQuery.cs" />
+    <Compile Include="Interfaces\Query\ITaxDeferralQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientSftpConfigurationQuery.cs" />
+    <Compile Include="Interfaces\Query\IGetClockEmployeeApproveHoursOptionsQuery.cs" />
+    <Compile Include="Interfaces\Query\IGetClientJobCostingInfoByClientIDQuery.cs" />
+    <Compile Include="Interfaces\Query\IAccountOptionItemQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantApplicationEmailHistoryQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantSkillQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientGLInterfaceQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantPostingOwnerQuery.cs" />
+    <Compile Include="Interfaces\Query\ICompetencyEvaluationGroupQuery.cs" />
+    <Compile Include="Interfaces\Query\IConfigSettingsQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeAccrualQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeBankQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeEmergencyContactQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeDriversLicenseQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeNotesQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeNoteAttachmentsQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeNotesActivityIdQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeNoteTagsQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeNoteTagsDetailsQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientWorkNumberPolicyQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeePayTypeInfoQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeTerminationReasonQuery.cs" />
+    <Compile Include="Interfaces\Query\IExternalApplicationIdentityQuery.cs" />
+    <Compile Include="Interfaces\Query\Forms\IFormDefinitionFieldsQuery.cs" />
+    <Compile Include="Interfaces\Query\IApiAccountMappingQuery.cs" />
+    <Compile Include="Interfaces\Query\IApiAccountQuery.cs" />
+    <Compile Include="Interfaces\Query\IApiQuery.cs" />
+    <Compile Include="Interfaces\Query\IApiVersionQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantCorrespondenceTypeQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantJobSiteQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantOnBoardingDefaultDetailQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantOnBoardingHeaderQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantOnBoardingProcessSetQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantOnboardingProcessTypeQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantLicenseQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantQuestionSetQuery.cs" />
+    <Compile Include="Interfaces\Query\Benefits\IAgeDeterminationTypeQuery.cs" />
+    <Compile Include="Interfaces\Query\Benefits\ICoverageTypeQuery.cs" />
+    <Compile Include="Interfaces\Query\Benefits\ILifeEventApprovalStatusTypeQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantOnBoardingDetailQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantOnboardingTaskAttachmentQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantOnBoardingTaskQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantApplicationDetailQuery.cs" />
+    <Compile Include="Interfaces\Query\Employee\Search\ILegacyEmployeeSearchSettingQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantClientQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantApplicationHeaderQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantCompanyApplicationQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantCompanyCorrespondenceQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantDegreeListQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantEducationHistoryQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantEmploymentHistoryQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantJobTypeQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantNoteQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantOnBoardingProcessQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantQuestionControlQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantQuestionDdlItemQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantResumeQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicationQuestionSectionQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicationViewedQuery.cs" />
+    <Compile Include="Interfaces\Query\IBankAccountNextCheckQuery.cs" />
+    <Compile Include="Interfaces\Query\ICheckStockBillingQuery.cs" />
+    <Compile Include="Interfaces\Query\ICheckStockOrdersQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantPostingCategoriesQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientDeductionMappingPlanQuery.cs" />
+    <Compile Include="Interfaces\Query\IClient401KSetupQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientHRInfoQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientAccrualEarningQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientAccrualQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientJobSiteQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientSMTPSettingQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientWorkersCompQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantPostingsQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantReferenceQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantResumeRequiredQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantSchoolTypeQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantsQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantRejectionReasonQuery.cs" />
+    <Compile Include="Interfaces\Query\IApplicantStatusTypeQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientDisciplineLevelQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockClientAddHoursQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockClientDailyRulesQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockClientExceptionDetailQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockClientExceptionQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockClientHolidayChangeHistoryQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockClientHolidayDetailQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockClientLunchPaidOptionRulesQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockClientLunchSelectedQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockClientNotesQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockClientOvertimeQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockClientOvertimeSelectedQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockExceptionQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockOvertimeFrequencyQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockClientLunchPaidOptionQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeDeductionAmountTypeInfoQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockRoundingTypeQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockTimeFormatQuery.cs" />
+    <Compile Include="Interfaces\Query\IEffectiveDateQuery.cs" />
+    <Compile Include="Interfaces\Query\IFileFormatQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockEmployeeApproveHoursSettingsQuery.cs" />
+    <Compile Include="Interfaces\Query\IGetClockEmployeeApproveDateQuery.cs" />
+    <Compile Include="Interfaces\Query\IGetClockFilterCategoryQuery.cs" />
+    <Compile Include="Interfaces\Query\IGetClockPayrollListByClientIDPayrollRunIDQuery.cs" />
+    <Compile Include="Interfaces\Query\IHolidayDateQuery.cs" />
+    <Compile Include="Interfaces\Query\IMeritIncreaseQuery.cs" />
+    <Compile Include="Interfaces\Query\INoteSourceQuery.cs" />
+    <Compile Include="Interfaces\Query\IHolidayQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeEventQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeePersonalInfoQuery.cs" />
+    <Compile Include="Interfaces\Query\IJobProfileAccrualsQuery.cs" />
+    <Compile Include="Interfaces\Query\IJobProfileClassificationsQuery.cs" />
+    <Compile Include="Interfaces\Query\IJobProfileCompensationQuery.cs" />
+    <Compile Include="Interfaces\Query\Core\IImageResourceQuery.cs" />
+    <Compile Include="Interfaces\Query\Core\IImageSizeTypeInfoQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientJobCostingAssignmentQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientJobCostingAssignmentSelectedQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockEmployeeApproveDateQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockEmployeeExceptionHistoryQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeClientRateCostCenterQuery.cs" />
+    <Compile Include="Interfaces\Query\IJobProfileQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientRelationQuery.cs" />
+    <Compile Include="Interfaces\Query\IEEOCPayBandQuery.cs" />
+    <Compile Include="Interfaces\Query\IGenW2EmployeeHistoryQuery.cs" />
+    <Compile Include="Interfaces\Query\IJobProfileSkillsQuery.cs" />
+    <Compile Include="Interfaces\Query\IJobProfileResponsibilitiesQuery.cs" />
+    <Compile Include="Interfaces\Query\IJobSkillsQuery.cs" />
+    <Compile Include="Interfaces\Query\IJobResponsibilitiesQuery.cs" />
+    <Compile Include="EntityMetadata\Employee\EmployeeDependentDataStoreMetadata.cs" />
+    <Compile Include="EntityMetadata\Employee\EmployeeDriversLicenseDataStoreMetadata.cs" />
+    <Compile Include="EntityMetadata\Employee\EmployeeEmergencyContactDataStoreMetadata.cs" />
+    <Compile Include="EntityMetadata\Tax\EmployeeTaxDataStoreMetadata.cs" />
+    <Compile Include="EntityViews\Definitions.cs" />
+    <Compile Include="Interfaces\Entities\IEmployeeOnwedEntity.cs" />
+    <Compile Include="Interfaces\Entities\IEntity.cs" />
+    <Compile Include="Interfaces\Entities\IHasChangeHistoryData.cs" />
+    <Compile Include="Interfaces\Entities\IHasChangeHistoryEntity.cs" />
+    <Compile Include="Interfaces\Entities\IHasEmployeeId.cs" />
+    <Compile Include="Interfaces\Entities\IHasModifiedData.cs" />
+    <Compile Include="Interfaces\Entities\IModifiableUserByUserIdExtensions.cs" />
+    <Compile Include="Interfaces\Query\Benefits\IBenefitAmountQuery.cs" />
+    <Compile Include="Interfaces\Query\Benefits\IBenefitPackageQuery.cs" />
+    <Compile Include="Interfaces\Query\Benefits\IBenefitResourceQuery.cs" />
+    <Compile Include="Interfaces\Query\Benefits\ICostFactorQuery.cs" />
+    <Compile Include="Interfaces\Query\Benefits\ICustomBenefitFieldQuery.cs" />
+    <Compile Include="Interfaces\Query\Benefits\ICustomBenefitFieldValueQuery.cs" />
+    <Compile Include="Interfaces\Query\Benefits\IDependentCoverageOptionQuery.cs" />
+    <Compile Include="Interfaces\Query\Benefits\IEmployeeOpenEnrollmentSelectionQuery.cs" />
+    <Compile Include="Interfaces\Query\Benefits\ILifeEventReasonQuery.cs" />
+    <Compile Include="Interfaces\Query\Benefits\IOpenEnrollmentQuery.cs" />
+    <Compile Include="Interfaces\Query\Benefits\IPlanCategoryQuery.cs" />
+    <Compile Include="Interfaces\Query\Benefits\IPlanOptionCostFactorQuery.cs" />
+    <Compile Include="Interfaces\Query\Benefits\IPlanOptionCostQuery.cs" />
+    <Compile Include="Interfaces\Query\Benefits\IPlanOptionPlanQuery.cs" />
+    <Compile Include="Interfaces\Query\Benefits\IPlanOptionQuery.cs" />
+    <Compile Include="Interfaces\Query\Benefits\IPlanProviderQuery.cs" />
+    <Compile Include="Interfaces\Query\Benefits\IPlanQuery.cs" />
+    <Compile Include="Interfaces\Query\Benefits\IPlanTypePlanOptionQuery.cs" />
+    <Compile Include="Interfaces\Query\Benefits\ISalaryMethodInfoQuery.cs" />
+    <Compile Include="Interfaces\Query\Core\IAlertQuery.cs" />
+    <Compile Include="Interfaces\Query\Core\IEmployeeAttachmentFolderQuery.cs" />
+    <Compile Include="Interfaces\Query\Core\IEmployeeAttachmentQuery.cs" />
+    <Compile Include="Interfaces\Query\Core\IResourceQuery.cs" />
+    <Compile Include="Interfaces\Query\Core\IRoundingRuleTypeInfoQuery.cs" />
+    <Compile Include="Interfaces\Query\Forms\IEmployeeOnboardingFormQuery.cs" />
+    <Compile Include="Interfaces\Query\Forms\IFormDefinitionQuery.cs" />
+    <Compile Include="Interfaces\Query\Forms\IFormTypeQuery.cs" />
+    <Compile Include="Interfaces\Query\IAca1095CBoxCodeOptionQuery.cs" />
+    <Compile Include="Interfaces\Query\IAca1095CBoxCodeQuery.cs" />
+    <Compile Include="Interfaces\Query\IAca1095CCoveredIndividualQuery.cs" />
+    <Compile Include="Interfaces\Query\IAca1095CEmployeeConsent.cs" />
+    <Compile Include="Interfaces\Query\IAca1095CLineItemQuery.cs" />
+    <Compile Include="Interfaces\Query\IAca1095CQuery.cs" />
+    <Compile Include="Interfaces\Query\IAca1095CResourceQuery.cs" />
+    <Compile Include="Interfaces\Query\IAcaAleMemberClientQuery.cs" />
+    <Compile Include="Interfaces\Query\IAcaAleMemberQuery.cs" />
+    <Compile Include="Interfaces\Query\IAcaClientConfigurationQuery.cs" />
+    <Compile Include="Interfaces\Query\IAcaCompanyApprovalStatusInfo.cs" />
+    <Compile Include="Interfaces\Query\IAcaCompanyStatusQuery.cs" />
+    <Compile Include="Interfaces\Query\IAcaConfigurationQuery.cs" />
+    <Compile Include="Interfaces\Query\IAcaCorrectionQuery.cs" />
+    <Compile Include="Interfaces\Query\IAcaEmployeeApprovalQuery.cs" />
+    <Compile Include="Interfaces\Query\IAcaErrorCodeQuery.cs" />
+    <Compile Include="Interfaces\Query\IAcaTransmission1094CQuery.cs" />
+    <Compile Include="Interfaces\Query\IAcaTransmissionErrorQuery.cs" />
+    <Compile Include="Interfaces\Query\IAcaTransmissionQuery.cs" />
+    <Compile Include="Interfaces\Query\IAcaTransmissionRecordQuery.cs" />
+    <Compile Include="Interfaces\Query\IAcaTransmissionRecordStatusTypeQuery.cs" />
+    <Compile Include="Interfaces\Query\IAcaTransmissionStatusTypeQuery.cs" />
+    <Compile Include="Interfaces\Query\IAcaTransmissionSubmissionStatusTypeQuery.cs" />
+    <Compile Include="Interfaces\Query\IAccountOptionQuery.cs" />
+    <Compile Include="Interfaces\Query\IBenefitImportExportFormatQuery.cs" />
+    <Compile Include="Interfaces\Query\IBillingHistoryDetailQuery.cs" />
+    <Compile Include="Interfaces\Query\IBillingItemQuery.cs" />
+    <Compile Include="Interfaces\Query\IBillingPriceChartQuery.cs" />
+    <Compile Include="Interfaces\Query\IByClientIdQuery.cs" />
+    <Compile Include="Interfaces\Query\ICheckStubConfigurationQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientAccountFeatureQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientAccountOptionQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientCalendarQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientContactQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientCostCenterQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientDeductionQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientDepartmentQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientDivisionQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientEarningQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientEarningWithholdingOverrideQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientEEOCQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientEmploymentClassQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientEssOptionsQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientGroupQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientIpSecurityQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientJobCostingQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientMatchQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientPayDataInterfaceQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientPayrollQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientPlanQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientRateQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientShiftQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientSubTopicQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientTaxQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientTopicQuery.cs" />
+    <Compile Include="Interfaces\Query\IClientVendorQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockClientHolidayQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockClientLunchQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockClientRulesQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockClientScheduleChangeHistoryQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockClientScheduleQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockClientTimePolicyListQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockClientTimePolicyQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockEmployeeBenefitQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockEmployeeCostCenterQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockEmployeePunchQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockEmployeeQuery.cs" />
+    <Compile Include="Interfaces\Query\IClockEmployeeScheduleQuery.cs" />
+    <Compile Include="Interfaces\Query\ICompanyResourceFolderQuery.cs" />
+    <Compile Include="Interfaces\Query\ICompanyResourceQuery.cs" />
+    <Compile Include="Interfaces\Query\ICountryQuery.cs" />
+    <Compile Include="Interfaces\Query\ICountyQuery.cs" />
+    <Compile Include="Interfaces\Query\IDayListSavingsTimeQuery.cs" />
+    <Compile Include="Interfaces\Query\IDominionContactQuery.cs" />
+    <Compile Include="Interfaces\Query\IEEOCJobCategoriesQuery.cs" />
+    <Compile Include="Interfaces\Query\IEEOCLoctionQuery.cs" />
+    <Compile Include="Interfaces\Query\IEeocRaceEthnicCategoriesQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmergencyContactRelationshipQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployee1095CConsentQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeBenefitQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeClientRateQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeDeductionQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeDefaultShiftQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeDependentQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeDependentRelationshipsQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeOnboardingEmergencyContactQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeOnboardingFieldQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeOnboardingQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeOnboardingTasksQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeOnboardingWorkflowQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeePayBaseQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeePayChangeHistoryQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeePayQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeePcpQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeSchedulePreviewQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeStatusQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeTaxChangeHistoryQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeTaxQuery.cs" />
+    <Compile Include="Interfaces\Query\IEmployeeW2ConsentQuery.cs" />
+    <Compile Include="Interfaces\Query\IFilingStatusInfoQuery.cs" />
+    <Compile Include="Interfaces\Query\IGeneralLedgerAccountQuery.cs" />
+    <Compile Include="Interfaces\Query\IGroupScheduleQuery.cs" />
+    <Compile Include="Interfaces\Query\IGroupScheduleShiftQuery.cs" />
+    <Compile Include="Interfaces\Query\II9DocumentQuery.cs" />
+    <Compile Include="Interfaces\Query\ILegacyDisabilityTaxQuery.cs" />
+    <Compile Include="Interfaces\Query\ILegacyFederalTaxProfileQuery.cs" />
+    <Compile Include="Interfaces\Query\ILegacyLocalTaxQuery.cs" />
+    <Compile Include="Interfaces\Query\ILegacyStateTaxQuery.cs" />
+    <Compile Include="Interfaces\Query\IOnboardingAdminTaskListQuery.cs" />
+    <Compile Include="Interfaces\Query\IOnboardingAdminTaskQuery.cs" />
+    <Compile Include="Interfaces\Query\IOnboardingI9DocumentQuery.cs" />
+    <Compile Include="Interfaces\Query\IOnboardingI9Query.cs" />
+    <Compile Include="Interfaces\Query\IOnboardingMenuClientQuery.cs" />
+    <Compile Include="Interfaces\Query\IOnboardingW4AssistQuery.cs" />
+    <Compile Include="Interfaces\Query\IOnboardingW4Query.cs" />
+    <Compile Include="Interfaces\Query\IOnboardingWorkflowQuery.cs" />
+    <Compile Include="Interfaces\Query\IOnboardingWorkflowResourcesQuery.cs" />
+    <Compile Include="Interfaces\Query\IOnboardingWorkflowTaskQuery.cs" />
+    <Compile Include="Interfaces\Query\ITaxEntityFilingStatusQuery.cs" />
+    <Compile Include="Interfaces\Query\ITermsAndConditionsVersionQuery.cs" />
+    <Compile Include="Interfaces\Query\IUserBetaFeatureQuery.cs" />
+    <Compile Include="Interfaces\Query\IUserPermissionsQuery.cs" />
+    <Compile Include="Interfaces\Query\IUserTermsAndConditionsQuery.cs" />
+    <Compile Include="Interfaces\Query\IWidgetQuery.cs" />
+    <Compile Include="Interfaces\Query\IWotcReasonQuery.cs" />
+    <Compile Include="Interfaces\Query\Labor\IAccrualBalanceOptionQuery.cs" />
+    <Compile Include="Interfaces\Query\Labor\IAccrualCarryOverOptionQuery.cs" />
+    <Compile Include="Interfaces\Query\Labor\IAutoApplyAccrualPolicyQuery.cs" />
+    <Compile Include="Interfaces\Query\Labor\IClientAccrualClearOptionQuery.cs" />
+    <Compile Include="Interfaces\Query\Labor\IClientAccrualEmployeeStatusQuery.cs" />
+    <Compile Include="Interfaces\Query\Labor\ILeaveManagementPendingAwardQuery.cs" />
+    <Compile Include="Interfaces\Query\Labor\IServiceBeforeAfterQuery.cs" />
+    <Compile Include="Interfaces\Query\Labor\IServiceCarryOverFrequencyQuery.cs" />
+    <Compile Include="Interfaces\Query\Labor\IServiceCarryOverTillFrequencyQuery.cs" />
+    <Compile Include="Interfaces\Query\Labor\IServiceCarryOverWhenFrequencyQuery.cs" />
+    <Compile Include="Interfaces\Query\Labor\IServiceFrequencyQuery.cs" />
+    <Compile Include="Interfaces\Query\Labor\IServicePlanTypeQuery.cs" />
+    <Compile Include="Interfaces\Query\Labor\IServiceReferencePointFrequencyQuery.cs" />
+    <Compile Include="Interfaces\Query\Labor\IServiceRenewFrequencyQuery.cs" />
+    <Compile Include="Interfaces\Query\Labor\IServiceRewardFrequencyQuery.cs" />
+    <Compile Include="Interfaces\Query\Labor\IServiceStartEndFrequencyQuery.cs" />
+    <Compile Include="Interfaces\Query\Labor\IServiceTypeQuery.cs" />
+    <Compile Include="Interfaces\Query\Labor\IServiceUnitQuery.cs" />
+    <Compile Include="Interfaces\Query\Nps\IQuestionQuery.cs" />
+    <Compile Include="Interfaces\Query\Nps\IResponseQuery.cs" />
+    <Compile Include="Interfaces\Query\Nps\IUserTypeQuestionQuery.cs" />
+    <Compile Include="Interfaces\Query\Payroll\IDominionVendorQuery.cs" />
+    <Compile Include="Interfaces\Query\IReciprocalStateQuery.cs" />
+    <Compile Include="Interfaces\Query\Payroll\IGenW2ClientHistoryQuery.cs" />
+    <Compile Include="Interfaces\Query\Payroll\IOneTimeEarningQuery.cs" />
+    <Compile Include="Interfaces\Query\Payroll\IPaycheckDeductionHistoryQuery.cs" />
+    <Compile Include="Interfaces\Query\IPaycheckEarningHistoryQuery.cs" />
+    <Compile Include="Interfaces\Query\IPaycheckPayDataHistoryQuery.cs" />
+    <Compile Include="Interfaces\Query\IPayFrequencyQuery.cs" />
+    <Compile Include="Interfaces\Query\IPayGradeQuery.cs" />
+    <Compile Include="Interfaces\Query\IPayrollCheckSeqQuery.cs" />
+    <Compile Include="Interfaces\Query\IPayrollHistoryQuery.cs" />
+    <Compile Include="Interfaces\Query\IPayrollPayDataInterfaceQuery.cs" />
+    <Compile Include="Interfaces\Query\IPayrollPayDataQuery.cs" />
+    <Compile Include="Interfaces\Query\IPayrollQuery.cs" />
+    <Compile Include="Interfaces\Query\IPreviewEmployeeBenefitImportQuery.cs" />
+    <Compile Include="Interfaces\Query\ITimeOffRequestQuery.cs" />
+    <Compile Include="Interfaces\Query\IUserActionTypeQuery.cs" />
+    <Compile Include="Interfaces\Query\IUserPinQuery.cs" />
+    <Compile Include="Interfaces\Query\Notification\IClientNotificationPreferenceQuery.cs" />
+    <Compile Include="Interfaces\Query\Notification\INotificationContactPreferenceQuery.cs" />
+    <Compile Include="Interfaces\Query\Notification\INotificationContactQuery.cs" />
+    <Compile Include="Interfaces\Query\Notification\INotificationTypeUserTypeQuery.cs" />
+    <Compile Include="Interfaces\Query\Labor\IClockEmployeeAllocateHoursDetailQuery.cs" />
+    <Compile Include="Interfaces\Query\IPayrollControlTotalQuery.cs" />
+    <Compile Include="Interfaces\Query\Notification\INotificationTypeQuery.cs" />
+    <Compile Include="Interfaces\Query\Notification\IProductQuery.cs" />
+    <Compile Include="Interfaces\Query\Payroll\IAdditionalAmountTypeInfoQuery.cs" />
+    <Compile Include="Interfaces\Query\Payroll\IPayrollAdjustmentQuery.cs" />
+    <Compile Include="Interfaces\Query\Payroll\IPayrollEmailLogQuery.cs" />
+    <Compile Include="Interfaces\Query\Payroll\IPayrollEmployeeOverrideQuery.cs" />
+    <Compile Include="Interfaces\Query\Payroll\IPayrollRunQuery.cs" />
+    <Compile Include="Interfaces\Query\Payroll\IRemoteCheckHistoryQuery.cs" />
+    <Compile Include="Interfaces\Query\Payroll\ITaxFrequencyQuery.cs" />
+    <Compile Include="Interfaces\Query\Payroll\ITaxVendorQuery.cs" />
+    <Compile Include="Interfaces\Query\Payroll\IVendorQuery.cs" />
+    <Compile Include="Interfaces\Query\Payroll\IVendorPaymentHistoryQuery.cs" />
+    <Compile Include="Interfaces\Query\Performance\ICompetencyEvaluationQuery.cs" />
+    <Compile Include="Interfaces\Query\Performance\ICompetencyOptionsQuery.cs" />
+    <Compile Include="Interfaces\Query\Performance\ICompetencyRateCommentRequiredQuery.cs" />
+    <Compile Include="Interfaces\Query\Performance\IEvaluationFeedbackResponseQuery.cs" />
+    <!-- <Compile Include="Interfaces\Query\Performance\IEvaluationGroupReviewQuery.cs" /> -->
+    <Compile Include="Interfaces\Query\Performance\IEvaluationGroupEvaluationQuery.cs" />
+    <Compile Include="Interfaces\Query\Performance\IEvaluationGroupQuery.cs" />
+    <!-- <Compile Include="Interfaces\Query\Performance\IEvaluationGroupReviewQuery.cs" /> -->
+    <Compile Include="Interfaces\Query\Performance\ICompetencyGroupQuery.cs" />
+    <Compile Include="Interfaces\Query\Performance\ICompetencyModelQuery.cs" />
+    <Compile Include="Interfaces\Query\Payroll\IPaycheckHistoryQuery.cs" />
+    <Compile Include="Interfaces\Query\Performance\ICompetencyQuery.cs" />
+    <Compile Include="Interfaces\Query\Performance\IApprovalProcessHistoryQuery.cs" />
+    <Compile Include="Interfaces\Query\Performance\IEvaluationQuery.cs" />
+    <Compile Include="Interfaces\Query\Performance\IFeedbackQuery.cs" />
+    <Compile Include="Interfaces\Query\Performance\IGoalEvaluationQuery.cs" />
+    <Compile Include="Interfaces\Query\Performance\IGoalOptionsQuery.cs" />
+    <Compile Include="Interfaces\Query\Performance\IGoalRateCommentRequiredQuery.cs" />
+    <Compile Include="Interfaces\Query\Performance\IPerformanceCompetencyGroupQuery.cs" />
+    <Compile Include="Interfaces\Query\Performance\IPerformanceCompetencyQuery.cs" />
+    <Compile Include="Interfaces\Query\Performance\IPerformanceReviewRatingQuery.cs" />
+    <Compile Include="Interfaces\Query\Performance\IProposalQuery.cs" />
+    <Compile Include="Interfaces\Query\Performance\IReviewTemplateQuery.cs" />
+    <Compile Include="Interfaces\Query\Performance\IReviewProfileEvaluationQuery.cs" />
+    <Compile Include="Interfaces\Query\Performance\IReviewProfileQuery.cs" />
+    <Compile Include="Interfaces\Query\Performance\IReviewQuery.cs" />
+    <Compile Include="Interfaces\Query\Performance\IReviewRatingQuery.cs" />
+    <Compile Include="Interfaces\Query\Performance\IEmployeePerformanceConfigurationQuery.cs" />
+    <Compile Include="Interfaces\Query\Performance\IScoreMethodTypeQuery.cs" />
+    <Compile Include="Interfaces\Query\Performance\IScoreModelQuery.cs" />
+    <Compile Include="Interfaces\Query\Performance\IScoreRangeLimitQuery.cs" />
+    <Compile Include="Interfaces\Query\Push\ITemplateQuery.cs" />
+    <Compile Include="Interfaces\Query\Push\IMachineToClockClientHardware.cs" />
+    <Compile Include="Interfaces\Query\Push\ITransactionQuery.cs" />
+    <Compile Include="Interfaces\Query\Push\IUserInfoQuery.cs" />
+    <Compile Include="Interfaces\Query\Push\IMachineQuery.cs" />
+    <Compile Include="Interfaces\Query\Reporting\IReportHoldingQuery.cs" />
+    <Compile Include="Interfaces\Query\Reporting\IReportQueueQuery.cs" />
+    <Compile Include="Interfaces\Query\Reporting\ISavedReportCustomFieldQuery.cs" />
+    <Compile Include="Interfaces\Query\Reporting\ISavedReportFieldQuery.cs" />
+    <Compile Include="Interfaces\Query\ISchoolDistrictQuery.cs" />
+    <Compile Include="Interfaces\Query\IStateQuery.cs" />
+    <Compile Include="Interfaces\Query\ITaxConfigurationQuery.cs" />
+    <Compile Include="Interfaces\Query\ITaxesOptionQuery.cs" />
+    <Compile Include="Interfaces\Query\ITaxOptionRuleQuery.cs" />
+    <Compile Include="Interfaces\Query\ITaxQuery.cs" />
+    <Compile Include="Interfaces\Query\ITaxRateHeaderQuery.cs" />
+    <Compile Include="Interfaces\Query\ITaxRateQuery.cs" />
+    <Compile Include="Interfaces\Query\ITaxTypeInfoQuery.cs" />
+    <Compile Include="Interfaces\Query\ITimeOffRequestDetailQuery.cs" />
+    <Compile Include="Interfaces\Query\IUserClientQuery.cs" />
+    <Compile Include="Interfaces\Query\IUserQuery.cs" />
+    <Compile Include="Interfaces\Query\IUserSupervisorSecuritySettingQuery.cs" />
+    <Compile Include="Interfaces\Query\IUserSupervisorSecurityGroupAccessQuery.cs" />
+    <Compile Include="Interfaces\Query\IAccessRuleQuery.cs" />
+    <Compile Include="Interfaces\Repositories\IAcaRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IAccountingRepository.cs" />
+    <Compile Include="Interfaces\Query\Reporting\ISavedReportQuery.cs" />
+    <Compile Include="Interfaces\Query\Reporting\IScheduledReportEmailAddressChangeHistoryQuery.cs" />
+    <Compile Include="Interfaces\Query\Reporting\IScheduledReportEmailAddressQuery.cs" />
+    <Compile Include="Interfaces\Query\Reporting\IScheduledReportQuery.cs" />
+    <Compile Include="Interfaces\Query\Reporting\IScheduledReportVisibleQuery.cs" />
+    <Compile Include="Interfaces\Query\Reporting\IStandardReportQuery.cs" />
+    <Compile Include="Interfaces\Repositories\IApiRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IApplicantTrackingRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IApplicationConfigurationRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IArRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IBillingRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ICheckStockBillingRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IClientAccountFeatureRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ICheckStockOrderRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IClientFeaturesRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IClientNotesRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IClientRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IGeofenceRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IContactRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ICoreRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IEEOCRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IJobCostingRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ILaborManagementRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ILeaveManagementRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ILegacyTaxRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ILocationRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IMiscRepository.cs" />
+    <Compile Include="Interfaces\Repositories\INotificationRepository.cs" />
+    <Compile Include="Interfaces\Repositories\INpsRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IOnboardingRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IPayrollRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IBenefitRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IEmployeeRepository.cs" />
+    <Compile Include="Interfaces\Entities\IModifiableEntity.cs" />
+    <Compile Include="Interfaces\Repositories\IPushRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IPerformanceRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IPreviewPaycheckEarningQuery.cs" />
+    <Compile Include="Interfaces\Repositories\IRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ISecurityRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ITaxesRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ITaxRepository.cs" />
+    <Compile Include="Interfaces\Repositories\ITimeClockRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IUserRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IW2Repository.cs" />
+    <Compile Include="Interfaces\Repositories\IReportRepository.cs" />
+    <Compile Include="Interfaces\UnitOfWork\IBusinessUnitOfWork.cs" />
+    <Compile Include="Interfaces\UnitOfWork\IDataStoreUnitOfWork.cs" />
+    <Compile Include="Interfaces\UnitOfWork\IDataStoreUnitOfWorkProvider.cs" />
+    <Compile Include="Interfaces\UnitOfWork\IUnitOfWorkTypeMapping.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Validation\Benefit\EmployeeBenefitInfoFluentValidator.cs" />
+    <Compile Include="Validation\Benefit\EmployeeBenefitInfoValidator.cs" />
+    <Compile Include="Validation\Client\ClientFeatureValidator.cs" />
+    <Compile Include="Validation\Client\ClientValidator.cs" />
+    <Compile Include="Validation\Employee\EmployeeAccrualFluentValidator.cs" />
+    <Compile Include="Validation\Employee\EmployeeAccrualValidator.cs" />
+    <Compile Include="Validation\Employee\EmployeeEmergencyContactFluentValidator.cs" />
+    <Compile Include="Validation\Employee\EmployeeDependentFluentValidator.cs" />
+    <Compile Include="Validation\Employee\EmployeeDependentValidator.cs" />
+    <Compile Include="Validation\Employee\EmployeeEmergencyContactValidator.cs" />
+    <Compile Include="Validation\Employee\EmployeeFluentValidator.cs" />
+    <Compile Include="Validation\Employee\EmployeeValidator.cs" />
+    <Compile Include="Validation\Employee\EmployeeW2ConsentValidator.cs" />
+    <Compile Include="Validation\EntityValidator.cs" />
+    <Compile Include="Validation\Misc\CountryValidator.cs" />
+    <Compile Include="Validation\Misc\FeatureOptionValidator.cs" />
+    <Compile Include="Validation\Misc\FilingStatusValidator.cs" />
+    <Compile Include="Validation\Misc\SecretQuestionValidator.cs" />
+    <Compile Include="Validation\Misc\StateValidator.cs" />
+    <Compile Include="Validation\Tax\EmployeeTaxEntityValidator.cs" />
+    <Compile Include="Validation\Tax\EmployeeTaxValidator.cs" />
+    <Compile Include="Validation\User\UserActionTypeLegacyUserTypeValidator.cs" />
+    <Compile Include="Validation\User\UserGroupMembershipValidator.cs" />
+    <Compile Include="Validation\User\UserTypeValidator.cs" />
+    <Compile Include="Validation\User\UserValidator.cs" />
+    <Compile Include="ValueObjects\EmployeeOwnedEntity.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Ds.Aca\Dominion.Aca.Dto\Dominion.Aca.Dto.csproj">
+      <Project>{1c6b140b-5897-4639-8dec-6685b52fa1df}</Project>
+      <Name>Dominion.Aca.Dto</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Ds.Authentication\Dominion.Authentication\Dominion.Authentication.csproj">
+      <Project>{ED5A134A-EE92-4158-8B72-F0915A7D6B84}</Project>
+      <Name>Dominion.Authentication</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Ds.Benefits\Dominion.Benefits.Dto\Dominion.Benefits.Dto.csproj">
+      <Project>{25dd9d79-c3b4-4b79-88a6-34e5ae3cc7b3}</Project>
+      <Name>Dominion.Benefits.Dto</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Ds.LaborManagement\Dominion.LaborManagement.Dto\Dominion.LaborManagement.Dto.csproj">
+      <Project>{7e28572d-f226-43c4-ab8c-b003079ebe58}</Project>
+      <Name>Dominion.LaborManagement.Dto</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Ds.Payroll\Dominion.Pay.Dto\Dominion.Pay.Dto.csproj">
+      <Project>{828b3e11-fdbb-4552-870d-a025d0210897}</Project>
+      <Name>Dominion.Pay.Dto</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Ds.Taxes\Dominion.Taxes.Dto\Dominion.Taxes.Dto.csproj">
+      <Project>{b4860b48-e16e-489c-a870-b750fd89309b}</Project>
+      <Name>Dominion.Taxes.Dto</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Ds.Utility\Dominion.Utility\Dominion.Utility.csproj">
+      <Project>{cc558777-0e1a-456b-a4e0-226bbe34f433}</Project>
+      <Name>Dominion.Utility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Dominion.Core.Dto\Dominion.Core.Dto.csproj">
+      <Project>{918955AD-8918-4B6B-BF4D-56A3484079E1}</Project>
+      <Name>Dominion.Core.Dto</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Entities\Applicants\" />
+    <Folder Include="Entities\Web\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

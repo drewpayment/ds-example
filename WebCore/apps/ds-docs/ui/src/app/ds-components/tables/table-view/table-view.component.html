@@ -1,0 +1,69 @@
+<ds-card>
+  <ds-card-header>
+    <ds-card-header-title>Table</ds-card-header-title>
+  </ds-card-header>
+  <ds-card-content>
+    <ds-table-container>
+      <table ds-table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)">
+        <ng-container dsColumnDef="select">
+          <th ds-header-cell *dsHeaderCellDef tableCheckbox>  
+            <div class="custom-control custom-checkbox">
+              <input id="header-row-checkbox"
+                  class="custom-control-input"
+                  type="checkbox"
+                  (change)="$event ? masterToggle() : null"
+                  [checked]="selection.hasValue() && isAllSelected()" />
+              <label class="custom-control-label" for="header-row-checkbox"></label>
+            </div>
+          </th>
+          <td ds-cell *dsCellDef="let element, let i = index" tableCheckbox>
+            <div class="custom-control custom-checkbox">
+              <input 
+                id="checked{{i}}"
+                class="custom-control-input"
+                type="checkbox"
+                (change)="$event ? selection.toggle(element) : null; nothingSelected = false"
+                [checked]="isSelected(element)"
+                [class.is-invalid]="nothingSelected"/>
+              <label class="custom-control-label" for="checked{{i}}">
+                  <span>Select</span>
+              </label>
+            </div>
+          </td>
+        </ng-container>
+        <ng-container dsColumnDef="character">
+          <th ds-header-cell *dsHeaderCellDef mat-sort-header="character" mat-sort-header="character"> Character </th>
+          <td ds-cell *dsCellDef="let element">
+            {{element.character}}
+          </td>
+        </ng-container>
+        <ng-container dsColumnDef="movie">
+          <th ds-header-cell *dsHeaderCellDef mat-sort-header="movie" mat-sort-header="movie"> Movie </th>
+          <td ds-cell *dsCellDef="let element">
+            {{element.movie}}
+          </td>
+        </ng-container>
+        <ng-container dsColumnDef="year">
+          <th ds-header-cell *dsHeaderCellDef mat-sort-header="year" mat-sort-header="year" alignRight> Year </th>
+          <td ds-cell *dsCellDef="let element" alignRight>
+            {{element.year}}
+          </td>
+        </ng-container>
+        <ng-container dsColumnDef="edit">
+          <th ds-header-cell *dsHeaderCellDef tableAction></th>
+          <td ds-cell *dsCellDef="let element" tableAction>
+            <button type="button" [matMenuTriggerFor]="menu" class="btn btn-icon">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="delete(element)">Delete</button>
+            </mat-menu>
+          </td>
+        </ng-container>
+        <tr ds-header-row *dsHeaderRowDef="displayedColumns, sticky: true"></tr>
+        <tr ds-row *dsRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+      <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons></mat-paginator>
+    </ds-table-container>
+  </ds-card-content>
+</ds-card>

@@ -1,0 +1,17 @@
+<ds-dashboard-widget [cardType]="cardType" [loaded]="loaded" >
+    <ds-dashboard-widget-header [title]="title"></ds-dashboard-widget-header>
+    <ds-dashboard-widget-content>
+        <div class="chart">
+            <canvas
+                baseChart
+                [data]="pieChartData"
+                [labels]="pieChartLabels"
+                [chartType]="pieChartType"
+                [options]="pieChartOptions"
+                [colors]="pieChartColors"
+                (chartClick)="openDialog($event)"
+            >
+            </canvas>
+        </div>
+    </ds-dashboard-widget-content>
+</ds-dashboard-widget>

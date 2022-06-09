@@ -1,0 +1,59 @@
+<ng-container [formGroup]="f">
+    <ds-card mode="nobody" border="top">
+        <ds-card-header>
+            <ds-card-header-title>
+                <span>Client Tax Deferrals</span>
+            </ds-card-header-title>
+            <div ds-card-title-action>
+                <button type="button" class="btn btn-outline-primary" (click)="showAddDialog()">
+                    <mat-icon>add</mat-icon>
+                    <span>Tax Deferral</span>
+                </button>
+            </div>
+        </ds-card-header>
+    </ds-card>
+    <ds-card mode="noheader">
+        <ds-card-content>
+            <ds-loading-message *ngIf="isLoading"></ds-loading-message>
+            <ng-container *ngIf="!isLoading">
+                <div class="row" formArrayName="deferrals" *ngIf="deferralsFormArray().controls.length > 0, else emptyState">
+                    <div class="col-lg-6" *ngFor="let def of deferralsFormArray().controls; let i = index" [formGroupName]="i">
+                        <ds-card mode="widget-nobody" color="info">
+                            <div ds-card-icon>account_balance</div>
+                            <div ds-card-header y-align="center">
+                                <ds-card-widget-title>{{ getTaxTypeName(i) }}</ds-card-widget-title>
+                                <ds-card-title-right-content>
+                                    <label class="switch switch-default switch-pill switch-success switch-sm">
+                                        <input type="checkbox" class="switch-input" formControlName="isDeferred" (change)="onIsDeferredChange($event, i)" />
+                                        <span class="switch-label"></span>
+                                        <span class="switch-handle"></span>
+                                        <span class="ds-switch-off">Off</span>
+                                        <span class="ds-switch-on">On</span>
+                                    </label>
+                                </ds-card-title-right-content>
+                                <ds-card-title-action>
+                                    <button type="button" class="btn btn-icon" [matMenuTriggerFor]="rowMenu">
+                                        <i class="material-icons">more_vert</i>
+                                    </button>
+                                    <mat-menu #rowMenu="matMenu">
+                                        <button mat-menu-item (click)="showEditDialog(i)">Edit</button>
+                                        <button mat-menu-item type="button" (click)="deleteDeferral(i)">
+                                            Delete
+                                        </button>
+                                    </mat-menu>
+                                </ds-card-title-action>
+                                <ds-card-subtitle>
+                                    {{ getTaxTypeDescription(i) }}
+                                </ds-card-subtitle>
+                            </div>
+                        </ds-card>
+                    </div>
+                </div>
+            </ng-container>
+        </ds-card-content>
+    </ds-card>
+</ng-container>
+
+<ng-template #emptyState>
+    <div class="empty-state">There are no tax deferrals to display.</div>
+</ng-template>

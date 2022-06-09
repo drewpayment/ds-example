@@ -1,0 +1,63 @@
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label>Start</label>
+            <div class="input-group">
+                <input matInput class="form-control" 
+                    [matDatepicker]="employeeEvaluationStartDatePicker"
+                    [formControl]="_startDate"
+                    dsFormControlValidator
+                    [dsFormControlSubmitted]="_submitted()" />
+                <div class="input-group-append">
+                    <mat-datepicker-toggle matSuffix class="input-group-text date" [for]="employeeEvaluationStartDatePicker">
+                        <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #employeeEvaluationStartDatePicker></mat-datepicker>
+                </div>
+                <div class="invalid-feedback">
+                    <ng-container *ngIf="_startDate.hasError('required') && !_startDate.hasError('matDatepickerParse')">Please enter a date.</ng-container>
+                    <ng-container *ngIf="_startDate.hasError('matDatepickerParse')">Please enter a valid date.</ng-container>
+                    <ng-container *ngIf="_startDate.hasError('minDateError')">
+                        Please enter a date after the start
+                        ({{_processStartDate.value | convertToMoment | momentFormat : momentFormatString}})
+                    </ng-container>
+                    <ng-container *ngIf="_startDate.hasError('maxDateError')">
+                        Please enter a date before the review process ends
+                        ({{_dueDate.value | findMinDate : _processEndDate.value : _defaultMaxMoment | convertToMoment | momentFormat : momentFormatString}})
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label>Due</label>
+            <div class="input-group">
+                <input matInput class="form-control" 
+                    [matDatepicker]="employeeEvaluationDueDatePicker"
+                    [formControl]="_dueDate"
+                    dsFormControlValidator 
+                    [dsFormControlSubmitted]="_submitted()"
+                    />
+                <div class="input-group-append">
+                    <mat-datepicker-toggle matSuffix [for]="employeeEvaluationDueDatePicker" class="input-group-text date">
+                        <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #employeeEvaluationDueDatePicker></mat-datepicker>
+                </div>
+                <div class="invalid-feedback" >
+                    <ng-container *ngIf="_dueDate.hasError('required') && !_dueDate.hasError('matDatepickerParse')">Please enter a date.</ng-container>
+                    <ng-container *ngIf="_dueDate.hasError('matDatepickerParse')">Please enter a valid date.</ng-container>
+                    <ng-container *ngIf="_dueDate.hasError('minDateError')">
+                        Please enter a date after the start
+                        ({{_startDate.value | findMaxDate : _processStartDate.value : _defaultMinMoment | convertToMoment | momentFormat : momentFormatString}})
+                    </ng-container>
+                    <ng-container *ngIf="_dueDate.hasError('maxDateError')">
+                        Please enter a date before the review process ends
+                        ({{_processEndDate.value | convertToMoment | momentFormat : momentFormatString}})
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

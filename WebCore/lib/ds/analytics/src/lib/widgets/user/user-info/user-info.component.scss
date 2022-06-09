@@ -1,0 +1,58 @@
+@import '../../../../../../../../Styles/scss/bootstrap-variables';
+
+.table {
+    border-collapse: separate;
+}
+
+.mat-column-firstName{
+    min-width: 175px;
+    max-width: 175px;
+    left: 0px !important;
+}
+
+.mat-column-userType{
+    min-width: 125px;
+    max-width: 125px;
+    left: 175px !important;
+}
+
+.mat-column-username{
+    min-width: 125px;
+    max-width: 125px;
+    left: 300px !important;
+}
+
+.mat-column-login{
+    min-width: 125px;
+    max-width: 125px;
+    left: 425px !important;
+}
+
+td {
+    background-color: $white;
+    white-space: nowrap;
+}
+
+th {
+    white-space: nowrap;
+}
+
+
+.mat-table-sticky-border {
+    box-shadow: $table-box-shadow;
+    &.mat-header-cell {
+      border-left: $table-sticky-hidden-header-border; // needed to keep width
+      border-right: $table-header-border;
+    }
+    &.mat-cell {
+      border-left: $table-sticky-hidden-border;
+      border-right: $table-border;
+    }
+    +.mat-cell {
+      border-left: none !important; // Removes border immediately after sticky column
+    }
+}
+
+.mat-table-sticky:not(.mat-table-sticky-border) {
+z-index: 2 !important;
+}

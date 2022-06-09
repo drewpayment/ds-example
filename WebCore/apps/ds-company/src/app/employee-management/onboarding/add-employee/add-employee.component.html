@@ -1,0 +1,628 @@
+<ds-card border="top" color="primary" mode="stepper">
+  <div ds-card-header>
+    <ds-card-header-title>
+      {{ pageTitle }}
+    </ds-card-header-title>
+  </div>
+  <ds-card-content>
+    <ng-template #stepOne>
+        <ng-container *ngIf="paneId==1 && !isLoading;">
+          <div class="step-container" [formGroup]="form1" dsTrackFormChanges *ngIf="paneId==1 && form1">
+            <ds-card>
+              <ds-card-header>
+                <ds-card-sub-header-title>General Information</ds-card-sub-header-title>
+              </ds-card-header>
+              <ds-card-content>
+                <div class="row align-items-baseline">
+                  <div class="col-8 col-md-4 col-xl-4">
+                    <div class="form-group">
+                      <label>First Name</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" formControlName="FirstName" 
+                            dsFormControlValidator [dsFormControlSubmitted]="form1Submitted" maxlength="50" />
+                        <div class="invalid-feedback" *ngIf="FirstName.invalid">
+                            <span *ngIf="FirstName.errors.required">Please enter a first name.</span>
+                            <span *ngIf="FirstName.errors.pattern">Please enter a valid first name.</span>
+                        </div>                            
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-4 col-md-3 col-xl-1">
+                    <div class="form-group">
+                      <label>M.I. <span class="instruction-text">Optional</span></label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" formControlName="MiddleInitial" />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-5 col-xl-4">
+                    <div class="form-group">
+                      <label>Last Name</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" formControlName="LastName" maxlength="50"
+                          dsFormControlValidator [dsFormControlSubmitted]="form1Submitted" />
+                        <div class="invalid-feedback" *ngIf="LastName.invalid">
+                          <span *ngIf="LastName.errors?.required">Please enter last name.</span>
+                          <span *ngIf="LastName.errors.pattern">Please enter a valid last name.</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ds-card-content>
+            </ds-card>
+            <ds-card>
+              <ds-card-header>
+                <ds-card-sub-header-title>Employment Data</ds-card-sub-header-title>
+              </ds-card-header>
+              <ds-card-content>
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Hire Date</label>
+                      <div class="input-group">
+                        <input matInput class="form-control" [formControl]="HireDate" [matDatepicker]="hireDate" 
+                          dsFormControlValidator [dsFormControlSubmitted]="form1Submitted" />
+                        <div class="input-group-append">
+                          <mat-datepicker-toggle matSuffix [for]="hireDate" class="input-group-text date">
+                            <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                          </mat-datepicker-toggle>
+                          <mat-datepicker #hireDate [startAt]="data"></mat-datepicker>
+                        </div>
+                        <div class="invalid-feedback" *ngIf="HireDate.invalid">
+                          <span *ngIf="HireDate.errors?.required">Please enter a hire date.</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Employee Number</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" formControlName="EmployeeNumber" dsFormControlValidator [dsFormControlSubmitted]="form1Submitted" />
+                        <div class="invalid-feedback" *ngIf="EmployeeNumber.invalid">
+                          <span *ngIf="EmployeeNumber.errors?.required">Please enter an employee number.</span>
+                          <span *ngIf="EmployeeNumber.errors?.pattern">The employee number should contain only numbers and cannot start with zero.</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Status</label>
+                      <select class="form-control custom-select" formControlName="EmployeeStatus" dsFormControlValidator [dsFormControlSubmitted]="form1Submitted">
+                        <option class="text-muted" [ngValue]="null"></option>
+                        <option [ngValue]="employeeStatus.employeeStatusId"
+                          *ngFor="let employeeStatus of employeeStatusList">
+                          {{ employeeStatus.description }}
+                        </option>
+                      </select>
+                      <div class="invalid-feedback" *ngIf="EmployeeStatus.invalid">
+                        <span *ngIf="EmployeeStatus.errors?.required">Please select a status.</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Job Title <span class="instruction-text">Optional</span></label>
+                      <select class="form-control custom-select" formControlName="JobTitle"
+                        (change)="loadJobTitleConfirmDialog()">
+                        <option class="text-muted" [ngValue]="null"></option>
+                        <option [ngValue]="jobTitle" *ngFor="let jobTitle of jobTitlesList">
+                          {{ jobTitle.description }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Division <span class="instruction-text">Optional</span></label>
+                      <select class="form-control custom-select" formControlName="ClientDivision"
+                        (change)="loadDepartments().subscribe()">
+                        <option class="text-muted" [ngValue]="null"></option>
+                        <option [ngValue]="clientDivision.clientDivisionId"
+                          *ngFor="let clientDivision of clientDivisionsList">
+                          {{ clientDivision.name }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Department <span class="instruction-text">Optional</span></label>
+                      <select class="form-control custom-select" formControlName="ClientDepartment">
+                        <option class="text-muted" [ngValue]="null"></option>
+                        <option [ngValue]="clientDepartment.clientDepartmentId"
+                          *ngFor="let clientDepartment of clientDepartmentsList">
+                          {{ clientDepartment.name }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Cost Center <span class="instruction-text">Optional</span></label>
+                      <select class="form-control custom-select" formControlName="CostCenter">
+                        <option class="text-muted" [ngValue]="null"></option>
+                        <option [ngValue]="costCenter.clientCostCenterId" *ngFor="let costCenter of costCentersList">
+                          {{ costCenter.description }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Group <span class="instruction-text">Optional</span></label>
+                      <select class="form-control custom-select" formControlName="ClientGroup">
+                        <option class="text-muted" [ngValue]="null"></option>
+                        <option [ngValue]="clientGroup.clientGroupId"
+                          *ngFor="let clientGroup of clientGroupsList">
+                          {{ clientGroup.description }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Shift <span class="instruction-text">Optional</span></label>
+                      <select class="form-control custom-select" formControlName="ClientShift">
+                        <option class="text-muted" [ngValue]="null"></option>
+                        <option [ngValue]="clientShift.clientShiftId"
+                          *ngFor="let clientShift of clientShiftsList">
+                          {{ clientShift.description }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Workers Comp Class <span class="instruction-text">Optional</span></label>
+                      <select class="form-control custom-select" formControlName="WorkersComp">
+                        <option class="text-muted" [ngValue]="null"></option>
+                        <option [ngValue]="workersComp.clientWorkersCompId" *ngFor="let workersComp of workersCompsList">
+                          {{ workersComp.description }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>EEOC Job Location <span class="instruction-text">Optional</span></label>
+                      <select class="form-control custom-select" formControlName="EeocJobLocation">
+                        <option class="text-muted" [ngValue]="null"></option>
+                        <option [ngValue]="eeocLocation.eeocLocationId"
+                          *ngFor="let eeocLocation of eeocLocationsList">
+                          {{ eeocLocation.eeocLocationDescription }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>EEOC Job Category <span class="instruction-text">Optional</span></label>
+                      <select class="form-control custom-select" formControlName="EeocJobCategory">
+                        <option class="text-muted" [ngValue]="null"></option>
+                        <option [ngValue]="eeocJobCategory.jobCategoryId"
+                          *ngFor="let eeocJobCategory of eeocJobCategoriesList">
+                          {{ eeocJobCategory.description }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Direct Supervisor <span class="instruction-text">Optional</span></label>
+                      <select class="form-control custom-select" formControlName="DirectSupervisor">
+                        <option class="text-muted" [ngValue]="null"></option>
+                        <option [ngValue]="directSupervisor.userId" *ngFor="let directSupervisor of directSupervisorList">
+                          {{ directSupervisor.firstName }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </ds-card-content>
+            </ds-card>
+            <ds-card>
+              <ds-card-header>
+                <ds-card-sub-header-title>Pay Information</ds-card-sub-header-title>
+              </ds-card-header>
+              <ds-card-content>
+                <div class="row">
+                  <div class="col-auto">
+                    <div class="form-group inline-radio">
+                      <div class="custom-control custom-radio custom-control-bg primary">
+                          <input type="radio" id="PayrollTypeHourly" formControlName="PayrollType" value="1" class="custom-control-input">
+                          <label class="custom-control-label" for="PayrollTypeHourly">Hourly</label>
+                          <div class="custom-bg"></div>
+                      </div>
+                      <div class="custom-control custom-radio custom-control-bg primary">
+                          <input type="radio" id="PayrollTypeSalary" formControlName="PayrollType" value="2" class="custom-control-input">
+                          <label class="custom-control-label" for="PayrollTypeSalary">Salary</label>
+                          <div class="custom-bg"></div>
+                      </div>
+                    </div>                    
+                  </div>
+                  <div class="col-auto" *ngIf="showOvertimeExempt">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" id="IsOvertimeExempt" class="custom-control-input" formControlName="IsOvertimeExempt">
+                      <label class="custom-control-label" for="IsOvertimeExempt">Overtime Exempt</label>
+                    </div>
+                  </div>
+                  <div class="col-auto" *ngIf="showTippedEmployee">
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" id="IsTippedEmployee" class="custom-control-input" formControlName="IsTippedEmployee">
+                      <label class="custom-control-label" for="IsTippedEmployee">Tipped Employee</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Frequency</label>
+                            <select class="form-control custom-select"
+                              formControlName="PayFrequency" dsFormControlValidator [dsFormControlSubmitted]="form1Submitted">
+                              <option class="text-muted"  [ngValue]="null"></option>
+                              <option [ngValue]="payFrequency.payFrequencyId"
+                                *ngFor="let payFrequency of payFrequencies">
+                                {{ payFrequency.name }}
+                              </option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="PayFrequency.invalid">
+                              <span *ngIf="PayFrequency.errors?.required">Please select a frequency.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>SUTA State</label>
+                            <select class="form-control custom-select"
+                              formControlName="SutaState" dsFormControlValidator [dsFormControlSubmitted]="form1Submitted">
+                              <option class="text-muted"  [ngValue]="null"></option>
+                              <option [ngValue]="sutaState"
+                                *ngFor="let sutaState of sutaStates">
+                                {{ sutaState.name }}
+                              </option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="SutaState.invalid">
+                              <span *ngIf="SutaState.errors?.required">Please select a state.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4" *ngIf="showTippedEmployee">
+                    <div class="form-group">
+                        <label>Default Rate</label>
+                        <select class="form-control custom-select"
+                          formControlName="DefaultRate" dsFormControlValidator [dsFormControlSubmitted]="form1Submitted"
+                          (change)="setDefaultClientRate()">
+                          <option class="text-muted"  [ngValue]="null"></option>
+                          <option [ngValue]="clientRate.clientRateId"
+                            *ngFor="let clientRate of clientRateList">
+                            {{ clientRate.description }}
+                          </option>
+                        </select>
+                        <div class="invalid-feedback" *ngIf="showTippedEmployee && DefaultRate.invalid">
+                          <span *ngIf="DefaultRate.errors?.required">Please select a default rate.</span>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4" *ngIf="showOvertimeExempt">
+                    <div class="form-group">
+                      <label>Salary</label>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text currency">$</span>
+                        </div>                          
+                        <input type="text" class="form-control" formControlName="Salary" dsFormControlValidator [dsFormControlSubmitted]="form1Submitted"/>
+                        <div class="invalid-feedback" *ngIf="Salary.invalid">
+                          <span *ngIf="Salary.errors?.required">Please enter an amount.</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Time Policy <span class="instruction-text">Optional</span></label>
+                        <select class="form-control custom-select"
+                          formControlName="TimePolicy">
+                          <option class="text-muted"  [ngValue]="null"></option>
+                          <option [ngValue]="timePolicy.clockClientTimePolicyId"
+                            *ngFor="let timePolicy of timePolicies">
+                            {{ timePolicy.name }}
+                          </option>
+                        </select>
+                    </div>
+                  </div>
+                </div>
+                <ng-container *ngIf="showTippedEmployee">
+                  <div class="d-flex justify-content-end">
+                    <button type="button" class="btn btn-primary form-group" (click)="addEmployeeClientRate()">
+                      <mat-icon>add</mat-icon>Rate
+                    </button>
+                  </div>
+                  <!-- Client rates SETUP -->
+                  <div class="card card-table">
+                    <div class="table-responsive">
+                      <table mat-table [dataSource]="employeeClientRatesDatasource" class="w-100 grid">
+                        <ng-container matColumnDef="clientRateName">
+                          <th mat-header-cell *matHeaderCellDef>
+                            Rate Name
+                          </th>
+                          <td mat-cell *matCellDef="let clientRate; let i = index;" class="grid-input-container">
+                            
+                            <mat-select class="grid-select custom-select"
+                              [formControl]="form1.get('clientRatesArray').at(i).get('clientRateName')" 
+                              required dsFormControlValidator [dsFormControlSubmitted]="form1Submitted">
+                              <mat-select-trigger>
+                                {{ getClientRateName(form1.get('clientRatesArray').at(i).get('clientRateName').value) }}
+                                <span *ngIf="form1.get('clientRatesArray').at(i).get('clientRateName').value == DefaultRate.value" class="badge badge-pill badge-default-blue ml-2">Default</span> 
+                              </mat-select-trigger>
+                              <mat-option class="text-muted"  [value]="null"></mat-option>
+                              <mat-option [value]="clientRate.clientRateId"
+                                *ngFor="let clientRate of clientRateList">
+                                {{ clientRate.description }} 
+                              </mat-option>
+                            </mat-select>
+                            <div class="invalid-feedback" *ngIf="form1.get('clientRatesArray').at(i).get('clientRateName').invalid">
+                              <span *ngIf="form1.get('clientRatesArray').at(i).get('clientRateName').errors?.required">Please select rate name.</span>
+                            </div>
+                          </td>
+                        </ng-container>
+                        <ng-container matColumnDef="clientRateAmount">
+                          <th mat-header-cell *matHeaderCellDef>
+                            Amount
+                          </th>
+                          <td mat-cell *matCellDef="let clientRate; let i = index;" class="grid-input-container">
+                            <div class="grid-input-group">
+                              <div class="grid-prepend">
+                                  <span class="currency">$</span>
+                              </div>
+                              <input type="number" class="grid-input form-control" [formControl]="form1.get('clientRatesArray').at(i).get('clientRateAmount')"
+                                dsFormControlValidator [dsFormControlSubmitted]="form1Submitted" />
+                            </div>
+                          </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="clientRatesDisplayColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: clientRatesDisplayColumns;"></tr>
+                      </table>
+                    </div>
+                  </div>
+                </ng-container>
+              </ds-card-content>
+            </ds-card>
+            <ds-card>
+              <ds-card-header>
+                <ds-card-sub-header-title>Profile Setup</ds-card-sub-header-title>
+              </ds-card-header>
+              <ds-card-content>
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Username</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" formControlName="Username" maxlength="15" dsFormControlValidator [dsFormControlSubmitted]="form1Submitted" />
+                        <div class="invalid-feedback" *ngIf="Username.invalid">
+                          <span *ngIf="Username.errors?.required">Please enter a username.</span>
+                          <span *ngIf="Username.errors?.pattern">Please enter a valid username.</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Email Address</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" formControlName="EmailAddress" maxlength="75" dsFormControlValidator [dsFormControlSubmitted]="form1Submitted" />
+                        <div class="invalid-feedback" *ngIf="EmailAddress.invalid">
+                          <span *ngIf="EmailAddress.errors?.required">Please enter an email address.</span>
+                          <span *ngIf="EmailAddress.errors?.pattern">Please enter a valid email address.</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ds-card-content>
+            </ds-card>
+            <ds-card mode="footer">
+              <ds-card-footer>
+                <button class="btn btn-save" (click)="save()" [disabled]="form1Submitted">Continue</button>
+                <button class="btn btn-delete" (click)="redirectToDashboard()">Cancel</button>
+              </ds-card-footer>
+            </ds-card>
+          </div>
+        </ng-container>
+    </ng-template>
+    <ng-template #stepTwo>
+      <ng-container *ngIf="paneId==2 && !isLoading">
+        <div class="step-container" [formGroup]="form2" dsTrackFormChanges *ngIf="paneId==2 && form2">
+          <ds-card>
+            <ds-card-header>
+              <ds-card-sub-header-title>Task Assignment</ds-card-sub-header-title>
+              <ds-card-title-action *ngIf="hasCustomPageAccess && employeeId && employeeId > 0 && !returnsToDetail">
+                <button [matMenuTriggerFor]="menu" class="btn btn-outline-primary dropdown-toggle">
+                  <i class="material-icons">add</i> Custom Page
+                </button>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item (click)="addCustomPage('Document')">Document</button>
+                  <button mat-menu-item (click)="addCustomPage('Link')">Link</button>
+                  <button mat-menu-item (click)="addCustomPage('Video')">Video</button>
+                </mat-menu>
+              </ds-card-title-action>
+              <ds-card-subtitle>
+                <div class="instruction-text">
+                  Select which tasks to assign for this employee to complete. If a task needs to be added or removed after
+                  this employee has been added to Onboarding, you can do so on the Onboarding Profile screen.
+                </div>
+              </ds-card-subtitle>
+            </ds-card-header>
+            <ds-card-content>
+              <ds-employee-tasks [clientId]="clientId"
+                [selectedOnboardingWorkflows]="selectedEmployeeOnboardingWorkflows"
+                (onSelectionChanged)="updateSelections($event)" (onSelectedStateChanged)="updateSelectedState($event)">
+              </ds-employee-tasks>
+            </ds-card-content>
+          </ds-card>
+          <ds-card mode="footer">
+            <ds-card-footer>
+              <button class="btn btn-save" (click)="save()" [disabled]="form2Submitted">{{ returnsToDetail ? 'Save' : 'Continue'}}</button>
+              <button class="btn btn-delete" (click)="redirectToDashboard()">Cancel</button>
+            </ds-card-footer>
+          </ds-card>
+        </div>
+      </ng-container>
+    </ng-template>
+    <ng-template #stepThree>
+      <ng-container *ngIf="paneId==3 && !isLoading">
+        <div class="step-container" [formGroup]="form3" dsTrackFormChanges *ngIf="paneId==3 && form3">
+          <ds-card>
+            <ds-card-header>
+              <ds-card-subtitle>The message below is customizable, however, do not remove or change any fields surround by &#123;&#125;. These fields will be filled in with the correct information by Dominion's software.</ds-card-subtitle>
+              <ds-card-sub-header-title>Onboarding Invitation</ds-card-sub-header-title>
+            </ds-card-header>
+            <ds-card-content>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-control-label">Invitation Category</label>
+                    <select class="form-control custom-select" 
+                      (change)="templateCategoryChanged()"
+                      formControlName="InvitationTemplateCategory"
+                      dsFormControlValidator 
+                      [dsFormControlSubmitted]="form3Submitted">
+                      <option *ngFor="let invitationCategory of templateCategories" [ngValue]="invitationCategory">{{invitationCategory.desc}}</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        <span>Please select an invitation category.</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-control-label">Template</label>
+                    <select class="form-control custom-select" 
+                      (change)="invitationTemplateChanged()"
+                      formControlName="InvitationTemplate"
+                      dsFormControlValidator 
+                      [dsFormControlSubmitted]="form3Submitted">
+                      <option *ngFor="let template of onboardingInvitationTemplates" [ngValue]="template">{{template.description}}</option>
+                    </select>
+                    <div class="invalid-feedback">
+                      <span>Please select a template.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+    
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label class="form-control-label">Email Address</label>
+                    <input formControlName="InvitationEmail" class="form-control" type="text" 
+                        dsFormControlValidator 
+                        [dsFormControlSubmitted]="form3Submitted"/>
+                    <div class="invalid-feedback">
+                        <span>Please enter an email address.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+    
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label class="form-control-label">Subject</label>
+                    <input formControlName="InvitationSubjectLine" class="form-control" type="text" 
+                        dsFormControlValidator 
+                        [dsFormControlSubmitted]="form3Submitted"/>
+                    <div class="invalid-feedback">
+                        <span>Please enter a subject.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+    
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label class="form-control-label">Message Body</label>
+                    <textarea formControlName="InvitationMessageBody" name="InvitationMessageBody" rows="18" 
+                      class="form-control card-height-fix"
+                      dsFormControlValidator 
+                      [dsFormControlSubmitted]="form3Submitted">
+                    </textarea>
+                    <div class="invalid-feedback">
+                      <span>Please enter a message.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ds-card-content>
+          </ds-card>
+          <ds-card mode="footer">
+            <ds-card-footer>
+              <button class="btn btn-save" (click)="save()" [disabled]="form3Submitted">Send</button>
+              <button class="btn btn-delete" (click)="redirectToDashboard()">Cancel</button>
+            </ds-card-footer>
+          </ds-card>
+        </div>
+      </ng-container>
+    </ng-template>
+
+    <ng-container *ngIf="returnsToDetail, else handheld">
+      <ng-container  *ngTemplateOutlet="stepTwo"></ng-container>
+    </ng-container>
+
+    <ng-template #handheld >
+      <ng-container *ngIf="(isHandset$ | async), else desktop">
+        <mat-vertical-stepper [selectedIndex]="paneId-1" [linear]="true" #stepper>
+            <mat-step [stepControl]="form1" [editable]="false">
+                <ng-template matStepLabel>Employee Information</ng-template>
+                <ng-container *ngTemplateOutlet="stepOne"></ng-container>
+            </mat-step>
+            <mat-step [stepControl]="form2" [editable]="false">
+                <ng-template matStepLabel>Onboarding Setup</ng-template>
+                <ng-container *ngTemplateOutlet="stepTwo"></ng-container>
+            </mat-step>
+            <mat-step [stepControl]="form3" [editable]="false">
+                <ng-template matStepLabel>Invitation Email</ng-template>
+                <ng-container *ngTemplateOutlet="stepThree"></ng-container>
+            </mat-step>
+        </mat-vertical-stepper>
+      </ng-container>
+    </ng-template>
+
+    <ng-template #desktop>
+        <mat-horizontal-stepper [selectedIndex]="paneId-1" [linear]="true" #stepper [disableRipple]="true">
+            <mat-step [stepControl]="form1" [editable]="false">
+                <ng-template matStepLabel>Employee Information</ng-template>
+                <ng-container *ngTemplateOutlet="stepOne"></ng-container>
+            </mat-step>
+            <mat-step [stepControl]="form2" [editable]="false">
+                <ng-template matStepLabel>Onboarding Setup</ng-template>
+                <ng-container *ngTemplateOutlet="stepTwo"></ng-container>
+            </mat-step>
+            <mat-step [stepControl]="form3" [editable]="false">
+                <ng-template matStepLabel>Invitation Email</ng-template>
+                <ng-container *ngTemplateOutlet="stepThree"></ng-container>
+            </mat-step>
+        </mat-horizontal-stepper>
+    </ng-template>
+  </ds-card-content>
+</ds-card>
+<ng-container *ngIf="isLoading">
+  <div class="card">
+    <div class="card-body">
+      <ds-loading-message></ds-loading-message>
+    </div>
+  </div>
+</ng-container>

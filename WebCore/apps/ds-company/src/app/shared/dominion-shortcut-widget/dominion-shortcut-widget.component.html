@@ -1,0 +1,35 @@
+<div class="d-flex flex-wrap dashboard-shortcuts" *ngIf="!isLoading">
+    <a class="card-link text-center" title="Employee Attachments" [href]="ds.attachmentsUrl">
+        <mat-icon>attach_file</mat-icon>
+        <span class="text-truncate" [innerText]="ds?.attachmentsTitle"></span>
+    </a>
+    <a class="card-link text-center" *ngIf="ds.showCheckList" [title]="ds.checkListToolTip" [attr.href]="ds.toDoUrl">
+        <mat-icon>playlist_add_check</mat-icon>
+        <span class="text-truncate">To Do</span>
+    </a>
+    <a class="card-link text-center" *ngIf="ds.showLeaveManagement" [attr.title]="ds.leaveManagementToolTip"
+        [attr.href]="ds.leaveManagementUrl">
+        <mat-icon>airplanemode_on</mat-icon>
+        <span class="text-truncate">Time Off</span>
+    </a>
+    <button type="button" class="card-link text-center" *ngIf="ds.showPayCheck" title="Get your current paycheck."
+        (click)="getPaycheck()">
+        <mat-icon>monetization_on</mat-icon>
+        <span class="text-truncate">Paycheck</span>
+    </button>
+    <a class="card-link text-center" *ngIf="ds.showMyEss" title="My Ess"
+        [attr.href]="ds.myEssUrl">
+        <mat-icon>account_circle</mat-icon>
+        <span class="text-truncate">My ESS</span>
+    </a>
+    <button type="button" class="card-link text-center" *ngIf="ds.showW2" title="Get your current W2."
+        (click)="getW2()">
+        <mat-icon>insert_drive_file</mat-icon>
+        <span class="text-truncate">W2</span>
+    </button>
+    <button type="button" class="card-link text-center" *ngIf="ds.showACA" title="Get your current 1095-C."
+        (click)="getAca1095C()">
+        <mat-icon>insert_drive_file</mat-icon>
+        <span class="text-truncate">1095-C</span>
+    </button>
+</div>

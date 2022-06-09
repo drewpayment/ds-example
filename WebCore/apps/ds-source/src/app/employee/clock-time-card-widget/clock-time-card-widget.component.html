@@ -1,0 +1,133 @@
+<ds-card *ngIf="!isLoading" mode="noheader">
+  <ds-card-content>
+    <ng-container *ngIf="matList.data && matList.data.length else emptyState">
+    <div class="cal-table-actions">
+      <div class="text-center">Weekly Activity For {{ firstDate }}</div>
+    </div>
+    <div class="table-responsive">
+      <mat-table [dataSource]="matList" class='table calendar time-card'>
+        <ng-container matColumnDef="date">
+          <mat-header-cell *matHeaderCellDef class="cal-info date">Day</mat-header-cell>
+          <mat-cell *matCellDef="let element" class="cal-info date" data-label="Day">{{element.day}} {{element.date}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="punches">
+          <mat-header-cell *matHeaderCellDef class="punch-column">Punches</mat-header-cell>
+          <mat-cell *matCellDef="let element" class="punch-column" data-label="Punches">
+            <div>
+            <div class="punch-pair">
+
+              <div class="punch" 
+                [class.text-danger]="element.inHasException" 
+                [class.text-info]="!element.inHasException && (element.inClockClientLunchId != '')">
+                {{element.in}}
+              </div>
+
+              <ng-container *ngIf="element.out">&ndash;</ng-container>
+
+              <div class="punch" 
+                *ngIf="!element.outHasUrl"
+                [class.text-danger]="element.outHasException" 
+                [class.text-info]="!element.outHasException && (element.outClockClientLunchId != '')">
+                {{element.out}}
+                <span *ngIf="element.outIsPending" class="instruction-text"> Pending</span>
+              </div>
+
+              <button 
+                *ngIf="element.outHasUrl"
+                class="btn btn-punch" type="button" 
+                (click)="openModal(element.outUrl)"
+                [class.btn-outline-info]="!element.outIsMissing && element.outIsPending"
+                [class.btn-outline-danger]="element.outIsMissing">
+                {{element.out}}
+                <span *ngIf="element.outIsPending" class="instruction-text"> Pending</span>
+              </button>
+
+            </div>
+
+            <div class="punch-pair">
+
+              <div class="punch" 
+                [class.text-danger]="element.in2HasException" 
+                [class.text-info]="!element.in2HasException && (element.in2ClockClientLunchId != '')">
+                {{element.in2}}
+              </div>
+
+              <ng-container *ngIf="element.out2" > &ndash; </ng-container>
+
+              <div class="punch" 
+                *ngIf="!element.out2HasUrl"
+                [class.text-danger]="element.out2HasException"
+                [class.text-info]="!element.out2HasException && (element.out2ClockClientLunchId != '')">
+                {{element.out2}}
+              </div>
+
+              <button 
+                *ngIf="element.out2HasUrl" 
+                class="btn btn-punch" type="button" 
+                (click)="openModal(element.out2Url)"
+                [class.btn-outline-info]="!element.out2IsMissing && element.out2IsPending"
+                [class.btn-outline-danger]="element.out2IsMissing">
+                {{element.out2}}
+                <span *ngIf="element.out2IsPending" class="instruction-text">Pending</span>
+              </button>
+              
+            </div>
+          </div>
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="hours">
+          <mat-header-cell *matHeaderCellDef class="table-text-right hours">Hours</mat-header-cell>
+          <mat-cell *matCellDef="let element" class="table-text-right hours" data-label="Hours">
+            {{element.hours}}
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="schedule">
+          <mat-header-cell *matHeaderCellDef class="tc-history-schedule">Schedule</mat-header-cell>
+          <mat-cell *matCellDef="let element" class="tc-history-schedule text-muted" data-label="Schedule">
+            <ng-container *ngIf="element.dayScheduleDto != null && element.dayScheduleDto.validShifts.length > 0">
+              <ng-container *ngFor="let sch of element.dayScheduleDto.validShifts; let i = index;">
+                <br *ngIf="i>0"/>
+                <div>
+                  {{sch.shiftStart | date: 'hh:mm a'}} &ndash;
+                  {{sch.shiftEnd | date: 'hh:mm a'}}
+                  <ng-container *ngIf="(employeeCostCenterId != sch.clientCostCenterId && sch.clientCostCenterName && sch.clientCostCenterName.trim()!='')">
+                    <span class="pl-1">{{sch.clientCostCenterName}}</span>
+				  </ng-container>
+				</div>
+              </ng-container>
+            </ng-container>
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="exceptions">
+          <mat-header-cell *matHeaderCellDef class="exceptions">Exceptions</mat-header-cell>
+          <mat-cell *matCellDef="let element" class="exceptions" data-label="Exceptions">{{element.exceptions}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="notes">
+          <mat-header-cell *matHeaderCellDef class="notes">Notes</mat-header-cell>
+          <mat-cell *matCellDef="let element" class="notes" data-label="Notes">{{element.notes}}</mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row 
+          *matRowDef="let row; columns: displayedColumns; let i = index; let element;"
+          [class.child-row]="(element.rowTypeId == 2)" 
+          [class.sub-total-row]="(element.rowTypeId == 3)" 
+          [class.schedule-total-row]="(element.rowTypeId == 4)" 
+          [class.schedule-total]="(element.rowTypeId == 5)" 
+          class="cal-row">
+        </mat-row>
+      </mat-table>
+    </div>
+    </ng-container>
+    <ng-template #emptyState>
+      <div class="empty-state">There is no time card information to display.</div>
+    </ng-template>
+  </ds-card-content>
+</ds-card>
+
+<ng-container *ngIf="isLoading">
+  <ds-card mode="noheader">
+    <ds-card-content>
+    <ds-loading-message></ds-loading-message>
+    </ds-card-content>
+  </ds-card>
+</ng-container>

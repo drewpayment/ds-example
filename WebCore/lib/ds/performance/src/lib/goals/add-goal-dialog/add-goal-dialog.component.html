@@ -1,0 +1,312 @@
+<div mat-dialog-header>
+    <h2 class="dialog-title">
+        {{goalTitle}}
+    </h2>
+    <button type="button" class="close" (click)="onNoClick()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</div>
+<div mat-dialog-content>
+    <form [formGroup]="f">
+        <div class="form-group">
+            <label>Goal Name</label>
+            <input 
+                type="text"
+                [class.is-invalid]="getFormControlError('title', 'required')"
+                class="form-control"
+                formControlName="title"
+                required
+                cdkFocusInitial
+            />
+            <div class="invalid-feedback">
+                Please enter a goal name.
+            </div>
+        </div>
+        <div class="form-group" 
+            *ngIf="isCompanyGoal"
+        >
+            <label>Goal Owner <span class="form-help-text">Optional</span></label>
+            <ds-contact-autocomplete
+                multiple="false"
+                selectable="false"
+                [inputControl]="goalOwnerInputCtrl"
+                [formControl]="goalOwnerCtrl"
+                [contacts]="goalOwners"
+                [displayWith]="displayFn"
+                [value]="selectedGoalOwner"
+                displayUserType="1"
+            ></ds-contact-autocomplete>
+        </div>
+        <div class="form-group" 
+            *ngIf="requireAssignedTo && !hideAssignTo"
+        >
+            <label>Assigned To</label>
+            <ds-contact-autocomplete
+                multiple="false"
+                selectable="false"
+                [inputControl]="goalOwnerInputCtrl"
+                [formControl]="goalOwnerCtrl"
+                [contacts]="goalOwners"
+                [displayWith]="displayFn"
+                [formSubmitted]="formSubmitted"
+                [value]="selectedGoalOwner"
+                errorFeedback=" Please select an employee to assign to."
+                required
+                displayUserType="1"
+            ></ds-contact-autocomplete>
+        </div>
+        <div class="form-group">
+            <label>Description <span class="form-help-text">Optional</span></label>
+            <textarea
+                class="form-control"
+                [class.is-invalid]="getFormControlError('description', 'required')"
+                formControlName="description"
+                rows="5"
+            ></textarea>
+            <div class="invalid-feedback">
+                Please enter a description.
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label>Start</label>
+                    <div class="input-group">
+                        <input matInput
+                            class="form-control"
+                            [matDatepicker]="startDate"
+                            formControlName="startDate"
+                            [max]="getMaxStart()"
+                            required
+                            dsFormControlValidator
+                            [dsFormControlSubmitted]="formSubmitted"
+                        />
+                        <div class="input-group-append">
+                            <mat-datepicker-toggle matSuffix [for]="startDate" class="input-group-text date">
+                                <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #startDate></mat-datepicker>
+                        </div>
+                        <div class="invalid-feedback">
+                            Please enter a start date.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label>Due <span class="form-help-text">Optional</span></label>
+                    <div class="input-group">
+                        <input matInput
+                            class="form-control"
+                            [matDatepicker]="dueDate"
+                            formControlName="dueDate"
+                            [min]="getMinDue()"
+                        />
+                        <div class="input-group-append">
+                            <mat-datepicker-toggle matSuffix [for]="dueDate" class="input-group-text date">
+                                <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #dueDate></mat-datepicker>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row align-items-center">
+            <div class="col-6">
+                <div class="form-group">
+                    <label>Completion <span class="form-help-text">Optional</span></label>
+                    <div class="input-group">
+                        <input matInput
+                            class="form-control"
+                            [matDatepicker]="completionDate"
+                            formControlName="completionDate"
+                            [min]="getMinCompletion()"
+                        />
+                        <div class="input-group-append">
+                            <mat-datepicker-toggle matSuffix [for]="completionDate" class="input-group-text date">
+                                <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #completionDate></mat-datepicker>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr/>
+        <div class="row" *ngIf="!isCompanyGoal">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Goal Priority <span class="form-help-text">Optional</span></label>                    
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="priorityHigh" value="3" formControlName="priority" name="priority" class="custom-control-input">
+                        <label class="custom-control-label" for="priorityHigh">High</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="priorityMedium" value="2" formControlName="priority" name="priority" class="custom-control-input">
+                        <label class="custom-control-label" for="priorityMedium">Medium</label> 
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="priorityLow" value="1" formControlName="priority" name="priority" class="custom-control-input">
+                        <label class="custom-control-label" for="priorityLow">Low</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="priorityNone" value="0" formControlName="priority" name="priority" class="custom-control-input">
+                        <label class="custom-control-label" for="priorityNone">No Priority</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 border-left">
+                <label>Options</label>
+                <div class="custom-control custom-checkbox" *ngIf="!isCompanyGoal">
+                    <input type="checkbox" class="custom-control-input" id="includeReview" formControlName="includeReview" />
+                    <label class="custom-control-label" for="includeReview">Include in Review</label>
+                </div>
+                <ng-container  *ngIf="oneTimeEarningSettings">
+                    <div class="custom-control custom-checkbox" *ngFor="let setting of oneTimeEarningSettings">
+                        <input type="checkbox" class="custom-control-input"
+                              id="setting_{{setting.oneTimeEarningSettingsId}}"
+                              name="oneTimeEarning"
+                              [(ngModel)]="onetimeEarningChecked"
+                              [ngModelOptions]="{standalone: true}"
+                              [checked]="onetimeEarningChecked"
+                              (change)="setOneTimeId(setting.oneTimeEarningSettingsId, onetimeEarningChecked)">
+                        <label class="custom-control-label" for="setting_{{setting.oneTimeEarningSettingsId}}">{{ setting.name }}</label>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+        
+        <ng-container *ngIf="!isCompanyGoal && !isSubGoal && !!companyGoals && companyGoals.length>0">
+          <hr/>
+          <div class="row" >
+              <div class="col-md-12">
+                  <div class="switch-title">
+                      <h3>Align to Company Goal</h3>
+                      <label class="switch switch-default switch-sm switch-pill switch-success">
+                          <input id="alignGoal" class="switch-input" type="checkbox" aria-describedby="Align to Company Goal" (change)="alignCompanyGoalCheckboxHandler($event)" [checked]="showCompanyAlignment" />
+                          <span class="switch-label"></span>
+                          <span class="switch-handle"></span>
+                          <span class="ds-switch-off">off</span>
+                          <span class="ds-switch-on">on</span>
+                      </label>
+                  </div>
+              </div>
+          </div>
+        </ng-container>
+        <div class="row" *ngIf="showCompanyAlignment">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>Company Goal</label>
+                    <!-- TO DO: Switch the ngmodel to a reactive form control when this issue is fixed- https://github.com/angular/material2/issues/10214 -->
+                    <mat-select class="form-control custom-select" 
+                        [(ngModel)]="companyGoal" 
+                        name="goalWithUniqueName" 
+                        [ngModelOptions]="{standalone: true}" 
+                        #ctrl="ngModel" 
+                        [required]="showCompanyAlignment"
+                        [class.is-invalid]="ctrl.errors?.required && (ctrl.touched || formSubmitted)">
+                        <mat-option *ngFor="let goal of companyGoals" [value]="goal">
+                            <span class="card-data">
+                                <div class="item">{{goal?.title}}</div>
+                                <small class="item" *ngIf="goal?.dueDate != null">
+                                    <label>Due:</label>
+                                    {{goal.dueDate | date:'shortDate'}}
+                                </small>
+                            </span>
+                        </mat-option>
+                    </mat-select>
+                    <div class="invalid-feedback">
+                        Please select a company goal.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="list-bordered" formArrayName="tasks" *ngIf="!isCompanyGoal">
+            <div class="header">
+                <div class="row">
+                    <div class="col-12">Task List</div>
+                </div>
+            </div>
+            <div class="body">
+                <ng-container *ngIf="viewTasks.length; else noTasksMessage">
+                    <div class="item hoverable" *ngFor="let t of viewTasks; let i=index" [formGroupName]="i">
+                        <div class="d-flex flex-1-1-auto">
+                            <div class="custom-control custom-checkbox">
+                                <input [id]="'add_goal_'+i" 
+                                    type="checkbox" 
+                                    class="custom-control-input" 
+                                    formControlName="completionStatus"
+                                    (click)="updateTaskCompletion($event, i)"
+                                />
+                                <label class="custom-control-label" [for]="'add_goal_'+i"></label>
+                            </div>
+                            <div class="ds-item flex-1-0-auto" *ngIf="!t.editItem; else showEditInput;">
+                                <div class="ds-item-label" [innerText]="t.description"></div>
+                            </div>
+                            <ng-template #showEditInput>
+                                <div class="li-edit-item editable-input">
+                                    <input 
+                                        type="text" 
+                                        (keydown.enter)="updateTaskDescription(i, true)"
+                                        (keydown.esc)="clearTask(i, true)"
+                                        class="form-control" 
+                                        formControlName="description" 
+                                        #task required 
+                                        dsFormControlValidator
+                                    />
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-primary" (click)="updateTaskDescription(i)" [disabled]="getTaskFormError('description', 'required', i)">
+                                            <i class="material-icons">done</i>
+                                        </button>
+                                    </div>
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-outline-primary" (click)="clearTask(i)">
+                                            <i class="material-icons">clear</i>
+                                        </button>
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        Please enter a task.
+                                    </div>
+                                </div>
+                            </ng-template>
+                            <div class="action-items hover-show" *ngIf="!t.editItem">
+                                <button type="button" class="btn btn-link-secondary pt-0" [matMenuTriggerFor]="editTaskMenu">
+                                    <i class="material-icons md-18">more_vert</i>
+                                </button>
+                                <mat-menu #editTaskMenu="matMenu">
+                                    <button mat-menu-item type="button" (click)="editTask(t)">
+                                        Edit
+                                    </button>
+                                    <button mat-menu-item type="button" (click)="clearTask(i)">
+                                        Delete
+                                    </button>
+                                </mat-menu>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-template #noTasksMessage>
+                    <div class="pt-0 empty-state">There are no tasks to display currently.<br/> Adding tasks can help streamline the goal process.</div>
+                </ng-template>
+            </div>
+        </div>
+        <button type="button" class="btn btn-list" (click)="dialogAddTask()" [disabled]="disableAddButton" *ngIf="!isCompanyGoal" >
+            <i class="material-icons">add</i> Task
+        </button>
+    </form>
+</div>
+<div mat-dialog-actions>
+    <button type="button"
+        class="btn btn-primary"
+        [disabled]="f.hasError('required')"
+        (click)="saveGoal()"
+    >Save</button>
+    <button type="button"
+        class="btn btn-cancel"
+        (click)="onNoClick()"
+    >Cancel</button>
+</div>

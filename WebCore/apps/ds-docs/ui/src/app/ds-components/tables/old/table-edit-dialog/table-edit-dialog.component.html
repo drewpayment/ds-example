@@ -1,0 +1,41 @@
+<form [formGroup]="form">
+  <div mat-dialog-header>
+    <h2 class="dialog-title">        
+      Bill Murray Film
+    </h2>
+    <button type="button" class="close" (click)="close()">
+      <mat-icon>clear</mat-icon>
+    </button>
+  </div>
+  <div mat-dialog-content>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Character</label>
+          <input class="form-control" formControlName="character" cdkFocusInitial />
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Movie</label>
+          <input class="form-control" formControlName="movie"  />
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Year</label>
+          <select class="form-control custom-select" formControlName="year">
+            <option [ngValue]="null"></option>
+            <option *ngFor="let year of years" [ngValue]="year.id"> {{year.year}} </option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div mat-dialog-actions>
+    <button type="submit" class="btn btn-save">Save</button>
+    <button type="button" class="btn btn-cancel" (click)="close()">Cancel</button>
+  </div>
+</form>

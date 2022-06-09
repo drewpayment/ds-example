@@ -1,0 +1,24 @@
+// Rating table widths
+.ratings {
+  .mat-column-rating {
+    width: 25%;
+    min-width: 150px;
+  }
+}
+
+// Scoring definitions table width
+.scoring {
+  .mat-column-minimum,
+  .mat-column-maximum,
+  .mat-column-meritPercent {
+    width: 100px;
+  }
+  .mat-column-label,
+  .mat-column-description {
+    width: 150px;
+  }
+}
+
+.mat-column-actions {
+  width: 80px;
+}

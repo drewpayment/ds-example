@@ -1,0 +1,87 @@
+<mat-dialog-header>
+    <h2 class="dialog-title">
+        {{header}}
+    </h2>
+    <button type="button" class="close" (click)="clear()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</mat-dialog-header>
+<mat-dialog-content [formGroup]="form1">
+
+    <div class="form-group">
+        <label class="form-control-label">Folder</label>
+        <select dsFormControlValidator  [dsFormControlSubmitted]="formSubmitted"
+            class="form-control custom-select" formControlName="destinationFolder">
+            <option class="text-muted" value=""></option>
+            <option *ngFor="let folder of allFolders" [value]="folder.employeeFolderId">
+                {{folder.description}}
+            </option>
+        </select>
+        <div class="invalid-feedback">
+            <span *ngIf="form1.controls.destinationFolder.errors?.required">Please select a destination folder.</span>
+        </div>
+    </div>
+
+    <div class="form-group" *ngIf="isFileSelected() && !resourceFileTypeError">
+        <label class="form-control-label">Name</label>
+        <input type="text" formControlName="resourceName" class="form-control" maxlength="250" 
+            dsFormControlValidator 
+            [dsFormControlSubmitted]="formSubmitted">
+        <div class="invalid-feedback">
+            <span *ngIf="form1.controls.resourceName.errors?.required">Please enter a name.</span>
+            <span *ngIf="form1.controls.resourceName.errors?.duplicate">Please enter a different name.</span>
+        </div>
+    </div>
+    <div class="row" *ngIf="isFileSelected() && !resourceFileTypeError">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label class="custom-control custom-checkbox">
+                    <input formControlName="employeeView"
+                           type="checkbox"
+                           class="custom-control-input"/>
+                    <span class="custom-control-label">Viewable by Employee</span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group" *ngIf="currentResource.sourceType!=3"
+        [class.custom-validation]="formSubmitted && (!resourceFile||resourceFileTypeError||resourceFileDuplError)">
+        
+        <div class="file-input">
+            <button type="button" class="btn btn-outline-primary" (click)="browseClicked()">Browse</button>
+            <input name="resource" class="d-none" id="resourceAdded" type="file" (change)="onChange($event)">
+            <div class="form-help-text" *ngIf="!resourceFile">
+              Accepted file types include .pdf, .doc, .docx, .xlsx, .xls, .txt, .rtf<br />
+              Max file size: 3mb
+            </div>
+            <label class="form-control-label mb-0 text-truncate" *ngIf="resourceFile">{{ (!resourceFile) ? '':
+              resourceFile.name }}</label>
+        </div>
+        <div class="invalid-feedback">
+            <span *ngIf="!resourceFile && formSubmitted">Please select a resource.</span>
+            <span *ngIf="resourceFile && formSubmitted && resourceFileTypeError">The selected file type is not
+                supported. Accepted file types include .pdf, .doc, .docx, .xlsx, .xls, .txt, .rtf</span>
+            <span *ngIf="resourceFile && formSubmitted && resourceFileDuplError">The file is already attached with this folder. Please choose a different file. </span>
+        </div>
+    </div>
+
+    <div class="form-group row align-items-center" *ngIf="isFileSelected() && !resourceFileTypeError">
+        <div class="col-sm-12">
+            <div class="primary-callout mt-3 d-flex align-items-center justify-content-between py-1 px-3">
+                <div class="d-inline-block">
+                    {{ resourceFile.name + (resourceFile.extension ? resourceFile.extension : "") }}
+                </div>
+                <button type="button" (click)="browseClicked();" class="btn btn-icon">
+                    <i class="material-icons">mode_edit</i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button type="button" class="btn btn-save" (click)="save()">Save</button>
+    <button type="button" *ngIf="currentResource.resourceId==0" class="btn btn-cancel" (click)="clear()">Cancel</button>
+    <button class="btn btn-delete" *ngIf="currentResource.resourceId!=0" (click)="deleteAttachment(currentResource)">Delete</button>
+</mat-dialog-actions>

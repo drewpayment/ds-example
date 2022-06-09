@@ -1,0 +1,413 @@
+<markdown ngPreserveWhiteSpace>
+  <h1>Cards</h1>
+  <p class="description">The DsCard componenet replaces standard html cards, and provides responsive markup without adding additional CSS. Older parts of Dominion's site may require HTML, which is provided in each example.
+  
+  [Additional documentation on Notion](https://www.notion.so/dominionsystems/DS-Card-3b262ec2bc074331836b39cf2a3a5ad1)</p>
+</markdown>
+
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleCardSection = !toggleCardSection">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleCardSection">
+  <div class="ui">
+    <div class="overflow-list">
+      <ds-card-full-header></ds-card-full-header>
+    </div>
+  </div>
+  <div class="example">
+    <div class="ds-tabs" *ngIf="toggleCardHeader">
+      <button class="tab" role="navigation" [class.active]="CardFullHeaderExample == 1" (click)="CardFullHeaderExample = 1">HTML</button>
+      <button class="tab" role="navigation" [class.active]="CardFullHeaderExample == 2" (click)="CardFullHeaderExample = 2">Legacy</button>
+    </div>
+    <ng-container *ngIf="CardFullHeaderExample == 1">
+      <markdown src="app/ds-components/card/card-full-header/card-full-header.component.html"></markdown>
+    </ng-container>
+    <ng-container *ngIf="CardFullHeaderExample == 2">
+      <markdown src="app/ds-components/card/card-full-header/card-full-header-legacy.html"></markdown>
+    </ng-container>
+  </div>
+</div>
+ 
+<h2>Header Cards</h2>
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleCardHeader = !toggleCardHeader">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleCardHeader">
+  <div class="ui">
+    <div class="overflow-list">
+      <ds-card-header-docs></ds-card-header-docs>
+    </div>
+  </div>
+  <div class="example">
+    <div class="ds-tabs" *ngIf="toggleCardHeader">
+      <button class="tab" role="navigation" [class.active]="CardHeaderExample == 1" (click)="CardHeaderExample = 1">HTML</button>
+      <button class="tab" role="navigation" [class.active]="CardHeaderExample == 2" (click)="CardHeaderExample = 2">TS</button>
+      <button class="tab" role="navigation" [class.active]="CardHeaderExample == 3" (click)="CardHeaderExample = 3">Legacy</button>
+    </div>
+    <ng-container *ngIf="CardHeaderExample == 1">
+      <markdown src="app/ds-components/card/card-header/card-header.component.html"></markdown>
+    </ng-container>
+    <ng-container *ngIf="CardHeaderExample == 2">
+        <markdown src="app/ds-components/card/card-header/card-header.component.ts"></markdown>
+    </ng-container>
+    <ng-container *ngIf="CardHeaderExample == 3">
+        <markdown src="app/ds-components/card/card-header/card-header-legacy.html"></markdown>
+    </ng-container>
+  </div>
+</div>
+  
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleCardSecondaryHeader = !toggleCardSecondaryHeader">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleCardSecondaryHeader">
+  <div class="ui">
+    <div class="overflow-list">
+      <ds-card-secondary-header></ds-card-secondary-header>
+    </div>
+  </div>
+  <div class="example">
+    <div class="ds-tabs" *ngIf="toggleCardSecondaryHeader">
+      <button class="tab" role="navigation" [class.active]="CardSecondaryHeaderExample == 1" (click)="CardSecondaryHeaderExample = 1">HTML</button>
+      <button class="tab" role="navigation" [class.active]="CardSecondaryHeaderExample == 2" (click)="CardSecondaryHeaderExample = 2">TS</button>
+      <button class="tab" role="navigation" [class.active]="CardSecondaryHeaderExample == 3" (click)="CardSecondaryHeaderExample = 3">Legacy</button>
+    </div>
+    <ng-container *ngIf="CardSecondaryHeaderExample == 1">
+      <markdown src="app/ds-components/card/card-secondary-header/card-secondary-header.component.html"></markdown>
+    </ng-container>
+    <ng-container *ngIf="CardSecondaryHeaderExample == 2">
+        <markdown src="app/ds-components/card/card-secondary-header/card-secondary-header.component.ts"></markdown>
+    </ng-container>
+    <ng-container *ngIf="CardSecondaryHeaderExample == 3">
+        <markdown src="app/ds-components/card/card-secondary-header/card-secondary-header-legacy.html"></markdown>
+    </ng-container>
+  </div>
+</div>
+  
+<h2>Header and form cards</h2>
+<div class="button-bar">
+    <button class="btn btn-icon" (click)="toggleCardForm = !toggleCardForm">
+      <mat-icon>code</mat-icon>
+      View Code
+    </button>
+</div>
+<div class="example-block" [class.open]="toggleCardForm">
+  <div class="ui">
+    <div class="overflow-list">
+      <ds-card-form></ds-card-form>
+    </div>
+  </div>
+  <div class="example">
+    <div class="ds-tabs" *ngIf="toggleCardForm">
+      <button class="tab" role="navigation" [class.active]="CardFormExample == 1" (click)="CardFormExample = 1">HTML</button>
+      <button class="tab" role="navigation" [class.active]="CardFormExample == 2" (click)="CardFormExample = 2">TS</button>
+      <button class="tab" role="navigation" [class.active]="CardFormExample == 3" (click)="CardFormExample = 3">Legacy</button>
+    </div>
+    <ng-container *ngIf="CardFormExample == 1">
+      <markdown src="app/ds-components/card/card-form/card-form.component.html"></markdown>
+    </ng-container>
+    <ng-container *ngIf="CardFormExample == 2">
+        <markdown src="app/ds-components/card/card-form/card-form.component.ts"></markdown>
+    </ng-container>
+    <ng-container *ngIf="CardFormExample == 3">
+        <markdown src="app/ds-components/card/card-form/card-form-legacy.html"></markdown>
+    </ng-container>
+  </div>
+</div>
+  
+<markdown ngPreserveWhiteSpace>
+## Sub Card
+</markdown>
+<p>Card that is not a title card. If no header elements are provided, add `mode="noheader"`.</p>
+<div class="button-bar">
+    <button class="btn btn-icon" (click)="toggleCardSubForm = !toggleCardSubForm">
+      <mat-icon>code</mat-icon>
+      View Code
+    </button>
+</div>
+<div class="example-block" [class.open]="toggleCardSubForm">
+  <div class="ui">
+    <div class="overflow-list">
+      <ds-card-sub-form></ds-card-sub-form>
+    </div>
+  </div>
+  <div class="example">
+    <div class="ds-tabs" *ngIf="toggleCardSubForm">
+      <button class="tab" role="navigation" [class.active]="CardSubFormExample == 1" (click)="CardSubFormExample = 1">HTML</button>
+      <button class="tab" role="navigation" [class.active]="CardSubFormExample == 2" (click)="CardSubFormExample = 2">TS</button>
+      <button class="tab" role="navigation" [class.active]="CardSubFormExample == 3" (click)="CardSubFormExample = 3">Legacy</button>
+    </div>
+    <ng-container *ngIf="CardSubFormExample == 1">
+      <markdown src="app/ds-components/card/card-sub-form/card-sub-form.component.html"></markdown>
+    </ng-container>
+    <ng-container *ngIf="CardSubFormExample == 2">
+        <markdown src="app/ds-components/card/card-sub-form/card-sub-form.component.ts"></markdown>
+    </ng-container>
+    <ng-container *ngIf="CardSubFormExample == 3">
+        <markdown src="app/ds-components/card/card-sub-form/card-sub-form-legacy.html"></markdown>
+    </ng-container>
+  </div>
+</div>
+  
+<h2>Additional card types</h2>
+<h3>Kanban Cards</h3>
+<div class="button-bar">
+    <button class="btn btn-icon" (click)="toggleCardSmall = !toggleCardSmall">
+      <mat-icon>code</mat-icon>
+      View Code
+    </button>
+</div>
+<div class="example-block" [class.open]="toggleCardSmall">
+  <div class="ui">
+    <div class="overflow-list">
+      <ds-card-small></ds-card-small>
+    </div>
+  </div>
+  <div class="example">
+    <div class="ds-tabs" *ngIf="toggleCardSmall">
+      <button class="tab" role="navigation" [class.active]="CardSmallExample == 1" (click)="CardSmallExample = 1">HTML</button>
+      <button class="tab" role="navigation" [class.active]="CardSmallExample == 2" (click)="CardSmallExample = 2">TS</button>
+      <button class="tab" role="navigation" [class.active]="CardSmallExample == 3" (click)="CardSmallExample = 3">Legacy</button>
+    </div>
+    <ng-container *ngIf="CardSmallExample == 1">
+      <markdown src="app/ds-components/card/card-small/card-small.component.html"></markdown>
+    </ng-container>
+    <ng-container *ngIf="CardSmallExample == 2">
+        <markdown src="app/ds-components/card/card-small/card-small.component.ts"></markdown>
+    </ng-container>
+    <ng-container *ngIf="CardSmallExample == 3">
+        <markdown src="app/ds-components/card/card-small/card-small-legacy.html"></markdown>
+    </ng-container>
+  </div>
+</div>
+  
+<h3>Object Cards</h3>
+DsObject card shows the icon color on hover. Primary and status colors are available. Additional colors are available by request.
+<div class="button-bar">
+    <button class="btn btn-icon" (click)="toggleCardObject = !toggleCardObject">
+      <mat-icon>code</mat-icon>
+      View Code
+    </button>
+</div>
+<div class="example-block" [class.open]="toggleCardObject">
+  <div class="ui">
+    <div class="overflow-list">
+      <ds-card-object></ds-card-object>
+    </div>
+  </div>
+  <div class="example">
+    <div class="ds-tabs" *ngIf="toggleCardObject">
+      <button class="tab" role="navigation" [class.active]="CardObjectExample == 1" (click)="CardObjectExample = 1">HTML</button>
+      <button class="tab" role="navigation" [class.active]="CardObjectExample == 2" (click)="CardObjectExample = 2">TS</button>
+      <button class="tab" role="navigation" [class.active]="CardObjectExample == 3" (click)="CardObjectExample = 3">Legacy</button>
+    </div>
+    <ng-container *ngIf="CardObjectExample == 1">
+      <markdown src="app/ds-components/card/card-object/card-object.component.html"></markdown>
+    </ng-container>
+    <ng-container *ngIf="CardObjectExample == 2">
+        <markdown src="app/ds-components/card/card-object/card-object.component.ts"></markdown>
+    </ng-container>
+    <ng-container *ngIf="CardObjectExample == 3">
+        <markdown src="app/ds-components/card/card-object/card-object-legacy.html"></markdown>
+    </ng-container>
+  </div>
+</div>
+  
+<h3>Callout Cards</h3>
+<div class="button-bar">
+    <button class="btn btn-icon" (click)="toggleCardCallout = !toggleCardCallout">
+      <mat-icon>code</mat-icon>
+      View Code
+    </button>
+</div>
+<div class="example-block" [class.open]="toggleCardCallout">
+  <div class="ui">
+    <div class="overflow-list">
+      <ds-card-callout></ds-card-callout>
+    </div>
+  </div>
+  <div class="example">
+    <div class="ds-tabs" *ngIf="toggleCardCallout">
+      <button class="tab" role="navigation" [class.active]="CardCalloutExample == 1" (click)="CardCalloutExample = 1">HTML</button>
+      <button class="tab" role="navigation" [class.active]="CardCalloutExample == 2" (click)="CardCalloutExample = 2">TS</button>
+      <button class="tab" role="navigation" [class.active]="CardCalloutExample == 3" (click)="CardCalloutExample = 3">Legacy</button>
+    </div>
+    <ng-container *ngIf="CardCalloutExample == 1">
+      <markdown src="app/ds-components/card/card-callout/card-callout.component.html"></markdown>
+    </ng-container>
+    <ng-container *ngIf="CardCalloutExample == 2">
+        <markdown src="app/ds-components/card/card-callout/card-callout.component.ts"></markdown>
+    </ng-container>
+    <ng-container *ngIf="CardCalloutExample == 3">
+        <markdown src="app/ds-components/card/card-callout/card-callout-legacy.html"></markdown>
+    </ng-container>
+  </div>
+</div>
+  
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleCardCalloutIcon = !toggleCardCalloutIcon">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleCardCalloutIcon">
+  <div class="ui">
+    <div class="overflow-list">
+      <ds-card-callout-icon></ds-card-callout-icon>
+    </div>
+  </div>
+  <div class="example">
+    <div class="ds-tabs" *ngIf="toggleCardCalloutIcon">
+      <button class="tab" role="navigation" [class.active]="CardCalloutIconExample == 1" (click)="CardCalloutIconExample = 1">HTML</button>
+      <button class="tab" role="navigation" [class.active]="CardCalloutIconExample == 2" (click)="CardCalloutIconExample = 2">TS</button>
+      <button class="tab" role="navigation" [class.active]="CardCalloutIconExample == 3" (click)="CardCalloutIconExample = 3">Legacy</button>
+    </div>
+    <ng-container *ngIf="CardCalloutIconExample == 1">
+      <markdown src="app/ds-components/card/card-callout-icon/card-callout-icon.component.html"></markdown>
+    </ng-container>
+    <ng-container *ngIf="CardCalloutIconExample == 2">
+        <markdown src="app/ds-components/card/card-callout-icon/card-callout-icon.component.ts"></markdown>
+    </ng-container>
+    <ng-container *ngIf="CardCalloutIconExample == 3">
+        <markdown src="app/ds-components/card/card-callout-icon/card-callout-icon-legacy.html"></markdown>
+    </ng-container>
+  </div>
+</div>
+
+
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleCardWidgetLarge = !toggleCardWidgetLarge">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleCardWidgetLarge">
+  <div class="ui">
+    <div class="overflow-list">
+      <ds-card-widget-large></ds-card-widget-large>
+    </div>
+  </div>
+  <div class="example">
+    <div class="ds-tabs" *ngIf="toggleCardWidgetLarge">
+      <button class="tab" role="navigation" [class.active]="CardWidgetLargeExample == 1" (click)="CardWidgetLargeExample = 1">HTML</button>
+      <button class="tab" role="navigation" [class.active]="CardWidgetLargeExample == 2" (click)="CardWidgetLargeExample = 2">TS</button>
+      <button class="tab" role="navigation" [class.active]="CardWidgetLargeExample == 3" (click)="CardWidgetLargeExample = 3">Legacy</button>
+    </div>
+    <ng-container *ngIf="CardWidgetLargeExample == 1">
+      <markdown src="app/ds-components/card/card-widget-large/card-widget-large.component.html"></markdown>
+    </ng-container>
+    <ng-container *ngIf="CardWidgetLargeExample == 2">
+        <markdown src="app/ds-components/card/card-widget-large/card-widget-large.component.ts"></markdown>
+    </ng-container>
+    <ng-container *ngIf="CardWidgetLargeExample == 3">
+        <markdown src="app/ds-components/card/card-widget-large/card-widget-large-legacy.html"></markdown>
+    </ng-container>
+  </div>
+</div>
+  
+<h3>Collapsible Widgets</h3>
+In angular, `collpase='true'`will add the collpase caret. `collpase='false'` will remove the caret, but keep the empty space for alignment.
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleCardWidgetCollpase = !toggleCardWidgetCollpase">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleCardWidgetCollpase">
+  <div class="ui">
+    <div class="overflow-list">
+      <ds-card-widget-collapse></ds-card-widget-collapse>
+    </div>
+  </div>
+  <div class="example">
+    <div class="ds-tabs" *ngIf="toggleCardWidgetCollpase">
+      <button class="tab" role="navigation" [class.active]="CardWidgetCollapseExample == 1" (click)="CardWidgetCollapseExample = 1">HTML</button>
+      <button class="tab" role="navigation" [class.active]="CardWidgetCollapseExample == 2" (click)="CardWidgetCollapseExample = 2">TS</button>
+      <button class="tab" role="navigation" [class.active]="CardWidgetCollapseExample == 3" (click)="CardWidgetCollapseExample = 3">Legacy</button>
+    </div>
+    <ng-container *ngIf="CardWidgetCollapseExample == 1">
+      <markdown src="app/ds-components/card/card-widget-collapse/card-widget-collapse.component.html"></markdown>
+    </ng-container>
+    <ng-container *ngIf="CardWidgetCollapseExample == 2">
+        <markdown src="app/ds-components/card/card-widget-collapse/card-widget-collapse.component.ts"></markdown>
+    </ng-container>
+    <ng-container *ngIf="CardWidgetCollapseExample == 3">
+        <markdown src="app/ds-components/card/card-widget-collapse/card-widget-collapse-legacy.html"></markdown>
+    </ng-container>
+  </div>
+</div>
+  
+  <!-- TODO -->
+  <!-- <h3>Handles</h3>
+  <div class="button-bar">
+    <button class="btn btn-icon" (click)="toggleCardHandle = !toggleCardHandle">
+      <mat-icon>code</mat-icon>
+      View Code
+    </button>
+  </div>
+  <div class="example-block" [class.open]="toggleCardHandle">
+    <div class="ui">
+      <div class="overflow-list">
+        <ds-card-handle></ds-card-handle>
+      </div>
+    </div>
+    <div class="example">
+      <div class="ds-tabs" *ngIf="toggleCardHandle">
+        <button class="tab" role="navigation" [class.active]="CardHandleExample == 1" (click)="CardHandleExample = 1">HTML</button>
+        <button class="tab" role="navigation" [class.active]="CardHandleExample == 2" (click)="CardHandleExample = 2">TS</button>
+      </div>
+      <ng-container *ngIf="CardHandleExample == 1">
+        <markdown src="app/ds-components/card/card-handle/card-handle.component.html"></markdown>
+      </ng-container>
+      <ng-container *ngIf="CardHandleExample == 2">
+          <markdown src="app/ds-components/card/card-handle/card-handle.component.ts"></markdown>
+      </ng-container>
+    </div>
+  </div> -->
+  
+<h2>Color</h2>
+<h3>Available Colors</h3>
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleColor = !toggleColor">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleColor">
+  <div class="ui">
+    <div class="overflow-list">
+      <ds-color></ds-color>
+    </div>
+  </div>
+  <div class="example">
+      <markdown src="app/ds-components/card/color/color.component.html"></markdown>
+  </div>
+</div>
+<h3>Color Variation in Groups</h3>
+<h4>Info</h4>
+<p>Can be used while looping over similar content, making it easier to read. Add `color-variation` to the container, and `color-variation-*color you need*` on the immediate child. This is intended to wrap `dsCard`.</p>
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleColorVariation = !toggleColorVariation">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleColorVariation">
+  <div class="ui">
+    <div class="overflow-list">
+      <ds-color-variation-info></ds-color-variation-info>
+    </div>
+  </div>
+  <div class="example">
+      <markdown src="app/ds-components/card/color-variation-info/color-variation-info.component.html"></markdown>
+  </div>
+</div>
+  

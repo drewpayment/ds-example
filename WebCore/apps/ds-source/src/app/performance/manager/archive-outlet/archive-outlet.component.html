@@ -1,0 +1,163 @@
+<ds-review-group-status-view 
+    *ngFor="let group of reviewGroups; let isFirst = first" 
+    [reviewGroup]="group" 
+    [expanded]="isFirst" 
+    (reviewChange)="reviewChanged($event)" 
+    [statuses]="statuses">
+</ds-review-group-status-view>
+
+<ds-card collapse="true" *ngIf="false">
+    <ds-card-header>
+        <ds-card-sub-header-title>
+            Review Name Here
+        </ds-card-sub-header-title>
+        <ds-card-inline-content>
+            <ds-card-sub-header-title>
+                <div class="text-muted">Due: ##/##/####</div>
+            </ds-card-sub-header-title>
+        </ds-card-inline-content>
+        <ds-card-title-right-content style="width: 400px;">
+            <!-- <ds-progress
+                [value]=""
+                color="info"
+                labelPosition=""
+                [label]="'Overall Progress: ' + calculateProgress(goal) + '%'"
+            ></ds-progress> -->
+        </ds-card-title-right-content>
+    </ds-card-header>
+    <ds-card-content>
+        <div class="d-flex justify-content-between">
+            <div class="card-data h3">
+                <div class="item">
+                    <label>Start:</label> ##/##/####
+                </div>
+            </div>
+            <div>
+                <button type="button" 
+                    class="btn btn-icon p-1 text-dark" 
+                >
+                    <i class="material-icons">view_list</i>
+                </button>
+                <button type="button" 
+                    class="btn btn-icon text-muted p-1" 
+                >
+                    <i class="material-icons">view_module</i>
+                </button>
+                <button type="button" class="btn btn-icon" [matMenuTriggerFor]="">
+                    <i class="material-icons">more_vert</i>
+                </button>
+                <mat-menu #companyGoalMoreMenu="matMenu">
+                    <button mat-menu-item >Send Overdue</button>
+                    <button mat-menu-item >Reminders</button>
+                </mat-menu>
+            </div>
+        </div>
+        <p>
+            Getting archived review info for {{ searchOptions | json }}
+        </p>
+    
+        <div class="card card-table">
+            <mat-table [dataSource]="" color="primary">
+                <ng-container matColumnDef="Include">
+                    <mat-header-cell *matHeaderCellDef> 
+                        <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="customCheck1">
+                        <label class="custom-control-label" for="customCheck1"></label>
+                        </div>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="customCheck1">
+                        <label class="custom-control-label" for="customCheck1"></label>
+                        </div>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="position">
+                    <mat-header-cell *matHeaderCellDef> 
+                        <i class="material-icons">person</i>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <img 
+                        ng-if=""
+                        ng-src="" 
+                        class="img-avatar" 
+                        style="height: 24px" 
+                        />
+                        <i class="material-icons text-medium-dark" ng-if="">account_circle</i>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="name">
+                    <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="number">
+                    <mat-header-cell *matHeaderCellDef class="table-text-right">Number</mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="table-text-right"> {{element.number}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="review">
+                    <mat-header-cell *matHeaderCellDef>Review</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.review}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="status">
+                    <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <!--`text-danger` Only if action is required-->
+                        <span class="text-danger">{{element.status}}</span> 
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="due">
+                    <mat-header-cell *matHeaderCellDef class="table-text-right">Due</mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="table-text-right"> {{element.due}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="approved">
+                    <mat-header-cell *matHeaderCellDef>Approved</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.approved}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="approvedName">
+                    <mat-header-cell *matHeaderCellDef>Approved Name</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.approvedName}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="employmentStatus">
+                    <mat-header-cell *matHeaderCellDef>Employment</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> 
+                        <!--`text-danger` Only if terminated-->
+                        <span class="text-danger">{{element.employmentStatus}}</span>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="department">
+                    <mat-header-cell *matHeaderCellDef>Department</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.department}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="jobTitle">
+                    <mat-header-cell *matHeaderCellDef>Job Title</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.jobTitle}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="supervisor">
+                    <mat-header-cell *matHeaderCellDef>Supervisor</mat-header-cell>
+                    <mat-cell *matCellDef="let element"> {{element.supervisor}} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="Options">
+                    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+                    <mat-cell *matCellDef="let element"> 
+                        <button type="button" class="btn btn-icon" [matMenuTriggerFor]="">
+                            <i class="material-icons">more_vert</i>
+                        </button>
+                        <mat-menu #companyGoalMoreMenu="matMenu">
+                            <button mat-menu-item >Print</button>
+                            <button mat-menu-item >Send Reminders</button>
+                            <button mat-menu-item >View Record</button>
+                            <button mat-menu-item >Close</button><!--Only if terminated-->
+                        </mat-menu>
+                    </mat-cell>
+                </ng-container>
+        
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+            <mat-paginator [length]=""
+                [pageSize]="10"
+                [pageSizeOptions]="[10, 25, 50]">
+            </mat-paginator>
+        </div>
+    </ds-card-content>
+</ds-card>

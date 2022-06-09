@@ -1,0 +1,179 @@
+
+<ng-container *ngIf="!isLoading; else loadingScreen">
+
+  <ng-container [formGroup]="form" *ngIf="!isEssMode">
+    <div class="row" *ngIf="eventList?.length > 0">
+      <div class="col-md-3 col-xl-3">
+          <div class="form-group">
+              <label class="form-control-label">Sort By</label>
+              <select class="form-control custom-select"
+                  formControlName="sortBy" class="custom-select form-control">
+                  <option class="text-muted" value="1">Date - Ascending</option>
+                  <option class="text-muted" value="2">Date - Descending</option>
+                  <option class="text-muted" value="3">Topic</option>
+                  <option class="text-muted" value="4">Expiration Date</option>
+                  <option class="text-muted" value="5">Duration - Ascending</option>
+                  <option class="text-muted" value="6">Duration - Descending</option>
+              </select>
+          </div>
+      </div>
+
+      <div class="col-md-4 col-xl-3">
+        <div class="form-group">
+            <label class="form-control-label">Topic</label>
+            <select class="form-control custom-select" (change)="topicChange()"
+                formControlName="clientTopic"
+                class="custom-select form-control">
+                <option class="text-muted" value="0">All</option>
+                <option *ngFor="let topic of clientTopics" [ngValue]="topic.clientTopicId">
+                    {{topic.description}}
+                </option>
+            </select>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-xl-3">
+        <div class="form-group">
+            <label class="form-control-label">Sub-Topic</label>
+            <select class="form-control custom-select"
+                formControlName="clientSubTopic"
+                class="custom-select form-control">
+                <option class="text-muted" value="0">All</option>
+                <option *ngFor="let subTopic of clientSubTopics" [ngValue]="subTopic.clientSubTopicId">
+                    {{subTopic.description}}
+                </option>
+            </select>
+        </div>
+      </div>
+
+      <div class="col-auto inline-xl-control">
+        <div class="form-group">
+          <button type="button" class="btn btn-primary" (click)="fetchDataAndApplyFilters()">Filter</button>
+        </div>
+      </div>
+
+    </div>
+  </ng-container>
+
+
+  <ng-container *ngIf="(isEssMode && !itemsViewable) || (!isEssMode && essViewOnly && eventList.length == 0); else showItems">
+    <ng-container *ngTemplateOutlet="emptyState" ></ng-container>
+  </ng-container>
+
+  <ng-template #showItems>
+  <mat-drawer-container 
+    hasBackdrop="true" 
+    (backdropClick)="clearDrawer()" 
+    [@changeDrawerHeightOnOpen]="activeId != 0">
+    <mat-drawer-content>
+      <ds-card *ngIf="!isEssMode && !essViewOnly"
+          mode="widget-nobody" 
+          color="add" 
+          (click)="addEvent()"
+          hover="true">
+          <div ds-card-icon>add</div>
+          <ds-card-header>
+              <ds-card-widget-title>Add Event</ds-card-widget-title>
+          </ds-card-header>
+      </ds-card>
+      <ng-container *ngFor="let evt of eventList; let i = index;">
+        <ds-card 
+          *ngIf="evt.employeeEventId > 0 && (!isEssMode || evt.isEmployeeViewable)"
+          mode="widget-nobody" 
+          color="info" 
+          (click)="!essViewOnly && toggleActiveEvent(evt.employeeEventId)"
+          hover="true">
+            <div ds-card-icon>today</div>
+            <ds-card-header>
+                <ds-card-widget-title>{{ getTopicName(evt.clientTopicId)}}<span class="widget-title-detail" *ngIf="evt.clientSubTopicId > 0"> | {{getSubTopicName(evt.clientSubTopicId)}}</span></ds-card-widget-title>
+                <ds-card-title-action *ngIf="!essViewOnly" >
+                  <button [matMenuTriggerFor]="menu" class="btn btn-icon" type="button"
+                    (click)="$event.stopPropagation();cogClicked(evt)">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                  <mat-menu #menu="matMenu" xPosition="before">
+                    <button type="button" mat-menu-item (click)="toggleActiveEvent(evt.employeeEventId)">{{(isEssMode && !evt.isEmployeeEditable)?'View':'Edit'}}</button>
+                    <button type="button" mat-menu-item (click)="deleteEventDialog(evt)" *ngIf="!isEssMode">Delete</button>
+                  </mat-menu>
+                </ds-card-title-action>
+
+                <ds-card-subtitle>
+                  <div class="row bordered-sm-layout">
+                    <div [ngClass]="(!isEssMode)?'col-sm-6 col-xl-4 col-2xl-3 ds-border':'col-sm-6 col-xl-4 col-2xl-3'">
+                      <div class="card-data-grid">
+                        <ng-container>
+                          <div class="label">Date</div>
+                          <div class="value">{{evt.eventDate | date:'MM/dd/yyyy'}}</div>
+                        </ng-container>
+                        <ng-container>
+                          <div class="label">Duration</div>
+                          <div class="value">{{evt.duration ? (evt.duration | number : '1.2-2')  : '&mdash;'}}</div>
+                        </ng-container>
+                        <ng-container>
+                          <div class="label">Expiration Date</div> 
+                          <div class="value">{{evt.expirationDate ? (evt.expirationDate | date:'MM/dd/yyyy') : '&mdash;'}}</div>
+                        </ng-container>
+                      </div>
+                    </div>
+                    <div class="col-auto" *ngIf="!isEssMode">
+                      <div class="card-data-grid">
+                        <ng-container>
+                          <div class="label">Employee View</div>
+                          <div class="value">{{evt.isEmployeeViewable ? 'Yes' : 'No'}}</div>
+                        </ng-container>
+                        <ng-container>
+                          <div class="label">Employee Edit</div>
+                          <div class="value">{{evt.isEmployeeEditable ? 'Yes' : 'No'}}</div>
+                        </ng-container>
+                        <ng-container>
+                          <div class="label"></div>
+                          <div class="value"></div>
+                        </ng-container>
+                      </div>
+                    </div>
+                  </div>
+                  <ng-container *ngIf="evt.event">
+                    <hr/>
+                    <p class="mb-0">{{evt.event}}</p>
+                  </ng-container>                
+                </ds-card-subtitle>
+            </ds-card-header>
+        </ds-card>
+      </ng-container>
+    </mat-drawer-content>
+
+    <mat-drawer 
+        #drawer 
+        [mode]="over"
+        position="end"
+        [opened]="activeId != 0"
+        [class.open]="activeId != 0" >
+        <ng-container *ngIf="activeEvent != null; else loadingScreen">
+          <ng-container *ngTemplateOutlet="cardDrawerContent;"></ng-container>
+        </ng-container>
+    </mat-drawer>
+  </mat-drawer-container>
+  </ng-template>
+</ng-container>
+  
+<ng-template #cardDrawerContent>
+    <ds-event-form 
+      [user]="user" 
+      [event]="activeEvent" 
+      (statusChange)="refresh($event)" 
+      [pageSubmitted]="submitted"
+      [isEssMode]="isEssMode"
+      [isAdding]="isAdding">
+    </ds-event-form>
+</ng-template>
+  
+
+<ng-template #loadingScreen>
+<ds-loading-message></ds-loading-message>
+</ng-template>
+
+<ng-template #emptyState>
+<div class="empty-state">
+  There are currently no events to display.
+</div>
+</ng-template>

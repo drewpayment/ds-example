@@ -1,0 +1,1371 @@
+//Variables
+$shape: #ccc;
+
+//Skeletons
+.button-card-skeleton:empty{
+    min-height: 140px;
+    width: 100%;
+    //Header
+    $header-title-skeleton: linear-gradient($shape, $shape);
+    $header-title-size: 70px 2em;
+    $header-title-position: 3% 20px;
+    //Buttons
+    $label-skeleton: linear-gradient($shape, $shape);
+    $label-size: 30% 2.5em;
+    //Position
+    $button-position-1: 4% 70px;
+    $button-position-2: 50% 70px;
+    $button-position-3: 96% 70px;
+    //Animation
+    --animation-color-transparent: rgba(255, 255, 255, 0);
+    --animation-color: rgba(255, 255, 255, 0.8);
+    --animation-bg: 
+        linear-gradient(
+            90deg, 
+            var(--animation-color-transparent) 0, 
+            var(--animation-color) 50%, 
+            var(--animation-color-transparent) 100%
+        );
+    --blur-width: 200px;
+    --blur-size: var(--blur-width) 100vh;
+    //Setup
+    background-image:
+        var(--animation-bg), //animation
+        $header-title-skeleton, //header line
+        $label-skeleton, //#1 button
+        $label-skeleton, //#2 button
+        $label-skeleton; //#3 button
+    background-size:
+        var(--blur-size), //animation
+        $header-title-size, //header line 
+        $label-size, //#1 button
+        $label-size, //#2 button
+        $label-size; //#3 button 
+    background-position:
+        -150% 0,  // animation
+        $header-title-position, //header line
+        $button-position-1, //#1 button
+        $button-position-2, //#2 button
+        $button-position-3; //#3 button
+    background-repeat: no-repeat;
+    animation: button-card-loading 2s infinite;
+    @keyframes button-card-loading {
+        to {
+            background-position:
+                350% 0,
+                $header-title-position, //header line
+                $button-position-1, //#1 button
+                $button-position-2, //#2 button
+                $button-position-3; //#3 button
+        }
+    }
+}
+
+.info-card-skeleton:empty{
+    min-height: 250px;
+    width: 100%;
+
+    //Header
+    $header-circle-skeleton: radial-gradient(circle 20px, $shape, 100%, transparent);
+    $header-circle-size: 40px 40px;
+    $header-circle-position: 50% 35px;
+
+    // $header-number-skeleton: linear-gradient($shape, $shape);
+    // $header-number-size: 50px 2em;
+    // $header-number-position: 60% 41px;
+
+    $header-title-skeleton: linear-gradient($shape, $shape);
+    $header-title-size: 30% 1.5em;
+    $header-title-position: 50% 92px;
+
+    //Thin Line
+    $thin-line-skeleton: linear-gradient($shape, $shape);
+    $thin-line-size: 90% 0.5px;
+    $thin-line-position: 50% 65%;
+
+    //Text
+    $label-skeleton: linear-gradient($shape, $shape);
+    $label-size: 30% 0.8em;
+    $text-position: 50% 188px, 50% 210px;
+
+    //Animation
+    --animation-color-transparent: rgba(255, 255, 255, 0);
+    --animation-color: rgba(255, 255, 255, 0.8);
+    --animation-bg:
+        linear-gradient(
+            90deg,
+            var(--animation-color-transparent) 0,
+            var(--animation-color) 50%,
+            var(--animation-color-transparent) 100%
+        );
+    --blur-width: 200px;
+    --blur-size: var(--blur-width) 100vh;
+
+    //Setup
+    background-image:
+    var(--animation-bg), //animation
+    $header-circle-skeleton, //header circle
+    // $header-number-skeleton, //header number
+    $header-title-skeleton, //header line
+    $thin-line-skeleton, //thin line
+    $label-skeleton, //#1 line
+    $label-skeleton; //#2 line
+
+    background-size:
+    var(--blur-size), //animation
+    $header-circle-size, //header circle
+    // $header-number-size, //header number
+    $header-title-size, //header line
+    $thin-line-size, //thin line
+    $label-size, //#1 line
+    $label-size; //#2 line
+
+    background-position:
+    -150% 0,  // animation
+    $header-circle-position, //header circle
+    // $header-number-position, //header number
+    $header-title-position, //header line
+    $thin-line-position, //thin line
+    $text-position, //#1 line
+    $text-position; //#2 line
+
+    background-repeat: no-repeat;
+    animation: info-card-loading 2s infinite;
+    @keyframes info-card-loading {
+        to {
+            background-position:
+                350% 0,
+                $header-circle-position, //header circle
+                // $header-number-position, //header number
+                $header-title-position, //header line
+                $thin-line-position, //thin line
+                $text-position, //#1 line
+                $text-position; //#2 line
+        }
+    }
+}
+
+.simple-card-skeleton:empty{
+    min-height: 225px;
+    width: 100%;
+
+    //Header
+    $header-circle-skeleton: radial-gradient(circle 20px, $shape, 100%, transparent);
+    $header-circle-size: 40px 40px;
+    $header-circle-position: 50% 50px;
+
+    //Text
+    $label-skeleton: linear-gradient($shape, $shape);
+    $label-size: 50% 0.8em;
+
+    //Position
+    $text-position:
+    50% 120px,
+    50% 160px;
+
+    //Animation
+    --animation-color-transparent: rgba(255, 255, 255, 0);
+    --animation-color: rgba(255, 255, 255, 0.8);
+    --animation-bg:
+        linear-gradient(
+            90deg,
+            var(--animation-color-transparent) 0,
+            var(--animation-color) 50%,
+            var(--animation-color-transparent) 100%
+        );
+    --blur-width: 200px;
+    --blur-size: var(--blur-width) 100vh;
+
+    //Setup
+    background-image:
+    var(--animation-bg), //animation
+    $header-circle-skeleton, //header circle
+    $label-skeleton, //#1 line
+    $label-skeleton; //#2 line
+
+    background-size:
+    var(--blur-size), //animation
+    $header-circle-size, //header circle
+    $label-size, //#1 line
+    $label-size; //#2 line
+
+    background-position:
+    -150% 0,  // animation
+    $header-circle-position, //header circle
+    $text-position, //#1 line
+    $text-position; //#2 line
+
+    background-repeat: no-repeat;
+    animation: simple-card-loading 2s infinite;
+    @keyframes simple-card-loading {
+        to {
+            background-position:
+                350% 0,
+                $header-circle-position, //header circle
+                $text-position, //#1 line
+                $text-position, //#2 line
+        }
+    }
+}
+
+@media screen and (max-width: 769px) {
+    .pie-graph-skeleton:empty {
+        min-height: 472px;
+        width: 100%;
+    
+        //Header
+        $header-circle-skeleton: radial-gradient(circle 20px, $shape, 100%, transparent);
+        $header-circle-size: 40px 40px;
+        $header-circle-position: 50% 20px;
+    
+        $header-title-skeleton: linear-gradient($shape, $shape);
+        $header-title-size: 200px 2em;
+        $header-title-position: 50% 76px;
+
+        //Thin Line
+        $thin-line-skeleton: linear-gradient($shape, $shape);
+        $thin-line-size: 90% 0.5px;
+        $thin-line-position: 50% 24%;
+    
+        //Graph
+        $graph-skeleton: radial-gradient(circle 120px, $shape, 100%, transparent);
+        $graph-size: 240px 240px;
+        $graph-position: 20% 175px;
+    
+        //Labels
+        $label-skeleton: linear-gradient($shape, $shape);
+        $label-size: 22% 0.8em;
+    
+        //Position
+        $label-position:
+        75% 225px,
+        75% 270px,
+        75% 312px,
+        75% 355px;
+    
+        //Animation
+        --animation-color-transparent: rgba(255, 255, 255, 0);
+        --animation-color: rgba(255, 255, 255, 0.8);
+        --animation-bg:
+            linear-gradient(
+                90deg,
+                var(--animation-color-transparent) 0,
+                var(--animation-color) 50%,
+                var(--animation-color-transparent) 100%
+            );
+        --blur-width: 200px;
+        --blur-size: var(--blur-width) 100vh;
+    
+        //Setup
+        background-image:
+        var(--animation-bg), //animation
+        $header-circle-skeleton, //header circle
+        $header-title-skeleton, //header line
+        $thin-line-skeleton, //thin line
+        $graph-skeleton, //Graph
+        $label-skeleton, //#1 line
+        $label-skeleton, //#2 line
+        $label-skeleton, //#3 line
+        $label-skeleton; //#4 line
+    
+        background-size:
+        var(--blur-size), //animation
+        $header-circle-size, //header circle
+        $header-title-size, //header line
+        $thin-line-size, //thin line
+        $graph-size, //Graph
+        $label-size, //#1 line
+        $label-size, //#2 line
+        $label-size, //#3 line
+        $label-size; //#4 line
+    
+        background-position:
+        -150% 0,  // animation
+        $header-circle-position, //header circle
+        $header-title-position, //header line
+        $thin-line-position, //thin line
+        $graph-position, //Graph
+        $label-position, //#1 line
+        $label-position, //#2 line
+        $label-position, //#3 line
+        $label-position; //#4 line
+    
+        background-repeat: no-repeat;
+        animation: pie-graph-loading 2s infinite;
+        @keyframes pie-graph-loading {
+            to {
+                background-position:
+                    350% 0,
+                    $header-circle-position, //header circle
+                    $header-title-position, //header line,
+                    $thin-line-position, //thin line
+                    $graph-position, //Graph
+                    $label-position, //#1 line
+                    $label-position, //#2 line
+                    $label-position, //#3 line
+                    $label-position; //#4 line
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 770px) and (max-width: 1249px) {
+    .pie-graph-skeleton:empty {
+        min-height: 472px;
+        width: 100%;
+    
+        //Header
+        $header-circle-skeleton: radial-gradient(circle 20px, $shape, 100%, transparent);
+        $header-circle-size: 40px 40px;
+        $header-circle-position: 50% 20px;
+    
+        $header-title-skeleton: linear-gradient($shape, $shape);
+        $header-title-size: 200px 2em;
+        $header-title-position: 50% 80px;
+
+        //Thin Line
+        $thin-line-skeleton: linear-gradient($shape, $shape);
+        $thin-line-size: 90% 0.5px;
+        $thin-line-position: 50% 53%;
+    
+        //Graph
+        $graph-skeleton: radial-gradient(circle 70px, $shape, 100%, transparent);
+        $graph-size: 140px 140px;
+        $graph-position: 20% 280px;
+    
+        //Labels
+        $label-skeleton: linear-gradient($shape, $shape);
+        $label-size: 22% 0.8em;
+    
+        //Position
+        $label-position:
+        75% 290px,
+        75% 335px,
+        75% 377px,
+        75% 420px;
+    
+        //Animation
+        --animation-color-transparent: rgba(255, 255, 255, 0);
+        --animation-color: rgba(255, 255, 255, 0.8);
+        --animation-bg:
+            linear-gradient(
+                90deg,
+                var(--animation-color-transparent) 0,
+                var(--animation-color) 50%,
+                var(--animation-color-transparent) 100%
+            );
+        --blur-width: 200px;
+        --blur-size: var(--blur-width) 100vh;
+    
+        //Setup
+        background-image:
+        var(--animation-bg), //animation
+        $header-circle-skeleton, //header circle
+        $header-title-skeleton, //header line
+        $thin-line-skeleton, //thin line
+        $graph-skeleton, //Graph
+        $label-skeleton, //#1 line
+        $label-skeleton, //#2 line
+        $label-skeleton, //#3 line
+        $label-skeleton; //#4 line
+    
+        background-size:
+        var(--blur-size), //animation
+        $header-circle-size, //header circle
+        $header-title-size, //header line
+        $thin-line-size, //thin line
+        $graph-size, //Graph
+        $label-size, //#1 line
+        $label-size, //#2 line
+        $label-size, //#3 line
+        $label-size; //#4 line
+    
+        background-position:
+        -150% 0,  // animation
+        $header-circle-position, //header circle
+        $header-title-position, //header line
+        $thin-line-position, //thin line
+        $graph-position, //Graph
+        $label-position, //#1 line
+        $label-position, //#2 line
+        $label-position, //#3 line
+        $label-position; //#4 line
+    
+        background-repeat: no-repeat;
+        animation: pie-graph-loading 2s infinite;
+        @keyframes pie-graph-loading {
+            to {
+                background-position:
+                    350% 0,
+                    $header-circle-position, //header circle
+                    $header-title-position, //header line,
+                    $thin-line-position, //thin line
+                    $graph-position, //Graph
+                    $label-position, //#1 line
+                    $label-position, //#2 line
+                    $label-position, //#3 line
+                    $label-position; //#4 line
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 1250px) and (max-width: 1599px) {
+    .pie-graph-skeleton:empty {
+        min-height: 472px;
+        width: 100%;
+    
+        //Header
+        $header-circle-skeleton: radial-gradient(circle 20px, $shape, 100%, transparent);
+        $header-circle-size: 40px 40px;
+        $header-circle-position: 50% 20px;
+    
+        $header-title-skeleton: linear-gradient($shape, $shape);
+        $header-title-size: 200px 2em;
+        $header-title-position: 50% 76px;
+
+        //Thin Line
+        $thin-line-skeleton: linear-gradient($shape, $shape);
+        $thin-line-size: 90% 0.5px;
+        $thin-line-position: 50% 37%;
+    
+        //Graph
+        $graph-skeleton: radial-gradient(circle 90px, $shape, 100%, transparent);
+        $graph-size: 180px 180px;
+        $graph-position: 20% 200px;
+    
+        //Labels
+        $label-skeleton: linear-gradient($shape, $shape);
+        $label-size: 22% 0.8em;
+    
+        //Position
+        $label-position:
+        75% 225px,
+        75% 270px,
+        75% 312px,
+        75% 355px;
+    
+        //Animation
+        --animation-color-transparent: rgba(255, 255, 255, 0);
+        --animation-color: rgba(255, 255, 255, 0.8);
+        --animation-bg:
+            linear-gradient(
+                90deg,
+                var(--animation-color-transparent) 0,
+                var(--animation-color) 50%,
+                var(--animation-color-transparent) 100%
+            );
+        --blur-width: 200px;
+        --blur-size: var(--blur-width) 100vh;
+    
+        //Setup
+        background-image:
+        var(--animation-bg), //animation
+        $header-circle-skeleton, //header circle
+        $header-title-skeleton, //header line
+        $thin-line-skeleton, //thin line
+        $graph-skeleton, //Graph
+        $label-skeleton, //#1 line
+        $label-skeleton, //#2 line
+        $label-skeleton, //#3 line
+        $label-skeleton; //#4 line
+    
+        background-size:
+        var(--blur-size), //animation
+        $header-circle-size, //header circle
+        $header-title-size, //header line
+        $thin-line-size, //thin line
+        $graph-size, //Graph
+        $label-size, //#1 line
+        $label-size, //#2 line
+        $label-size, //#3 line
+        $label-size; //#4 line
+    
+        background-position:
+        -150% 0,  // animation
+        $header-circle-position, //header circle
+        $header-title-position, //header line
+        $thin-line-position, //thin line
+        $graph-position, //Graph
+        $label-position, //#1 line
+        $label-position, //#2 line
+        $label-position, //#3 line
+        $label-position; //#4 line
+    
+        background-repeat: no-repeat;
+        animation: pie-graph-loading 2s infinite;
+        @keyframes pie-graph-loading {
+            to {
+                background-position:
+                    350% 0,
+                    $header-circle-position, //header circle
+                    $header-title-position, //header line,
+                    $thin-line-position, //thin line
+                    $graph-position, //Graph
+                    $label-position, //#1 line
+                    $label-position, //#2 line
+                    $label-position, //#3 line
+                    $label-position; //#4 line
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 1600px) {
+    .pie-graph-skeleton:empty {
+        min-height: 472px;
+        width: 100%;
+    
+        //Header
+        $header-circle-skeleton: radial-gradient(circle 20px, $shape, 100%, transparent);
+        $header-circle-size: 40px 40px;
+        $header-circle-position: 50% 20px;
+    
+        $header-title-skeleton: linear-gradient($shape, $shape);
+        $header-title-size: 200px 2em;
+        $header-title-position: 50% 76px;
+
+        //Thin Line
+        $thin-line-skeleton: linear-gradient($shape, $shape);
+        $thin-line-size: 90% 0.5px;
+        $thin-line-position: 50% 24%;
+    
+        //Graph
+        $graph-skeleton: radial-gradient(circle 120px, $shape, 100%, transparent);
+        $graph-size: 240px 240px;
+        $graph-position: 20% 175px;
+    
+        //Labels
+        $label-skeleton: linear-gradient($shape, $shape);
+        $label-size: 22% 0.8em;
+    
+        //Position
+        $label-position:
+        75% 225px,
+        75% 270px,
+        75% 312px,
+        75% 355px;
+    
+        //Animation
+        --animation-color-transparent: rgba(255, 255, 255, 0);
+        --animation-color: rgba(255, 255, 255, 0.8);
+        --animation-bg:
+            linear-gradient(
+                90deg,
+                var(--animation-color-transparent) 0,
+                var(--animation-color) 50%,
+                var(--animation-color-transparent) 100%
+            );
+        --blur-width: 200px;
+        --blur-size: var(--blur-width) 100vh;
+    
+        //Setup
+        background-image:
+        var(--animation-bg), //animation
+        $header-circle-skeleton, //header circle
+        $header-title-skeleton, //header line
+        $thin-line-skeleton, //thin line
+        $graph-skeleton, //Graph
+        $label-skeleton, //#1 line
+        $label-skeleton, //#2 line
+        $label-skeleton, //#3 line
+        $label-skeleton; //#4 line
+    
+        background-size:
+        var(--blur-size), //animation
+        $header-circle-size, //header circle
+        $header-title-size, //header line
+        $thin-line-size, //thin line
+        $graph-size, //Graph
+        $label-size, //#1 line
+        $label-size, //#2 line
+        $label-size, //#3 line
+        $label-size; //#4 line
+    
+        background-position:
+        -150% 0,  // animation
+        $header-circle-position, //header circle
+        $header-title-position, //header line
+        $thin-line-position, //thin line
+        $graph-position, //Graph
+        $label-position, //#1 line
+        $label-position, //#2 line
+        $label-position, //#3 line
+        $label-position; //#4 line
+    
+        background-repeat: no-repeat;
+        animation: pie-graph-loading 2s infinite;
+        @keyframes pie-graph-loading {
+            to {
+                background-position:
+                    350% 0,
+                    $header-circle-position, //header circle
+                    $header-title-position, //header line,
+                    $thin-line-position, //thin line
+                    $graph-position, //Graph
+                    $label-position, //#1 line
+                    $label-position, //#2 line
+                    $label-position, //#3 line
+                    $label-position; //#4 line
+            }
+        }
+    }
+}
+
+.double-pie-graph-skeleton:empty {
+    min-height: 660px;
+    width: 100%;
+
+    //Input
+    $input-skeleton: linear-gradient($shape, $shape);
+    $input-size: 250px 1.8em;
+    $input-position: 15px 15px;
+
+    //Header
+    $header-circle-skeleton: radial-gradient(circle 20px, $shape, 100%, transparent);
+    $header-circle-size: 40px 40px;
+    $header-circle-position: 219px 150px;
+
+    $header-title-skeleton: linear-gradient($shape, $shape);
+    $header-title-size: 200px 2em;
+    $header-title-position: 139px 200px;
+
+    //Header 2
+    $header-circle-skeleton2: radial-gradient(circle 20px, $shape, 100%, transparent);
+    $header-circle-size2: 40px 40px;
+    $header-circle-position2: 816px 150px;
+
+    $header-title-skeleton2: linear-gradient($shape, $shape);
+    $header-title-size2: 200px 2em;
+    $header-title-position2: 736px 200px;
+
+    //Graph
+    $graph-skeleton: radial-gradient(circle 120px, $shape, 100%, transparent);
+    $graph-size: 240px 240px;
+    $graph-position: 114px 250px;
+
+    //Graph 2
+    $graph-skeleton2: radial-gradient(circle 120px, $shape, 100%, transparent);
+    $graph-size2: 240px 240px;
+    $graph-position2: 714px 250px;
+
+    //Label Circles
+    $circle-skeleton: radial-gradient(circle 7px, $shape, 100%, transparent);
+    $circle-size: 15px 15px;
+
+    //Labels
+    $label-skeleton: linear-gradient($shape, $shape);
+    $label-size: 15% 0.8em;
+
+    //Position
+    $circle-label-position:
+    391px 300px,
+    423PX 300px,
+    391px 345px,
+    423PX 345px,
+    391px 387px,
+    423PX 387px,
+    391px 430px,
+    423PX 430px,
+    991px 300px, //2
+    1023px 300px, //2
+    991px 345px, //2
+    1023px 345px, //2
+    991px 387px, //2
+    1023px 387px, //2
+    991px 430px, //2
+    1023px 430px; //2
+
+    //Label Circles 2
+    $circle-skeleton2: radial-gradient(circle 7px, $shape, 100%, transparent);
+    $circle-size2: 15px 15px;
+
+    //Labels 2
+    $label-skeleton2: linear-gradient($shape, $shape);
+    $label-size2: 15% 0.8em;
+
+    //Animation
+    --animation-color-transparent: rgba(255, 255, 255, 0);
+    --animation-color: rgba(255, 255, 255, 0.8);
+    --animation-bg:
+        linear-gradient(
+            90deg,
+            var(--animation-color-transparent) 0,
+            var(--animation-color) 50%,
+            var(--animation-color-transparent) 100%
+        );
+    --blur-width: 200px;
+    --blur-size: var(--blur-width) 100vh;
+
+    //Setup
+    background-image:
+    var(--animation-bg), //animation
+    $input-skeleton, //Input line
+    $header-circle-skeleton, //header circle
+    $header-circle-skeleton2, //header circle 2
+    $header-title-skeleton, //header line
+    $header-title-skeleton2, //header line 2
+    $graph-skeleton, //Graph
+    $graph-skeleton2, //Graph 2
+    $circle-skeleton, //#1 circle 2
+    $label-skeleton, //#1 line 2
+    $circle-skeleton, //#2 circle 2
+    $label-skeleton, //#2 line 2
+    $circle-skeleton, //#3 circle 2
+    $label-skeleton, //#3 line 2
+    $circle-skeleton, //#4 circle 2
+    $label-skeleton, //#4 line 2
+    $circle-skeleton, //#1 circle 2
+    $label-skeleton, //#1 line 2
+    $circle-skeleton, //#2 circle 2
+    $label-skeleton, //#2 line 2
+    $circle-skeleton, //#3 circle 2
+    $label-skeleton, //#3 line 2
+    $circle-skeleton, //#4 circle 2
+    $label-skeleton; //#4 line 2
+
+    background-size:
+    var(--blur-size), //animation
+    $input-size, //Input line
+    $header-circle-size, //header circle
+    $header-circle-size2, //header circle 2
+    $header-title-size, //header line
+    $header-title-size2, //header line 2
+    $graph-size, //Graph
+    $graph-size2, //Graph 2
+    $circle-size, //#1 circle 2
+    $label-size, //#1 line 2
+    $circle-size, //#2 circle 2
+    $label-size, //#2 line 2
+    $circle-size, //#3 circle 2
+    $label-size, //#3 line 2
+    $circle-size, //#4 circle 2
+    $label-size, //#4 line 2
+    $circle-size, //#1 circle 2
+    $label-size, //#1 line 2
+    $circle-size, //#2 circle  2
+    $label-size, //#2 line  2
+    $circle-size, //#3 circle  2
+    $label-size, //#3 line 2
+    $circle-size, //#4 circle 2
+    $label-size; //#4 line 2
+
+    background-position:
+    -150% 0,  // animation
+    $input-position, //Input line
+    $header-circle-position, //header circle
+    $header-circle-position2, //header circle 2
+    $header-title-position, //header line
+    $header-title-position2, //header line 2
+    $graph-position, //Graph
+    $graph-position2, //Graph 2
+    $circle-label-position, //#1 circle
+    $circle-label-position, //#1 line
+    $circle-label-position, //#2 circle
+    $circle-label-position, //#2 line
+    $circle-label-position, //#3 circle
+    $circle-label-position, //#3 line
+    $circle-label-position, //#4 circle
+    $circle-label-position, //#4 line
+    $circle-label-position, //#1 circle 2
+    $circle-label-position, //#1 line 2
+    $circle-label-position, //#2 circle 2
+    $circle-label-position, //#2 line 2
+    $circle-label-position, //#3 circle 2
+    $circle-label-position, //#3 line 2
+    $circle-label-position, //#4 circle 2
+    $circle-label-position; //#4 line 2
+
+    background-repeat: no-repeat;
+    // animation: pie-graph-loading 2s infinite;
+    // @keyframes pie-graph-loading {
+    //     to {
+    //         background-position:
+    //             350% 0,
+    //             $header-circle-position, //header circle
+    //             $header-title-position, //header line
+    //             $graph-position, //Graph
+    //             $circle-label-position, //#1 circle
+    //             $circle-label-position, //#1 line
+    //             $circle-label-position, //#2 circle
+    //             $circle-label-position, //#2 line
+    //             $circle-label-position, //#3 circle
+    //             $circle-label-position, //#3 line
+    //             $circle-label-position, //#4 circle
+    //             $circle-label-position; //#4 line
+    //     }
+    // }
+}
+
+.bar-graph-skeleton:empty {
+    min-height: 559px;
+    width: 100%;
+
+    //Header
+    $header-title-skeleton: linear-gradient($shape, $shape);
+    $header-title-size: 200px 2em;
+    $header-title-position: 15px 15px;
+
+    //bars
+    $bar-skeleton: linear-gradient($shape, $shape);
+    $bar-size:
+    6% 235px,
+    6% 300px,
+    6% 241px,
+    6% 341px,
+    6% 316px,
+    6% 234px,
+    6% 336px,
+    6% 258px;
+
+    //Bar Position
+    $bar-position:
+    3% 185px,
+    13% 120px,
+    23% 179px,
+    33% 79px,
+    43% 104px,
+    53% 186px,
+    63% 84px,
+    73% 162px;
+
+    //Legend
+    $legend-skeleton: linear-gradient($shape, $shape);
+    $legend-size: 15% 0.8em;
+
+    //Legend Position
+    $legend-position1: 95% 203px;
+    $legend-position2: 95% 245px;
+    $legend-position3: 95% 287px;
+    $legend-position4: 95% 330px;
+
+    //Animation
+    --animation-color-transparent: rgba(255, 255, 255, 0);
+    --animation-color: rgba(255, 255, 255, 0.8);
+    --animation-bg:
+        linear-gradient(
+            90deg,
+            var(--animation-color-transparent) 0,
+            var(--animation-color) 50%,
+            var(--animation-color-transparent) 100%
+        );
+    --blur-width: 200px;
+    --blur-size: var(--blur-width) 100vh;
+
+    //Setup
+    background-image:
+    var(--animation-bg), //animation
+    $legend-skeleton, //#1 line
+    $legend-skeleton, //#2 line
+    $legend-skeleton, //#3 line
+    $legend-skeleton, //#4 line
+    $header-title-skeleton, //header
+    $bar-skeleton, //#1 bar
+    $bar-skeleton, //#2 bar
+    $bar-skeleton, //#3 bar
+    $bar-skeleton, //#4 bar
+    $bar-skeleton, //#5 bar
+    $bar-skeleton, //#6 bar
+    $bar-skeleton, //#7 bar
+    $bar-skeleton; //#8 bar 
+
+    background-size:
+    var(--blur-size), //animation
+    $legend-size, //#1 line
+    $legend-size, //#2 line
+    $legend-size, //#3 line
+    $legend-size, //#4 line
+    $header-title-size, //header line
+    $bar-size, //#1 bar
+    $bar-size, //#2 bar
+    $bar-size, //#3 bar
+    $bar-size, //#4 bar
+    $bar-size, //#5 bar
+    $bar-size, //#6 bar
+    $bar-size, //#7 bar
+    $bar-size; //#8 bar
+
+
+    background-position:
+    -150% 0,  // animation
+    $legend-position1, //#1 line
+    $legend-position2, //#2 line
+    $legend-position3, //#3 line
+    $legend-position4, //#4 line
+    $header-title-position, //header line
+    $bar-position, //#1 bar
+    $bar-position, //#2 bar
+    $bar-position, //#3 bar
+    $bar-position, //#4 bar
+    $bar-position, //#5 bar
+    $bar-position, //#6 bar
+    $bar-position, //#7 bar
+    $bar-position; //#8 bar
+
+    background-repeat: no-repeat;
+    animation: bar-graph-loading 2s infinite;
+    @keyframes bar-graph-loading {
+        to {
+            background-position:
+                350% 0,
+                $legend-position1, //#1 line
+                $legend-position2, //#2 line
+                $legend-position3, //#3 line
+                $legend-position4, //#4 line
+                $header-title-position, //header line
+                $bar-position, //#1 bar
+                $bar-position, //#2 bar
+                $bar-position, //#3 bar
+                $bar-position, //#4 bar
+                $bar-position, //#5 bar
+                $bar-position, //#6 bar
+                $bar-position, //#7 bar
+                $bar-position; //#8 bar
+        }
+    }
+}
+
+@media screen and (min-width: 1600px) {
+    .punch-graph-skeleton:empty {
+        min-height: 490px;
+        width: 100%;
+
+        //Header
+        $header-title-skeleton: linear-gradient($shape, $shape);
+        $header-title-size: 200px 2em;
+        $header-title-position: 15px 15px;
+
+        //Graph
+        $graph-skeleton: radial-gradient(circle 130px, $shape, 100%, transparent);
+        $graph-size: 260px 260px;
+        $graph-position: 50% 85px;
+
+        //Labels
+        $label-skeleton: linear-gradient($shape, $shape);
+        $label-size: 25% 0.8em;
+
+        //Position
+        $circle-label-position:
+        30% 410px, // label
+        85% 410px, // label
+        30% 450px, // label
+        85% 450px; // label
+
+        //Animation
+        --animation-color-transparent: rgba(255, 255, 255, 0);
+        --animation-color: rgba(255, 255, 255, 0.8);
+        --animation-bg:
+            linear-gradient(
+                90deg,
+                var(--animation-color-transparent) 0,
+                var(--animation-color) 50%,
+                var(--animation-color-transparent) 100%
+            );
+        --blur-width: 200px;
+        --blur-size: var(--blur-width) 100vh;
+
+        //Setup
+        background-image:
+        var(--animation-bg), //animation
+        $header-title-skeleton, //header line
+        $graph-skeleton, //Graph
+        $label-skeleton, //#1 line
+        $label-skeleton, //#2 line
+        $label-skeleton, //#3 line
+        $label-skeleton; //#4 line
+
+        background-size:
+        var(--blur-size), //animation
+        $header-title-size, //header line
+        $graph-size, //Graph
+        $label-size, //#1 line
+        $label-size, //#2 line
+        $label-size, //#3 line
+        $label-size; //#4 line
+
+        background-position:
+        -150% 0,  // animation
+        $header-title-position, //header line
+        $graph-position, //Graph
+        $circle-label-position, //#1 line
+        $circle-label-position, //#2 line
+        $circle-label-position, //#3 line
+        $circle-label-position; //#4 line
+
+        background-repeat: no-repeat;
+        animation: punch-graph-loading 2s infinite;
+        @keyframes punch-graph-loading {
+            to {
+                background-position:
+                    350% 0,
+                    $header-title-position, //header line
+                    $graph-position, //Graph
+                    $circle-label-position, //#1 line
+                    $circle-label-position, //#2 line
+                    $circle-label-position, //#3 line
+                    $circle-label-position; //#4 line
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 1175px) and (max-width: 1599px) {
+    .punch-graph-skeleton:empty {
+        min-height: 490px;
+        width: 100%;
+
+        //Header
+        $header-title-skeleton: linear-gradient($shape, $shape);
+        $header-title-size: 200px 2em;
+        $header-title-position: 15px 15px;
+
+        //Graph
+        $graph-skeleton: radial-gradient(circle 100px, $shape, 100%, transparent);
+        $graph-size: 200px 200px;
+        $graph-position: 50% 85px;
+
+        //Labels
+        $label-skeleton: linear-gradient($shape, $shape);
+        $label-size: 25% 0.8em;
+
+        //Position
+        $circle-label-position:
+        30% 410px, // label
+        85% 410px, // label
+        30% 450px, // label
+        85% 450px; // label
+
+        //Animation
+        --animation-color-transparent: rgba(255, 255, 255, 0);
+        --animation-color: rgba(255, 255, 255, 0.8);
+        --animation-bg:
+            linear-gradient(
+                90deg,
+                var(--animation-color-transparent) 0,
+                var(--animation-color) 50%,
+                var(--animation-color-transparent) 100%
+            );
+        --blur-width: 200px;
+        --blur-size: var(--blur-width) 100vh;
+
+        //Setup
+        background-image:
+        var(--animation-bg), //animation
+        $header-title-skeleton, //header line
+        $graph-skeleton, //Graph
+        $label-skeleton, //#1 line
+        $label-skeleton, //#2 line
+        $label-skeleton, //#3 line
+        $label-skeleton; //#4 line
+
+        background-size:
+        var(--blur-size), //animation
+        $header-title-size, //header line
+        $graph-size, //Graph
+        $label-size, //#1 line
+        $label-size, //#2 line
+        $label-size, //#3 line
+        $label-size; //#4 line
+
+        background-position:
+        -150% 0,  // animation
+        $header-title-position, //header line
+        $graph-position, //Graph
+        $circle-label-position, //#1 line
+        $circle-label-position, //#2 line
+        $circle-label-position, //#3 line
+        $circle-label-position; //#4 line
+
+        background-repeat: no-repeat;
+        animation: punch-graph-loading 2s infinite;
+        @keyframes punch-graph-loading {
+            to {
+                background-position:
+                    350% 0,
+                    $header-title-position, //header line
+                    $graph-position, //Graph
+                    $circle-label-position, //#1 line
+                    $circle-label-position, //#2 line
+                    $circle-label-position, //#3 line
+                    $circle-label-position; //#4 line
+            }
+        }
+    }
+}
+
+@media screen and (min-width: 770px) and (max-width: 1174px) {
+    .punch-graph-skeleton:empty {
+        min-height: 490px;
+        width: 100%;
+
+        //Header
+        $header-title-skeleton: linear-gradient($shape, $shape);
+        $header-title-size: 100px 2em;
+        $header-title-position: 15px 15px;
+
+        //Graph
+        $graph-skeleton: radial-gradient(circle 70px, $shape, 100%, transparent);
+        $graph-size: 140px 140px;
+        $graph-position: 50% 85px;
+
+        //Labels
+        $label-skeleton: linear-gradient($shape, $shape);
+        $label-size: 25% 0.8em;
+
+        //Position
+        $circle-label-position:
+        30% 410px, // label
+        85% 410px, // label
+        30% 450px, // label
+        85% 450px; // label
+
+        //Animation
+        --animation-color-transparent: rgba(255, 255, 255, 0);
+        --animation-color: rgba(255, 255, 255, 0.8);
+        --animation-bg:
+            linear-gradient(
+                90deg,
+                var(--animation-color-transparent) 0,
+                var(--animation-color) 50%,
+                var(--animation-color-transparent) 100%
+            );
+        --blur-width: 200px;
+        --blur-size: var(--blur-width) 100vh;
+
+        //Setup
+        background-image:
+        var(--animation-bg), //animation
+        $header-title-skeleton, //header line
+        $graph-skeleton, //Graph
+        $label-skeleton, //#1 line
+        $label-skeleton, //#2 line
+        $label-skeleton, //#3 line
+        $label-skeleton; //#4 line
+
+        background-size:
+        var(--blur-size), //animation
+        $header-title-size, //header line
+        $graph-size, //Graph
+        $label-size, //#1 line
+        $label-size, //#2 line
+        $label-size, //#3 line
+        $label-size; //#4 line
+
+        background-position:
+        -150% 0,  // animation
+        $header-title-position, //header line
+        $graph-position, //Graph
+        $circle-label-position, //#1 line
+        $circle-label-position, //#2 line
+        $circle-label-position, //#3 line
+        $circle-label-position; //#4 line
+
+        background-repeat: no-repeat;
+        animation: punch-graph-loading 2s infinite;
+        @keyframes punch-graph-loading {
+            to {
+                background-position:
+                    350% 0,
+                    $header-title-position, //header line
+                    $graph-position, //Graph
+                    $circle-label-position, //#1 line
+                    $circle-label-position, //#2 line
+                    $circle-label-position, //#3 line
+                    $circle-label-position; //#4 line
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 769px) {
+    .punch-graph-skeleton:empty {
+        min-height: 490px;
+        width: 100%;
+
+        //Header
+        $header-title-skeleton: linear-gradient($shape, $shape);
+        $header-title-size: 200px 2em;
+        $header-title-position: 15px 15px;
+
+        //Graph
+        $graph-skeleton: radial-gradient(circle 130px, $shape, 100%, transparent);
+        $graph-size: 260px 260px;
+        $graph-position: 50% 85px;
+
+        //Labels
+        $label-skeleton: linear-gradient($shape, $shape);
+        $label-size: 25% 0.8em;
+
+        //Position
+        $circle-label-position:
+        30% 410px, // label
+        85% 410px, // label
+        30% 450px, // label
+        85% 450px; // label
+
+        //Animation
+        --animation-color-transparent: rgba(255, 255, 255, 0);
+        --animation-color: rgba(255, 255, 255, 0.8);
+        --animation-bg:
+            linear-gradient(
+                90deg,
+                var(--animation-color-transparent) 0,
+                var(--animation-color) 50%,
+                var(--animation-color-transparent) 100%
+            );
+        --blur-width: 200px;
+        --blur-size: var(--blur-width) 100vh;
+
+        //Setup
+        background-image:
+        var(--animation-bg), //animation
+        $header-title-skeleton, //header line
+        $graph-skeleton, //Graph
+        $label-skeleton, //#1 line
+        $label-skeleton, //#2 line
+        $label-skeleton, //#3 line
+        $label-skeleton; //#4 line
+
+        background-size:
+        var(--blur-size), //animation
+        $header-title-size, //header line
+        $graph-size, //Graph
+        $label-size, //#1 line
+        $label-size, //#2 line
+        $label-size, //#3 line
+        $label-size; //#4 line
+
+        background-position:
+        -150% 0,  // animation
+        $header-title-position, //header line
+        $graph-position, //Graph
+        $circle-label-position, //#1 line
+        $circle-label-position, //#2 line
+        $circle-label-position, //#3 line
+        $circle-label-position; //#4 line
+
+        background-repeat: no-repeat;
+        animation: punch-graph-loading 2s infinite;
+        @keyframes punch-graph-loading {
+            to {
+                background-position:
+                    350% 0,
+                    $header-title-position, //header line
+                    $graph-position, //Graph
+                    $circle-label-position, //#1 line
+                    $circle-label-position, //#2 line
+                    $circle-label-position, //#3 line
+                    $circle-label-position; //#4 line
+            }
+        }
+    }
+}
+
+.table-view-skeleton:empty{
+    min-height: 582px;
+    width: 100%;
+
+    //Header
+    $header-title-skeleton: linear-gradient($shape, $shape);
+    $header-title-size: 200px 2em;
+    $header-title-position: 15px 15px;
+
+    $header-line-skeleton: linear-gradient($shape, $shape);
+    $header-line-size: 97% 2em;
+    $header-line-position: 15px 75px;
+
+    //Thin Line
+    $thin-line-skeleton: linear-gradient($shape, $shape);
+    $thin-line-size: 97% 0.5px;
+    $thin-line-position:
+    15px 145px,
+    15px 185px,
+    15px 230px,
+    15px 270px,
+    15px 310px,
+    15px 350px,
+    15px 390px,
+    15px 430px,
+    15px 470px,
+    15px 510px;
+
+    //Animation
+    --animation-color-transparent: rgba(255, 255, 255, 0);
+    --animation-color: rgba(255, 255, 255, 0.8);
+    --animation-bg:
+        linear-gradient(
+            90deg,
+            var(--animation-color-transparent) 0,
+            var(--animation-color) 50%,
+            var(--animation-color-transparent) 100%
+        );
+    --blur-width: 200px;
+    --blur-size: var(--blur-width) 100vh;
+
+    //Setup
+    background-image:
+    var(--animation-bg), //animation
+    $header-title-skeleton, //header title
+    $header-line-skeleton, // header line
+    $thin-line-skeleton, //thin line #1
+    $thin-line-skeleton, //thin line #2
+    $thin-line-skeleton, //thin line #3
+    $thin-line-skeleton, //thin line #4
+    $thin-line-skeleton, //thin line #5
+    $thin-line-skeleton, //thin line #6
+    $thin-line-skeleton, //thin line #7
+    $thin-line-skeleton, //thin line #8
+    $thin-line-skeleton, //thin line #9
+    $thin-line-skeleton; //thin line #10
+
+    background-size:
+    var(--blur-size), //animation
+    $header-title-size, //header title
+    $header-line-size, // header line
+    $thin-line-size, //thin line #1
+    $thin-line-size, //thin line #2
+    $thin-line-size, //thin line #3
+    $thin-line-size, //thin line #4
+    $thin-line-size, //thin line #5
+    $thin-line-size, //thin line #6
+    $thin-line-size, //thin line #7
+    $thin-line-size, //thin line #8
+    $thin-line-size, //thin line #9
+    $thin-line-size; //thin line #10
+
+    background-position:
+    -150% 0,  // animation
+    $header-title-position, //header title
+    $header-line-position, // header line
+    $thin-line-position, //thin line #1
+    $thin-line-position, //thin line #2
+    $thin-line-position, //thin line #3
+    $thin-line-position, //thin line #4
+    $thin-line-position, //thin line #5
+    $thin-line-position, //thin line #6
+    $thin-line-position, //thin line #7
+    $thin-line-position, //thin line #8
+    $thin-line-position, //thin line #9
+    $thin-line-position; //thin line #10
+
+    background-repeat: no-repeat;
+    animation: table-view-loading 2s infinite;
+    @keyframes table-view-loading {
+        to {
+            background-position:
+                350% 0,
+                $header-title-position, //header title
+                $header-line-position, // header line
+                $thin-line-position, //thin line #1
+                $thin-line-position, //thin line #2
+                $thin-line-position, //thin line #3
+                $thin-line-position, //thin line #4
+                $thin-line-position, //thin line #5
+                $thin-line-position, //thin line #6
+                $thin-line-position, //thin line #7
+                $thin-line-position, //thin line #8
+                $thin-line-position, //thin line #9
+                $thin-line-position; //thin line #10
+        }
+    }
+}

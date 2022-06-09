@@ -1,0 +1,97 @@
+<div [hidden]="!usersLoaded" >
+    <div class="card card-2xl-table" *ngIf="usersDatasource.data.length > 0, else emptyState">
+        <div class="table-2xl-responsive">
+            <mat-table [dataSource]="usersDatasource" matSort color="primary">
+                <ng-container matColumnDef="clockName">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="clockName"> Clock Name
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let user" class="clockName" data-label="Clock Name">
+                        {{user.clockName}}
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="devSn">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="devSn table-text-right"> Serial Number
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let user" class="devSn table-text-right" data-label="Serial Number">
+                        {{user.devSn}}
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="ipAddress">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="ipAddress table-text-right"> IP Address
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let user" class="ipAddress table-text-right" data-label="IP Address">
+                        {{user.ipAddress}}
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="pin">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="pin table-text-right"> PIN
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let user" class="pin table-text-right" data-label="PIN">
+                        {{user.pin}}
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="username">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="username"> Username
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let user" class="username" data-label="Username">
+                        <div class="text-truncate">{{user.username}}</div>
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="password">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="password"> Password
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let user" class="password" data-label="Password">
+                        <div class="text-truncate">{{user.password}}</div>
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="idCard">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="idCard table-text-right"> ID Card
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let user" class="idCard table-text-right" data-label="ID Card">
+                        <div class="text-truncate">{{user.idCard}}</div>
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="group">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="group table-text-right"> Group
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let user" class="group table-text-right" data-label="Group">
+                        {{user.group}}
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="timezone">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="timezone table-text-right"> Timezone
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let user" class="timezone table-text-right" data-label="Timezone">
+                        <div class="text-truncate">{{user.timezone}}</div>
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <ng-container matColumnDef="pri">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header class="pri table-text-right"> Privilege
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let user" class="pri table-text-right" data-label="Privilege">
+                        {{user.pri}}
+                    </mat-cell>
+                    <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: columns;"></mat-row>
+            </mat-table>
+            <mat-paginator #usersPaginator [pageSizeOptions]="[10, 25, 50]" [pageSize]="25" showFirstLastButtons></mat-paginator>
+        </div>
+    </div>
+</div>
+<div *ngIf="!usersLoaded">
+    <ds-loading-message></ds-loading-message>
+</div>
+<ng-template #emptyState>
+    <div class="empty-state">There is no data to display.</div>
+</ng-template>

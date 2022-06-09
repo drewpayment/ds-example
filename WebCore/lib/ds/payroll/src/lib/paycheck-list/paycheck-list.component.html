@@ -1,0 +1,199 @@
+<ng-container *ngIf="data$ | async"></ng-container>
+<ds-card border="top" mode="nobody">
+    <ds-card-header>
+        <ds-card-header-title>Payroll History</ds-card-header-title>
+        <ds-card-bread-crumb>
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="SelectPayrollHistory.aspx?Submenu=Payroll">Payroll</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Payroll History</li>
+            </ol>
+          </nav>
+        </ds-card-bread-crumb>
+        <ds-card-inline-content>
+            <div class="card-data bordered">
+                <div class="item">
+                    <label>Payroll Id:</label> #{{payrollId}}
+                </div>
+            </div>
+        </ds-card-inline-content>
+        <ds-card-title-right-content>
+            <div class="header-form-group d-flex flex-wrap align-items-baseline" *ngIf="isLoadedAndExists">
+                <label >Email:</label>
+                <ng-container *ngIf="showEmailGeneralLedger">
+                    <div class="text-center ml-md-2 position-relative">
+                        <button type="button" 
+                            class="btn btn-action white-space-nowrap" 
+                            [ngClass]="glLog != null ? glLog.buttonClass : 'btn btn-action'"
+                            [disabled]="glSending || (glLog != null && glLog.endDate == null && !glLog.hasError)"
+                            (click)="generateReportHookHook(PayrollReportsToEmail.GlInterfaces)">
+                            <i *ngIf="glLog != null" class="material-icons">{{glLog.icon}}</i>
+                            <i *ngIf="glSending" class="material-icons">timer</i> 
+                            General Ledger
+                        </button>
+                        <div class="btn-detail-bottom instruction-text"
+                            [class.text-danger]="!!glLog && glLog.hasError">
+                            <ng-container *ngIf="glLog != null && glLog.endDate != null && !glLog.hasError">Sent {{glLog.endDate | date:'MM/dd/yyyy'}}</ng-container>
+                            <ng-container *ngIf="glSending || (glLog != null && glLog.endDate == null && !glLog.hasError)">Processing</ng-container>
+                            <ng-container *ngIf="glLog != null && glLog.hasError">Failed {{glLog.endDate | date:'MM/dd/yyyy'}}</ng-container>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="showEmailPayStubs">
+                    <div class="text-center ml-2 position-relative">
+                        <button type="button" 
+                            class="btn btn-action white-space-nowrap" 
+                            [ngClass]="psLog != null ? psLog.buttonClass : 'btn btn-action'"
+                            [disabled]="psSending || (psLog != null && psLog.endDate == null && !psLog.hasError)"
+                            (click)="generateReportHookHook(PayrollReportsToEmail.PayStubs)">
+                            <i *ngIf="psLog != null" class="material-icons">{{psLog.icon}}</i>
+                            <i *ngIf="psSending" class="material-icons">timer</i> 
+                            PayStubs
+                        </button>
+                        <div class="btn-detail-bottom instruction-text"
+                            [class.text-danger]="!!psLog && psLog.hasError">
+                            <ng-container *ngIf="psLog != null && psLog.endDate != null && !psLog.hasError">Sent {{psLog.endDate | date:'MM/dd/yyyy'}}</ng-container>
+                            <ng-container *ngIf="psSending || (psLog != null && psLog.endDate == null && !psLog.hasError)">Processing</ng-container>
+                            <ng-container *ngIf="psLog != null && psLog.hasError">Failed {{psLog.endDate | date:'MM/dd/yyyy'}}</ng-container>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container>
+                    <div class="text-center ml-2 position-relative">
+                        <button type="button" 
+                            class="btn btn-action white-space-nowrap" 
+                            [ngClass]="srLog != null ? srLog.buttonClass : 'btn btn-action'"
+                            [disabled]="srSending || (srLog != null && srLog.endDate == null && !srLog.hasError)"
+                            (click)="generateReportHookHook(PayrollReportsToEmail.StandardReports)">
+                            <i *ngIf="srLog != null" class="material-icons">{{srLog.icon}}</i>
+                            <i *ngIf="srSending" class="material-icons">timer</i> 
+                            Reports
+                        </button>
+                        <div  class="btn-detail-bottom instruction-text"
+                            [class.text-danger]="!!srLog && srLog.hasError">
+                            <ng-container *ngIf="srLog != null && srLog.endDate != null && !srLog.hasError">Sent {{srLog.endDate | date:'MM/dd/yyyy'}}</ng-container>
+                            <ng-container *ngIf="srSending || (srLog != null && srLog.endDate == null && !srLog.hasError)">Processing</ng-container>
+                            <ng-container *ngIf="srLog != null && srLog.hasError">Failed {{srLog.endDate | date:'MM/dd/yyyy'}}</ng-container>
+                        </div>
+                    </div>
+                </ng-container>
+                <!-- TODO: INT-83: Wrap this into the main data$ observable, in order to prevent the button "pop-in". -->
+                <ng-container *ngIf="canAccessPayrollExportFile$ | async">
+                    <div class="text-center ml-2 position-relative">
+                        <button type="button" class="white-space-nowrap" [disabled]="pfSending || (pfLog != null && pfLog.endDate == null && !pfLog.hasError)"
+                            [ngClass]="pfLog != null ? pfLog.buttonClass : 'btn btn-action'" (click)="generateReportHookHook(PayrollReportsToEmail.PayrollExportFile)">
+                            <i *ngIf="pfLog != null" class="material-icons">{{pfLog.icon}}</i><i *ngIf="pfSending" class="material-icons">timer</i> Payroll File
+                        </button>
+                        <div  class="btn-detail-bottom instruction-text"
+                            [class.text-danger]="!!pfLog && pfLog.hasError">
+                            <ng-container *ngIf="pfLog != null && pfLog.endDate != null && !pfLog.hasError">Sent {{pfLog.endDate | date:'MM/dd/yyyy'}}</ng-container>
+                            <ng-container *ngIf="pfSending || (pfLog != null && pfLog.endDate == null && !pfLog.hasError)">Processing</ng-container>
+                            <ng-container *ngIf="pfLog != null && pfLog.hasError">Failed {{pfLog.endDate | date:'MM/dd/yyyy'}}</ng-container>
+                        </div>
+                    </div>
+                </ng-container>
+                <!-- TODO: INT-267: Wrap this into the main data$ observable, in order to prevent the button "pop-in". -->
+                <ng-container *ngIf="canAccessComPsychExportFile$ | async">
+                    <div class="text-center ml-2 position-relative">
+                        <button type="button" class="white-space-nowrap" [disabled]="comPsychSending || (comPsychLog != null && comPsychLog.endDate == null && !comPsychLog.hasError)"
+                            [ngClass]="comPsychLog != null ? comPsychLog.buttonClass : 'btn btn-action'" (click)="generateReportHookHook(PayrollReportsToEmail.ComPsychExportFile)">
+                            <i *ngIf="comPsychLog != null" class="material-icons">{{comPsychLog.icon}}</i><i *ngIf="comPsychSending" class="material-icons">timer</i> ComPsych File
+                        </button>
+                        <div  class="btn-detail-bottom instruction-text"
+                            [class.text-danger]="!!comPsychLog && comPsychLog.hasError">
+                            <ng-container *ngIf="comPsychLog != null && comPsychLog.endDate != null && !comPsychLog.hasError">Sent {{comPsychLog.endDate | date:'MM/dd/yyyy'}}</ng-container>
+                            <ng-container *ngIf="comPsychSending || (comPsychLog != null && comPsychLog.endDate == null && !comPsychLog.hasError)">Processing</ng-container>
+                            <ng-container *ngIf="comPsychLog != null && comPsychLog.hasError">Failed {{comPsychLog.endDate | date:'MM/dd/yyyy'}}</ng-container>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+        </ds-card-title-right-content>
+        <ds-card-title-action>
+            <ng-container *ngIf="showReports && isLoadedAndExists">
+                <button type="button" class="btn btn-outline-primary text-nowrap dropdown-toggle" [matMenuTriggerFor]="reportMenu">
+                    View Reports
+                </button>
+            </ng-container>
+            <mat-menu #reportMenu="matMenu">
+                <ng-container *ngFor="let report of reports">
+                    <button mat-menu-item (click)="openReport(report.standardReportId)">{{report.name}}</button>
+                </ng-container>
+            </mat-menu>
+        </ds-card-title-action>
+    </ds-card-header>
+</ds-card>
+<ng-container *ngIf="isLoadedAndExists">
+    <div class="row">
+        <div class="col-md-12 col-xl-4">
+            <ds-payroll-information-widget [payrollId]="payrollId"></ds-payroll-information-widget>
+        </div>
+        <div class="col-md-6 col-xl-4">
+            <ds-bank-deposit-widget [payrollId]="payrollId"></ds-bank-deposit-widget>
+        </div>
+        <div class="col-md-6 col-xl-4">
+            <ds-payment-count-widget [payrollId]="payrollId"></ds-payment-count-widget>
+        </div>
+    </div>
+</ng-container>
+
+<ds-card *ngIf="isLoadedAndExists; else loadingAndEmpty">
+    <ds-card-header>
+        <ds-card-sub-header-title>Payment Detail</ds-card-sub-header-title>
+        <ds-card-subtitle >
+            <div class="row align-items-end justify-content-between">
+                <div class="col-md-auto">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" id="displayVendor" [(ngModel)]="displayVendors" class="custom-control-input" aria-describedby="displayVendors">
+                                <label class="custom-control-label" for="displayVendor">Display Vendors</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="row align-items-end justify-content-end">
+                        <div class="col-md-12">
+                            <div class="d-flex-inline">
+                                <ng-container >
+                                    <label class="font-xs font-italic text-muted">
+                                        Search {{resultingPaychecks$ | async}} of {{totalPaychecks$ | async}} paychecks
+                                    </label>
+                                </ng-container>
+                                <div class="input-group">
+                                    <input class="form-control" type="search" name="employeeSearch" (keyup)="applyFilter($event.target.value)"/>
+                                    <div class="input-group-append">
+                                        <button class="search" type="button">
+                                            <i class="material-icons">search</i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ds-card-subtitle>
+    </ds-card-header>
+
+    <ds-card-content>
+        <ds-paycheck-table></ds-paycheck-table>
+    </ds-card-content>
+
+</ds-card>
+<ng-template #loadingAndEmpty>
+    <div class="card">
+      <div class="carb-body">
+        <ng-container *ngIf="checkingPayrollStatus; else checkedAndEmpty">
+          <ds-loading-message></ds-loading-message>
+        </ng-container>
+      </div>
+    </div>
+</ng-template>
+<ng-template #checkedAndEmpty>
+    <div *ngIf="payrollNotApplied" class="empty-state">This payroll has not been accepted.</div>
+    <ng-container  *ngIf="!payrollNotApplied">
+        <ds-loading-message></ds-loading-message>
+    </ng-container>
+</ng-template>

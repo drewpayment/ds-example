@@ -1,0 +1,64 @@
+<div mat-dialog-header>
+    <h2 class="modal-title">
+        Setup Application Resource 
+    </h2>
+    <button type="button" class="close" (click)="cancel()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</div>
+<div mat-dialog-content>
+    <form #form="ngForm">
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-control-label">Name</label>
+                    <input type='text' class="form-control" [(ngModel)]="resource.name" name="name" required dsFormControlValidator />
+                    <div class="invalid-feedback">
+                        Please enter resource name.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-control-label">Route/URL</label>
+                    <input type='text' class="form-control" [(ngModel)]="resource.routeUrl" name="route" required dsFormControlValidator />
+                    <div class="invalid-feedback">
+                        Please enter route/url.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-control-label">Resource Type</label>
+                    <select class="form-control" [(ngModel)]="resource.resourceType" required name="resourceType" dsFormControlValidator>
+                        <option *ngFor="let type of resourceTypes" [ngValue]="type.resourceType">{{ type.name }}</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select resource type.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-control-label">Application Source</label>
+                    <select class="form-control" [(ngModel)]="resource.applicationSourceType" required name="appType" dsFormControlValidator>
+                        <option *ngFor="let type of applicationSources" [ngValue]="type.sourceType">{{ type.name }}</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select application source.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div mat-dialog-actions>
+    <button type="button" class="btn btn-save" (click)="save(form)">Save</button>
+    <button type="button" class="btn btn-cancel" (click)="cancel()">Cancel</button>
+</div>

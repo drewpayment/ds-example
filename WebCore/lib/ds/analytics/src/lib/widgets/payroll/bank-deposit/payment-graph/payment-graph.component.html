@@ -1,0 +1,29 @@
+<ds-dashboard-widget [cardType]="cardType" [loaded]="loaded" skeleton="pie-graph-skeleton">
+    <ds-dashboard-widget-content [infoData]="infoData" [flexGrow]='false' *ngIf="!emptyState">
+        <ds-dashboard-widget-bottom-content>
+            <div class="chart">
+                <canvas
+                    baseChart
+                    [data]="pieChartData"
+                    [labels]="pieChartLabels"
+                    [chartType]="pieChartType"
+                    [options]="pieChartOptions"
+                    [colors]="pieChartColors"
+                    (chartClick)="openDialog($event)"
+                >
+                </canvas>
+            </div>
+            <div class="empty-state">
+                Click on a section of the graph to view more details.
+            </div>
+        </ds-dashboard-widget-bottom-content>
+    </ds-dashboard-widget-content>
+    <!-- Empty State -->
+    <ds-dashboard-widget-content [infoData]="emptyStateInfoData" *ngIf="emptyState">
+        <ds-dashboard-widget-bottom-content>
+            <div class="empty-state">
+                No data available to display
+            </div>
+        </ds-dashboard-widget-bottom-content>
+    </ds-dashboard-widget-content>
+</ds-dashboard-widget>

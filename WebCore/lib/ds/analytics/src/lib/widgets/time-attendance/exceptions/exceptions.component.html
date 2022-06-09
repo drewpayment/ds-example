@@ -1,0 +1,17 @@
+<ds-dashboard-widget [cardType]="cardType" [loaded]="loaded">
+    <ds-dashboard-widget-header [title]="title"></ds-dashboard-widget-header>
+    <ds-dashboard-widget-content>
+        <div class="overflow-list" *ngIf="!emptyState">
+            <div class="row">
+                <div class="col-md-4" *ngFor="let e of dataArray">
+                    <ds-exception-card [dateRange]="dateRange" [data]=e></ds-exception-card>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="emptyState">
+            <div class="empty-state">
+                No data available to display
+            </div>
+        </div>
+    </ds-dashboard-widget-content>
+</ds-dashboard-widget>

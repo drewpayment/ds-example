@@ -1,0 +1,18 @@
+<div class="input-group">
+    <input matInput
+           class="form-control"
+           [formControl]="date1"
+           [matDatepicker]="picker"
+           [max]="max"
+           [min]="min"
+           (dateChange)="changeDateSelected($event)"
+           (blur) = "blurEvent($event)"
+     />
+    <div class="input-group-append">
+        <mat-datepicker-toggle matSuffix [for]="picker" class="input-group-text date">
+            <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+        </mat-datepicker-toggle>
+        <mat-datepicker #picker [startAt]="data"></mat-datepicker>
+    </div>
+    <div class="invalid-feedback">Please enter a date.</div>
+</div>

@@ -1,0 +1,43 @@
+syntax: glob
+*\obj\*
+*.*~
+*.rdl.data
+*.orig
+*.trend
+*.dll
+*.nccov
+*.ncproj
+*.suo
+*.user
+*.pdb
+*.swp
+*.rej
+*.xml
+*.XML
+*.MDF
+*.LDF
+*.db
+*.scc
+*.vspscc
+*.vssscc
+*.scssc
+Ds.Source.Web/DevConfigs/*.config
+*\node_modules\*
+
+
+# switch to regexp syntax.
+Ds.Source.Web/DevConfigs/*.config
+UpgradeLog.htm
+Ds.Source.Web/Stylesheets/prepros.cfg
+.DS_Store
+._.DS_Store
+Ds.Source.Web/Stylesheets/source/.__segue.scss
+Ds.Source.Web/Stylesheets/source/.__print.scss
+Ds.Source.Web/Stylesheets/.scss-lint.yml
+Ds.Source.Web/Stylesheets/._.scss-lint.yml
+Ds.Source.Web/Stylesheets/._sass-lint.yml
+*.ncrunchproject
+syntax: regexp
+/?packages/.*/
+/bin/
+obj/

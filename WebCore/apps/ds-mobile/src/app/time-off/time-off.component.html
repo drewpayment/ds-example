@@ -1,0 +1,175 @@
+
+<ng-template #pageContent>
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>
+                Request Time Off
+            </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <div [formGroup]="form" class="ds-mobile-grid">
+                <div class="row">
+                    <mat-form-field>
+                        <mat-label>Policy</mat-label>
+                        <mat-select placeholder="Policy" formControlName="accrual">
+                            <mat-option *ngFor="let a of timeOffPolicySummaries; let i = index" [value]="a?.policyId">
+                                {{ a?.policyName }}
+                            </mat-option>
+                            <!-- <mat-option *ngFor="let a of (accruals$|async); let i = index" [value]="a?.clientAccrualId">
+                                {{ a?.description }}
+                            </mat-option> -->
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                    
+                <div class="row">
+                    <div>
+                        Balance: {{ selectedPolicy?.unitsAvailable }} hours
+                        <span class="text-muted italic">including {{ selectedPolicy?.pendingUnits }} pending</span>
+                    </div>
+                </div>  
+                
+                <div class="row">
+                    <mat-button-toggle-group class="my-4" [value]="form.value.type" (change)="form.get('type').patchValue($event.value);">
+                        <mat-button-toggle value="0">Partial</mat-button-toggle>
+                        <mat-button-toggle value="1">One Day</mat-button-toggle>
+                        <mat-button-toggle value="2">Multiple</mat-button-toggle>
+                    </mat-button-toggle-group>
+                </div>
+                
+                <!-- PARTIAL -->
+                <ng-container *ngIf="form.get('type').value == 0">
+                    <div class="row col-2">
+                        <ng-container *ngTemplateOutlet="startDate; context: { $implicit: form }"></ng-container>
+                        <ng-container *ngTemplateOutlet="hours; context: { $implicit: form }"></ng-container>
+                    </div>
+                    
+                    <div class="row col-2">
+                        <ng-container *ngTemplateOutlet="startTime; context: { $implicit: form }"></ng-container>
+                        <div>&nbsp;</div>
+                    </div>
+                    
+                    <div class="row">
+                        <ng-container *ngTemplateOutlet="note; context: { $implicit: form }"></ng-container>
+                    </div>
+                </ng-container>
+                
+                <!-- ONE DAY -->
+                <ng-container *ngIf="form.get('type').value == 1">
+                    <div class="row col-2">
+                        <ng-container *ngTemplateOutlet="startDate; context: { $implicit: form }"></ng-container>
+                        <div>&nbsp;</div>
+                    </div>
+                    
+                    <div class="row">
+                        <ng-container *ngTemplateOutlet="note; context: { $implicit: form }"></ng-container>
+                    </div>
+                </ng-container>
+                
+                <!-- MULTIPLE DAYS -->
+                <ng-container *ngIf="form.get('type').value == 2">
+                    <div class="row col-2">
+                        <ng-container *ngTemplateOutlet="startDate; context: { $implicit: form, dateLabel: 'Date from' }"></ng-container>
+                        
+                        <ng-container *ngTemplateOutlet="endDate; context: { $implicit: form }"></ng-container>
+                    </div>
+                    
+                    <div class="row">
+                        <ng-container *ngTemplateOutlet="note; context: { $implicit: form }"></ng-container>
+                    </div>
+                </ng-container>
+            </div>
+        </mat-card-content>
+        <mat-card-actions class="row">
+            <button type="button" [disabled]='requestDisabled' mat-flat-button color="accent" class="card-submit-btn text-capitalize" (click)="submitRequest()">
+                <mat-icon>airplanemode_active</mat-icon>
+                <span>Submit Request</span>
+            </button>
+        </mat-card-actions>
+    </mat-card>
+</ng-template>
+
+<ng-container *ngIf="pageLoading; else pageContent">
+    <div class="d-flex justify-content-center">
+        <mat-spinner></mat-spinner>
+    </div>
+</ng-container>
+
+<ng-template #startDate let-dateLabel="dateLabel">
+    <ng-container [formGroup]="form" #f="ngForm">
+        <mat-form-field [hideRequiredMarker]="true">
+            <mat-label>{{ dateLabel ? dateLabel : 'Date' }}</mat-label>
+            <input matInput [matDatepicker]="startDatepicker" placeholder="Choose" formControlName="startDate" required />
+            <mat-datepicker-toggle matSuffix [for]="startDatepicker"></mat-datepicker-toggle>
+            <mat-datepicker #startDatepicker></mat-datepicker>
+            <mat-error *ngIf="form.get('startDate').hasError('required')">
+                Please select a date.
+            </mat-error>
+        </mat-form-field>
+    </ng-container>
+</ng-template>
+
+<ng-template #endDate>
+    <ng-container [formGroup]="form" #f="ngForm">
+        <mat-form-field>
+            <mat-label>To</mat-label>
+            <input matInput [matDatepicker]="endDatepicker" placeholder="Choose" formControlName="endDate" />
+            <mat-datepicker-toggle matSuffix [for]="endDatepicker"></mat-datepicker-toggle>
+            <mat-datepicker #endDatepicker></mat-datepicker>
+            <mat-error *ngIf="form.get('endDate').hasError('required')">
+                Please select a date.
+            </mat-error>
+            <mat-error *ngIf="form.get('endDate').hasError('minDate')">
+                End date cannot be before start date.
+            </mat-error>
+            <mat-error *ngIf="form.get('endDate').hasError('sameDate')">
+                Start & End cannot be same day.
+            </mat-error>
+        </mat-form-field>
+    </ng-container>
+</ng-template>
+
+<ng-template #startTime>
+    <ng-container [formGroup]="form" #f="ngForm">
+        <mat-form-field>
+            <mat-label>Time from</mat-label>
+            <input matInput type="text" placeholder="Enter Time" formControlName="startTime" />
+            <svg matSuffix xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
+                <path d="M0 0h24v24H0z" fill="none"/>
+                <path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+            </svg>
+            <mat-error *ngIf="form.get('startTime').hasError('required')">
+                Please enter a time.
+            </mat-error>
+        </mat-form-field>
+    </ng-container>
+</ng-template>
+
+<ng-template #hours>
+    <ng-container [formGroup]="form" #f="ngForm">
+        <mat-form-field [hideRequiredMarker]="true">
+            <mat-label>Hours</mat-label>
+            <input matInput type="number" placeholder="Enter Hours" formControlName="hours" />
+            <svg matSuffix xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M0 0h24v24H0z" fill="none"/>
+                <path d="M16.24 7.76C15.07 6.59 13.54 6 12 6v6l-4.24 4.24c2.34 2.34 6.14 2.34 8.49 0 2.34-2.34 2.34-6.14-.01-8.48zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
+            </svg>
+            <mat-error *ngIf="form.get('hours').hasError('required')">
+                Please enter hours.                
+            </mat-error>
+            <mat-error *ngIf="form.get('hours').hasError('invalidHours')">
+                Minimum allowed: 1.
+            </mat-error>
+        </mat-form-field>
+    </ng-container>
+</ng-template>
+
+<ng-template #note>
+    <ng-container [formGroup]="form" #f="ngForm">
+        <mat-form-field class="w-100">
+            <mat-label>Note <span class="text-muted italic">Optional</span></mat-label>
+            <input matInput type="text" placeholder="Enter notes" formControlName="note" />
+        </mat-form-field>
+    </ng-container>
+</ng-template>

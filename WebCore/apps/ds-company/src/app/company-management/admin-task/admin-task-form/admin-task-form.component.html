@@ -1,0 +1,123 @@
+<div class="mat-drawer-inner-container-form">
+    <div class="drawer-header">
+        <button class="btn btn-icon" (click)="clearDrawer()">
+            <mat-icon>chevron_right</mat-icon>
+        </button>
+        <h2>
+            <ng-container *ngIf="taskList?.name">{{taskList.name}}</ng-container>
+            <ng-container *ngIf="!taskList?.name">Add Task</ng-container>
+        </h2>
+    </div>
+    <div class="drawer-content">
+        <div class="form-group" [formGroup]="listNameForm">
+            <label for="listName" class="form-control-label">List Name</label>
+            <input type="text" formControlName="listName" maxlength="250" class="form-control" 
+                [class.is-invalid]="(listNameForm.controls['listName'].touched || pageSubmitted) && listNameForm.controls['listName'].invalid">
+            <div class="invalid-feedback">
+                Please enter a task list name.
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="list-bordered action">
+                <div class="header">Tasks</div>
+                <div class="body" [formGroup]="taskForm" *ngIf="taskList.onboardingAdminTasks.length > 0 || _isAddingTask; else  noTasksMessage">
+                    <div class="item hoverable" *ngFor="let task of taskList.onboardingAdminTasks; let i=index">
+                        <div class="ds-item" *ngIf="!task.isEditing">                            
+                            <div class="item-label"><span class="bullet mx-2">&#9899;</span> {{task.description}}</div>
+                        </div>                        
+                        <div class="li-edit-item editable-input" *ngIf="task.isEditing">
+                            <input id="taskNameCtrl" formControlName="taskName" class="form-control input-sm" maxLength="250" 
+                                (keyup.enter)="updateTask(task, i )"
+                                (keyup.escape)="clearTask(task, i)"
+                                [class.is-invalid]="(taskForm.controls['taskName'].touched || submitted) && taskForm.controls['taskName'].invalid" />
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-primary" (click)="updateTask(task, i )">
+                                    <i class="material-icons">done</i>
+                                </button>
+                            </div>
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-outline-primary" (click)="clearTask(task, i)">
+                                    <i class="material-icons">clear</i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="action-items hover-show" [class.d-none]="task.isEditing">
+                            <button type="button" class="btn btn-icon" [matMenuTriggerFor]="editTaskMenu">
+                                <i class="material-icons md-18">more_vert</i>
+                            </button>
+                            <mat-menu #editTaskMenu="matMenu">
+                                <button mat-menu-item type="button" (click)="editTask(task, i)">
+                                    Edit
+                                </button>
+                                <button mat-menu-item type="button" (click)="removeTask(task, i)">
+                                    Remove
+                                </button>
+                            </mat-menu>
+                        </div>
+                    </div>
+                </div>
+                <ng-template #noTasksMessage>
+                    <div class="body">
+                        <div class="empty-state">There are no tasks to display currently.</div>
+                    </div>
+                </ng-template>
+            </div>
+            <button type="button" class="btn btn-list d-flex align-items-center" [class.d-none]="_isAddingTask"  (click)="addTask()">
+                <i class="material-icons">add</i> <span>Task</span>
+            </button>
+        </div>
+        <div class="form-group">
+            <div class="list-bordered action">
+                <div class="header">Job Profiles</div>
+                <div class="body" *ngIf="taskList.jobProfiles.length > 0 || _isAddingJobProfile; else  noProfilesMessage">
+                    <div class="item hoverable"  *ngFor="let jprofile of taskList.jobProfiles; let i=index">
+                        <div class="ds-item" *ngIf="!jprofile.isEditing">
+                            <div class="item-label"> <span class="bullet mx-2">&#9899;</span>{{jprofile.description}}</div>
+                        </div>                        
+                        <div class="action-items hover-show" [class.d-none]="jprofile.isEditing">
+                            <button type="button" class="btn btn-icon" [matMenuTriggerFor]="editProfileMenu">
+                            <i class="material-icons md-18">more_vert</i>
+                            </button>
+                            <mat-menu #editProfileMenu="matMenu">
+                                <button mat-menu-item type="button" (click)="removeJobProfile(jprofile, i)">
+                                    Remove
+                                </button>
+                            </mat-menu>
+                        </div>
+                    </div>
+                    <div class="item" *ngIf="_isAddingJobProfile" >
+                        <div [formGroup]="jpForm" class="li-edit-item editable-input">
+                            <input id="profileNameCtrl" matInput [matAutocomplete]="auto" [formControl]="profileSearchInput" class="form-control input-sm" 
+                                    [ngClass]="{ 'is-invalid': (profileSearchInput.touched || submitted) && profileSearchInput.invalid }"
+                                    (keyup.enter)="assignJobProfile( )"
+                                    (keyup.escape)="clearJobProfile( )"  />
+                                <mat-autocomplete #auto="matAutocomplete"  [displayWith]="displayFn">
+                                    <mat-option *ngFor="let jp of filteredJobProfiles; let i = index" [value]="jp">
+                                        {{ jp.description }}
+                                    </mat-option>
+                                </mat-autocomplete>
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-primary" (click)="assignJobProfile( )">
+                                    <i class="material-icons">done</i>
+                                </button>
+                            </div>
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-outline-primary" (click)="clearJobProfile( )">
+                                    <i class="material-icons">clear</i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <ng-template #noProfilesMessage>
+                    <div class="body">
+                        <div class="empty-state">There are no job profiles mapped to this list.</div>
+                    </div>
+                </ng-template>
+            </div>
+            <button type="button" class="btn btn-list d-flex align-items-center" [class.d-none]="_isAddingJobProfile"  (click)="addJobProfile()">
+                <mat-icon>add</mat-icon> Profile
+            </button>
+        </div>
+    </div>
+</div>

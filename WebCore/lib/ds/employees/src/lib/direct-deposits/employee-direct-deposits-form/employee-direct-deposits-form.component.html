@@ -1,0 +1,159 @@
+<div *ngIf=" employeeDirectDeposit.employeeDeductionId <= 0 && maxAccountsCountAllowed > 0 && accountsCount >= maxAccountsCountAllowed">
+    <div mat-dialog-header>
+        <h2 class="dialog-title"></h2>
+        <button type="button" class="close" (click)="onNoClick()">
+            <mat-icon>clear</mat-icon>
+        </button>
+    </div>
+    <div mat-dialog-content>
+      <div class="empty-state-cycle danger pt-0">
+          <i class="material-icons">warning</i>
+          <div class="title">You have reached the {{accountsCount}} account limit.</div>
+          <p>If you need to add an account, please contact your HR or Payroll department.</p>
+      </div>
+    </div>
+</div>
+<div *ngIf="employeeDirectDeposit.employeeDeductionId > 0 || maxAccountsCountAllowed <= 0 || accountsCount < maxAccountsCountAllowed">
+    <div mat-dialog-header>
+        <h2 class="dialog-title">
+            {{pageTitle}}
+        </h2>
+        <button type="button" class="close" (click)="onNoClick()">
+            <mat-icon>clear</mat-icon>
+        </button>
+        <div class="dialog-subtitle">
+            <div class="instruction-text">
+                Enter your account information below and identify whether the deposit amount will be a flat amount or a percentage amount.
+            </div>
+        </div>
+    </div>
+    <div mat-dialog-content>
+        <form [formGroup]="f">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="form-control-label">Account Name</label>
+                        <input type="text"
+                               [class.is-invalid]="getFormControlError('accountName', ['maxlength'])"
+                               class="form-control"
+                               formControlName="accountName"
+                               cdkFocusInitial />
+                        <div class="invalid-feedback" *ngIf="f.controls.accountName.errors?.maxlength">
+                            Account Name should be of max 50 characters.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <h3>Account Type</h3>
+                    <div class="form-group inline-radio">
+                        <div class="custom-control custom-radio custom-control-bg info">
+                            <input id="accountTypeChecking" type="radio" formControlName="accountType" [value]="1" class="custom-control-input">
+                            <label class="custom-control-label" for="accountTypeChecking">Checking</label>
+                            <div class="custom-bg"></div>
+                        </div>
+                        <div class="custom-control custom-radio custom-control-bg info">
+                            <input id="accountTypeSavings" type="radio" formControlName="accountType" [value]="0" class="custom-control-input">
+                            <label class="custom-control-label" for="accountTypeSavings">Savings</label>
+                            <div class="custom-bg"></div>
+                        </div>
+                        <div class="invalid-feedback">Please select an account type.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="form-control-label">Routing Number</label> 
+                        <input type="text"
+                               [class.is-invalid]="getFormControlError('routingNumber', ['required', 'routingNumber'])"
+                               class="form-control"
+                               formControlName="routingNumber"
+                               required cdkFocusInitial
+                               mask="000000000"/>
+                        <div class="invalid-feedback">
+                            <ng-container *ngIf="f.controls.routingNumber.errors?.required">Please enter a routing number.</ng-container>
+                            <ng-container *ngIf="f.controls.routingNumber.errors?.routingNumber && !f.controls.routingNumber.errors?.required">Please enter a valid routing number.</ng-container>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="form-control-label">Confirm Routing</label> 
+                        <input type="text"
+                               [class.is-invalid]="f.controls.routingNumber.value != f.controls.confirmRoutingNumber.value && !isConfirmRoutingValid"
+                               class="form-control"
+                               formControlName="confirmRoutingNumber"
+                               mask="000000000" 
+                               (focus)="isConfirmRoutingValid=true"
+                               (blur)="isConfirmRoutingValid=false" />
+                        <div class="invalid-feedback" *ngIf="f.controls.routingNumber.value != f.controls.confirmRoutingNumber.value && !isConfirmRoutingValid">
+                            Routing Numbers do not match.
+                        </div> 
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="form-control-label">Account Number</label>
+                        <input type="text"
+                               [class.is-invalid]="getFormControlError('accountNumber', ['required'])"
+                               class="form-control"
+                               formControlName="accountNumber"
+                               required cdkFocusInitial />
+                        <div class="invalid-feedback" *ngIf="f.controls.accountNumber.errors?.required">
+                            Please enter an account number.
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="form-control-label">Confirm Account</label>
+                        <input type="text"
+                               [class.is-invalid]="f.controls.accountNumber.value != f.controls.confirmAccountNumber.value && !isConfirmAccountValid"
+                               class="form-control"
+                               formControlName="confirmAccountNumber"
+                               (focus)="isConfirmAccountValid=true"
+                               (blur)="isConfirmAccountValid=false" />
+                        <div class="invalid-feedback" *ngIf="f.controls.accountNumber.value != f.controls.confirmAccountNumber.value && !isConfirmAccountValid">
+                            Account Numbers do not match.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-0" />
+            <div class="row">
+                <div class="col-12">
+                    <h3 class="d-inline-block">Amount Type</h3> <span class="form-help-text pl-1">You will enter the amount on the Paycheck Settings page.</span>
+                    <div class="form-group inline-radio">
+                        <div class="custom-control custom-radio custom-control-bg info">
+                            <input id="amountTypeFlat" type="radio" formControlName="amountType" [value]="-3" class="custom-control-input">
+                            <label class="custom-control-label" for="amountTypeFlat">Flat Amount</label>
+                            <div class="custom-bg"></div>
+                        </div>
+                        <div class="custom-control custom-radio custom-control-bg info">
+                            <input id="amountTypePercentage" type="radio" formControlName="amountType" [value]="-1" class="custom-control-input">
+                            <label class="custom-control-label" for="amountTypePercentage">Percentage</label>
+                            <div class="custom-bg"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div mat-dialog-actions>
+        <button type="button"
+                class="btn btn-save"
+                [disabled]="f.hasError('required')"
+                (click)="saveEmployeeDirectDeposit()">
+            Save
+        </button>
+        <button type="button"
+                class="btn btn-cancel"
+                (click)="onNoClick()">
+            Cancel
+        </button>
+    </div>
+</div>

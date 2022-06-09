@@ -1,0 +1,70 @@
+<div mat-dialog-header>
+    <div class="modal-title-content">
+        <h2 class="modal-title">
+            Edit Rating
+        </h2>
+        <div class="star-rating">
+            <ng-container *ngFor="let r of allRatings">
+                <input
+                    [id]="r.label"
+                    class="star-radio"
+                    type="radio"
+                    name="rating"
+                    [value]="r.rating"
+                    [ngModel]="rating.rating"
+                />
+                <label class="star star-h2" for="r.label">
+                    <mat-icon class="filled">star</mat-icon>
+                    <mat-icon class="outline-view">star</mat-icon>
+                    <mat-icon class="outline">star_border</mat-icon>
+                </label>
+            </ng-container>
+        </div>
+    </div>
+    <button type="button" class="close" (click)="onNoClick()">
+        <mat-icon class="text-muted clickable">clear</mat-icon>
+    </button>
+</div>
+<div mat-dialog-content>
+    <form [formGroup]="form">
+        <div class="form-group">
+            <label>Label</label>
+            <input
+                [ngClass]="{'is-invalid':form.get('label').hasError('required') && (form.get('label').touched || modelChanged)}"
+                (keyup)="changedValidity()"
+                class="form-control" 
+                formControlName="label" 
+                required 
+                cdkFocusInitial
+            />
+            <div class="invalid-feedback">Please enter a label.</div>
+        </div>
+        <div class="form-group">
+            <label>Description</label>
+            <textarea 
+                [ngClass]="{'is-invalid':form.get('description').hasError('required') && (form.get('description').touched || modelChanged)}"
+                (keyup)="changedValidity()"
+                class="form-control"
+                formControlName="description"
+                maxlength="150"
+                rows="4"
+                required
+            ></textarea>
+            <div class="invalid-feedback">Please enter a description.</div>
+            <mat-hint class="form-help-text float-right">{{form.value.description.length}} / 150 characters</mat-hint>
+        </div>
+    </form>
+</div>
+<div mat-dialog-actions>
+    <button 
+        type="button" 
+        class="btn btn-primary"
+        (click)="saveRating()"
+    >Save</button>
+    <button 
+        type="button"
+        class="btn btn-cancel"
+        (click)="onNoClick()"
+    >Cancel</button>
+</div>
+

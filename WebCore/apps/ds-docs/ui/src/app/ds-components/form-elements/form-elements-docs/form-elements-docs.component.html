@@ -1,0 +1,352 @@
+<markdown ngPreserveWhitespaces>
+# Form Elements
+
+## Input
+</markdown>
+
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleInput = !toggleInput">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleInput">
+  <div class="ui">
+    <ds-inputs></ds-inputs>
+  </div>
+  <div class="example">
+    <markdown src="app/ds-components/form-elements/inputs/inputs.component.html"></markdown>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+## Select
+</markdown>
+
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleSelect = !toggleSelect">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleSelect">
+  <div class="ui">
+    <ds-selects></ds-selects>
+  </div>
+  <div class="example">
+    <markdown src="app/ds-components/form-elements/selects/selects.component.html"></markdown>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+## Textarea
+</markdown>
+
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleTextarea = !toggleTextarea">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleTextarea">
+  <div class="ui">
+    <ds-textareas></ds-textareas>
+  </div>
+  <div class="example">
+    <markdown src="app/ds-components/form-elements/textareas/textareas.component.html"></markdown>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+## Checkbox
+The checkbox input ID needs to match the label `for=""` attribute to be clickable.
+</markdown>
+
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleCheckbox = !toggleCheckbox">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleCheckbox">
+  <div class="ui">
+    <ds-checkbox></ds-checkbox>
+  </div>
+  <div class="example">
+    <markdown src="app/ds-components/form-elements/checkbox/checkbox.component.html"></markdown>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+## Circle Checkbox
+Apply `clickable` to `circle-checkbox` if the checkbox is enabled.
+</markdown>
+
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleCircleCheckbox = !toggleCircleCheckbox">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleCircleCheckbox">
+  <div class="ui">
+    <ds-circle-checkbox></ds-circle-checkbox>
+  </div>
+  <div class="example">
+    <markdown src="app/ds-components/form-elements/circle-checkbox/circle-checkbox.component.html"></markdown>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+  ### Radios
+  The radio input ID needs to match the label `for=""` attribute to be clickable.
+</markdown>
+
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleRadio = !toggleRadio">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleRadio">
+  <div class="ui">
+    <ds-radios></ds-radios>
+  </div>
+  <div class="example">
+    <markdown src="app/ds-components/form-elements/radios/radios.component.html"></markdown>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+  ## Checkbox Pills
+  Use when modifying UI. The checked element's background is filled with the color specified, while the others are left in a muted state.
+</markdown>
+
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="togglePillCheckbox = !togglePillCheckbox">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="togglePillCheckbox">
+  <div class="ui">
+    <ds-pill-checkbox></ds-pill-checkbox>
+  </div>
+  <div class="example">
+    <markdown src="app/ds-components/form-elements/pill-checkbox/pill-checkbox.component.html"></markdown>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+  ## Radio Pills
+  Use when modifying UI. The checked element's background is filled with the color specified, while the others are left in a muted state.
+</markdown>
+
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="togglePillRadio = !togglePillRadio">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="togglePillRadio">
+  <div class="ui">
+    <ds-pill-radio></ds-pill-radio>
+  </div>
+  <div class="example">
+    <markdown src="app/ds-components/form-elements/pill-radio/pill-radio.component.html"></markdown>
+  </div>
+</div>
+
+
+<markdown ngPreserveWhitespaces>
+  ## Input Groups
+</markdown>
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleInputGroups = !toggleInputGroups">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleInputGroups">
+  <div class="ui">
+    <ds-input-groups></ds-input-groups>
+  </div>
+  <div class="example">
+    <markdown src="app/ds-components/form-elements/input-groups/input-groups.component.html"></markdown>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+  ## Search
+</markdown>
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleSearch = !toggleSearch">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleSearch">
+  <div class="ui">
+    <ds-search></ds-search>
+  </div>
+  <div class="example">
+    <markdown src="app/ds-components/form-elements/search/search.component.html"></markdown>
+  </div>
+</div>
+
+
+<markdown ngPreserveWhitespaces>
+  ## File Inputs
+  A simple browse button. The button element triggers the browse window. Once a file is chosen, the accepted file types label is replaced with the file name.
+</markdown>
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleFileInput = !toggleFileInput">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleFileInput">
+  <div class="ui">
+    <ds-file-inputs></ds-file-inputs>
+  </div>
+  <div class="example">
+    <markdown src="app/ds-components/form-elements/file-inputs/file-inputs.component.html"></markdown>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+  ### File in upload Queue
+  Deprecated
+</markdown>
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleFileInputQueue = !toggleFileInputQueue">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleFileInputQueue">
+  <div class="ui">
+    <ds-file-input-queue></ds-file-input-queue>
+  </div>
+  <div class="example">
+    <markdown src="app/ds-components/form-elements/file-input-queue/file-input-queue.component.html"></markdown>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+  ## Input with button group
+  This example is for markup container only...buttons coming soon
+</markdown>
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleTimeSpanSelector = !toggleTimeSpanSelector">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleTimeSpanSelector">
+  <div class="ui">
+    <ds-input-button-group></ds-input-button-group>
+  </div>
+  <div class="example">
+    <markdown src="app/ds-components/form-elements/input-button-group/input-button-group.component.html"></markdown>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+  ## Borderless Select
+  Used for sorting tables and list data
+</markdown>
+
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleBorderlessSelect = !toggleBorderlessSelect">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleBorderlessSelect">
+  <div class="ui">
+    <ds-borderless-select></ds-borderless-select>
+  </div>
+  <div class="example">
+    <markdown src="app/ds-components/form-elements/borderless-select/borderless-select.component.html"></markdown>
+  </div>
+</div>
+
+
+<markdown ngPreserveWhitespaces>
+  ## Day Selector
+  Used for choosing days of the week in a form. The examples below has the weekends disabled, and Friday is checked and disabled. Color is supported for Success, Primary, Info, Warning, and Danger
+</markdown>
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleDaySelector = !toggleDaySelector">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleDaySelector">
+  <div class="ui">
+    <ds-day-selector></ds-day-selector>
+  </div>
+  <div class="example">
+    <markdown src="app/ds-components/form-elements/day-selector/day-selector.component.html"></markdown>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+  ## Layout
+
+  #### Inline
+</markdown>
+
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleInline = !toggleInline">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleInline">
+  <div class="ui">
+    <ds-layout-inline></ds-layout-inline>
+  </div>
+  <div class="example">
+    <markdown src="app/ds-components/form-elements/layout-inline/layout-inline.component.html"></markdown>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+  ### Spacing
+</markdown>
+
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleSpacing = !toggleSpacing">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleSpacing">
+  <div class="ui">
+    <ds-layout-spacing></ds-layout-spacing>
+  </div>
+  <div class="example">
+    <markdown src="app/ds-components/form-elements/layout-spacing/layout-spacing.component.html"></markdown>
+  </div>
+</div>
+
+<markdown ngPreserveWhitespaces>
+  ### Nesting
+</markdown>
+
+<div class="button-bar">
+  <button class="btn btn-icon" (click)="toggleNesting = !toggleNesting">
+    <mat-icon>code</mat-icon>
+    View Code
+  </button>
+</div>
+<div class="example-block" [class.open]="toggleNesting">
+  <div class="ui">
+    <ds-layout-nesting></ds-layout-nesting>
+  </div>
+  <div class="example">
+    <markdown src="app/ds-components/form-elements/layout-nesting/layout-nesting.component.html"></markdown>
+  </div>
+</div>

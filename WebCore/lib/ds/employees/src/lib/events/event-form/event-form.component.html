@@ -1,0 +1,170 @@
+<form [formGroup]="f" dsTrackFormChanges class="mat-drawer-inner-container-form">
+    <div class="drawer-header">
+        <button type="button" (click)="clearDrawer()" class="btn btn-icon">
+            <mat-icon>chevron_right</mat-icon>
+        </button>
+        <h2>
+            <ng-container *ngIf="!isAdding, else newEvent">
+                {{pageTitle}}
+            </ng-container>
+            <ng-template #newEvent>
+                Add Event
+            </ng-template>
+        </h2>
+    </div>
+    <ng-container *ngIf="(!isEssMode || event.isEmployeeEditable); else readOnlyEvent">
+    <div class="drawer-content">
+        <div class="row align-items-baseline">
+            <div class="col-sm-12 col-md-6 col-lg-12 col-2xl-6">
+                <div class="form-group">
+                    <label class="form-control-label">Topic</label>
+                    <select class="custom-select form-control" (change)="topicChange($event)" dsFormControlValidator 
+                        [dsFormControlSubmitted]="formSubmitted" formControlName="clientTopic">
+                        <option *ngFor="let topic of clientTopics" [value]="topic.clientTopicId">{{topic.description}}</option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="f.controls.clientTopic.errors?.required">
+                        Please select a topic.
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-12 col-2xl-6">
+                <div class="form-group">
+                    <label class="form-control-label">Sub-Topic</label>
+                    <select class="custom-select form-control"   formControlName="clientSubTopic" 
+                        [dsFormControlSubmitted]="formSubmitted" dsFormControlValidator>
+                        <option *ngFor="let topic of subTopics" [value]="topic.clientSubTopicId">{{topic.description}}</option>
+                    </select>
+                    <div class="invalid-feedback" *ngIf="f.controls.clientSubTopic.errors?.required">
+                        Please select a sub-topic.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row align-items-baseline">
+            <div class="col-sm-12 col-md-6 col-lg-12 col-2xl-6">
+                <div class="form-group">
+                    <label class="form-control-label">Event Date</label>
+                    <div class="input-group">
+                        <input matInput class="form-control" [matDatepicker]="eventDatePicker"
+                            formControlName="eventDate" name="eventDatePicker"
+                            dsFormControlValidator />
+                        <div class="input-group-append">
+                            <mat-datepicker-toggle matSuffix [for]="eventDatePicker" class="input-group-text date">
+                                <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #eventDatePicker></mat-datepicker>
+                        </div>
+                        <div class="invalid-feedback" *ngIf="f.controls.eventDate?.errors?.required">
+                            Please enter a valid event date.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-12 col-2xl-6">
+                <div class="form-group">
+                    <label class="form-control-label">Expiration Date  <span class="form-help-text">Optional</span></label>
+                    <div class="input-group">
+                        <input matInput class="form-control" [matDatepicker]="expirationDatePicker"
+                            formControlName="expirationDate" name="expirationDatePicker" />
+                        <div class="input-group-append">
+                            <mat-datepicker-toggle matSuffix [for]="expirationDatePicker" class="input-group-text date">
+                                <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #expirationDatePicker></mat-datepicker>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-control-label">Description <span class="form-help-text">Optional</span></label>
+                    <textarea class="form-control" maxlength="2000" formControlName="eventDesc" ></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-control-label">Duration <span class="form-help-text">Optional</span></label>
+                    <input formControlName="eventDuration" type="number" dsDecimalFormatter class="form-control">
+                </div>
+            </div>
+        </div>
+        <div class="row" [hidden]="isEssMode">
+            <div class="col-12">
+                <div class="form-group">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" formControlName="viewable" id="chkViewable" (change)="employeeViewableChanged()">
+                        <label class="custom-control-label" for="chkViewable">Employee View</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" [hidden]="isEssMode">
+            <div class="col-12">
+                <div class="form-group">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" formControlName="editable" id="chkEditable" (change)="employeeEditableChanged()">
+                        <label class="custom-control-label" for="chkEditable">Employee Edit</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="drawer-footer">
+        <button type="button" class="btn btn-save" (click)="saveEvent()">Save</button>
+        <button class="btn btn-cancel" (click)="close()">Cancel</button>
+    </div>
+    </ng-container>
+</form>
+
+<ng-template #readOnlyEvent>
+    <div class="drawer-content">
+        <div class="row">
+            <div class="col-sm-12 col-md-6 col-lg-12 col-2xl-6">
+                <div class="form-group">
+                    <label class="form-control-label">Topic</label>
+                    <div class="bold">{{event.clientTopicId ? getTopicName(event.clientTopicId) : '&mdash;' }}</div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-12 col-2xl-6">
+                <div class="form-group">
+                    <label class="form-control-label">Sub-Topic</label>
+                    <div class="bold">{{event.clientSubTopicId ? getSubTopicName(event.clientSubTopicId) :  '&mdash;' }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-lg-12 col-2xl-6">
+                <div class="form-group">
+                    <label class="form-control-label">Event Date</label>
+                    <div class="bold">{{event.eventDate ? (event.eventDate | date: "MM/dd/yyyy") :  '&mdash;' }}</div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-12 col-2xl-6">
+                <div class="form-group">
+                    <label class="form-control-label">Expiration Date</label>
+                    <div class="bold">{{event.expirationDate ? (event.expirationDate | date:'MM/dd/yyyy') : '&mdash;'}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-control-label">Description </label>
+                    <div class="bold">{{event.event ? event.event :  '&mdash;'}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="form-control-label">Duration</label>
+                    <div class="bold">{{event.duration ? (event.duration | number : '1.2-2')  : '&mdash;'}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>

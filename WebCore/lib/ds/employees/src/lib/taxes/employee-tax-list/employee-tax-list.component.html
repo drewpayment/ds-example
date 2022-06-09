@@ -1,0 +1,135 @@
+<ds-card>
+    <ds-card-header>
+        <ds-card-header-title>
+            Federal Taxes
+        </ds-card-header-title>
+        <ds-card-title-action>
+            <button *ngIf="hasEditPermissions" class="btn btn-outline-primary float-right" (click)="showFileNewFederalW4Dialog()" >File New Federal W4</button>
+        </ds-card-title-action>
+    </ds-card-header>
+    <ds-card-content>
+        <div class="row justify-content-center" *ngIf="isLoading">
+            <div class="col"><ds-loading-message></ds-loading-message></div>
+        </div>
+        <div class="empty-state" *ngIf="(!fedTaxes.length || !hasViewPermissions) && !isLoading">
+            Please contact your company administrator for your tax information.
+        </div>
+        <ng-container *ngIf="fedTaxes.length && hasViewPermissions">
+
+            <div *ngIf="employeeUsing2020FederalW4Setup" class="card card-table">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead class="table-header">
+                            <tr>
+                                <th>Description</th>
+                                <th>Filing Status</th>
+                                <th>Two Jobs Option</th>
+                                <th>Dep. Tax Credit</th>
+                                <th>Other Income</th>
+                                <th>Wage Deductions</th>
+                                <th>Extra Withholding</th>
+                                <!-- <th class="td-action-icon-width"></th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let tax of fedTaxes">
+                                <td>{{ tax.description }}</td>
+                                <td>{{ tax.filingStatusDescription }}</td>
+                                <td><span *ngIf="tax.hasMoreThanOneJob">Yes</span><span *ngIf="!tax.hasMoreThanOneJob">No</span></td>
+                                <td>${{ tax.taxCredit }}</td>
+                                <td>${{ tax.otherTaxableIncome }}</td>
+                                <td>${{ tax.wageDeduction }}</td>
+                                <td>${{ tax.additionalAmount }}</td>
+                                <!-- <td class="td-action-icon-width">
+                                    <button *ngIf='hasEditPermissions' type="button" class="btn btn-icon table-edit-icon" (click)="showEditTaxDialog(tax)">
+                                        <i class="material-icons">mode_edit</i>
+                                    </button>
+                                </td> -->
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div *ngIf="!employeeUsing2020FederalW4Setup" class="card card-table">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead class="table-header">
+                            <tr>
+                                <th>Description</th>
+                                <th>Filing Status</th>
+                                <th>Exemptions</th>
+                                <!-- <th class="table-text-right">Percent</th> -->
+                                <th>Additional Withholding</th>
+                                <!-- <th class="td-action-icon-width"></th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let tax of fedTaxes">
+                                <td>{{ tax.description }}</td>
+                                <td>{{ tax.filingStatusDescription }}</td>
+                                <td>{{ tax.numberOfExemptions }}</td>
+                                <!-- <td class="table-text-right">{{ tax.additionalPercent }}%</td> -->
+                                <td>${{ tax.additionalAmount }}</td>
+                                <!-- <td class="td-action-icon-width">
+                                    <button *ngIf='hasEditPermissions' type="button" class="btn btn-icon table-edit-icon" (click)="showEditTaxDialog(tax)">
+                                        <i class="material-icons">mode_edit</i>
+                                    </button>
+                                </td> -->
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </ng-container>
+    </ds-card-content>
+</ds-card>
+
+
+<ds-card>
+    <ds-card-header>
+        <ds-card-header-title>
+            Other Tax withholdings
+        </ds-card-header-title>
+    </ds-card-header>
+    <ds-card-content>
+        <div class="row justify-content-center" *ngIf="isLoading">
+            <div class="col"><ds-loading-message></ds-loading-message></div>
+        </div>
+        <div class="empty-state" *ngIf="(!stateTaxes.length || !hasViewPermissions) && !isLoading">
+            Please contact your company administrator for your tax information.
+        </div>
+        <ng-container *ngIf="stateTaxes.length && hasViewPermissions">
+            <div class="card card-table">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead class="table-header">
+                            <tr>
+                                <th>Description</th>
+                                <th>Filing Status</th>
+                                <th class="table-text-right">Exemptions</th>
+                                <th class="table-text-right">Percent</th>
+                                <th class="table-text-right">Flat</th>
+                                <th class="td-action-icon-width"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let tax of stateTaxes">
+                                <td>{{ tax.description }}</td>
+                                <td>{{ tax.filingStatusDescription }}</td>
+                                <td class="table-text-right">{{ tax.numberOfExemptions }}</td>
+                                <td class="table-text-right">{{ tax.additionalPercent }}%</td>
+                                <td class="table-text-right">${{ tax.additionalAmount }}</td>
+                                <td class="td-action-icon-width">
+                                    <button *ngIf='hasEditPermissions' type="button" class="btn btn-icon table-edit-icon" (click)="showEditTaxDialog(tax)">
+                                        <i class="material-icons">mode_edit</i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </ng-container>
+    </ds-card-content>
+</ds-card>

@@ -1,0 +1,222 @@
+@import '../../../../../../../../Styles/scss/bootstrap-variables';
+
+// Grid
+.grid {
+  .mat-header-row,
+  .mat-row {
+    .mat-header-cell,
+    .mat-cell {
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
+
+      &.table-text-right {
+        padding-right: 0.5rem;
+      }
+    }
+  }
+}
+// Sticky Grid
+.mat-table-sticky:not(.mat-table-sticky-border) {
+  z-index: 2 !important;
+}
+
+.mat-table-sticky-border {
+  box-shadow: $table-box-shadow;
+
+  &.mat-header-cell {
+    border-left: $table-sticky-hidden-header-border; // needed to keep width
+    border-right: $table-header-border;
+
+  }
+  &.mat-cell {
+    border-left: $table-sticky-hidden-border;
+    border-right: $table-border;
+  }
+
+  +.mat-cell {
+    border-left: none !important; // Removes border immediately after sticky column
+  }
+}
+
+.mat-table-sticky-border-end {
+  box-shadow: $table-box-shadow;
+
+  &.mat-header-cell {
+    border-left: $table-header-border;
+  }
+  &.mat-cell {
+    border-left: $table-border;
+  }
+}
+
+.grid {
+  border-collapse: separate; // needed to keep border in place
+
+  .mat-header-cell {
+    border-bottom-color: #59626d;
+  }
+
+  td.mat-cell:not(.mat-table-sticky) {
+    border-left-width: 1px;
+    border-left-style: solid;
+    border-left-color: $table-border-color;
+  }
+
+  .mat-row {
+    // needed to keep width
+    .mat-table-sticky {
+      &.mat-header-cell {
+        border-left: $table-sticky-hidden-header-border;
+        border-right: $table-sticky-hidden-header-border;
+      }
+      &.mat-cell {
+        transition: border 0.3s ease-in-out;
+        border-left: $table-sticky-hidden-border;
+        border-right: $table-sticky-hidden-border;
+      }
+    }
+
+
+    &:hover {
+      // transition sticky borders on hover
+      .mat-table-sticky.mat-cell {
+        border-left: 1px solid $table-hover;
+        border-right: 1px solid $table-hover;
+
+        &.mat-table-sticky-border {
+          border-right: 1px solid $table-sticky-border-color;
+        }
+        &.mat-table-sticky-border-end {
+          border-left: 1px solid $table-sticky-border-color;
+        }
+      }
+
+      // transition inputs on hover
+      .grid-input-group,
+      .grid-select,
+      .grid-input,
+      .grid-append,
+      .grid-prepend {
+        background-color: $table-hover;
+      }
+    }
+  }
+}
+
+// Column sizes
+.mat-column-award,
+.mat-column-earning,
+.mat-column-type {
+  min-width: 100px;
+}
+
+.mat-column-select {
+  min-width: 50px;
+}
+.mat-column-avatar {
+  min-width: 42px;
+}
+.mat-column-name {
+  min-width: 150px;
+}
+.mat-column-empno {
+  min-width: 105px;
+}
+
+.mat-column-amount {
+  min-width: 100px;
+}
+.mat-column-effective {
+  min-width: 130px;
+}
+.mat-column-status {
+  min-width: 100px;
+}
+.mat-column-payout {
+  min-width: 150px;
+}
+.mat-column-sup {
+  min-width: 150px;
+}
+.mat-column-jobTitle {
+  min-width: 150px;
+}
+
+// @supports (-ms-ime-align:auto) {
+//   .table-responsive {
+//       padding-bottom: 1rem;
+//   }
+//   .mat-header-cell,
+//   .mat-cell {
+//     position: relative !important;
+//   }
+// }
+
+// Grid Input Elements
+.grid-input-container.mat-cell {
+  position: relative;
+}
+
+// base styles
+.grid-select,
+.grid-input,
+.grid-amount,
+.grid-input-group,
+.grid-append,
+.grid-prepend {
+  transition: background-color 0.3s ease-in-out;
+  height: 98%;
+  border: none;
+  top: 1%;
+}
+
+// full width inputs
+.grid-select,
+.grid-input,
+.grid-input-group {
+  padding: $table-cell-padding;
+  position: absolute;
+  width: 98%;
+  right: 1%;
+}
+
+// Split width inputs
+.grid-input-group {
+  .grid-input {
+    width: 66%  ;
+    left: 0;
+  }
+
+  .grid-append,
+  .grid-prepend {
+    width: 30%;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .grid-append {
+    right: 0;
+  }
+
+  .grid-prepend {
+    left: 1%;
+
+    .grid-input {
+      right: 1%;
+    }
+  }
+}
+
+.grid-input-group {
+  &.flat {
+    .grid-input {
+      right: 1%;
+      left: initial;
+    }
+    .grid-append {
+      display: none;;
+    }
+  }
+}

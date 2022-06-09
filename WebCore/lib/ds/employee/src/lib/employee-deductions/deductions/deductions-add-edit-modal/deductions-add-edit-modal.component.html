@@ -1,0 +1,149 @@
+<div mat-dialog-header>
+    <h2 *ngIf="option == 'add'" class="dialog-title">Add Deduction</h2>
+    <h2 *ngIf="option == 'edit'" class="dialog-title">Edit Deduction</h2>
+    <button type="button" class="close" (click)="cancel()">
+        <mat-icon>clear</mat-icon>
+    </button>
+</div>
+
+<div mat-dialog-content>
+    <form [formGroup]="deductionFormGroup">
+        <div class="row">
+            <!-- Only show this on Add-->
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-control-label">Deduction</label>
+                    <select class="form-control custom-select" formControlName="deduction" (change)="populateAmountTypeDropdown(true)" [ngClass]="{'is-invalid': ((deductionFormGroup.controls['deduction'].touched || formSubmitted ) && deductionFormGroup.controls['deduction'].invalid)}" cdk-focus-initial>
+                        <!-- <option *ngIf="option == 'add'" [selected]="option == 'add'">--Select a Deduction--</option> -->
+                        <option *ngIf="selectedDeduction.clientDeductionID == null" [value]="" [selected]="selectedDeduction.clientDeductionID == null"></option>
+                        <option *ngFor="let deduc of deductionDropdownList" [selected]="selectedDeduction.clientDeductionID == deduc.clientDeductionID" [value]="deduc.clientDeductionID">{{deduc.descriptionCode}}</option>
+                    </select>
+                    <div *ngIf="deductionFormGroup.controls['deduction'].hasError('required')" class="invalid-feedback">
+                        Please select a deduction.
+                    </div>
+                </div>
+            </div>
+        	<div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-control-label">Amount</label>
+                    <div class="input-group">
+
+                        <div *ngIf="deductionFormGroup.controls['numberPrefix'].value == '$'" class="input-group-prepend">
+                            <span class="input-group-text currency">$</span>
+                        </div>
+
+                        <input ID="" class="form-control" formControlName="amount" (keypress)="isNumberKey($event)" [ngClass]="{'is-invalid': ((deductionFormGroup.controls['amount'].touched && deductionFormGroup.controls['amount'].invalid) || (deductionFormGroup.controls['amount'].touched || formSubmitted) && deductionFormGroup.errors?.amount)}"/>
+
+                        <div *ngIf="deductionFormGroup.controls['numberPrefix'].value == '%'" class="input-group-append">
+                            <span class="input-group-text percent">%</span>
+                        </div>
+
+                        <div *ngIf="deductionFormGroup.controls['amount'].hasError('required')" class="invalid-feedback">
+                            Please enter an amount.
+                        </div>
+                        <div *ngIf="deductionFormGroup.errors?.amount" class="invalid-feedback">
+                            Invalid amount based on selected amount type
+                        </div>
+                        <div *ngIf="deductionFormGroup.controls['amount'].hasError('notANumber')" class="invalid-feedback">
+                            Amount must be a number
+                        </div>
+                        <div *ngIf="deductionFormGroup.controls['amount'].hasError('greaterThen16digits')" class="invalid-feedback">
+                            Amount must be less than 16 digits
+                        </div>
+                    </div>
+                </div>
+            </div>
+        	<div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-control-label">Amount Type</label>
+                    <select class="form-control custom-select" formControlName="amountType" [ngClass]="{'is-invalid': ((deductionFormGroup.controls['amountType'].touched || formSubmitted ) && deductionFormGroup.controls['amountType'].invalid)}"  (change)="updateNumberPrefix()">
+                        <!-- <option *ngIf="option == 'add'" [selected]="option == 'add'">--Select an Amount Type--</option> -->
+                        <option *ngIf="selectedDeduction.amountType == '' || selectedDeduction.amountType == null" [value]="" [selected]="selectedDeduction.amountType == '' || selectedDeduction.amountType == null"></option>
+                        <option *ngFor="let amountType of amountTypeList" [selected]="selectedDeduction.deductionAmountTypeID == amountType.employeeDeductionAmountTypeID" [value]="amountType.description">{{amountType.description}}</option>
+                    </select>
+                    <div *ngIf="deductionFormGroup.controls['amountType'].hasError('required')" class="invalid-feedback">
+                        Please select an amount type.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-control-label">Max Per Payroll <span class="form-help-text"> Optional</span></label>                    
+                    <input type="text" class="form-control" formControlName="max" (keypress)="isNumberKey($event)" [ngClass]="{'is-invalid': (deductionFormGroup.controls['max'].touched && !deductionFormGroup.controls['max'].valid)}"/>
+                    <div *ngIf="deductionFormGroup.controls['max'].hasError('notANumber')" class="invalid-feedback">
+                        Max must be a number.
+                    </div>
+                    <div *ngIf="deductionFormGroup.controls['max'].hasError('greaterThen16digits')" class="invalid-feedback">
+                        Max must be less than 16 digits.
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-control-label">Max Type <span class="form-help-text"> Optional</span></label>                    
+                    <select class="form-control custom-select" formControlName="maxType" [ngClass]="{'is-invalid': (deductionFormGroup.controls['maxType'].touched && !deductionFormGroup.controls['maxType'].valid)}">
+                        <option [value]=""></option>
+                        <option *ngFor="let maxType of clientInfo.maxTypeList" [selected]="selectedDeduction.maxType == maxType.employeeDeductionMaxTypeID" [value]="maxType.employeeDeductionMaxTypeID">{{ maxType.description }}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-control-label">Limit/Balance <span class="form-help-text"> Optional</span></label>                    
+                    <input type="text" class="form-control" formControlName="totalMax" (keypress)="isNumberKey($event)" [ngClass]="{'is-invalid': (deductionFormGroup.controls['totalMax'].touched && !deductionFormGroup.controls['totalMax'].valid)}" />
+                    <div *ngIf="deductionFormGroup.controls['totalMax'].hasError('notANumber')" class="invalid-feedback">
+                        Limit/Balance must be a number.
+                    </div>
+                    <div *ngIf="deductionFormGroup.controls['totalMax'].hasError('greaterThen16digits')" class="invalid-feedback">
+                        Limit/Balance must be less than 16 digits.
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-control-label">Vendor <span class="form-help-text"> Optional</span></label>                    
+                    <select class="form-control custom-select" formControlName="vendor" [ngClass]="{'is-invalid': (deductionFormGroup.controls['vendor'].touched && !deductionFormGroup.controls['vendor'].valid)}">
+                        <option [value]=""></option>
+                        <option *ngFor="let vendor of clientInfo.vendorList" [selected]="selectedDeduction.clientVendorID == vendor.clientVendorID" [value]="vendor.clientVendorID">{{ vendor.name }}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-control-label">Plan <span class="form-help-text"> Optional</span></label>                    
+                    <select class="form-control custom-select" formControlName="plan" (change)="planSelected($event)" [ngClass]="{'is-invalid': (deductionFormGroup.controls['plan'].touched && !deductionFormGroup.controls['plan'].valid)}">
+                        <option [value]=""></option>
+                        <!-- the "| async" operation is used to let Angular handle subscribing and unsubscribing the observable planList. -->
+                        <!-- the "$" after PlanList is just a conventional way to denote that the object is an observable -->
+                        <option *ngFor="let plan of planList$ | async" [selected]="selectedDeduction.clientPlanID == plan.clientPlanID" value={{plan.clientPlanID}}>{{ plan.description }}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-control-label">Additional Info <span class="form-help-text"> Optional</span></label>                     
+                    <input type="text" class="form-control" formControlName="additionalInfo" [ngClass]="{'is-invalid': (deductionFormGroup.controls['additionalInfo'].touched && !deductionFormGroup.controls['additionalInfo'].valid)}"/>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="customCheck1a" formControlName="isActive">
+                    <label class="custom-control-label" for="customCheck1a">Active</label>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div mat-dialog-actions>
+    <button type="button" class="btn btn-primary" (click)="saveForm()">Save</button>
+    <button type="button" class="btn btn-cancel" (click)="cancel()">Cancel</button>
+</div>

@@ -1,0 +1,16 @@
+.employee-header {
+  min-height: 271px;
+  padding-top: 0.5rem;
+  .ds-card-body {
+    height: 100%;
+  }
+  .skeleton-container {
+    position: relative;
+    height: 100%;
+    min-height: 148px;
+  }
+}
+
+.employee-header.no-filter {
+  min-height: 178px;
+}

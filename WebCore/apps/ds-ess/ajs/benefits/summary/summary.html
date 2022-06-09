@@ -1,0 +1,140 @@
+﻿<div class="benefits">
+    <benefits-header active-step="3"></benefits-header>
+    <h1>Review Selections and Info <a href="" class="btn btn-sm btn-default" ng-click="moveToPage('Benefits/Enrollment',openEnrollment)">Back</a></h1>
+
+    <div class="panel panel-default benefit-panel">
+        <div class="panel-heading">
+            <h3 class="panel-title review-screen">
+                <span class="icon-stack">
+                    <i class="icon-circle icon-stack-base"></i>
+                    <i class="icon-light icon-ok"></i>
+                </span>
+                Selected Benefits</h3>
+        </div>
+        <div class="panel-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Plan Name</th>
+                        <th>Option</th>
+                        <th>Cost Per Pay</th>
+                        <th>Dependents</th>
+                    </tr>
+                </thead>
+                <tr class="selection-item" ng-repeat="es in selectedOpenEnrollment.employeeOpenEnrollment.employeeSelections | filter:{waivedCoverage:false} | orderBy:['-cost']" >
+                    <td><span ng-repeat="cat in es.coverageTypes | filter:{isWaived:false, isEmployeeGrouping:true}">{{ cat.description }}</span></td>
+                    <td>{{ es.selectedPlan.planName}}</td>
+                    <td class="selection-overview">
+                        <div>{{es.selectedOption.name}} {{ es.selectedBenefitAmount ? " &mdash; " + (es.selectedBenefitAmount.getFriendlyName(es.selectedOption)) : "" }}</div>
+                    </td>
+                    <td>${{(es.selectedBenefitAmount ? es.selectedBenefitAmount.cost : (es.selectedOption.cost || es.cost)) | number :2}}</td>
+                    <td>
+                        <div ng-show="results.length > 0" ng-init='results=getEmployeeSelectionDependents(es.employeeOpenEnrollmentSelectionId)'>
+                            <span class="dependent-list-item" ng-repeat="dep in results">
+                                {{ getFirstMidLastName(dep) }} ({{ dep.relationship }})
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <!--/.panel-body-->
+
+        <hr class="no-margin" />
+        <div class="panel-heading">
+            <h3 class="panel-title review-screen">
+                <span class="icon-stack">
+                    <i class="icon-circle icon-stack-base"></i>
+                    <i class="icon-light icon-minus"></i>
+                </span>
+                Waived Benefits</h3>
+        </div>
+        <div class="panel-body">
+            <div ng-show="!selectedOpenEnrollment.hasNoWaivedPlans">
+                <ul>
+                    <li class="selection-item" ng-repeat="cat in selectedOpenEnrollment.coverageTypes |  filter:{isWaived:true, isEmployeeGrouping:true}">
+                            {{cat.description}}
+                    </li>
+                </ul>
+            </div>
+            <div ng-show="selectedOpenEnrollment.hasNoWaivedPlans">
+                <p><em>You have no waived plans at this time.</em></p>
+            </div>
+        </div>
+        <hr class="no-margin"/>
+
+        <div class="panel-heading">
+            <h3 class="panel-title review-screen">
+                <span class="icon-stack">
+                    <i class="icon-circle icon-stack-base"></i>
+                    <i class="icon icon-light icon-user"></i>
+                </span>
+                My Dependents</h3>
+        </div>
+        <div class="panel-body">
+            <div ng-if="usedDependents.length > 0">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Relationship</th>
+                            <th>Gender</th>
+                            <th>DOB</th>
+                            <th>SSN</th>
+                            <th>Student</th>
+                            <th>Disability</th>
+                            <th>Tobacco</th>
+                        </tr>
+                    </thead>
+                    <tr ng-repeat="dep in usedDependents">
+
+                        <td>{{ dep.firstName }} &nbsp;{{ dep.middleInitial }}&nbsp;{{ dep.lastName }}
+                        </td>
+                        <td>{{ dep.relationship }}</td>
+                        <td>{{ dep.gender }}</td>
+                        <td>{{ dep.birthDate  | date:'MM/dd/yyyy' }}</td>
+
+                        <td ng-mouseenter="enableMaskSelection(dep, true)"
+                            ng-mouseleave="enableMaskSelection(dep, false)" width="115px">
+                            <span>{{ getSsn(dep) }}</span>
+                            <a
+                                ng-show="dep.showMaskSelection"
+                                ng-mousedown="showUnmaskedSsn(dep, true)"
+                                ng-mouseup="showUnmaskedSsn(dep, false)">
+                                <i class="icon-eye-open"></i>
+                            </a>
+
+                        </td>
+                        <td>
+                            <i ng-show="dep.isAStudent" class="icon-check" rel="tooltip" title="Is A Student"></i>
+                            <i ng-hide="dep.isAStudent" class="icon-remove" rel="tooltip" title="Not A Student"> </i>
+                        </td>
+                        <td>
+                            <i ng-show="dep.hasADisability" class="icon-check" rel="tooltip" title="Has A Disability"></i>
+                            <i ng-hide="dep.hasADisability" class="icon-remove" rel="tooltip" title="No Disability"></i>
+                        </td>
+                        <td>
+                            <i ng-show="dep.tobaccoUser" class="icon-check" rel="tooltip" title="Uses Tobacco Products"></i>
+                            <i ng-hide="dep.tobaccoUser" class="icon-remove" rel="tooltip" title="Does Not Use Tobacco Products"></i>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div ng-if="usedDependents.length == 0" class="message-no-data">
+                <span>You have no dependents signed up for benefits.</span>
+            </div>
+        </div>
+        <div class="panel-footer d-flex justify-content-between cf">
+            <a href="" class="btn btn-default" ng-click="moveToPage('Benefits/Enrollment')"><i class="icon-angle-left text-right"></i>Back </a>
+            <a href="" class="btn btn-primary" ng-click="moveToPage('Benefits/Confirmation')">Continue <i class="icon-angle-right text-left"></i></a>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+

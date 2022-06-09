@@ -1,0 +1,288 @@
+<ds-card mode="nobody" border="top">
+    <div ds-card-header>
+        <ds-card-header-title>Resources</ds-card-header-title>
+        <div ds-card-title-action>
+        </div>
+    </div>
+</ds-card>
+<ds-card *ngIf="showCompanyResourcesCard && nonEmptyCompanyResourceFolders.length > 0">
+    <ds-card-header>
+        <ds-card-sub-header-title>
+            Company Resources
+        </ds-card-sub-header-title>
+        <ds-card-bread-crumb *ngIf="showCompanyResourceFiles">
+            <nav aria-label="breadcrumb" role="navigation">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript:;" (click)="backToCompanyResourceFolders()">Folders</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        {{selectedCompanyResourceFolder ? selectedCompanyResourceFolder.description : ""}}</li>
+                </ol>
+            </nav>
+        </ds-card-bread-crumb>
+    </ds-card-header>
+    <ds-card-content>
+        <div *ngIf="isLoading" class="loading-message">
+            <ds-loading-message></ds-loading-message>
+        </div>
+        <div *ngIf="!isLoading">
+        <div class="overflow-list" *ngIf="!showCompanyResourceFiles && companyResourceFolders.length > 0">
+            <div class="row">
+                <div class="col-6 col-md-4 col-lg-3"
+                    *ngFor="let companyResourceFolder of companyResourceFolders | dsCustomFilterCallback: filterOutEmptyCompanyResourceFolders"
+                    (click)="companyResourceFolderClicked(companyResourceFolder)">
+                    <ds-card hover="true" color="info" mode="object" x-align="center"
+                        ng-mouseover="companyResourceFolder.hovered = true" ng-mouseleave="companyResourceFolder.hovered = false">
+                        <div ds-card-header>
+                            <ds-card-subtitle>
+                                <div class="split-content">
+                                    <div class="top">
+                                        <div class="object-card-avatar">
+                                            <mat-icon class="avatar mat-icon material-icons"
+                                                ng-class="{'text-info': companyResourceFolder.hovered}" role="img"
+                                                aria-hidden="true">
+                                                folder_open</mat-icon>
+                                        </div>
+                                        <div class="font-lg text-center text-truncate" data-toggle="tooltip"
+                                            matTooltip="{{companyResourceFolder.description}}">{{companyResourceFolder.description}}
+                                        </div>
+                                        <div class="text-muted text-center font-xs">{{companyResourceFolder.resourceCount}}
+                                            files</div>
+                                    </div>
+                                </div>
+                            </ds-card-subtitle>
+                        </div>
+                    </ds-card>
+                </div>
+            </div>
+        </div>
+        <div class="form-group" *ngIf="showCompanyResourceFiles && (selectedCompanyResourceFolder.resourceList | dsCustomFilterCallback: filterDocumentResources).length > 0">            
+            <h3>Documents</h3>
+            <div class="overflow-list">
+                <div class="row">
+                    <div class="col-6 col-md-4 col-lg-3"
+                        *ngFor="let companyResource of selectedCompanyResourceFolder.resourceList | dsCustomFilterCallback: filterDocumentResources">
+                        <ng-container>
+                            <a [href]="companyResource.azureUrl" *ngIf="companyResource.isAzure; else downloadLegacyResource"
+                                target="_blank">
+                                <ds-card hover="true" color="info" mode="object" x-align="center" class="hoverable card-height-fix-sm clickable">
+                                    <div ds-card-header>
+                                        <ds-card-header-title>  
+                                        </ds-card-header-title>
+                                        <ds-card-title-action>  
+                                            <button type="button" class="btn btn-icon nested-cog hover-show" [matMenuTriggerFor]="goalOptions" (click)="onEvent($event)">
+                                                <i class="material-icons">more_vert</i>
+                                            </button>
+                                            <mat-menu #goalOptions="matMenu">
+                                                <button mat-menu-item type="button" [title]="'Download ' + companyResource.resourceName" (click)="redirect(companyResource.azureUrl)">
+                                                    Download
+                                                </button>
+                                            </mat-menu> 
+                                        </ds-card-title-action>
+                                        <ds-card-subtitle>
+                                            <div class="split-content">
+                                                <div class="top">
+                                                    <div class="object-card-avatar">
+                                                        <img class="resource-img"
+                                                            src="WebCore/Images/Resources/{{getMappedExtension(companyResource.cssClass)}}.png" />
+                                                    </div>
+                                                    <div class="font-lg text-center text-truncate" data-toggle="tooltip"
+                                                    matTooltip="{{companyResource.resourceName}}">
+                                                        {{companyResource.resourceName}}</div>
+                                                    <div class="text-muted text-center font-xs">Uploaded:
+                                                        {{companyResource.addedDate | date:'MM/dd/yy h:mm a'}}</div>
+                                                </div>
+                                            </div>
+                                        </ds-card-subtitle>
+                                    </div>
+                                </ds-card>
+                            </a>                
+                            <ng-template #downloadLegacyResource>
+                                <ds-card hover="true" color="info" mode="object" x-align="center" class="hoverable card-height-fix-sm clickable" [title]="'Download ' + companyResource.resourceName" (click)="downloadForm(companyResource)">
+                                    <div ds-card-header>
+                                        <ds-card-header-title>  
+                                        </ds-card-header-title>
+                                        <ds-card-title-action>  
+                                            <button type="button" class="btn btn-icon nested-cog hover-show" [matMenuTriggerFor]="goalOptions" (click)="onEvent($event)">
+                                                <i class="material-icons">more_vert</i>
+                                            </button>
+                                            <mat-menu #goalOptions="matMenu">
+                                                <button mat-menu-item type="button" [title]="'Download ' + companyResource.resourceName" (click)="downloadForm(companyResource)">
+                                                    Download
+                                                </button>
+                                            </mat-menu>
+                                        </ds-card-title-action> 
+                                        <ds-card-subtitle>
+                                            <div class="split-content">
+                                                <div class="top">
+                                                    <div class="object-card-avatar">
+                                                        <img class="resource-img"
+                                                            src="WebCore/Images/Resources/{{getMappedExtension(companyResource.cssClass)}}.png" />
+                                                    </div>
+                                                    <div class="font-lg text-center text-truncate" data-toggle="tooltip"
+                                                    matTooltip="{{companyResource.resourceName}}">
+                                                        {{companyResource.resourceName}}
+                                                    </div>
+                                                    <div class="text-muted text-center font-xs">Uploaded:
+                                                        {{companyResource.addedDate | date:'MM/dd/yy h:mm a'}}</div>
+                                                </div>
+                                            </div>
+                                        </ds-card-subtitle>
+                                    </div>
+                                </ds-card>
+                            </ng-template>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group" *ngIf="showCompanyResourceFiles && (selectedCompanyResourceFolder.resourceList | dsCustomFilterCallback: filterLinkResources).length > 0">
+            <h3>Links</h3>
+            <div class="overflow-list">
+                
+                <div class="row">
+                    <div class="col-6 col-md-4 col-lg-3" *ngFor="let companyResource of selectedCompanyResourceFolder.resourceList | dsCustomFilterCallback: filterLinkResources" (click)="redirectTo(companyResource.source)">
+                        <ds-card hover="true" color="info" mode="object" x-align="center">
+                            <div ds-card-header>
+                                <ds-card-subtitle>
+                                    <div class="split-content">
+                                        <div class="top">
+                                            <div  class="object-card-avatar">
+                                                <img class="resource-img" src="WebCore/Images/Resources/{{getMappedExtension('link')}}.png" />
+                                              </div>
+                                              <div class="font-lg text-center text-truncate" data-toggle="tooltip" matTooltip="{{companyResource.resourceName}}">{{companyResource.resourceName}}</div>
+                                              <div class="text-muted text-center mb-4 font-xs">Uploaded: {{companyResource.addedDate | date:'MM/dd/yy h:mm a'}}</div>
+                                        </div>
+                                    </div>
+                                </ds-card-subtitle>
+                            </div>
+                        </ds-card>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group" *ngIf="showCompanyResourceFiles && (selectedCompanyResourceFolder.resourceList | dsCustomFilterCallback: filterVideoResources).length > 0">
+            <h3>Videos</h3>
+            <div class="overflow-list">                
+                <div class="row">
+                    <div class="col-6 col-md-4 col-lg-3" *ngFor="let companyResource of selectedCompanyResourceFolder.resourceList | dsCustomFilterCallback: filterVideoResources" (click)="redirectTo(companyResource.source)">
+                        <ds-card hover="true" color="info" mode="object" x-align="center">
+                            <div ds-card-header>
+                                <ds-card-subtitle>
+                                    <div class="split-content">
+                                        <div class="top">
+                                            <div class="object-card-avatar">
+                                                <img class="resource-img" src="WebCore/Images/Resources/{{getMappedExtension('video')}}.png" />
+                                            </div>
+                                            <div class="font-lg text-center text-truncate" data-toggle="tooltip"
+                                            matTooltip="{{companyResource.resourceName}}">{{companyResource.resourceName}}</div>
+                                            <div class="text-muted text-center mb-4 font-xs">Uploaded:
+                                                {{companyResource.addedDate | date:'MM/dd/yy h:mm a'}}</div>
+                                        </div>
+                                    </div>
+                                </ds-card-subtitle>
+                            </div>
+                        </ds-card>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="empty-state" *ngIf="showCompanyResourceFiles && (selectedCompanyResourceFolder.resourceCount <= 0) ">
+            You do not currently have any resources in this folder.
+        </div>
+    </div>
+    </ds-card-content>>
+</ds-card>
+<!-- HTML-->
+<ds-card *ngIf="showAttachmentsCard && nonEmptyAttachmentFolders.length > 0">
+    <ds-card-header>
+        <ds-card-sub-header-title>
+            Personal Attachments
+        </ds-card-sub-header-title>
+        <ds-card-subtitle *ngIf="showAttachmentFiles">
+            <nav aria-label="breadcrumb" role="navigation">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript:;" (click)="backToAttachmentFolders()">Folders</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        {{selectedAttachmentFolder ? selectedAttachmentFolder.description : ""}}</li>
+                </ol>
+            </nav>
+        </ds-card-subtitle>
+    </ds-card-header>
+    <ds-card-content>
+        <div *ngIf="isLoading" class="loading-message">Loading Attachments...</div>
+        <div class="overflow-list" *ngIf="!isLoading">
+            <div class="row" *ngIf="!showAttachmentFiles && attachmentFolders.length > 0">
+                <div class="col-6 col-md-4 col-lg-3" *ngFor="let attachmentFolder of attachmentFolders | dsCustomFilterCallback: filterOutEmptyAttachmentFolders" (click)="attachmentFolderClicked(attachmentFolder)">
+                    <ds-card hover="true" color="info" mode="object" x-align="center">
+                        <div ds-card-header>
+                          <ds-card-subtitle>
+                            <div class="split-content">
+                              <div class="top">
+                                <div  class="object-card-avatar">
+                                    <mat-icon class="avatar mat-icon material-icons"  role="img" aria-hidden="true">folder_open</mat-icon>
+                                </div>
+                                <div class="font-lg text-center text-truncate" data-toggle="tooltip" matTooltip="{{attachmentFolder.description}}">{{attachmentFolder.description}}</div>
+                                <div class="text-muted text-center font-xs">{{attachmentFolder.attachmentCount}} files</div>
+                              </div>
+                            </div>                        
+                          </ds-card-subtitle>
+                        </div>
+                      </ds-card>
+                </div>
+            </div>
+            <div *ngIf="showAttachmentFiles && selectedAttachmentFolder.attachmentCount > 0">            
+                <ng-container>
+                    <div class="row">
+                        <div class="col-6 col-md-4 col-lg-3" *ngFor="let attachmentFile of selectedAttachmentFolder.attachments">
+                            <a [href]="attachmentFile.azureUrl" *ngIf="attachmentFile.isAzure; else downloadLegacyResource"
+                                target="_blank">
+                                <ds-card hover="true" color="info" mode="object" x-align="center" [title]="'Download ' + attachmentFile.name">
+                                    <div ds-card-header>
+                                      <ds-card-subtitle>
+                                        <div class="split-content">
+                                          <div class="top">
+                                            <div class="object-card-avatar">
+                                                <img class="resource-img"
+                                                    src="WebCore/Images/Resources/{{getMappedExtension(attachmentFile.extension)}}.png" />
+                                            </div>
+                                            <div class="font-lg text-center text-truncate" data-toggle="tooltip"
+                                            matTooltip="{{attachmentFile.name}}">{{attachmentFile.name}}</div>
+                                            <div class="text-muted text-center mb-4 font-xs">Uploaded:
+                                                {{attachmentFile.addedDate | date:'MM/dd/yy h:mm a'}}</div>
+                                          </div>
+                                        </div>                        
+                                      </ds-card-subtitle>
+                                    </div>
+                                  </ds-card>
+                            </a>
+                            <ng-template #downloadLegacyResource>
+                                <ds-card hover="true" color="info" mode="object" x-align="center" [title]="'Download ' + attachmentFile.name" (click)="downloadForm(attachmentFile)">
+                                    <div ds-card-header>
+                                      <ds-card-subtitle>
+                                        <div class="split-content">
+                                          <div class="top">
+                                            <div class="object-card-avatar">
+                                                <img class="resource-img"
+                                                    src="WebCore/Images/Resources/{{getMappedExtension(attachmentFile.extension)}}.png" />
+                                            </div>
+                                            <div class="font-lg text-center text-truncate" data-toggle="tooltip"
+                                            matTooltip="{{attachmentFile.name}}">{{attachmentFile.name}}</div>
+                                            <div class="text-muted text-center mb-4 font-xs">Uploaded:
+                                                {{attachmentFile.addedDate | date:'MM/dd/yy h:mm a'}}</div>
+                                          </div>
+                                        </div>                        
+                                      </ds-card-subtitle>
+                                    </div>
+                                  </ds-card>
+                            </ng-template>
+                        </div>
+                    </div>
+                </ng-container>            
+            </div>
+        </div>        
+        <div class="empty-state" *ngIf="showAttachmentFiles && (selectedAttachmentFolder.attachmentCount <= 0) ">
+            You do not currently have any attachments in this folder.
+        </div>
+    </ds-card-content>
+</ds-card>

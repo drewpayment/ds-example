@@ -1,0 +1,676 @@
+<ds-card mode="nobody" border="top">
+    <ds-card-header>
+        <ds-card-header-title>
+            Job Profiles
+        </ds-card-header-title>
+        <ds-card-bread-crumb>
+          <nav aria-label="breadcrumb" *ngIf="!isLoading">
+              <ol class="breadcrumb">
+                  <li class="breadcrumb-item">
+                      <a routerLink="/admin/job-profiles">Job Profiles</a>
+                  </li>
+                  <li class="breadcrumb-item active">{{jobProfile?.description}}</li>
+              </ol>
+          </nav>
+      </ds-card-bread-crumb>
+        <ds-card-subtitle>
+            <div class="instruction-text">
+                Information saved to a Job Profile will auto-populate default values in other areas of Dominion such as Employee Classifications, Payroll, Benefits & EEOC Information.
+            </div>
+        </ds-card-subtitle>
+    </ds-card-header>
+</ds-card>
+<ds-card>
+  <ds-card-header>
+    <ds-card-inline-content [formGroup]="formJobProfileTitle" *ngIf="formJobProfileTitle && !isLoading">
+      <ds-card-sub-header-title  *ngIf="!editingTitle">
+        {{jobProfile?.description}}
+        <button type="button" class="btn btn-icon" (click)="editJobProfileTitle()">
+          <mat-icon>edit</mat-icon>
+        </button>            
+      </ds-card-sub-header-title>
+      <div class="li-edit-item editable-input" *ngIf="editingTitle">
+        <input type="text" class="form-control" id="JobProfileTitleCtrl" formControlName="JobProfileTitle" maxLength="50" 
+          (keyup.enter)="updateJobProfileTitle()"
+          (keyup.escape)="resetJobProfileTitle()"
+          [class.is-invalid]="(formJobProfileTitle.controls['JobProfileTitle'].touched || formJobProfileTitleSubmitted) && formJobProfileTitle.controls['JobProfileTitle'].invalid" />
+        <div class="input-group-append">
+            <button type="button" class="btn btn-primary" (click)="updateJobProfileTitle()">
+                <mat-icon>done</mat-icon>
+            </button>
+        </div>
+        <div class="input-group-append">
+            <button type="button" class="btn btn-outline-primary" (click)="resetJobProfileTitle()">
+                <mat-icon>clear</mat-icon>
+            </button>
+        </div>
+      </div>
+    </ds-card-inline-content>
+    <ds-card-title-action >
+      <button [matMenuTriggerFor]="menu" class="btn btn-outline-primary dropdown-toggle" *ngIf="!isLoading">
+        Options
+      </button>
+      <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="updateJobProfileStatus(jobProfile)">Set as {{jobProfile?.isActive ? 'Inactive' : 'Active'}}</button>
+          <button mat-menu-item *ngIf="jobProfile?.isApplicantTrackingOn" (click)="addPost()">Add Post</button>
+      </mat-menu>
+    </ds-card-title-action>        
+  </ds-card-header>
+  <ds-card-content>
+      <ng-container [formGroup]="form" *ngIf="!isLoading && form; else loading">
+        <ds-card mode="widget-nobody" color="{{descWidgetColor}}"  collapse="true" [expanded]="false">
+          <div ds-card-icon>assignment_ind</div>
+          <ds-card-header>
+            <ds-card-widget-title>Description</ds-card-widget-title>
+          </ds-card-header>
+          <ds-card-content>
+            <div class="overflow-list">
+              <ds-card>
+                <ds-card-header>
+                  <ds-card-sub-header-title>Summary</ds-card-sub-header-title>
+                </ds-card-header>
+                <ds-card-content>
+                  <div class="form-group-inline">
+                    <label class="sr-only">Summary</label>
+                    <textarea class="form-control" formControlName="Requirements"></textarea>
+                  </div>
+                </ds-card-content>
+              </ds-card>
+              <div class="row">
+                <div class="col-md-6">
+                  <ds-card matchHeight="true">
+                    <ds-card-header>
+                      <ds-card-sub-header-title>Responsibilities</ds-card-sub-header-title>
+                    </ds-card-header>
+                    <ds-card-content>
+                      <div formGroupName="jobResponsibilitiesForm">
+                          <ng-container *ngIf="jobProfileClassifications.jobResponsibilities.length > 0; else  noJobResponsibilitiesMessage">
+                            <ul class="pl-4 mb-1">
+                              <li class="hoverable" *ngFor="let jobResponsibility of jobProfileClassifications.jobResponsibilities; let i=index">
+                                <div *ngIf="!jobResponsibility.isResponsibilityEditing" class="d-flex justify-content-between">                            
+                                  <div>{{jobResponsibility.description}}</div>
+                                  <div class="hover-show" [class.d-none]="jobResponsibility.isResponsibilityEditing">
+                                    <button type="button" class="btn btn-icon" [matMenuTriggerFor]="editJobResponsibilityMenu">
+                                        <i class="material-icons md-18">more_vert</i>
+                                    </button>
+                                    <mat-menu #editJobResponsibilityMenu="matMenu">
+                                        <button mat-menu-item type="button" (click)="editJobResponsibility(jobResponsibility, i)">
+                                            Edit
+                                        </button>
+                                        <button mat-menu-item type="button" (click)="removeJobResponsibility(jobResponsibility, i)">
+                                            Remove
+                                        </button>
+                                    </mat-menu>
+                                  </div>
+                                </div>
+                                <ng-container *ngIf="jobResponsibility.isResponsibilityEditing">
+                                  <div class="save-group">
+                                    <textarea id="EditJobResponsibilityNameCtrl" rows="3" formControlName="EditJobResponsibilityName" class="form-control mr-2" maxLength="500" 
+                                        (keyup.enter)="updateJobResponsibility(jobResponsibility, i)"
+                                        (keyup.escape)="resetJobResponsibility()"
+                                        dsFormControlValidator 
+                                        [dsFormControlSubmitted]="formJobResponsibilitiesubmitted"></textarea>
+                                    <button type="button" class="btn btn-icon-primary" (click)="updateJobResponsibility(jobResponsibility, i)">
+                                        <mat-icon>done</mat-icon>
+                                    </button>
+                                    <button type="button" class="btn btn-icon-outline-primary" (click)="resetJobResponsibility()">
+                                        <mat-icon>clear</mat-icon>
+                                    </button>
+                                  </div>
+                                </ng-container>
+                              </li>
+                            </ul>
+                          </ng-container>
+                          <ng-template #noJobResponsibilitiesMessage>
+                            <div class="empty-state pt-0 pb-4">There are no responsibilities to display currently.</div>
+                          </ng-template>
+                          <div *ngIf="isAddingJobResponsibility" class="save-group">
+                            <textarea matInput rows="3" id="AddJobResponsibilityNameCtrl" class="form-control mr-2" maxLength="500"
+                              [formControl]="AddJobResponsibilityName" 
+                              [matAutocomplete]="auto" 
+                              (keyup.enter)="addJobResponsibilityDetails()"
+                              (keyup.escape)="resetJobResponsibility()"
+                              dsFormControlValidator 
+                              [dsFormControlSubmitted]="formJobResponsibilitiesubmitted">
+                            </textarea>
+                            <mat-autocomplete #auto="matAutocomplete" [displayWith]="responsibilitiesDisplayFn">
+                              <mat-option *ngFor="let jobResponsibility of filteredJobResponsibilitiesOptions" [value]="jobResponsibility">
+                                {{jobResponsibility.description}}
+                              </mat-option>
+                            </mat-autocomplete>
+                            <button type="button" class="btn btn-icon-primary" (click)="addJobResponsibilityDetails()">
+                                <mat-icon>done</mat-icon>
+                            </button>
+                            <button type="button" class="btn btn-icon-outline-primary" (click)="resetJobResponsibility()">
+                                <mat-icon>clear</mat-icon>
+                            </button>
+                          </div>
+                          <hr class="mt-0 mb-1"/>
+                          <button type="button" class="btn btn-list m-0" [class.d-none]="isAddingJobResponsibility"  (click)="addJobResponsibility()">
+                            <mat-icon>add</mat-icon> Responsibility
+                          </button>
+                      </div>  
+                    </ds-card-content>
+                  </ds-card>
+                </div>
+                <div class="col-md-6">
+                  <ds-card matchHeight="true">
+                    <ds-card-header>
+                      <ds-card-sub-header-title>Skills</ds-card-sub-header-title>
+                    </ds-card-header>
+                    <ds-card-content>
+                      <div formGroupName="jobSkillsForm">
+                            <ul *ngIf="jobProfileClassifications.jobSkills.length > 0; else noJobSkillsMessage" class="pl-2 mb-1">
+                                <li class="hoverable" *ngFor="let jobSkill of jobProfileClassifications.jobSkills; let i=index">
+                                    <div *ngIf="!jobSkill.isSkillEditing" class="d-flex justify-content-between">                            
+                                        <div>{{jobSkill.description}}</div>
+                                        <div class="hover-show">
+                                          <button type="button" class="btn btn-icon" [matMenuTriggerFor]="editJobSkillMenu">
+                                              <mat-icon>more_vert</mat-icon>
+                                          </button>
+                                          <mat-menu #editJobSkillMenu="matMenu">
+                                              <button mat-menu-item type="button" (click)="editJobSkill(jobSkill, i)">
+                                                  Edit
+                                              </button>
+                                              <button mat-menu-item type="button" (click)="removeJobSkill(jobSkill, i)">
+                                                  Remove
+                                              </button>
+                                          </mat-menu>
+                                        </div>
+                                    </div>
+                                    <div class="save-group" *ngIf="jobSkill.isSkillEditing">
+                                      <textarea id="EditJobSkillNameCtrl" rows="3" formControlName="EditJobSkillName" class="form-control" maxLength="500" 
+                                          (keyup.enter)="updateJobSkill(jobSkill, i)"
+                                          (keyup.escape)="resetJobSkill()"
+                                          dsFormControlValidator 
+                                          [dsFormControlSubmitted]="formJobResponsibilitiesubmitted"></textarea>
+                                      <button type="button" class="btn btn-icon-primary" (click)="updateJobSkill(jobSkill, i)">
+                                          <mat-icon>done</mat-icon>
+                                      </button>
+                                      <button type="button" class="btn btn-icon-outline-primary" (click)="resetJobSkill()">
+                                          <mat-icon>clear</mat-icon>
+                                      </button>
+                                    </div>
+                                    <ng-container *ngIf="jobSkill.isSkillEditing">
+                                      <div class="save-group">
+                                        <textarea matInput rows="3" id="AddJobSkillNameCtrl" class="form-control" maxLength="500"
+                                          [formControl]="AddJobSkillName" 
+                                          [matAutocomplete]="auto" 
+                                          (keyup.enter)="addJobSkillDetails()"
+                                          (keyup.escape)="resetJobSkill()"
+                                          dsFormControlValidator 
+                                          [dsFormControlSubmitted]="formJobResponsibilitiesubmitted">
+                                        </textarea>
+                                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="skillsDisplayFn">
+                                          <mat-option *ngFor="let jobSkill of filteredJobSkillsOptions" [value]="jobSkill">
+                                            {{jobSkill.description}}
+                                          </mat-option>
+                                        </mat-autocomplete>
+                                        <button type="button" class="btn btn-icon-primary" (click)="addJobSkillDetails()">
+                                            <mat-icon>done</mat-icon>
+                                        </button>
+                                        <button type="button" class="btn btn-icon-outline-primary" (click)="resetJobSkill()">
+                                            <mat-icon>clear</mat-icon>
+                                        </button>
+                                      </div>
+                                    </ng-container>
+                                </li>
+                            </ul>
+                            <ng-template #noJobSkillsMessage>
+                              <div class="empty-state pt-0 pb-4">There are no skills to display currently.</div>
+                            </ng-template>
+
+                        <ng-container *ngIf="isAddingJobSkill">
+                          <div class="save-group">
+                            <textarea matInput rows="3" id="AddJobSkillNameCtrl" class="form-control mr-2" maxLength="500"
+                              [formControl]="AddJobSkillName" 
+                              [matAutocomplete]="auto" 
+                              (keyup.enter)="addJobSkillDetails()"
+                              (keyup.escape)="resetJobSkill()"
+                              [class.is-invalid]="(form.controls.jobSkillsForm.controls['AddJobSkillName'].touched || formJobSkillSubmitted) && form.controls.jobSkillsForm.controls['AddJobSkillName'].invalid">
+                            </textarea>
+                            <mat-autocomplete #auto="matAutocomplete" [displayWith]="skillsDisplayFn">
+                              <mat-option *ngFor="let jobSkill of filteredJobSkillsOptions" [value]="jobSkill">
+                                {{jobSkill.description}}
+                              </mat-option>
+                            </mat-autocomplete>
+                            <button type="button" class="btn btn-icon-primary" (click)="addJobSkillDetails()">
+                              <mat-icon>done</mat-icon>
+                            </button>
+                            <button type="button" class="btn btn-icon-outline-primary" (click)="resetJobSkill()">
+                                <mat-icon>clear</mat-icon>
+                            </button>
+                          </div>
+                        </ng-container>
+                        <hr class="mt-0 mb-1"/>
+                        <button type="button" class="btn btn-list m-0" [class.d-none]="isAddingJobSkill"  (click)="addJobSkill()">
+                          <mat-icon>add</mat-icon> Skill
+                        </button>
+                      </div>   
+                    </ds-card-content>
+                  </ds-card>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <ds-card matchHeight="true">
+                    <ds-card-header>
+                      <ds-card-sub-header-title>Working Conditions</ds-card-sub-header-title>
+                    </ds-card-header>
+                    <ds-card-content>
+                      <div class="form-group">
+                        <label class="sr-only">Working Conditions</label>
+                        <textarea class="form-control" formControlName="WorkingConditions"></textarea>
+                      </div>
+                    </ds-card-content>
+                  </ds-card>
+                </div>
+                <div class="col-md-6">
+                  <ds-card matchHeight="true">
+                    <ds-card-header>
+                      <ds-card-sub-header-title>Benefits Summary</ds-card-sub-header-title>
+                    </ds-card-header>
+                    <ds-card-content>
+                      <div class="form-group">
+                        <label class="sr-only">Benefits Summary</label>
+                        <textarea class="form-control" formControlName="Benefits"></textarea>
+                      </div>
+                    </ds-card-content>
+                  </ds-card>
+                </div>
+              </div>
+            </div>
+          </ds-card-content>
+        </ds-card>
+        <ds-card mode="widget-nobody" color="{{employeeRecordWidgetColor}}" collapse="true" [expanded]="false">
+          <div ds-card-icon>assignment_ind</div>
+          <ds-card-header>
+            <ds-card-widget-title>Employee Record</ds-card-widget-title>
+          </ds-card-header>
+          <ds-card-content>
+            <div class="overflow-list">
+              <ds-card>
+                <ds-card-header>
+                  <ds-card-sub-header-title>Classification</ds-card-sub-header-title>
+                </ds-card-header>
+                <ds-card-content>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Division</label>
+                                <select class="form-control custom-select"
+                                  formControlName="ClientDivision"
+                                  (change)="loadDepartments()">
+                                  <option class="text-muted"  [ngValue]="null"></option>
+                                  <option [ngValue]="clientDivision.clientDivisionId"
+                                    *ngFor="let clientDivision of clientDivisionsList">
+                                    {{ clientDivision.name }}
+                                  </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Department</label>
+                                <select class="form-control custom-select"
+                                  formControlName="ClientDepartment">
+                                  <option class="text-muted" [ngValue]="null"></option>
+                                  <option [ngValue]="clientDepartment.clientDepartmentId"
+                                    *ngFor="let clientDepartment of clientDepartmentsList">
+                                    {{ clientDepartment.name }}
+                                  </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+                              <label>Cost Center</label>
+                              <select class="form-control custom-select"
+                              formControlName="CostCenter">
+                              <option class="text-muted"  [ngValue]="null"></option>
+                              <option [ngValue]="costCenter.clientCostCenterId"
+                                *ngFor="let costCenter of costCentersList">
+                                {{ costCenter.description }}
+                              </option>
+                            </select>
+                          </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Supervisor</label>
+                            <select class="form-control custom-select"
+                              formControlName="DirectSupervisor">
+                              <option class="text-muted" [ngValue]="null"></option>
+                              <option [ngValue]="directSupervisor.userId"
+                                  *ngFor="let directSupervisor of directSupervisorList">
+                                  {{ directSupervisor.firstName }}
+                              </option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                          <div class="form-group">
+                              <label>Group</label>
+                              <select class="form-control custom-select"
+                                formControlName="ClientGroup">
+                                <option class="text-muted" [ngValue]="null"></option>
+                                <option [ngValue]="clientGroup.clientGroupId"
+                                    *ngFor="let clientGroup of clientGroupsList">
+                                    {{ clientGroup.description }}
+                                </option>
+                            </select>
+                          </div>
+                      </div>
+                      <div class="col-md-4">
+                          <div class="form-group">
+                              <label>Job Class</label>
+                              <input type="text" class="form-control" formControlName="JobClass" />
+                          </div>
+                      </div>
+                    </div>
+                </ds-card-content>
+              </ds-card>
+              <ds-card>
+                <ds-card-header>
+                  <ds-card-sub-header-title>Pay</ds-card-sub-header-title>
+                </ds-card-header>
+                <ds-card-content>
+                  <div class="row">
+                    <div class="col-auto">
+                      <div class="form-group inline-radio">
+                        <div class="custom-control custom-radio custom-control-bg primary">
+                            <input type="radio" id="PayrollTypeHourly" formControlName="PayrollType" value="1" class="custom-control-input">
+                            <label class="custom-control-label" for="PayrollTypeHourly">Hourly</label>
+                            <div class="custom-bg"></div>
+                        </div>
+                        <div class="custom-control custom-radio custom-control-bg primary">
+                            <input type="radio" id="PayrollTypeSalary" formControlName="PayrollType" value="2" class="custom-control-input">
+                            <label class="custom-control-label" for="PayrollTypeSalary">Salary</label>
+                            <div class="custom-bg"></div>
+                        </div>
+                      </div>                    
+                    </div>
+                    <div class="col-auto" *ngIf="showOvertimeExempt">
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" id="IsOvertimeExempt" class="custom-control-input" formControlName="IsOvertimeExempt">
+                        <label class="custom-control-label" for="IsOvertimeExempt">Overtime Exempt</label>
+                      </div>
+                    </div>
+                    <div class="col-auto" *ngIf="showTippedEmployee">
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" id="IsTippedEmployee" class="custom-control-input" formControlName="IsTippedEmployee">
+                        <label class="custom-control-label" for="IsTippedEmployee">Tipped Employee</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                      <div class="col-md-4">
+                          <div class="form-group">
+                              <label>Frequency</label>
+                              <select class="form-control custom-select"
+                                formControlName="PayFrequency">
+                                <option class="text-muted"  [ngValue]="null"></option>
+                                <option [ngValue]="payFrequency.payFrequencyId"
+                                  *ngFor="let payFrequency of payFrequencies">
+                                  {{ payFrequency.name }}
+                                </option>
+                              </select>
+                          </div>
+                      </div>
+                      <div class="col-md-4">
+                          <div class="form-group">
+                              <label>Shift</label>
+                              <select class="form-control custom-select"
+                                formControlName="ClientShift">
+                                <option class="text-muted"  [ngValue]="null"></option>
+                                <option [ngValue]="clientShift.clientShiftId"
+                                  *ngFor="let clientShift of clientShiftsList">
+                                  {{ clientShift.description }}
+                                </option>
+                              </select>
+                          </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Employment Status</label>
+                            <select class="form-control custom-select"
+                            formControlName="EmploymentStatus">
+                            <option class="text-muted"  [ngValue]="null"></option>
+                            <option [ngValue]="employmentStatus.employeeStatusId"
+                              *ngFor="let employmentStatus of jobStatusList">
+                              {{ employmentStatus.description }}
+                            </option>
+                          </select>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Hours</label>
+                            <input type="text" class="form-control" formControlName="Hours" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                          <label>Amount</label>
+                          <div class="input-group">                                                              
+                            <input type="text" class="form-control" id="amountInput" formControlName="Amount" />    
+                            <div class="input-group-append">
+                                <span class="input-group-text percent">%</span>
+                            </div>       
+                          </div>         
+                      </div>
+                  </div>
+                </div>
+                </ds-card-content>
+              </ds-card>
+              <div class="row">
+                <div class="col-md-6">
+                  <ds-card matchHeight="true">
+                    <ds-card-header>
+                      <ds-card-sub-header-title>Benefits</ds-card-sub-header-title>
+                    </ds-card-header>
+                    <ds-card-content>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label class="form-control-label">Benefits Eligible</label>
+                            <div class="form-group custom-radio">
+                            <div class="custom-control custom-radio">
+                              <input type="radio" id="BenefitsEligibleYes" formControlName="BenefitsEligible" value="true" class="custom-control-input">
+                              <label class="custom-control-label" for="BenefitsEligibleYes">Yes</label>
+                            </div>
+                            <div class="custom-control custom-radio">
+                              <input type="radio" id="BenefitsEligibleNo" formControlName="BenefitsEligible" value="false" class="custom-control-input">
+                              <label class="custom-control-label" for="BenefitsEligibleNo">No</label>
+                            </div>
+                            </div>                    
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Benefits Package</label>
+                                <select class="form-control custom-select"
+                                  formControlName="BenefitPackage">
+                                  <option class="text-muted"  [ngValue]="null"></option>
+                                  <option [ngValue]="benefitPackage.benefitPackageId"
+                                    *ngFor="let benefitPackage of benefitPackages">
+                                    {{ benefitPackage.name }}
+                                  </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Workers Compensation Class</label>
+                                <select class="form-control custom-select"
+                                  formControlName="WorkersComp">
+                                  <option class="text-muted" [ngValue]="null"></option>
+                                  <option [ngValue]="workersComp.clientWorkersCompId"
+                                    *ngFor="let workersComp of workersCompsList">
+                                    {{ workersComp.description }}
+                                  </option>
+                                </select>
+                            </div>
+                        </div>
+                      </div>
+                      <div class="row" *ngIf="jobProfile.isBenefitPortalOn">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Salary Determination Method</label>
+                                <select class="form-control custom-select"
+                                  formControlName="SalaryMethodType">
+                                  <option class="text-muted"  [ngValue]="null"></option>
+                                  <option [ngValue]="salaryMethodType.salaryMethodTypeId"
+                                    *ngFor="let salaryMethodType of salaryMethodTypes">
+                                    {{ salaryMethodType.description }}
+                                  </option>
+                                </select>
+                            </div>
+                        </div>
+                      </div>
+                    </ds-card-content>
+                  </ds-card>
+                </div>
+                <div class="col-md-6">
+                  <ds-card>
+                    <ds-card-header>
+                      <ds-card-sub-header-title>EEOC Information</ds-card-sub-header-title>
+                    </ds-card-header>
+                    <ds-card-content>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label>EEOC Location</label>
+                            <select class="form-control custom-select"
+                              formControlName="EEOCLocation">
+                              <option class="text-muted" [ngValue]="null"></option>
+                              <option [ngValue]="eeocLocation.eeocLocationId"
+                                  *ngFor="let eeocLocation of eeocLocationsList">
+                                  {{ eeocLocation.eeocLocationDescription }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label>EEOC Category</label>
+                            <select class="form-control custom-select"
+                              formControlName="EEOCJobCategory">
+                              <option class="text-muted" [ngValue]="null"></option>
+                              <option [ngValue]="eeocJobCategory.jobCategoryId"
+                                  *ngFor="let eeocJobCategory of eeocJobCategoriesList">
+                                  {{ eeocJobCategory.description }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>  
+                    </ds-card-content>
+                  </ds-card>
+                  <ds-card>
+                    <ds-card-header>
+                      <ds-card-sub-header-title>Time Off Policies</ds-card-sub-header-title>
+                    </ds-card-header>
+                    <ds-card-content>
+                      <div class="row">
+                        <div class="col-md-12">
+                          <div class="form-group">
+                            <label>Policy</label>
+                            <mat-form-field class="form-control">
+                              <mat-chip-list #chipList>
+                                <mat-chip
+                                  *ngFor="let accrual of selectedJobProfileAccruals"
+                                  [selectable]="true"
+                                  [removable]="true"
+                                  (removed)="removeAccrual(accrual)">
+                                  {{accrual.description}}
+                                  <mat-icon matChipRemove>clear</mat-icon>
+                                </mat-chip>
+                                <input
+                                  #jpAccrualInput
+                                  id="jpAccrualInput"
+                                  [formControl]="JobProfileAccrual"
+                                  [matAutocomplete]="auto"
+                                  [matChipInputFor]="chipList"
+                                  #trigger="matAutocompleteTrigger">
+                              </mat-chip-list>
+                              <mat-autocomplete #auto="matAutocomplete" (optionSelected)="accrualSelected($event)">
+                                <mat-option 
+                                  *ngFor="let accrual of filteredJobProfileAccruals | async" 
+                                  [value]="accrual"
+                                  (click)="selectOption($event, trigger)">
+                                  {{accrual.description}}
+                                </mat-option>
+                              </mat-autocomplete>
+                            </mat-form-field>
+                          </div>
+                        </div>
+                      </div>  
+                    </ds-card-content>
+                  </ds-card>
+                </div>
+              </div>
+            </div>
+          </ds-card-content>
+        </ds-card>
+        <ds-card mode="widget-nobody" color="{{competenciesWidgetColor}}" collapse="true" [expanded]="false" [hidden]="!jobProfile.isPerformanceReviewsEnabled || !hasCompetencyAccess">
+          <div ds-card-icon>assignment_ind</div>
+          <ds-card-header>
+            <ds-card-widget-title>Competencies</ds-card-widget-title>
+          </ds-card-header>
+          <ds-card-content class="p-0">
+            <ds-competency-model-assignment [modelId]="jobProfile.competencyModelId" (modelSelected)="updateSelectedModel($event)">
+            </ds-competency-model-assignment>
+          </ds-card-content>
+        </ds-card>
+        <ds-card mode="widget-nobody" color="{{onboardingTasksWidgetColor}}" collapse="true" [expanded]="false" [hidden]="!jobProfile.isOnboardingEnabled">
+          <div ds-card-icon>assignment_ind</div>
+          <ds-card-header>
+            <ds-card-widget-title>Onboarding Tasks</ds-card-widget-title>
+          </ds-card-header>
+          <ds-card-content>
+            <div class="row justify-content-between">
+              <div class="col-md-4 col-sm-6">
+                <div class="form-group">
+                    <label>Admin Task List</label>
+                    <select class="form-control custom-select"
+                      formControlName="AdminTaskList">
+                      <option [ngValue]="null"></option>
+                      <option [ngValue]="adminTaskList.onboardingAdminTaskListId"
+                        *ngFor="let adminTaskList of onboardingAdminTaskList">
+                        {{ adminTaskList.name }}
+                      </option>
+                    </select>
+                </div>
+              </div>
+              <div class="col-auto inline-sm-control" *ngIf="allowCreatingCustomPages">
+                <button [matMenuTriggerFor]="menu" class="btn btn-outline-primary dropdown-toggle">
+                  <i class="material-icons">add</i> Custom Page
+                </button>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="addCustomPage('Document')">Document</button>
+                    <button mat-menu-item (click)="addCustomPage('Link')">Link</button>
+                    <button mat-menu-item (click)="addCustomPage('Video')">Video</button>
+                </mat-menu>
+              </div>
+            </div>
+            <ds-employee-tasks [clientId]="cId" [selectedOnboardingWorkflows]="jobProfileOnboardingWorkflows" (onSelectionChanged)="updateSelections($event)" (onSelectedStateChanged)="updateSelectedState($event)"></ds-employee-tasks>
+          </ds-card-content>
+        </ds-card>
+      </ng-container>
+    <ng-template #loading>
+      <ds-loading-message>
+      </ds-loading-message>
+    </ng-template>
+  </ds-card-content>
+  <ds-card-footer *ngIf="!isLoading">
+    <button class="btn btn-save" (click)="doSave()">Save</button>
+    <button class="btn btn-delete" (click)="redirectToJobProfiles()">Cancel</button>
+  </ds-card-footer>
+</ds-card>

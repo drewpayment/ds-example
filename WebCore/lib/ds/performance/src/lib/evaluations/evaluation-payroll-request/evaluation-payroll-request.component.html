@@ -1,0 +1,272 @@
+
+        <ds-card>
+    <div ds-card-header>
+        <ds-card-sub-header-title>Payroll Requests</ds-card-sub-header-title>
+        <ds-card-subtitle>
+            <div class="instruction-text">
+                Use the active rates table below to request a merit increase for this employee. To enter an Additional Earnings request, such as a bonus payment, use the Additional Earnings section and select the appropriate Earning from the drop down menu.
+            </div>
+        </ds-card-subtitle>
+    </div>
+    <div [formGroup]="meritFormGroup" ds-card-content>
+        <hr />
+        <div class="row">
+            <div class="col-auto">
+                <h4 class="bold d-inline-block mr-2">Merit Increase</h4>
+            </div>
+            <div class="col-auto" *ngIf="hasMeritRecommendation">
+              <h4 class="bold d-inline-block mr-2">Recommendation </h4>
+              <div class="instruction-text d-inline-block">{{ meritPercent | number:'1.1-4' }}%</div>
+            </div>
+        </div>
+
+        <div class="card card-table">
+            <mat-table formArrayName="meritTable" [dataSource]="dataSource" color="primary" class="table">
+                <ng-container matColumnDef="include">
+                    <mat-header-cell *matHeaderCellDef class="evaluation-table-include" style="flex: 0 0 50px;"></mat-header-cell>
+                    <mat-cell *matCellDef="let item; let i = index;"  [formGroupName]="i" class="evaluation-table-include" style="flex: 0 0 50px;">
+                        <div class="table-checkbox">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="customCheck_{{i}}" 
+                                    formControlName="selectedCtl" (change)="rateSelected(item, i)" >
+                                    <!--[disabled]="readOnly"  -->
+                                <label class="custom-control-label" for="customCheck_{{i}}"></label>
+                            </div>
+                        </div>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="rates">
+                    <mat-header-cell *matHeaderCellDef class="evaluation-table-rate">
+                        Rates
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let item; let i = index;"  [formGroupName]="i"  class="evaluation-table-rate">
+                        <div>{{item.controls.rateDesc.value}}</div>
+                        <div class="instruction-text font-sm" style="padding-left: .5rem" *ngIf="item.controls.isSalaryRow.value"> {{item.controls.payFrequencyDesc.value}}</div>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="current">
+                    <mat-header-cell *matHeaderCellDef class="evaluation-table-current table-text-right">From</mat-header-cell>
+                    <mat-cell *matCellDef="let item" class="table-text-right evaluation-table-current">
+                    	{{item.controls.currentAmount.value | currency : 'USD' : true : '1.4-4'}}
+                  	</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="increaseType">
+                    <mat-header-cell *matHeaderCellDef class="evaluation-table-increase">Increase Type</mat-header-cell>
+                    <mat-cell *matCellDef="let item; let i = index;"  [formGroupName]="i"  class="evaluation-table-increase">
+                        <div class="form-group">
+                            <select class="form-control custom-select" formControlName="increaseTypeCtl" (change)="modelChanged(item,i)" >
+                              <option value="1">Percent</option>
+                              <option value="2">Flat</option>
+                          </select>
+                        </div>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="amount">
+                    <mat-header-cell *matHeaderCellDef class="evaluation-table-amount">Amount</mat-header-cell>
+                    <mat-cell *matCellDef="let item; let i = index;"  [formGroupName]="i"  class="evaluation-table-amount">
+                        <!-- The percent symbol add-on doesn't look right in IE unless the width here is explicitly set to 100 -->
+                        <div class="form-group" style="width:100%;">
+                            <div class="input-group">
+                                <div class="input-group-prepend" *ngIf="item.controls.increaseTypeCtl.value == 2">
+                                    <span class="input-group-text currency">$</span>
+                                </div>
+                                <input type="number" class="form-control" min="0" formControlName="increaseAmountCtl" 
+                                        [ngClass]="{'is-invalid':  (item.controls.increaseAmountCtl.touched || submitted) &&
+                                        (item.errors?.mustBePercent ||  item.errors?.required) }"
+                                        (change)="rateSelected(item, i)" />
+                                <div class="input-group-append" *ngIf="item.controls.increaseTypeCtl.value == 1">
+                                    <span class="input-group-text percent">%</span>
+                                </div>
+                                <div class="invalid-feedback flex-1-1-100">
+                                    <span *ngIf="(item.controls.increaseAmountCtl.touched || submitted) && item.errors?.mustBePercent">
+                                        Please enter a valid percent.
+                                    </span>
+                                    <span *ngIf="(item.controls.increaseAmountCtl.touched || submitted) && item.errors?.required">
+                                            Please enter a value.
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="proposed">
+                    <mat-header-cell *matHeaderCellDef class="evaluation-table-proposed table-text-right">To</mat-header-cell>
+                    <mat-cell *matCellDef="let item; let i = index;"  [formGroupName]="i"  class="evaluation-table-proposed table-text-right"> 
+                    	{{item.controls.proposedTotal.value | currency : 'USD' : true : '1.4-4'}}
+                  	</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="comments">
+                  <mat-header-cell *matHeaderCellDef>
+                      Comments
+                      <span class="ml-1 italic">Optional</span>
+                  </mat-header-cell>
+                  <mat-cell *matCellDef="let item"> 
+                      <input type="text" class="form-control" (change)="modelChanged(item, i)" formControlName="commentsCtl"   />    
+                  </mat-cell>
+              </ng-container>
+
+            <ng-container matColumnDef="applyMeritIncreaseOn">
+                <mat-header-cell *matHeaderCellDef class="evaluation-table-apply-on col-md-4">Effective Date
+                </mat-header-cell>
+                <mat-cell *matCellDef="let item; let i = index;"  [formGroupName]="i"  class="evaluation-table-apply-on input-group">
+                    <input matInput class="form-control" (dateChange)="modelChanged(item, i)" [matDatepicker]="reviewProcessStartDatePicker" formControlName="applyMeritIncreaseOnCtl"  
+                         />
+                    <div class="input-group-append">
+                        <mat-datepicker-toggle matSuffix [for]="reviewProcessStartDatePicker" class="input-group-text date">
+                            <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                        </mat-datepicker-toggle>
+                        <mat-datepicker #reviewProcessStartDatePicker></mat-datepicker>
+                    </div>
+                </mat-cell>
+            </ng-container>
+              
+
+                <mat-header-row *matHeaderRowDef="getDisplayedColumns(meritIncreaseColumns);"></mat-header-row>
+              	<mat-row *matRowDef="let row; columns: getDisplayedColumns(meritIncreaseColumns);"></mat-row>
+            </mat-table>
+        </div>
+    </div>
+
+    <div ds-card-content ngForm #f="ngForm"  *ngIf="(canViewBonus$ | async)">
+            <hr />
+            <div class="row">
+                <div class="col-auto">
+                    <h4 class="bold d-inline-block mr-2">Additional Earnings</h4>
+                </div>
+                <div class="col-auto">
+                  <h4 class="bold d-inline-block mr-2"><ds-recommend-bonus-container [reviewId]="review" [reviewedEmployeeId]="employee" (target)="setTarget($event)"></ds-recommend-bonus-container></h4>
+                </div>
+            </div>
+    
+            <div class="card card-table">
+                <mat-table [dataSource]="additionalEarningData" color="primary" class="table">
+                    <ng-container matColumnDef="include">
+                        <mat-header-cell *matHeaderCellDef class="evaluation-table-include" style="flex: 0 0 50px;"></mat-header-cell>
+                        <mat-cell *matCellDef="let item; let i = index;" class="evaluation-table-include" style="flex: 0 0 50px;">
+                            <div class="table-checkbox">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" name="includeEarning" class="custom-control-input" id="earningCustomCheck_{{i}}"  [(ngModel)]="isEarningChecked" (ngModelChange)="bonusSelected(item, f.valid) " [disabled]="readOnly" >
+                                    <label class="custom-control-label" for="earningCustomCheck_{{i}}"></label>
+                                </div>
+                            </div>
+                        </mat-cell>
+                    </ng-container>
+    
+                    <ng-container matColumnDef="earnings">
+                        <mat-header-cell *matHeaderCellDef class="evaluation-table-rate">
+                            Earning
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let item" class="evaluation-table-rate">
+                                <div class="form-group">
+                                        <select class="form-control custom-select"
+                                            name="earning"
+                                            [(ngModel)]="item.clientEarningId"
+                                            [disabled]="isEmptyObject(item) || readOnly" 
+                                            required
+                                            dsFormControlValidator 
+                                            [dsFormControlSubmitted]="Submitted" >
+                                            <option [value]=""></option>
+                                            <option
+                                                *ngFor="let o of clientEarnings$ | async"
+                                                [value]="o.clientEarningId">
+                                                {{o.description}}
+                                            </option>                        
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            Please select an earning.
+                                        </div>
+                                    </div>
+                        </mat-cell>
+                    </ng-container>
+    
+                    <ng-container matColumnDef="increaseType">
+                        <mat-header-cell *matHeaderCellDef class="evaluation-table-increase">Increase Type</mat-header-cell>
+                        <mat-cell *matCellDef="let item" class="evaluation-table-increase">
+                            <div class="form-group">
+                                <select required class="form-control custom-select" name="increaseType" [(ngModel)]="currentIncreaseBuilder" 
+                                (ngModelChange)="increaseTypeChanged(item, currentIncreaseBuilder, f.valid)"
+                                [compareWith]="isSelected"
+                                required
+                                 [disabled]="isEmptyObject(item) || readOnly" dsFormControlValidator 
+                                [dsFormControlSubmitted]="Submitted" >
+                                  <option *ngFor="let option of increaseTypeOptions" [ngValue]="option">{{option.getName()}}</option>
+                              </select>
+                              <div class="invalid-feedback">
+                                Please select an increase type.
+                            </div>
+                            </div>
+                        </mat-cell>
+                    </ng-container>
+    
+                    <ng-container matColumnDef="amount">
+                        <mat-header-cell *matHeaderCellDef class="evaluation-table-amount">Amount</mat-header-cell>
+                        <mat-cell *matCellDef="let item" class="evaluation-table-amount">
+                            <!-- The percent symbol add-on doesn't look right in IE unless the width here is explicitly set to 100 -->
+                            <div class="form-group" style="width:100%;">
+                                <div class="input-group">
+                                    <div class="input-group-prepend" *ngIf="item.increaseType == 2">
+                                        <span class="input-group-text currency">$</span>
+                                    </div>
+                                    <input name="amount" type="number" class="form-control" min="0"
+                                        [ngModelOptions]="{'updateOn': 'blur'}" [(ngModel)]="item.increaseAmount" (ngModelChange)="calcBonus(item)" [disabled]="isEmptyObject(item) || readOnly" dsFormControlValidator 
+                                    [dsFormControlSubmitted]="Submitted" />
+                                    <div class="input-group-append" *ngIf="item.increaseType == 1">
+                                        <span class="input-group-text percent">%</span>
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        Please enter an amount under the maximum.
+                                    </div>
+                                </div>
+                            </div>
+                        </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="payout">
+                        <mat-header-cell *matHeaderCellDef class="evaluation-table-proposed table-text-right">Payout</mat-header-cell>
+                        <mat-cell *matCellDef="let item" class="evaluation-table-proposed table-text-right">
+                            <span *ngIf="!readOnly; else showSaved">
+                                {{ calcPayout$ | async }}
+                            </span>
+                            <ng-template #showSaved>
+                                {{item.proposedTotalAmount != null ? (item.proposedTotalAmount  | currency : 'USD' : true : '1.2-2') : 'N/A'}}
+                            </ng-template>
+                          </mat-cell>
+                    </ng-container>
+    
+                <ng-container matColumnDef="mayBeIncludedInPayroll">
+                    <mat-header-cell *matHeaderCellDef class="evaluation-table-apply-on col-md-4">Effective Date
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let item" class="evaluation-table-apply-on input-group">
+                            <div class="input-group">
+                        <input name="mayBeIncludedInPayroll" matInput class="form-control" [matDatepicker]="reviewProcessStartDatePicker"
+                            [(ngModel)]="item.mayBeIncludedInPayroll" required [disabled]="isEmptyObject(item) || readOnly" dsFormControlValidator 
+                            [dsFormControlSubmitted]="Submitted" />
+                        <div class="input-group-append">
+                            <mat-datepicker-toggle matSuffix [for]="reviewProcessStartDatePicker" class="input-group-text date">
+                                <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #reviewProcessStartDatePicker></mat-datepicker>
+                        </div>
+                        <div class="invalid-feedback">
+                                Please enter an effective date.
+                            </div>
+                    </div>
+                    </mat-cell>
+                </ng-container>
+                  
+    
+                    <mat-header-row *matHeaderRowDef="getDisplayedColumns(oneTimeEarningColumns);"></mat-header-row>
+                      <mat-row *matRowDef="let row; columns: getDisplayedColumns(oneTimeEarningColumns);"></mat-row>
+                </mat-table>
+            </div>
+        </div>
+</ds-card>
+
+<ng-container *ngIf="calcPayout$ | async"></ng-container>
+<ng-container *ngIf="typeChangedListener$ | async"></ng-container>
+<ng-container *ngIf="listenToIncreaseType$ | async"></ng-container>

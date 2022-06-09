@@ -1,0 +1,104 @@
+<ds-card border="top">
+    <ds-card-header>
+        <ds-card-header-title>Welcome Message</ds-card-header-title>
+        <ds-card-subtitle>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-2">
+                    <li class="breadcrumb-item">
+                        <a routerLink="/manage/onboarding/dashboard">Onboarding</a>
+                    </li>
+                    <li class="breadcrumb-item active">Welcome Message</li>
+                </ol>
+            </nav>
+            <div class="instruction-text">
+                The first time an employee logs in to onboarding they will see a welcome message. You can write your
+                own message below or you can use Dominion's default.
+            </div>
+        </ds-card-subtitle>
+    </ds-card-header>
+    <ds-card-content *ngIf="!isLoading">
+        <hr class="mt-0">
+        <form #mainForm="ngForm">
+            <div class="form-group inline-radio mb-3">
+                <div class="custom-control custom-radio custom-control-bg primary">
+                    <input type="radio" id="useDominionsMessage" [(ngModel)]="essOptions.isCustomMessage"
+                        [value]="false" name="chkCustomMessage" class="custom-control-input">
+                    <label class="custom-control-label" for="useDominionsMessage">
+                        Use Default Message
+                    </label>
+                    <div class="custom-bg"></div>
+                </div>
+                <div class="custom-control custom-radio custom-control-bg primary">
+                    <input type="radio" id="useCustomMessage" [(ngModel)]="essOptions.isCustomMessage" [value]="true"
+                        name="chkCustomMessage" class="custom-control-input">
+                    <label class="custom-control-label" for="useCustomMessage">
+                        Use Custom Message
+                    </label>
+                    <div class="custom-bg"></div>
+                </div>
+            </div>
+            <h1 class="mb-2">
+                Welcome to onboarding, {{ '{' }}Employee Name{{ '}' }}!
+            </h1>
+            <div *ngIf="!essOptions.isCustomMessage" class="row form-group">
+                <div class="col-md-8">
+                    {{defaultWelcomeMessageText}}
+                </div>
+            </div>
+            <div *ngIf="essOptions.isCustomMessage" class="row">
+                <div class="col-md-6 col-xl-7 col-2xl-8 order-1 order-md-0">
+                    <div class="form-group">
+                        <textarea name="WelcomeMessage" type="text" [(ngModel)]="essOptions.welcomeMessage"
+                            class="form-control" rows="10" placeholder="Enter New Welcome Message" required
+                            dsFormControlValidator>
+                        </textarea>
+                        <div class="invalid-feedback">
+                            <span>Please enter a valid welcome message.</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-5 col-2xl-4">
+                    <div class="form-group">
+                        <label class="font-weight-bold">Insert Fields</label>
+                        <div class="insttruction-text form-group">
+                            Use the fields below to have the system insert information for you in the message body. Do
+                            not edit the text added by inserted fields or it may not work correctly.
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <button type="button" class="btn btn-pill btn-info form-group w-100" id="btnEmployeeName"
+                                    (click)="insertTextAt('{*EmployeeName}')">Employee's Name</button>
+                            </div>
+                            <div class="col-sm-6">
+                                <button type="button" class="btn btn-pill btn-info form-group w-100" id="btnDate"
+                                    (click)="insertTextAt('{*Date}')">Current Date</button>
+                            </div>
+                            <div class="col-sm-6">
+                                <button type="button" class="btn btn-pill btn-info form-group w-100" id="btnCompanyName"
+                                    (click)="insertTextAt('{*CompanyName}')">Company's Name</button>
+                            </div>
+                            <div class="col-sm-6">
+                                <button type="button" class="btn btn-pill btn-info form-group w-100" id="btnStartDate"
+                                    (click)="insertTextAt('{*StartDate}')">Start Date</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </ds-card-content>
+    <ds-card-footer *ngIf="!isLoading">
+        <div>
+            <button type="button" class="btn btn-outline-primary" *ngIf="essOptions.isCustomMessage" (click)="preview()">Preview</button>
+            <button type="button" class="btn btn-save" (click)="save()">Save</button>
+        </div>
+        <div>
+            <a routerLink="/manage/onboarding/dashboard" class="btn btn-cancel">Cancel</a>
+        </div>
+    </ds-card-footer>
+    <ng-container *ngIf="isLoading">
+        <ds-card-content>
+            <ds-loading-message></ds-loading-message>
+        </ds-card-content>
+    </ng-container>
+</ds-card>

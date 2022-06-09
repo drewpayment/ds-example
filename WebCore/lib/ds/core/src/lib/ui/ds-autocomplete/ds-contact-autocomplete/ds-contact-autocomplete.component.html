@@ -1,0 +1,82 @@
+<div class="input-group">
+  <mat-form-field 
+      class="form-control"
+      [ngClass]="formControlClass"
+      [class.is-invalid]="ngControl && required && (ngControl.touched || formSubmitted) && (selectedContacts == null || !selectedContacts.length)">
+      <mat-chip-list #chipList
+          [multiple]="multiple"
+          [errorStateMatcher]="errorStateMatcher">
+          <mat-chip
+              *ngFor="let chip of selectedContacts"
+              (removed)="removeChip(chip)"
+              [disableRipple]="true">
+            <ds-avatar
+              size="20"
+              firstName="{{chip.firstName}}"
+              lastName="{{chip.lastName}}"
+              resource="{{
+                (chip.profileImage && 
+                 chip.profileImage.extraLarge && 
+                 chip.profileImage.extraLarge.url) ? chip.profileImage.extraLarge.url : ''}}">
+            </ds-avatar>
+              <ng-container *ngTemplateOutlet="displayUserType ? includeUserType : noUserType; context: {$implicit: chip}"></ng-container>
+              
+              <mat-icon matChipRemove *ngIf="multiple">clear</mat-icon>
+          </mat-chip>
+          <input
+              #contactInput 
+              #trigger="matAutocompleteTrigger"
+              name="dsContactAutocompleteInput"
+              matInput
+              [formControl]="contactCtrl"
+              [matAutocomplete]="auto"
+              [matChipInputFor]="chipList"/>
+      </mat-chip-list>
+      <mat-autocomplete
+          #auto="matAutocomplete"
+          [autoActiveFirstOption]="autoActiveFirstOption"
+          [class]="classList"
+          [disableRipple]="disableRipple"
+          [panelWidth]="panelWidth"
+          (optionSelected)="autocompleteSelected($event)">
+          <mat-option [value]="0" *ngIf="includeSelectAll">
+              <span class="pl-2">All</span>
+          </mat-option>
+          <mat-option *ngFor="let contact of displayUserType ? (filteredContacts | async | sortContacts) : (filteredContacts | async)" 
+            [value]="contact"
+            (click)="selectOption($event)">
+            <div class="d-flex justify-content-between w-100">
+              <div class="d-flex">
+                <div class="flex-1-1-auto mr-2">
+                  <ds-avatar
+                    size="16"
+                    firstName="{{contact.firstName}}"
+                    lastName="{{contact.lastName}}"
+                    resource="{{
+                      (contact.profileImage && 
+                      contact.profileImage.extraLarge && 
+                      contact.profileImage.extraLarge.url) ? contact.profileImage.extraLarge.url : ''}}">
+                  </ds-avatar>
+                </div>
+                <ng-container *ngTemplateOutlet="displayUserType ? includeUserType : noUserType; context: {$implicit: contact}"></ng-container>
+              </div>
+              <div class="flex-0-0-auto" *ngIf="this._displayEmployeeNumber"> {{contact.employeeNumber}} </div>
+            </div>
+          </mat-option>
+      </mat-autocomplete>    
+  </mat-form-field>
+  <div class="input-group-append" *ngIf="selectedContacts.length && !multiple">
+      <div class="input-group-text backspace">
+        <button type="button" class="btn btn-icon" (click)="removeChips()">
+          <i class="material-icons">
+            backspace
+          </i>
+        </button>
+      </div>
+  </div>
+  <div class="invalid-feedback">
+      {{errorFeedback}}
+  </div>
+</div>
+<ng-template #noUserType let-chip>{{chip.lastName ? chip.lastName + ', ' : ''}}{{chip.firstName}}</ng-template>
+<ng-template #includeUserType let-chip>{{chip | contactToName}}</ng-template>

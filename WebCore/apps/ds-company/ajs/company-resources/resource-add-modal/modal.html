@@ -1,0 +1,114 @@
+﻿<div class="modal-header">
+    <h2>New Resource</h2>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="cancel()"><i class="material-icons" aria-hidden="false">clear</i></button>
+</div>
+<form name="frmResource">
+    <div class="modal-body">
+        <div>
+            <div class="form-group row align-items-center" ng-if="companyResourceFolders.length > 0">
+                <label class="col-form-label col-6">Where would you like to add the resource?</label>
+                <div class="col-6">
+                    <select name="companyResourceFolder" class="form-control custom-select crf-ddl" data-ng-model="currentResource.companyResourceFolderId"
+                            data-ng-options="folder.companyResourceFolderId as folder.description for folder in companyResourceFolders"
+                            ng-required="true" ds-auto-focus="true"></select>
+                </div>
+            </div>
+            <div class="form-group row align-items-center">
+                <label class="col-form-label col-6">What kind of resource is this?</label>
+                <div class="col-6">
+                    <div class="btn-group btn-toggle-group" data-toggle="buttons">
+                        <label data-ng-repeat="elm in resourceTypes" class="btn btn-legacy-toggle" ng-class="{active: elm.id==$parent.currentResource.resourceTypeId}">
+                            <input name="RadioResourceType"
+                                   type="radio"
+                                   value="{{elm.id}}"
+                                   ng-model="$parent.currentResource.resourceTypeId"
+                                   ng-required="true"
+                                   ng-disabled="elm.id!=$parent.currentResource.resourceTypeId && openFrom=='workflow'" 
+                                   class="custom-control-input" />
+                            {{elm.desc}}
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <div ng-show="(currentResource.resourceTypeId == 1 && !currentResource.data || isFileReselect)">
+            <div class="row align-items-center">
+                <div class="col-3">
+                    <button class="btn btn-outline-primary w-100 clickable" id="fileLoader" ngf-select ngf-change="fileChanges($files)" ng-model="currentResource.data" ngf-multiple="false" accept="{{fileAccept}}">
+                        Browse
+                    </button>
+                    <!--<input type="file" id="fileLoader" ngf-select ngf-change="fileChanges($files)" ng-model="currentResource.data" ngf-multiple="false" accept="{{fileAccept}}"> Orig -->
+                </div>
+                <div class="col-9">
+                    <!--<div class="text-muted text-primary">Browse to pick a file from your computer</div>-->
+                    <div ng-show="openFrom=='resources'" class="text-muted font-xs">Accepted file types include .pdf, .doc, .docx, .xlsx, .xls, .txt, .rtf</div>
+                    <div ng-hide="openFrom=='resources'" class="text-muted font-xs">Accepted file types include .pdf</div>
+                </div>
+            </div>
+            <div class="alert alert-danger mt-3" role="alert" ng-if="fileTypeErrorPDF || fileTypeError">
+                <span ng-if="fileTypeErrorPDF">The selected file type is not supported. Accepted file types include .pdf</span>
+                <span ng-if="fileTypeError">The selected file type is not supported. Accepted file types include .pdf, .doc, .docx, .xlsx, .xls, .txt, .rtf</span>
+            </div>
+        </div>
+
+        <div class="row ds-show-hide" ng-show="((currentResource.resourceTypeId == 1 && currentResource.data)  || currentResource.resourceTypeId != 1)" >
+            <div class="col-12">
+                <div class="form-group row align-items-center">
+                    <label class="col-form-label col-3">Name</label>
+                    <div class="col-9">
+                        <input type="text" name="companyResourceName" class="form-control" maxlength="250" ng-required="true"
+                               ng-model="currentResource.resourceName"
+                               ng-class="{ 'is-invalid' : frmResource.companyResourceName.$invalid && showError}">
+                        <div class="invalid-feedback">
+                            Please enter a resource name.
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row align-items-center" ng-hide="currentResource.resourceTypeId == 1">
+                    <label class="col-form-label col-3">URL</label>
+                    <div class="col-9">
+                        <input type="text" name="companyResourceUrl" class="form-control"
+                               ng-model="currentResource.source"
+                               ng-required="currentResource.resourceTypeId != 1"
+                               ng-class="{ 'is-invalid' : frmResource.companyResourceUrl.$invalid && showError}" ng-show="currentResource.resourceTypeId != 1">
+                        <div class="invalid-feedback">
+                            Please enter a URL.
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-form-label col-3">Security Level</label>
+                    <div class="col-9">
+                        <select name="companyResourceSecurityLevel" class="form-control custom-select" data-ng-model="currentResource.securityLevel"
+                                data-ng-options="securityLevel.id as securityLevel.desc for securityLevel in securityLevels"
+                                ng-required="true"></select>
+                        <div class="custom-control custom-checkbox mt-3" ng-show="currentResource.securityLevel == 4">
+                            <input id="manager" type="checkbox" ng-model="currentResource.isManagerLink" class="custom-control-input" name="managerResource" />
+                            <label class="custom-control-label" for="manager">Manager's only</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+              <div class="primary-callout pl-2 mt-3 d-flex align-items-center justify-content-between" ng-click="isFileReselect=true" onclick="$('#fileLoader').click();"
+                ng-show="showEditIcon && currentResource.resourceTypeId == 1">
+                    <div class="d-inline-block text-truncate">
+                        {{ currentResource.data ? currentResource.data.name : (currentResource.source ? currentResource.source.split('\\').pop() : "")}}
+                    </div>
+                    <button ng-show="showEditIcon" type="button" onclick="$('#fileLoader').click();" ng-click="isFileReselect = true" class="btn btn-icon float-right justify-self-end">
+                        <i class="material-icons">mode_edit</i>
+                    </button>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    <div class="modal-footer flex-row-reverse">
+        <button class="btn btn-save float-right" ng-click="save()">Save</button>
+        <button type="button" class="btn btn-cancel" ng-click="cancel()"> Cancel </button>
+    </div>
+</form>

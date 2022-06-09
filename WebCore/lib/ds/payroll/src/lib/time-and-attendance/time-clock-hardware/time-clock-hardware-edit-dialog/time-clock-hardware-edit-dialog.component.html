@@ -1,0 +1,167 @@
+<div mat-dialog-header>
+    <h2 class="dialog-title">
+        {{clockHardware.clockClientHardwareId != null ? 'Edit Clock Hardware' : 'Add Clock Hardware'}}
+    </h2>
+    <button type="button" class="close" (click)="onNoClick()">
+        <mat-icon>clear</mat-icon>
+    </button>
+    <div class="dialog-subtitle">
+        <div class="instruction-text">  
+            Client ID: {{clientId}}
+        </div>
+    </div>    
+</div>
+<div mat-dialog-content>
+    <form [formGroup]="form">
+        <div class="row">
+            <div class="col-12">
+        <div class="form-group">
+            <label>Name</label>
+            <input 
+                [class.is-invalid]="form.get('description').invalid && (form.get('description').touched || formSubmitted)"
+                class="form-control"
+                [readonly]="!hasFullUpdateAccess"
+                formControlName="description"
+                required
+                cdkFocusInitial
+            />
+            <div class="invalid-feedback">Please enter a name.</div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">
+        <div class="form-group">
+            <label>Serial Number</label>
+            <input 
+                [class.is-invalid]="form.get('serialNumber').invalid && (form.get('serialNumber').touched || formSubmitted)"
+                class="form-control"
+                [readonly]="!hasFullUpdateAccess"
+                formControlName="serialNumber"
+                required
+                cdkFocusInitial
+            />
+            <div class="invalid-feedback">Please enter a serial number.</div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="form-group">
+            <label>IP Address</label>
+            <input 
+                [class.is-invalid]="form.get('ipAddress').invalid && (form.get('ipAddress').touched || formSubmitted)"
+                class="form-control"
+                [readonly]="!hasPartialUpdateAccess"
+                formControlName="ipAddress"
+                cdkFocusInitial
+            />
+            <div class="invalid-feedback">Please enter a valid ip address.</div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">        
+        <label class="form-control-label">Purchase/Rental</label>
+        <div class="form-group inline-radio">
+            <div class="custom-control custom-radio">
+                <input type="radio" id="purchase" formControlName="isRental" class="custom-control-input" [value]="false"> 
+                <label class="custom-control-label" for="purchase">Purchase</label>
+            </div>
+            <div class="custom-control custom-radio">
+                <input type="radio" id="rental" formControlName="isRental" class="custom-control-input" [value]="true">
+                <label class="custom-control-label" for="rental">Rental</label> 
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="form-group">
+            <label>Purchase/Rental Date</label>
+            <div class="input-group">
+                <input matInput 
+                    [class.is-invalid]="form.get('purchaseDate').invalid && (form.get('purchaseDate').touched || formSubmitted)"
+                    class="form-control" 
+                    [readonly]="!hasFullUpdateAccess"
+                    [matDatepicker]="PurchaseDatePicker"
+                    formControlName="purchaseDate" 
+                    [max]="form.get('warranty').value"
+                    />
+                <div class="input-group-append">
+                    <mat-datepicker-toggle matSuffix [for]="PurchaseDatePicker" class="input-group-text date">
+                        <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #PurchaseDatePicker></mat-datepicker>
+                </div>
+                <div class="invalid-feedback" *ngIf="form.get('purchaseDate')?.hasError('matDatepickerMax')">
+                    Please enter a date on or before {{form.get('warranty').value | momentFormat : momentFormatString}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    
+</div>
+        <div class="row">
+            <div class="col-6">
+        
+        <div class="form-group">
+            <label>Warranty Start Date</label>
+            <div class="input-group">
+                <input matInput 
+                    [class.is-invalid]="form.get('warranty').invalid && (form.get('warranty').touched || formSubmitted)"
+                    class="form-control" 
+                    [readonly]="!hasFullUpdateAccess"
+                    [matDatepicker]="WarrantyDatePicker"
+                    formControlName="warranty" 
+                    [min]="form.get('purchaseDate').value"
+                    />
+                <div class="input-group-append">
+                    <mat-datepicker-toggle matSuffix [for]="WarrantyDatePicker" class="input-group-text date">
+                        <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #WarrantyDatePicker></mat-datepicker>
+                </div>
+                <div class="invalid-feedback" *ngIf="form.get('warranty')?.hasError('matDatepickerMin')">
+                    Please enter a date on or after {{form.get('purchaseDate').value | momentFormat : momentFormatString}}
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="col-6">
+        <div class="form-group">
+            <label>Warranty End Date</label>
+            <div class="input-group">
+                <input matInput 
+                    [class.is-invalid]="form.get('warrantyEnd').invalid && (form.get('warrantyEnd').touched || formSubmitted)"
+                    class="form-control" 
+                    [readonly]="!hasFullUpdateAccess"
+                    [matDatepicker]="WarrantyEndDatePicker"
+                    formControlName="warrantyEnd" 
+                    [min]="form.get('warranty').value"
+                    />
+                <div class="input-group-append">
+                    <mat-datepicker-toggle matSuffix [for]="WarrantyEndDatePicker" class="input-group-text date">
+                        <mat-icon matDatepickerToggleIcon>date_range</mat-icon>
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #WarrantyEndDatePicker></mat-datepicker>
+                </div>
+                <div class="invalid-feedback" *ngIf="form.get('warrantyEnd')?.hasError('matDatepickerMin')">
+                    Please enter a date on or after {{form.get('warranty').value  | momentFormat : momentFormatString}}
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </form>
+</div>
+<div mat-dialog-actions>
+    <button 
+        [disabled]="form.hasError('required')"
+        class="btn btn-primary"
+        (click)="saveClockHardware()" 
+        *ngIf="hasPartialUpdateAccess"
+        >Save</button>
+    <button type="button"
+        class="btn btn-cancel"
+        (click)="onNoClick()"
+    >Cancel</button>
+</div>
